@@ -22,6 +22,7 @@
     "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit"
   },
   "dependencies": {
+    "@medurajs/medusa-feed-yandex": "file:.yalc/@medurajs/medusa-feed-yandex",
     "@medusajs/admin-sdk": "2.8.3",
     "@medusajs/cli": "2.8.3",
     "@medusajs/framework": "2.8.3",
