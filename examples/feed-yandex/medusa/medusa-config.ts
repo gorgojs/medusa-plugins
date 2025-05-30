@@ -15,7 +15,7 @@ module.exports = defineConfig({
   },
   modules: [
     {
-      resolve: "@medurajs/medusa-feed-yandex/modules/marketplace-yandex-market",
+      resolve: "@medurajs/medusa-feed-yandex/modules/feed",
     },
     {
       resolve: "@medusajs/medusa/file",

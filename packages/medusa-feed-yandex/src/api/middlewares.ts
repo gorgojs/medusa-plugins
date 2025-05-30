@@ -1,10 +1,10 @@
 import { defineMiddlewares } from "@medusajs/framework/http"
-import { adminExportsRoutesMiddlewares } from "./admin/yandex-market/exports/middlewares"
-import { adminExportByIdMiddlewares } from "./admin/yandex-market/exports/[id]/middlewares"
+import { adminFeedsRoutesMiddlewares } from "./admin/feeds/middlewares"
+import { adminFeedByIdMiddlewares } from "./admin/feeds/[id]/middlewares"
 
 export default defineMiddlewares({
   routes: [
-    ...adminExportsRoutesMiddlewares,
-    ...adminExportByIdMiddlewares,
+    ...adminFeedsRoutesMiddlewares,
+    ...adminFeedByIdMiddlewares,
   ],
 })

@@ -2480,7 +2480,7 @@ __metadata:
 
 "@medurajs/medusa-feed-yandex@file:.yalc/@medurajs/medusa-feed-yandex::locator=medusa%40workspace%3A.":
   version: 0.0.1
-  resolution: "@medurajs/medusa-feed-yandex@file:.yalc/@medurajs/medusa-feed-yandex#.yalc/@medurajs/medusa-feed-yandex::hash=b51269&locator=medusa%40workspace%3A."
+  resolution: "@medurajs/medusa-feed-yandex@file:.yalc/@medurajs/medusa-feed-yandex#.yalc/@medurajs/medusa-feed-yandex::hash=d06d59&locator=medusa%40workspace%3A."
   dependencies:
     yandex-market-language: "npm:^0.5.0"
   peerDependencies:
@@ -2498,7 +2498,7 @@ __metadata:
     "@mikro-orm/postgresql": 6.4.3
     awilix: ^8.0.1
     pg: ^8.13.0
-  checksum: 10c0/0fedc6265cf12e4e2136d44ad3ecee4e59b4188cd3079a59868c713d2db8da6f2530d81d56c72cf5d50b4265c57a5fc6d8050b3510d9e6b73ba211bc7c5e7fa2
+  checksum: 10c0/8887ecf013508ffce633db696a24d00441d10eae953d61fac5d6e01ffa794d7f201a8f52aad28d19ec987658c4484d3bcded81f64841da10065e0d93f3ad3a18
   languageName: node
   linkType: hard
 

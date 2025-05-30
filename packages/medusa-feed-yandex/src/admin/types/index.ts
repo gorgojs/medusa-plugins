@@ -1,20 +1,20 @@
 import { Settings } from "../../types/settings"
 
-export type ExportsResponse = {
-  exports: Export[]
+export type FeedsResponse = {
+  feeds: Feed[]
   count: number
   limit: number
   offset: number
 }
 
-export type CreatedExports = {
+export type CreatedFeeds = {
   title: string
   file_name: string
   is_active: boolean
   schedule?: number
 }[]
 
-export type Export = {
+export type Feed = {
   id: string
   title?: string
   file_name?: string
@@ -28,6 +28,6 @@ export type Export = {
   deleted_at?: Date | null
 }
 
-export type ExportResponse = {
-  export: Export
+export type FeedResponse = {
+  feed: Feed
 }
