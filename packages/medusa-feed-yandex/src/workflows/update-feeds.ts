@@ -13,7 +13,7 @@ export type UpdateFeedsStepInput = {
   file_name?: string
   file_path?: string
   schedule?: number
-  last_export_at?: Date
+  last_export_at?: Date | null
   is_active?: boolean
 }[]
 
@@ -21,7 +21,9 @@ export const updateFeedsStep = createStep(
   'update-feeds-step',
   async (feeds: UpdateFeedsStepInput, { container }) => {
     const service = container.resolve<FeedModuleService>(FEED_MODULE)
+    console.log("feeds", feeds)
     const updatedFeeds = await service.updateFeeds(feeds);
+    console.log("updatedFeeds", updatedFeeds)
     return new StepResponse(updatedFeeds);
   }
 )
@@ -32,7 +34,7 @@ export type UpdateFeedsWorkflowInput = {
   file_name?: string
   file_path?: string
   schedule?: number
-  last_export_at?: Date
+  last_export_at?: Date | null
   is_active?: boolean
 }[]
 

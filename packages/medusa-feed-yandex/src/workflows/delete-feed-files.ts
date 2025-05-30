@@ -57,6 +57,7 @@ export const deleteFeedFilesWorkflow = createWorkflow(
         return ({
           id: id,
           file_path: "",
+          last_export_at: null
         })
       })
     )

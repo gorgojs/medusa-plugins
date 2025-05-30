@@ -22,9 +22,18 @@ export const getFeedsStep = createStep(
   'get-feeds-step',
   async (ids: GetFeedsStepInput, { container }) => {
     const service = container.resolve<FeedModuleService>(FEED_MODULE)
-    const feeds = ids.length > 0
-      ? await service.listFeeds({ id: ids })
-      : await service.listFeeds({ is_active: true })
+    let feeds // TODO: create feedDTO types
+    if(ids.length > 0){
+      feeds = await service.listFeeds({ id: ids })
+    } else {
+      const now = new Date();
+      feeds = await service.listFeeds({ is_active: true })
+      feeds = feeds.filter(feed => {
+        if(!feed.last_export_at) return true
+        const diffMs = now.getTime() - feed.last_export_at.getTime()
+        return diffMs >= feed.schedule * 1000 * 60
+      })
+    }
     return new StepResponse(feeds)
   }
 )
