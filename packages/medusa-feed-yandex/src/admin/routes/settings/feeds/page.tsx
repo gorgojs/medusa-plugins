@@ -47,7 +47,7 @@ const columns = [
 
       try {
         const url = new URL(filePath)
-        const fullLink = `${url.origin}/feeds/${id}/${fileName}`
+        const fullLink = `${url.origin}/feeds/${id}/${fileName}.xml`
         return (
           <a href={fullLink} target="_blank" rel="noopener noreferrer">
             <Badge size="xsmall">
