@@ -20,12 +20,12 @@ import {
 } from "@medusajs/ui"
 import { InformationCircleSolid, SquareGreenSolid, SquareRedSolid } from "@medusajs/icons"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { sdk } from "../../lib/sdk"
+import { sdk } from "../../../lib/sdk"
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Header } from "../../components/header"
-import { scheduleData } from "../../lib/constants"
-import type { Feed, FeedsResponse, CreatedFeeds } from "../../types"
+import { Header } from "../../../components/header"
+import { scheduleData } from "../../../lib/constants"
+import type { Feed, FeedsResponse, CreatedFeeds } from "../../../types"
 
 const PAGE_SIZE = 20
 
