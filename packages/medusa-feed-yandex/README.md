@@ -10,11 +10,11 @@
 </p>
 
 <h1 align="center">
-Medusa Yandex Market Feed Plugin
+Yandex Market YML Feed Generator for Medusa
 </h1>
 
 <p align="center">
-A Medusa plugin that generates Yandex Market compatible XML product feeds.
+A Medusa plugin that generates a product feed in <a href="https://yandex.com/support/direct/feeds/requirements-yml.html">YML (Yandex Market Language)</a> format.
 </p>
 
 <p align="center">
@@ -25,37 +25,38 @@ A Medusa plugin that generates Yandex Market compatible XML product feeds.
 
 <p align="center">
   <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Medusa-^2.7.0-blue?logo=medusa" alt="Medusa" />
-  </a>
-  <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.8.3-green?logo=checkmarx" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Medusa-^2.8.3-blue?logo=medusa" alt="Medusa" />
   </a>
 </p>
 
+## 💬 Support & Community on Telegram
+
+Join the [Medusa Telegram community chat](https://t.me/medusajs_com) to discuss features, get support, and connect with developers building on Medusa.
+
 ## Prerequisites
 
-- Medusa server v2.7.0 or later
+- Medusa server v2.8.3 or later
 - Node.js v20 or later
 
 ## Installation
 
 ```bash
-yarn add @medurajs/medusa-feed-yandex
+yarn add @gorgo/medusa-feed-yandex
 # or
-npm install @medurajs/medusa-feed-yandex
+npm install @gorgo/medusa-feed-yandex
 ```
 
 ## Configuration
 
 Add the provider configuration in your `medusa-config.js` file of the Medusa admin application:
 
-```js
+```ts
 # ...
 module.exports = defineConfig({
   # ...
   modules: [
     {
-      resolve: "@medurajs/medusa-feed-yandex/modules/feed",
+      resolve: "@gorgo/medusa-feed-yandex/modules/feed",
     },
     {
       resolve: "@medusajs/medusa/file",
@@ -75,31 +76,93 @@ module.exports = defineConfig({
   ],
   plugins: [
     {
-      resolve: "@medurajs/medusa-feed-yandex",
+      resolve: "@gorgo/medusa-feed-yandex",
       options: {}
     }
   ],
 })
 ```
 
->The plugin is currently tested and uses Medusa's local file module (file-local) to save generated XML feeds. This means that feed files are saved locally in the static directory.
+> The plugin is currently tested with Medusa’s local file module (`file-local`) and saves the generated XML feeds to the local static directory.
 
 ## Usage
 
-To access the feed plugin, open the Medusa Admin dashboard and go to Settings in the main sidebar menu.    
-Within Settings, find the Feeds section under Extensions, where the plugin interface is located.  
-![screenshot](https://github.com/user-attachments/assets/effa41a9-8b70-4952-b027-cb5af9586a7d)
+Open the Medusa Admin dashboard and navigate to **Settings** -> **Feeds** section in the Extensions — this is where the plugin interface is available.
 
-The interface shows a list of all created feeds, showing important details such as feed titles, file names, accessible URLs, timestamps of the last export, current status, and export schedules.
+![Feeds list page](https://github.com/user-attachments/assets/7998358a-a0ed-4f46-8927-0db3189aea31)
 
-Feed URLs follow this format, allowing you to access the generated XML files directly:  
-`http://{YOUR_MEDUSA_DOMAIN}/feeds/{id}/{file name}.xml`
+The page displays all existing feeds with their key information.
 
-![screenshot](https://github.com/user-attachments/assets/413c5fca-23cc-4f19-b647-92049d0810d3)
+Feed URLs follow this format, allowing direct access to the generated XML files (in YML format):
 
-Selecting a specific feed opens its detailed view, where you can review and edit feed metadata, access the feed file URL, configure or update export schedules, select which product categories to include in the feed, and modify associated shop information. The interface also includes a Launch now button for manually triggering feed generation whenever needed.  
-![screenshot](https://github.com/user-attachments/assets/142f205e-0a5f-4bf8-a454-4bcf17c0a432)
+```
+http://{YOUR_MEDUSA_DOMAIN}/feeds/{ID}/{FILE_NAME}.xml
+```
 
-## 💬 Support & Community on Telegram
+Selecting a feed opens a detailed view where you can edit metadata, adjust export schedules, choose product categories, and access the feed URL. A **Launch now** button lets you manually trigger feed generation.
 
-Join the [Medusa Telegram community chat](https://t.me/medusajs_com) to discuss features, get support, and connect with developers building on Medusa.
+![Feed's page](https://github.com/user-attachments/assets/551f896a-8e42-44a7-9a37-0de2f436c994)
+
+The feed shown in the screenshot above exports all product from all categories every 30 minutes to a file named `example1.xml`. It sets `Example shop name`, `Example company name`, `https://www.example.com/`, and `Medusa` as values for the corresponding XML properties. It is accessible via the link `http://localhost:9000/feeds/01JWTC5VDW8EAGHWRDQG2GKAQJ/example1.xml`, while the actual file is stored in gzip-compressed format at `http://localhost:9000/static/1748937061705-example1.xml.gz`.
+
+Below is an example of a generated YML-file:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<yml_catalog date="2025-06-03 16:31">
+  <shop>
+    <name>Example shop name</name>
+    <company>Example company name</company>
+    <url>https://www.example.com/</url>
+    <platform>Medusa</platform>
+    <categories>
+      <category id="pcat_01JWBFYPTZNKZT0BRWECQF84J9" value="Shirts"/>
+      <category id="pcat_01JWBFYPV0KQV6VY4HKW4W6JTN" value="Sweatshirts"/>
+      <category id="pcat_01JWBFYPV16CG0MN8TF1EM4T4N" value="Pants"/>
+      <category id="pcat_01JWBFYPV1CTZAK4JBKV0R2JZW" value="Merch"/>
+    </categories>
+    <offers>
+      <offer id="prod_01JWBFYPVZ21W4XQRSPAVW3QBN">
+        <name>Medusa T-Shirt</name>
+        <categoryId>pcat_01JWBFYPTZNKZT0BRWECQF84J9</categoryId>
+        <picture>https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-black-front.png</picture>
+        <description>
+          <![CDATA[Reimagine the feeling of a classic T-shirt. With our cotton T-shirts, everyday essentials no longer have to be ordinary.]]>
+        </description>
+        <weight>400</weight>
+      </offer>
+      <offer id="prod_01JWBFYPVZFHDPM6RF1DFAX4RZ">
+        <name>Medusa Sweatshirt</name>
+        <categoryId>pcat_01JWBFYPV0KQV6VY4HKW4W6JTN</categoryId>
+        <picture>https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatshirt-vintage-front.png</picture>
+        <description>
+          <![CDATA[Reimagine the feeling of a classic sweatshirt. With our cotton sweatshirt, everyday essentials no longer have to be ordinary.]]>
+        </description>
+        <weight>400</weight>
+      </offer>
+      <offer id="prod_01JWBFYPVZJQH2KABER77PSEMG">
+        <name>Medusa Sweatpants</name>
+        <categoryId>pcat_01JWBFYPV16CG0MN8TF1EM4T4N</categoryId>
+        <picture>https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatpants-gray-front.png</picture>
+        <description>
+          <![CDATA[Reimagine the feeling of classic sweatpants. With our cotton sweatpants, everyday essentials no longer have to be ordinary.]]>
+        </description>
+        <weight>400</weight>
+      </offer>
+      <offer id="prod_01JWBFYPVZ2E5D5CSB0F53XX3W">
+        <name>Medusa Shorts</name>
+        <categoryId>pcat_01JWBFYPV1CTZAK4JBKV0R2JZW</categoryId>
+        <picture>https://medusa-public-images.s3.eu-west-1.amazonaws.com/shorts-vintage-front.png</picture>
+        <description>
+          <![CDATA[Reimagine the feeling of classic shorts. With our cotton shorts, everyday essentials no longer have to be ordinary.]]>
+        </description>
+        <weight>400</weight>
+      </offer>
+    </offers>
+  </shop>
+</yml_catalog>
+```
+
+## License
+
+Licensed under the [MIT License](LICENSE).

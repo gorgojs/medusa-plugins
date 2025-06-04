@@ -1,8 +1,13 @@
 {
-  "name": "@medurajs/medusa-feed-yandex",
+  "name": "@gorgo/medusa-feed-yandex",
   "version": "0.0.1",
-  "description": "A Medusa plugin that exports product data in Yandex Market YML feed format",
+  "description": "A Medusa plugin that generates a product feed in YML (Yandex Market Language) format",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gorgojs/medusa-feed",
+    "directory": "packages/medusa-feed-yandex"
+  },
   "files": [
     ".medusa/server"
   ],
@@ -21,10 +26,10 @@
   },
   "keywords": [
     "medusa",
-    "plugin",
-    "medusa-plugin-other",
-    "medusa-plugin",
     "medusa-v2",
+    "medusa-plugin",
+    "medusa-plugin-integration",
+    "medusa-plugin-other",
     "ecommerce",
     "yandex",
     "yandex market",
@@ -34,7 +39,6 @@
     "export",
     "catalog export",
     "yandex yml",
-    "localization",
     "marketplace"
   ],
   "scripts": {
