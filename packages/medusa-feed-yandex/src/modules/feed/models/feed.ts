@@ -6,7 +6,7 @@ const Feed = model.define("feed", {
   file_name: model.text().nullable(),
   file_path: model.text().nullable(),
   last_export_at: model.dateTime().nullable(),
-  is_active : model.boolean().default(false),
+  is_active: model.boolean().default(false),
   schedule: model.number().default(30),
   settings: model.json().nullable()
 })
