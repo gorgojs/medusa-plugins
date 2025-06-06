@@ -15,7 +15,7 @@ module.exports = defineConfig({
   },
   modules: [
     {
-      resolve: "@medurajs/medusa-feed-yandex/modules/feed",
+      resolve: "@gorgo/medusa-feed-yandex/modules/feed",
     },
     {
       resolve: "@medusajs/medusa/file",
@@ -35,7 +35,7 @@ module.exports = defineConfig({
   ],
   plugins: [
     {
-      resolve: "@medurajs/medusa-feed-yandex",
+      resolve: "@gorgo/medusa-feed-yandex",
       options: {}
     }
   ],
