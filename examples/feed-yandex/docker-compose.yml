@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+     - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: supersecret
+      POSTGRES_USER: medusa
+      POSTGRES_DB: medusa_feed_yandex
+  adminer:
+    image: adminer
+    restart: always
+    depends_on: 
+      - db
+    ports:
+      - 8080:8080
+
+volumes:
+  pgdata:
