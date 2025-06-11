@@ -1,6 +1,6 @@
 {
   "name": "@gorgo/medusa-feed-yandex",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A Medusa plugin that generates a product feed in YML (Yandex Market Language) format",
   "license": "MIT",
   "repository": {
@@ -50,6 +50,11 @@
     "prepublishOnly": "medusa plugin:build"
   },
   "dependencies": {
+    "date-fns": "^3.6.0",
+    "i18next": "^23.7.11",
+    "i18next-browser-languagedetector": "^7.2.0",
+    "i18next-http-backend": "^2.4.2",
+    "react-i18next": "^13.5.0",
     "yandex-market-language": "^0.5.0"
   },
   "devDependencies": {
@@ -83,20 +88,24 @@
     "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
-    "@medusajs/admin-sdk": "2.8.4",
-    "@medusajs/cli": "2.8.4",
-    "@medusajs/framework": "2.8.4",
-    "@medusajs/icons": "2.8.4",
-    "@medusajs/medusa": "2.8.4",
-    "@medusajs/test-utils": "2.8.4",
-    "@medusajs/ui": "4.0.14",
-    "@mikro-orm/cli": "6.4.3",
-    "@mikro-orm/core": "6.4.3",
-    "@mikro-orm/knex": "6.4.3",
-    "@mikro-orm/migrations": "6.4.3",
-    "@mikro-orm/postgresql": "6.4.3",
+    "@medusajs/admin-sdk": "^2.8.4",
+    "@medusajs/cli": "^2.8.4",
+    "@medusajs/framework": "^2.8.4",
+    "@medusajs/icons": "^2.8.4",
+    "@medusajs/medusa": "^2.8.4",
+    "@medusajs/test-utils": "^2.8.4",
+    "@medusajs/ui": "^4.0.14",
+    "@mikro-orm/cli": "^6.4.3",
+    "@mikro-orm/core": "^6.4.3",
+    "@mikro-orm/knex": "^6.4.3",
+    "@mikro-orm/migrations": "^6.4.3",
+    "@mikro-orm/postgresql": "^6.4.3",
     "awilix": "^8.0.1",
-    "pg": "^8.13.0"
+    "date-fns": "^3.6.0",
+    "i18next": "^23.7.11",
+    "i18next-browser-languagedetector": "^7.2.0",
+    "i18next-http-backend": "^2.4.2",
+    "react-i18next": "^13.5.0"
   },
   "engines": {
     "node": ">=20"

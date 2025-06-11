@@ -1,0 +1,101 @@
+{
+  "$schema": "./$schema.json",
+  "general": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "error": "Error",
+    "success": "Success",
+    "schedule": {
+      "minute_other": "{{count}} minutes",
+      "hour_one": "{{count}} hour",
+      "hour_other": "{{count}} hours",
+      "day_one": "{{count}} day"
+    }
+  },
+  "exports": {
+    "header": {
+      "title": "Feeds",
+      "subtitle": "Manage your feeds"
+    },
+    "create": {
+      "title": "Create Export File",
+      "description": "Create and manage your feeds settings."
+    }
+  },
+  "export": {
+    "header": {
+      "title": "Export",
+      "subtitle": "Basic information about feed"
+    },
+    "edit": {
+      "title": "Edit feed",
+      "description": "Update feed file configuration."
+    }
+  },
+  "shop": {
+    "header": {
+      "title": "Shop",
+      "subtitle": "Description of the shop for which you are preparing the file"
+    },
+    "edit": {
+      "title": "Edit Shop",
+      "description": "Update shop details"
+    }
+  },
+  "categories": {
+    "header": {
+      "title": "Categories",
+      "subtitle": "Select the categories for your feed"
+    }
+  },
+  "actions": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteFile": "Delete file"
+  },
+  "toasts": {
+    "exportLaunched": "Export was started successfully",
+    "categoriesSaved": "Categories saved successfully",
+    "categoriesSaveFailed": "Failed to save categories"
+  },
+  "prompts": {
+    "deleteFeed": {
+      "title": "Delete feed",
+      "description": "Are you sure? This cannot be undone."
+    },
+    "deleteFeedFile": {
+      "title": "Delete feed file",
+      "description": "Are you sure? This cannot be undone."
+    }
+  },
+  "tooltips": {
+    "schedule": "Set the schedule for feed export"
+  },
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "launchNow": "Launch now",
+    "delete": "Delete",
+    "create": "Create"
+  },
+  "activityContainer": {
+    "title": "Activity",
+    "subtitle": "When unchecked, the feed will not be exported on a schedule."
+  },
+  "fields": {
+    "title": "Title",
+    "fileName": "File name",
+    "filePath": "File path",
+    "lastExport": "Last export",
+    "status": "Status",
+    "schedule": "Schedule",
+    "ID": "ID",
+    "fileUrl": "File URL",
+    "Created": "Created",
+    "Updated": "Updated",
+    "name": "Shop name",
+    "company": "Shop company",
+    "url": "Shop URL",
+    "platform": "Platform"
+  }
+}

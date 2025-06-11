@@ -1,0 +1,220 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "active": { "type": "string" },
+        "inactive": { "type": "string" },
+        "error": { "type": "string" },
+        "success": { "type": "string" },
+        "schedule": {
+          "type": "object",
+          "properties": {
+            "minute_other": { "type": "string" },
+            "hour_one": { "type": "string" },
+            "hour_other": { "type": "string" },
+            "day_one": { "type": "string" }
+          },
+          "required": ["minute_other", "hour_one", "hour_other", "day_one"]
+        }
+      },
+      "required": ["active", "inactive", "schedule"]
+    },
+    "exports": {
+      "type": "object",
+      "properties": {
+        "header": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "subtitle": { "type": "string" }
+          },
+          "required": ["title", "subtitle"]
+        },
+        "create": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "description": { "type": "string" }
+          },
+          "required": ["title", "description"]
+        }
+      },
+      "required": ["header", "create"]
+    },
+    "export": {
+      "type": "object",
+      "properties": {
+        "header": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "subtitle": { "type": "string" }
+          },
+          "required": ["title", "subtitle"]
+        },
+        "edit": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "description": { "type": "string" }
+          },
+          "required": ["title", "description"]
+        }
+      },
+      "required": ["header", "edit"]
+    },
+    "shop": {
+      "type": "object",
+      "properties": {
+        "header": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "subtitle": { "type": "string" }
+          },
+          "required": ["title", "subtitle"]
+        },
+        "edit": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "description": { "type": "string" }
+          },
+          "required": ["title", "description"]
+        }
+      },
+      "required": ["header", "edit"]
+    },
+    "categories": {
+      "type": "object",
+      "properties": {
+        "header": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "subtitle": { "type": "string" }
+          },
+          "required": ["title", "subtitle"]
+        }
+      },
+      "required": ["header"]
+    },
+    "actions": {
+      "type": "object",
+      "properties": {
+        "edit": { "type": "string" },
+        "delete": { "type": "string" },
+        "deleteFile": { "type": "string" }
+      },
+      "required": ["edit", "delete", "deleteFile"]
+    },
+    "toasts": {
+      "type": "object",
+      "properties": {
+        "exportLaunched": { "type": "string" },
+        "categoriesSaved": { "type": "string" },
+        "categoriesSaveFailed": { "type": "string" }
+      },
+      "required": ["exportLaunched", "categoriesSaved", "categoriesSaveFailed"]
+    },
+    "prompts": {
+      "type": "object",
+      "properties": {
+        "deleteFeed": { 
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "description": { "type": "string" }
+          }
+        },
+        "deleteFeedFile": { 
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "description": { "type": "string" }
+          }
+        }
+      },
+      "required": ["deleteFeed", "deleteFeedFile"]
+    },
+    "tooltips": {
+      "type": "object",
+      "properties": {
+        "schedule": { "type": "string" }
+      },
+      "required": ["schedule"]
+    },
+    "buttons": {
+      "type": "object",
+      "properties": {
+        "save": { "type": "string" },
+        "cancel": { "type": "string" },
+        "launchNow": { "type": "string" },
+        "create": { "type": "string" }
+      },
+      "required": ["save", "cancel", "launchNow"]
+    },
+    "activityContainer": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" }
+      },
+      "required": ["title", "subtitle"]
+    },
+    "fields": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "fileName": { "type": "string" },
+        "filePath": { "type": "string" },
+        "lastExport": { "type": "string" },
+        "status": { "type": "string" },
+        "schedule": { "type": "string" },
+        "ID": { "type": "string" },
+        "fileUrl": { "type": "string" },
+        "Created": { "type": "string" },
+        "Updated": { "type": "string" },
+        "name": { "type": "string" },
+        "company": { "type": "string" },
+        "url": { "type": "string" },
+        "platform": { "type": "string" }
+      },
+      "required": [
+        "title",
+        "fileName",
+        "filePath",
+        "lastExport",
+        "status",
+        "schedule",
+        "ID",
+        "fileUrl",
+        "Created",
+        "Updated",
+        "name",
+        "company",
+        "url",
+        "platform"
+      ]
+    }
+  },
+  "required": [
+    "general",
+    "exports",
+    "export",
+    "shop",
+    "categories",
+    "actions",
+    "toasts",
+    "tooltips",
+    "buttons",
+    "activityContainer",
+    "fields"
+  ]
+}

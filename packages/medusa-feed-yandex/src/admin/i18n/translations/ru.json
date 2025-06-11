@@ -1,0 +1,101 @@
+{
+  "$schema": "./$schema.json",
+  "general": {
+    "active": "Активен",
+    "inactive": "Неактивен",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "schedule": {
+      "minute_other": "{{count}} минут",
+      "hour_one": "{{count}} час",
+      "hour_other": "{{count}} часа",
+      "day_one": "{{count}} день"
+    }
+  },
+  "exports": {
+    "header": {
+      "title": "Фиды",
+      "subtitle": "Управление фидами"
+    },
+    "create": {
+      "title": "Создать файл фида",
+      "description": "Создавайте и управляйте настройками фида."
+    }
+  },
+  "export": {
+    "header": {
+      "title": "Фид",
+      "subtitle": "Основная информация о фиде"
+    },
+    "edit": {
+      "title": "Редактировать фид",
+      "description": "Обновить конфигурацию фида."
+    }
+  },
+  "shop": {
+    "header": {
+      "title": "Магазин",
+      "subtitle": "Описание магазина, для которого подготавливается файл"
+    },
+    "edit": {
+      "title": "Редактировать магазин",
+      "description": "Обновить данные магазина"
+    }
+  },
+  "categories": {
+    "header": {
+      "title": "Категории",
+      "subtitle": "Выберите категории для экспорта"
+    }
+  },
+  "actions": {
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "deleteFile": "Удалить файл"
+  },
+  "toasts": {
+    "exportLaunched": "Фид успешно запущен",
+    "categoriesSaved": "Категории успешно сохранены",
+    "categoriesSaveFailed": "Не получучилось сохранить категории"
+  },
+  "prompts": {
+    "deleteFeed": {
+      "title": "Удалить фид",
+      "description": "Вы уверены? Это действие безвозвратное."
+    },
+    "deleteFeedFile": {
+      "title": "Удалить файл фида",
+      "description": "Вы уверены? Это действие безвозвратное."
+    }
+  },
+  "tooltips": {
+    "schedule": "Установите расписание для экспорта фида"
+  },
+  "buttons": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "launchNow": "Запустить сейчас",
+    "create": "Создать",
+    "delete": "Удалить"
+  },
+  "activityContainer": {
+    "title": "Активность",
+    "subtitle": "Если флаг снят, фид не будет экспортироваться по расписанию."
+  },
+  "fields": {
+    "title": "Название",
+    "fileName": "Имя файла",
+    "filePath": "Путь к файлу",
+    "lastExport": "Последний экспорт",
+    "status": "Статус",
+    "schedule": "Расписание",
+    "ID": "ID",
+    "fileUrl": "URL файла",
+    "Created": "Создано",
+    "Updated": "Обновлено",
+    "name": "Название магазина",
+    "company": "Компания",
+    "url": "URL магазина",
+    "platform": "Платформа"
+  }
+}

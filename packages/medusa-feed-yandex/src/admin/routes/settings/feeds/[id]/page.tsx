@@ -13,7 +13,7 @@ import {
   Badge,
   toast
 } from "@medusajs/ui"
-import { Pencil, Trash, SquareGreenSolid, SquareRedSolid, Folder } from "@medusajs/icons"
+import { Pencil, Trash, Folder } from "@medusajs/icons"
 import { useParams, useNavigate } from "react-router-dom"
 import { SectionRow } from "../../../../components/export-section-row"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
@@ -24,12 +24,15 @@ import { TwoColumnLayout } from "../../../../layouts/two-column"
 import { scheduleData } from "../../../../lib/constants"
 import type { Feed, FeedResponse } from "../../../../types"
 import CategoryTable from "../../../../components/category-table"
+import { I18n } from "../../../../components/i18n"
+import { useTranslation } from "react-i18next"
 
 const FILE_EXTENTION = ".xml"
 
 let feedTitle: string | undefined
 
 const FeedDetailsPage = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { id } = useParams()
   const [deleteFeedOpen, openDeleteFeed, closeDeleteFeed] = useToggleState()
@@ -222,6 +225,8 @@ const FeedDetailsPage = () => {
     data?.feed?.settings?.categories?.map((c) => c.id) ?? []
 
   return (
+    <>
+    <I18n />
     <TwoColumnLayout
       firstCol={
         <>
@@ -230,16 +235,16 @@ const FeedDetailsPage = () => {
               key={`${editOpen ? "edit-open" : "edit-closed"}-${deleteFeedOpen ? "delete-feed-open" : "delete-feed-closed"}-${deleteFeedFileOpen ? "delete-feed-file-open" : "delete-feed-file-closed"}`}
 
               title={feedData?.title!}
-              subtitle="Basic information about feed"
+              subtitle={t("export.header.subtitle")}
               status={{
                 color: feedData?.is_active ? "green" : "red",
-                text: feedData?.is_active ? "Active" : "Inactive"
+                text: feedData?.is_active ? t("general.active") : t("general.inactive")
               }}
               actions={[
                 {
                   type: "button",
                   props: {
-                    children: "Launch now",
+                    children: t("buttons.launchNow"),
                     variant: "secondary",
                     onClick: () => {
                       launchFeed()
@@ -254,17 +259,17 @@ const FeedDetailsPage = () => {
                         actions: [
                           {
                             icon: <Pencil />,
-                            label: "Edit",
+                            label: t("actions.edit"),
                             onClick: () => openEdit(),
                           },
                           {
                             icon: <Folder />,
-                            label: "Delete file",
+                            label: t("actions.deleteFile"),
                             onClick: () => openDeleteFeedFile(),
                           },
                           {
                             icon: <Trash />,
-                            label: "Delete",
+                            label: t("actions.delete"),
                             onClick: () => openDeleteFeed(),
                           },
                         ],
@@ -275,16 +280,16 @@ const FeedDetailsPage = () => {
               ]}
             />
             <SectionRow
-              title="ID"
+              title={t("fields.ID")}
               value={feedData?.id || "-"}
             />
             <SectionRow
-              title="File name"
+              title={t("fields.fileName")}
               value={feedData?.file_name+FILE_EXTENTION || "-"}
               className="break-all"
             />
             <SectionRow
-              title="File URL"
+              title={t("fields.fileUrl")}
               value={
                 feedData?.file_path && feedData?.id && feedData?.file_name ? (
                   (() => {
@@ -304,7 +309,7 @@ const FeedDetailsPage = () => {
               }
             />
             <SectionRow
-              title="Schedule"
+              title={t("fields.schedule")}
               value={
                 feedData?.schedule
                   ? (() => {
@@ -323,23 +328,23 @@ const FeedDetailsPage = () => {
               }
             />
             <SectionRow
-              title="File path"
+              title={t("fields.filePath")}
               value={feedData?.file_path ?
                 <a href={feedData?.file_path} target="_blank" rel="noopener noreferrer">
                   <Badge size="base" className="h-full">
                     <Text size="xsmall" className="text-ui-fg-interactive break-all">{feedData?.file_path}</Text>
                   </Badge>
                 </a> : "-"} />
-            <SectionRow title="Last export" value={feedData?.last_export_at ? new Date(feedData.last_export_at).toLocaleString() : "-"} />
-            <SectionRow title="Created" value={feedData?.created_at ? new Date(feedData.created_at).toLocaleString() : "-"} />
-            <SectionRow title="Updated" value={feedData?.updated_at ? new Date(feedData.updated_at).toLocaleString() : "-"} />
+            <SectionRow title={t("fields.lastExport")} value={feedData?.last_export_at ? new Date(feedData.last_export_at).toLocaleString() : "-"} />
+            <SectionRow title={t("fields.Created")} value={feedData?.created_at ? new Date(feedData.created_at).toLocaleString() : "-"} />
+            <SectionRow title={t("fields.Updated")} value={feedData?.updated_at ? new Date(feedData.updated_at).toLocaleString() : "-"} />
 
             <Drawer open={editOpen} onOpenChange={(open) => {
               if (!open) closeEdit()
             }}>
               <Drawer.Content>
                 <Drawer.Header>
-                  <Drawer.Title asChild><Heading>Edit Feed</Heading></Drawer.Title>
+                  <Drawer.Title asChild><Heading>{t("export.edit.title")}</Heading></Drawer.Title>
                 </Drawer.Header>
                 <Drawer.Body>
                   <div className="flex flex-col gap-y-4">
@@ -347,19 +352,19 @@ const FeedDetailsPage = () => {
                       <div className="flex gap-x-4">
                         <Switch id="is-active-switch" checked={isActive} onCheckedChange={() => setIsActive(prev => !prev)} />
                         <div className="flex flex-col gap-y-1">
-                          <Label size="small" htmlFor="is-active-switch">Active</Label>
+                          <Label size="small" htmlFor="is-active-switch">{t("general.active")}</Label>
                           <Text size="small" className="text-ui-fg-muted">
-                            When unchecked, feed will not run on schedule.
+                            {t("activityContainer.subtitle")}
                           </Text>
                         </div>
                       </div>
                     </Container>
                     <div className="flex flex-col gap-y-2">
-                      <Label htmlFor="title" size="small">Title</Label>
+                      <Label htmlFor="title" size="small">{t("fields.title")}</Label>
                       <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
                     </div>
                     <div className="flex flex-col gap-y-2">
-                      <Label size="small" htmlFor="feed-file-name-input">File name</Label>
+                      <Label size="small" htmlFor="feed-file-name-input">{t("fields.fileName")}</Label>
                       <div className="relative">
                         <Input className="pr-14" id="feed-file-name-input" value={fileName} onChange={(e) => setFileName(e.target.value)} />
                         <div className="absolute inset-y-0 right-0 z-10 flex w-12 items-center justify-center border-l">
@@ -370,7 +375,7 @@ const FeedDetailsPage = () => {
                       </div>
                     </div>
                     <div className="flex flex-col gap-y-2">
-                      <Label size="small" htmlFor="schedule-selector">Schedule</Label>
+                      <Label size="small" htmlFor="schedule-selector">{t("fields.schedule")}</Label>
                       <Select value={schedule} onValueChange={setSchedule}>
                         <Select.Trigger>
                           <Select.Value />
@@ -390,9 +395,9 @@ const FeedDetailsPage = () => {
                 <Drawer.Footer>
                   <div className="flex items-center justify-end gap-x-2">
                     <Drawer.Close asChild>
-                      <Button size="small" variant="secondary">Cancel</Button>
+                      <Button size="small" variant="secondary">{t("buttons.cancel")}</Button>
                     </Drawer.Close>
-                    <Button size="small" type="submit" onClick={saveFeedSettings}>Save</Button>
+                    <Button size="small" type="submit" onClick={saveFeedSettings}>{t("buttons.save")}</Button>
                   </div>
                 </Drawer.Footer>
               </Drawer.Content>
@@ -402,14 +407,14 @@ const FeedDetailsPage = () => {
             }}>
               <Prompt.Content>
                 <Prompt.Header>
-                  <Prompt.Title>Delete feed</Prompt.Title>
+                  <Prompt.Title>{t("prompts.deleteFeed.title")}</Prompt.Title>
                   <Prompt.Description>
-                    Are you sure? This cannot be undone.
+                    {t("prompts.deleteFeed.description")}
                   </Prompt.Description>
                 </Prompt.Header>
                 <Prompt.Footer>
-                  <Prompt.Cancel>Cancel</Prompt.Cancel>
-                  <Prompt.Action onClick={() => deleteFeed()}>Delete</Prompt.Action>
+                  <Prompt.Cancel>{t("buttons.cancel")}</Prompt.Cancel>
+                  <Prompt.Action onClick={() => deleteFeed()}>{t("buttons.delete")}</Prompt.Action>
                 </Prompt.Footer>
               </Prompt.Content>
             </Prompt>
@@ -418,14 +423,14 @@ const FeedDetailsPage = () => {
             }}>
               <Prompt.Content>
                 <Prompt.Header>
-                  <Prompt.Title>Delete feed file</Prompt.Title>
+                  <Prompt.Title>{t("prompts.deleteFeedFile.title")}</Prompt.Title>
                   <Prompt.Description>
-                    Are you sure? This cannot be undone.
+                    {t("prompts.deleteFeedFile.description")}
                   </Prompt.Description>
                 </Prompt.Header>
                 <Prompt.Footer>
-                  <Prompt.Cancel>Cancel</Prompt.Cancel>
-                  <Prompt.Action onClick={() => deleteFeedFile()}>Delete</Prompt.Action>
+                  <Prompt.Cancel>{t("buttons.cancel")}</Prompt.Cancel>
+                  <Prompt.Action onClick={() => deleteFeedFile()}>{t("buttons.delete")}</Prompt.Action>
                 </Prompt.Footer>
               </Prompt.Content>
             </Prompt>
@@ -435,13 +440,13 @@ const FeedDetailsPage = () => {
             onSave={async (selected) => {
               try {
                 await saveFeedCategories(selected)
-                toast.success("Success", {
-                  description: "Categories saved successfully",
+                toast.success(t("general.success"), {
+                  description: t("toasts.categoriesSaved"),
                 })
               } catch (e) {
                 console.error(e)
-                toast.error("Error", {
-                  description: "Failed to save categories",
+                toast.error(t("general.error"), {
+                  description: t("toasts.categoriesSaveFailed"),
                 })
               }
             }}
@@ -454,8 +459,8 @@ const FeedDetailsPage = () => {
           <Header
             key={`${editShopOpen ? "edit-shop-open" : "edit-shop-closed"}`}
 
-            title="Shop"
-            subtitle="Description of the shop for which you are preparing the file"
+            title={t("shop.header.title")}
+            subtitle={t("shop.header.subtitle")}
             actions={[
               {
                 type: "action-menu",
@@ -465,7 +470,7 @@ const FeedDetailsPage = () => {
                       actions: [
                         {
                           icon: <Pencil />,
-                          label: "Edit",
+                          label: t("actions.edit"),
                           onClick: () => openEditShop(),
                         },
                       ],
@@ -475,29 +480,29 @@ const FeedDetailsPage = () => {
               },
             ]}
           />
-          <SectionRow title="Name" value={feedData?.settings?.name || "-"} />
-          <SectionRow title="Company" value={feedData?.settings?.company || "-"} />
-          <SectionRow title="Url" value={feedData?.settings?.url || "-"} />
-          <SectionRow title="Platform" value="Medusa" />
+          <SectionRow title={t("fields.name")} value={feedData?.settings?.name || "-"} />
+          <SectionRow title={t("fields.company")} value={feedData?.settings?.company || "-"} />
+          <SectionRow title={t("fields.url")} value={feedData?.settings?.url || "-"} />
+          <SectionRow title={t("fields.platform")} value="Medusa" />
           <Drawer open={editShopOpen} onOpenChange={(open) => {
             if (!open) closeEditShop()
           }}>
             <Drawer.Content>
               <Drawer.Header>
-                <Drawer.Title asChild><Heading>Edit Shop</Heading></Drawer.Title>
+                <Drawer.Title asChild><Heading>{t("export.edit.title")}</Heading></Drawer.Title>
               </Drawer.Header>
               <Drawer.Body>
                 <div className="flex flex-col gap-y-4">
                   <div className="flex flex-col gap-y-2">
-                    <Label htmlFor="shop-name" size="small">Name</Label>
+                    <Label htmlFor="shop-name" size="small">{t("fields.name")}</Label>
                     <Input id="shop-name" value={shopName} onChange={(e) => setShopName(e.target.value)} />
                   </div>
                   <div className="flex flex-col gap-y-2">
-                    <Label size="small" htmlFor="shop-company">Company</Label>
+                    <Label size="small" htmlFor="shop-company">{t("fields.company")}</Label>
                     <Input id="shop-company" value={shopCompany} onChange={(e) => setShopCompany(e.target.value)} />
                   </div>
                   <div className="flex flex-col gap-y-2">
-                    <Label htmlFor="shop-url" size="small">URL</Label>
+                    <Label htmlFor="shop-url" size="small">{t("fields.url")}</Label>
                     <Input id="shop-url" value={shopUrl} onChange={(e) => setShopUrl(e.target.value)} />
                   </div>
                 </div>
@@ -515,6 +520,7 @@ const FeedDetailsPage = () => {
         </Container>
       }
     />
+    </>
   )
 }
 
