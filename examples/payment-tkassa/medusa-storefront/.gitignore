@@ -55,3 +55,5 @@ dump.rdb
 /blob-report/
 /playwright/.cache/
 /playwright/.auth
+
+yarn.lock
