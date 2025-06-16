@@ -163,6 +163,28 @@ Below is an example of a generated YML-file:
 </yml_catalog>
 ```
 
+## Testing
+
+You can run two types of tests for this plugin:
+
+### Module Tests
+
+These verify the internal logic, such as services and models.
+
+```bash
+yarn test:integration:modules
+```
+
+### Integration Tests
+
+Integration tests include tests for API Routes and Workflows
+
+```bash
+yarn test:integration:http
+```
+
+Before running the tests, make sure your `.env.test` file includes the following variables: `DB_USERNAME`, `DB_PASSWORD`, `DB_HOST`, `DB_TEMP_NAME`.
+
 ## License
 
 Licensed under the [MIT License](LICENSE).

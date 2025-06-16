@@ -93,7 +93,7 @@ moduleIntegrationTestRunner<FeedModuleService>({
             file_name: "testName",
             file_path: "/exports/testName.xml",
             is_active: true,
-            schedule: 30,
+            schedule: 60,
             settings: {
                 name: "shop name",
                 company: "company name",

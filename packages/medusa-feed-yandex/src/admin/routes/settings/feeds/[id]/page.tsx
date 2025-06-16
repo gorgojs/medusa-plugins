@@ -126,9 +126,6 @@ const FeedDetailsPage = () => {
     },
     onError: (error) => {
       console.error("Error deleting file:", error)
-      toast.error("Error", {
-        description: "Failed to delete file",
-      })
     }
   })
 
@@ -146,15 +143,12 @@ const FeedDetailsPage = () => {
         queryKey: ["feed", id],
       })
       queryClient.invalidateQueries({ queryKey: [["feeds"]] })
-      toast.success("Success", {
-        description: "Feed was started successfully",
+      toast.success(t("general.success"), {
+        description: t("toasts.exportLaunched"),
       })
     },
     onError: (error) => {
       console.error("Error launching feed:", error)
-      toast.error("Error", {
-        description: "Failed to launch feed",
-      })
     }
   })
 
