@@ -20,14 +20,16 @@ import {
 } from "@medusajs/ui"
 import { InformationCircleSolid, SquareGreenSolid, SquareRedSolid } from "@medusajs/icons"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { sdk } from "../../../lib/sdk"
 import { useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
+import { t } from "i18next"
+import { sdk } from "../../../lib/sdk"
 import { Header } from "../../../components/header"
 import { scheduleData } from "../../../lib/constants"
 import type { Feed, FeedsResponse, CreatedFeeds } from "../../../types"
-import { useTranslation } from "react-i18next"
 import { I18n } from "../../../components/i18n"
+import { getScheduleLabel } from "../../../lib/utils"
 
 const PAGE_SIZE = 20
 
@@ -35,11 +37,72 @@ const FeedsPage = () => {
   const { t } = useTranslation()
   const columnHelper = createDataTableColumnHelper<Feed>()
 
+
+  const [createOpen, openCreate, closeCreate] = useToggleState()
+  const [title, setTitle] = useState("")
+  const [fileName, setFileName] = useState("")
+  const [schedule, setSchedule] = useState<number>(30)
+  const [isActive, setIsActive] = useState(false)
+
+  const navigate = useNavigate()
+  const limit = PAGE_SIZE
+  const [pagination, setPagination] = useState<DataTablePaginationState>({
+    pageSize: limit,
+    pageIndex: 0,
+  })
+
+  const offset = useMemo(() => pagination.pageIndex * limit, [pagination])
+
+  const { data, isLoading } = useQuery<FeedsResponse>({
+    queryFn: () =>
+      sdk.client.fetch(`/admin/feeds`, {
+        query: { limit, offset },
+      }),
+    queryKey: [["feeds"]],
+  })
+
+  const queryClient = useQueryClient()
+
+  const { mutate } = useMutation({
+    mutationFn: async (newFeed: { feeds: CreatedFeeds }) => {
+      return sdk.client.fetch(`/admin/feeds`, {
+        method: "POST",
+        body: newFeed,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [["feeds"]],
+      })
+      setTitle("")
+      setFileName("")
+      setSchedule(30)
+      setIsActive(false)
+    },
+    onError: (error) => {
+      console.error("Error creating feed:", error)
+    },
+  })
+
+  const saveFeed = () => {
+    const createdFeed: CreatedFeeds = [{
+      title: title,
+      file_name: fileName,
+      is_active: isActive,
+      schedule: Number(schedule),
+    }]
+    mutate({ feeds: createdFeed })
+    closeCreate()
+  }
+
   const columns = [
-    columnHelper.accessor("title", { header: t("fields.title") }),
-    columnHelper.accessor("file_name", { header: t("fields.fileName") }),
+    columnHelper.accessor("title", { header: t("feeds.fields.title") }),
+    columnHelper.accessor("file_name", { header: t("feeds.fields.fileName") }),
     columnHelper.accessor("file_path", {
-      header: t("fields.filePath"),
+      header: t("feeds.fields.feedUrl"),
       cell: ({ row }) => {
         const filePath = row.original.file_path
         const id = row.original.id
@@ -67,7 +130,7 @@ const FeedsPage = () => {
       },
     }),
     columnHelper.accessor("last_export_at", {
-      header: t("fields.lastExport"),
+      header: t("feeds.fields.lastExport"),
       cell: ({ getValue }) => {
         const raw = getValue()
         if (!raw) return "-"
@@ -77,7 +140,7 @@ const FeedsPage = () => {
       }
     }),
     columnHelper.accessor("is_active", {
-      header: t("fields.status"),
+      header: t("feeds.fields.status"),
       cell: ({ getValue }) => {
         const isActive = getValue()
         if (isActive) {
@@ -101,41 +164,20 @@ const FeedsPage = () => {
       }
     }),
     columnHelper.accessor("schedule", {
-      header: t("fields.schedule"),
+      header: t("feeds.fields.schedule"),
       cell: ({ getValue }) => {
-        const value = String(getValue())
+        const value = getValue()
         const option = scheduleData.find((item) => item.value === value)
         return (
           <Badge size="2xsmall">
             <Text size="xsmall" leading="compact">
-              {option?.label}
+              {getScheduleLabel(option?.value || schedule)}
             </Text>
           </Badge>)
       },
     }),
   ]
-  const [createOpen, openCreate, closeCreate] = useToggleState()
-  const [title, setTitle] = useState("")
-  const [fileName, setFileName] = useState("")
-  const [schedule, setSchedule] = useState<string>("30")
-  const [isActive, setIsActive] = useState(false)
 
-  const navigate = useNavigate()
-  const limit = PAGE_SIZE
-  const [pagination, setPagination] = useState<DataTablePaginationState>({
-    pageSize: limit,
-    pageIndex: 0,
-  })
-
-  const offset = useMemo(() => pagination.pageIndex * limit, [pagination])
-
-  const { data, isLoading } = useQuery<FeedsResponse>({
-    queryFn: () =>
-      sdk.client.fetch(`/admin/feeds`, {
-        query: { limit, offset },
-      }),
-    queryKey: [["feeds"]],
-  })
   const table = useDataTable({
     columns,
     data: data?.feeds || [],
@@ -151,43 +193,6 @@ const FeedsPage = () => {
     },
   })
 
-  const queryClient = useQueryClient()
-
-  const { mutate } = useMutation({
-    mutationFn: async (newFeed: { feeds: CreatedFeeds }) => {
-      return sdk.client.fetch(`/admin/feeds`, {
-        method: "POST",
-        body: newFeed,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [["feeds"]],
-      })
-      setTitle("")
-      setFileName("")
-      setSchedule("30")
-      setIsActive(false)
-    },
-    onError: (error) => {
-      console.error("Error creating feed:", error)
-    },
-  })
-
-  const saveFeed = () => {
-    const createdFeed: CreatedFeeds = [{
-      title: title,
-      file_name: fileName,
-      is_active: isActive,
-      schedule: Number(schedule),
-    }]
-    mutate({ feeds: createdFeed })
-    closeCreate()
-  }
-
   return (
     <>
       <I18n />
@@ -195,12 +200,12 @@ const FeedsPage = () => {
         <DataTable instance={table}>
           <Header
             key={createOpen ? "create-open" : "create-closed"}
-            title={t("exports.header.title")}
+            title={t("feeds.domain")}
             actions={[
               {
                 type: "button",
                 props: {
-                  children: t("buttons.create"),
+                  children: t("actions.create"),
                   variant: "secondary",
                   onClick: () => openCreate(),
                 },
@@ -223,37 +228,37 @@ const FeedsPage = () => {
 
               <div className="flex w-full max-w-lg flex-col gap-y-8">
                 <div className="flex flex-col gap-y-1">
-                  <Heading>{t("exports.create.title")}</Heading>
+                  <Heading>{t("feeds.create.title")}</Heading>
                   <Text className="text-ui-fg-subtle">
-                    {t("exports.create.description")}
+                    {t("feeds.create.description")}
                   </Text>
                 </div>
 
                 <div className="flex flex-col gap-y-2">
-                  <Label htmlFor="title" size="small">{t("fields.title")}</Label>
+                  <Label htmlFor="title" size="small">{t("feeds.fields.title")}</Label>
                   <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
                 </div>
 
                 <div className="flex flex-col gap-y-2">
-                  <Label htmlFor="file_name" size="small">{t("fields.fileName")}</Label>
+                  <Label htmlFor="file_name" size="small">{t("feeds.fields.fileName")}</Label>
                   <Input id="file_name" value={fileName} onChange={(e) => setFileName(e.target.value)} />
                 </div>
 
                 <div className="flex flex-col gap-y-2">
                   <div className="flex items-center gap-1">
-                    <Label htmlFor="schedule_selector" size="small">{t("fields.schedule")}</Label>
-                    <Tooltip content={t("tooltips.schedule")}>
+                    <Label htmlFor="schedule_selector" size="small">{t("feeds.fields.schedule")}</Label>
+                    <Tooltip content={t("feeds.tooltips.schedule")}>
                       <InformationCircleSolid className="text-ui-fg-subtle" />
                     </Tooltip>
                   </div>
-                  <Select onValueChange={setSchedule} value={schedule}>
+                  <Select onValueChange={(v) => setSchedule(Number(v))} value={String(schedule)}>
                     <Select.Trigger>
                       <Select.Value />
                     </Select.Trigger>
                     <Select.Content sideOffset={100}>
                       {scheduleData.map((item) => (
-                        <Select.Item key={item.value} value={item.value}>
-                          {item.label}
+                        <Select.Item key={item.value} value={String(item.value)}>
+                          {getScheduleLabel(item.value)}
                         </Select.Item>
                       ))}
                     </Select.Content>
@@ -261,14 +266,14 @@ const FeedsPage = () => {
                 </div>
 
                 <div className="flex flex-col gap-y-2">
-                  <Label htmlFor="is-active-switch" size="small">{t("activityContainer.title")}</Label>
+                  <Label htmlFor="is-active-switch" size="small">{t("feeds.activityContainer.title")}</Label>
                   <Container>
                     <div className="flex gap-x-4">
                       <Switch id="is-active-switch" checked={isActive} onCheckedChange={() => setIsActive(prev => !prev)} />
                       <div className="flex flex-col gap-y-1">
                         <Label size="small" htmlFor="is-active-switch">{t("general.active")}</Label>
                         <Text size="small" className="text-ui-fg-muted">
-                          {t("activityContainer.subtitle")}
+                          {t("feeds.activityContainer.subtitle")}
                         </Text>
                       </div>
                     </div>
@@ -280,9 +285,9 @@ const FeedsPage = () => {
 
             <FocusModal.Footer>
               <FocusModal.Close>
-                <Button variant="secondary">{t("buttons.cancel")}</Button>
+                <Button variant="secondary">{t("actions.cancel")}</Button>
               </FocusModal.Close>
-              <Button onClick={saveFeed}>{t("buttons.save")}</Button>
+              <Button onClick={saveFeed}>{t("actions.save")}</Button>
             </FocusModal.Footer>
           </FocusModal.Content>
         </FocusModal>
@@ -292,12 +297,12 @@ const FeedsPage = () => {
 }
 
 export const config = defineRouteConfig({
-  label: "Feeds",
+  label: t("feeds.domain"),
   icon: Rss,
 })
 
 export const handle = {
-  breadcrumb: () => "Feeds",
+  breadcrumb: () => t("feeds.domain"),
 }
 
 export default FeedsPage

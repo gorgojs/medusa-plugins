@@ -20,179 +20,40 @@
         "success": {
           "type": "string"
         },
-        "schedule": {
-          "type": "object",
-          "properties": {
-            "minute_other": {
-              "type": "string"
-            },
-            "hour_one": {
-              "type": "string"
-            },
-            "hour_other": {
-              "type": "string"
-            },
-            "day_one": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "minute_other",
-            "hour_one",
-            "hour_other",
-            "day_one"
-          ]
+        "of": {
+          "type": "string"
+        },
+        "results": {
+          "type": "string"
+        },
+        "pages": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        },
+        "prev": {
+          "type": "string"
         }
       },
       "required": [
         "active",
         "inactive",
-        "schedule"
-      ]
-    },
-    "exports": {
-      "type": "object",
-      "properties": {
-        "header": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "subtitle": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "title",
-            "subtitle"
-          ]
-        },
-        "create": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "title",
-            "description"
-          ]
-        }
-      },
-      "required": [
-        "header",
-        "create"
-      ]
-    },
-    "export": {
-      "type": "object",
-      "properties": {
-        "header": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "subtitle": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "title",
-            "subtitle"
-          ]
-        },
-        "edit": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "title",
-            "description"
-          ]
-        }
-      },
-      "required": [
-        "header",
-        "edit"
-      ]
-    },
-    "shop": {
-      "type": "object",
-      "properties": {
-        "header": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "subtitle": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "title",
-            "subtitle"
-          ]
-        },
-        "edit": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "title",
-            "description"
-          ]
-        }
-      },
-      "required": [
-        "header",
-        "edit"
-      ]
-    },
-    "categories": {
-      "type": "object",
-      "properties": {
-        "header": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "subtitle": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "title",
-            "subtitle"
-          ]
-        }
-      },
-      "required": [
-        "header"
+        "error",
+        "success",
+        "of",
+        "results",
+        "pages",
+        "next",
+        "prev"
       ]
     },
     "actions": {
       "type": "object",
       "properties": {
+        "create": {
+          "type": "string"
+        },
         "edit": {
           "type": "string"
         },
@@ -201,78 +62,7 @@
         },
         "deleteFile": {
           "type": "string"
-        }
-      },
-      "required": [
-        "edit",
-        "delete",
-        "deleteFile"
-      ]
-    },
-    "toasts": {
-      "type": "object",
-      "properties": {
-        "exportLaunched": {
-          "type": "string"
         },
-        "categoriesSaved": {
-          "type": "string"
-        },
-        "categoriesSaveFailed": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "exportLaunched",
-        "categoriesSaved",
-        "categoriesSaveFailed"
-      ]
-    },
-    "prompts": {
-      "type": "object",
-      "properties": {
-        "deleteFeed": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            }
-          }
-        },
-        "deleteFeedFile": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "required": [
-        "deleteFeed",
-        "deleteFeedFile"
-      ]
-    },
-    "tooltips": {
-      "type": "object",
-      "properties": {
-        "schedule": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "schedule"
-      ]
-    },
-    "buttons": {
-      "type": "object",
-      "properties": {
         "save": {
           "type": "string"
         },
@@ -281,107 +71,306 @@
         },
         "launchNow": {
           "type": "string"
-        },
-        "create": {
-          "type": "string"
         }
       },
       "required": [
+        "create",
+        "edit",
+        "delete",
+        "deleteFile",
         "save",
         "cancel",
         "launchNow"
       ]
     },
-    "activityContainer": {
+    "dateTime": {
       "type": "object",
       "properties": {
-        "title": {
+        "days": {
+          "type": "string"
+        },
+        "hours": {
+          "type": "string"
+        },
+        "minutes": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "days",
+        "hours",
+        "minutes"
+      ]
+    },
+    "feeds": {
+      "type": "object",
+      "properties": {
+        "domain": {
           "type": "string"
         },
         "subtitle": {
           "type": "string"
+        },
+        "create": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "description"
+          ]
+        },
+        "fields": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "fileName": {
+              "type": "string"
+            },
+            "filePath": {
+              "type": "string"
+            },
+            "lastExport": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "schedule": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "feedUrl": {
+              "type": "string"
+            },
+            "created": {
+              "type": "string"
+            },
+            "updated": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "fileName",
+            "filePath",
+            "lastExport",
+            "status",
+            "schedule",
+            "id",
+            "feedUrl",
+            "created",
+            "updated"
+          ]
+        },
+        "edit": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "description"
+          ]
+        },
+        "toasts": {
+          "type": "object",
+          "properties": {
+            "exportLaunched": {
+              "type": "string"
+            },
+            "categoriesSaved": {
+              "type": "string"
+            },
+            "categoriesSaveFailed": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "exportLaunched",
+            "categoriesSaved",
+            "categoriesSaveFailed"
+          ]
+        },
+        "prompts": {
+          "type": "object",
+          "properties": {
+            "deleteFeed": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "title",
+                "description"
+              ]
+            },
+            "deleteFeedFile": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "title",
+                "description"
+              ]
+            }
+          },
+          "required": [
+            "deleteFeed",
+            "deleteFeedFile"
+          ]
+        },
+        "tooltips": {
+          "type": "object",
+          "properties": {
+            "schedule": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "schedule"
+          ]
+        },
+        "activityContainer": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "subtitle": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "subtitle"
+          ]
         }
       },
       "required": [
-        "title",
-        "subtitle"
+        "domain",
+        "subtitle",
+        "create",
+        "fields",
+        "edit",
+        "toasts",
+        "prompts",
+        "tooltips",
+        "activityContainer"
       ]
     },
-    "fields": {
+    "settings": {
       "type": "object",
       "properties": {
-        "title": {
-          "type": "string"
+        "shop": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "subtitle": {
+              "type": "string"
+            },
+            "fields": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "company": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "platform": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "company",
+                "url",
+                "platform"
+              ]
+            },
+            "edit": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "title",
+                "description"
+              ]
+            }
+          },
+          "required": [
+            "title",
+            "subtitle",
+            "fields",
+            "edit"
+          ]
         },
-        "fileName": {
-          "type": "string"
-        },
-        "filePath": {
-          "type": "string"
-        },
-        "lastExport": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string"
-        },
-        "schedule": {
-          "type": "string"
-        },
-        "ID": {
-          "type": "string"
-        },
-        "fileUrl": {
-          "type": "string"
-        },
-        "Created": {
-          "type": "string"
-        },
-        "Updated": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "company": {
-          "type": "string"
-        },
-        "url": {
-          "type": "string"
-        },
-        "platform": {
-          "type": "string"
+        "categories": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "subtitle": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "subtitle"
+          ]
         }
       },
       "required": [
-        "title",
-        "fileName",
-        "filePath",
-        "lastExport",
-        "status",
-        "schedule",
-        "ID",
-        "fileUrl",
-        "Created",
-        "Updated",
-        "name",
-        "company",
-        "url",
-        "platform"
+        "shop",
+        "categories"
       ]
     }
   },
   "required": [
+    "$schema",
     "general",
-    "exports",
-    "export",
-    "shop",
-    "categories",
     "actions",
-    "toasts",
-    "tooltips",
-    "buttons",
-    "activityContainer",
-    "fields"
+    "dateTime",
+    "feeds",
+    "settings"
   ]
 }

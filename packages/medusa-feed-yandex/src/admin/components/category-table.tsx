@@ -4,7 +4,6 @@ import {
   createDataTableColumnHelper,
   useDataTable,
   Text,
-  Button,
   DataTableRowSelectionState,
 } from "@medusajs/ui"
 import { useQuery } from "@tanstack/react-query"
@@ -140,13 +139,13 @@ const CategoryTable = ({ onSave, defaultSelectedIds = [] }: Props) => {
       <Container className="divide-y p-0">
         <DataTable instance={table}>
           <Header
-            title={t("categories.header.title")}
-            subtitle={t("categories.header.subtitle")}
+            title={t("settings.categories.title")}
+            subtitle={t("settings.categories.subtitle")}
             actions={[
               {
                 type: "button",
                 props: {
-                  children: t("buttons.save"),
+                  children: t("actions.save"),
                   variant: "secondary",
                   onClick: () => {
                     onSave(selectedCategories)
