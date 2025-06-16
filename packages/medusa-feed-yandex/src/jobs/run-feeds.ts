@@ -2,13 +2,16 @@ import { MedusaContainer } from "@medusajs/framework/types"
 import { runFeedsWorkflow } from "../workflows/run-feeds"
 
 export default async function job(container: MedusaContainer) {
-  const logger = container.resolve("logger")
   const { result } = await runFeedsWorkflow(container).run({
     input: {
       ids: []
     },
   })
-  logger.info(`Catalog exported: ${JSON.stringify(result, null, 2)}`)
+  
+  if (result.length > 0) {
+    const logger = container.resolve("logger")
+    logger.info(`Feeds exported: ${result.length}`)
+  }
 }
 
 export const config = {

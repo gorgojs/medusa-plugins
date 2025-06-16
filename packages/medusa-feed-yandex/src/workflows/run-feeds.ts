@@ -178,6 +178,6 @@ export const runFeedsWorkflow = createWorkflow(
       input: feedsToUpdate,
     })
 
-    return new WorkflowResponse([updatedFeeds])
+    return new WorkflowResponse(updatedFeeds)
   }
 )
