@@ -8,22 +8,47 @@
     "general": {
       "type": "object",
       "properties": {
-        "active": { "type": "string" },
-        "inactive": { "type": "string" },
-        "error": { "type": "string" },
-        "success": { "type": "string" },
+        "active": {
+          "type": "string"
+        },
+        "inactive": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        },
+        "success": {
+          "type": "string"
+        },
         "schedule": {
           "type": "object",
           "properties": {
-            "minute_other": { "type": "string" },
-            "hour_one": { "type": "string" },
-            "hour_other": { "type": "string" },
-            "day_one": { "type": "string" }
+            "minute_other": {
+              "type": "string"
+            },
+            "hour_one": {
+              "type": "string"
+            },
+            "hour_other": {
+              "type": "string"
+            },
+            "day_one": {
+              "type": "string"
+            }
           },
-          "required": ["minute_other", "hour_one", "hour_other", "day_one"]
+          "required": [
+            "minute_other",
+            "hour_one",
+            "hour_other",
+            "day_one"
+          ]
         }
       },
-      "required": ["active", "inactive", "schedule"]
+      "required": [
+        "active",
+        "inactive",
+        "schedule"
+      ]
     },
     "exports": {
       "type": "object",
@@ -31,21 +56,38 @@
         "header": {
           "type": "object",
           "properties": {
-            "title": { "type": "string" },
-            "subtitle": { "type": "string" }
+            "title": {
+              "type": "string"
+            },
+            "subtitle": {
+              "type": "string"
+            }
           },
-          "required": ["title", "subtitle"]
+          "required": [
+            "title",
+            "subtitle"
+          ]
         },
         "create": {
           "type": "object",
           "properties": {
-            "title": { "type": "string" },
-            "description": { "type": "string" }
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
           },
-          "required": ["title", "description"]
+          "required": [
+            "title",
+            "description"
+          ]
         }
       },
-      "required": ["header", "create"]
+      "required": [
+        "header",
+        "create"
+      ]
     },
     "export": {
       "type": "object",
@@ -53,21 +95,38 @@
         "header": {
           "type": "object",
           "properties": {
-            "title": { "type": "string" },
-            "subtitle": { "type": "string" }
+            "title": {
+              "type": "string"
+            },
+            "subtitle": {
+              "type": "string"
+            }
           },
-          "required": ["title", "subtitle"]
+          "required": [
+            "title",
+            "subtitle"
+          ]
         },
         "edit": {
           "type": "object",
           "properties": {
-            "title": { "type": "string" },
-            "description": { "type": "string" }
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
           },
-          "required": ["title", "description"]
+          "required": [
+            "title",
+            "description"
+          ]
         }
       },
-      "required": ["header", "edit"]
+      "required": [
+        "header",
+        "edit"
+      ]
     },
     "shop": {
       "type": "object",
@@ -75,21 +134,38 @@
         "header": {
           "type": "object",
           "properties": {
-            "title": { "type": "string" },
-            "subtitle": { "type": "string" }
+            "title": {
+              "type": "string"
+            },
+            "subtitle": {
+              "type": "string"
+            }
           },
-          "required": ["title", "subtitle"]
+          "required": [
+            "title",
+            "subtitle"
+          ]
         },
         "edit": {
           "type": "object",
           "properties": {
-            "title": { "type": "string" },
-            "description": { "type": "string" }
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
           },
-          "required": ["title", "description"]
+          "required": [
+            "title",
+            "description"
+          ]
         }
       },
-      "required": ["header", "edit"]
+      "required": [
+        "header",
+        "edit"
+      ]
     },
     "categories": {
       "type": "object",
@@ -97,94 +173,185 @@
         "header": {
           "type": "object",
           "properties": {
-            "title": { "type": "string" },
-            "subtitle": { "type": "string" }
+            "title": {
+              "type": "string"
+            },
+            "subtitle": {
+              "type": "string"
+            }
           },
-          "required": ["title", "subtitle"]
+          "required": [
+            "title",
+            "subtitle"
+          ]
         }
       },
-      "required": ["header"]
+      "required": [
+        "header"
+      ]
     },
     "actions": {
       "type": "object",
       "properties": {
-        "edit": { "type": "string" },
-        "delete": { "type": "string" },
-        "deleteFile": { "type": "string" }
+        "edit": {
+          "type": "string"
+        },
+        "delete": {
+          "type": "string"
+        },
+        "deleteFile": {
+          "type": "string"
+        }
       },
-      "required": ["edit", "delete", "deleteFile"]
+      "required": [
+        "edit",
+        "delete",
+        "deleteFile"
+      ]
     },
     "toasts": {
       "type": "object",
       "properties": {
-        "exportLaunched": { "type": "string" },
-        "categoriesSaved": { "type": "string" },
-        "categoriesSaveFailed": { "type": "string" }
+        "exportLaunched": {
+          "type": "string"
+        },
+        "categoriesSaved": {
+          "type": "string"
+        },
+        "categoriesSaveFailed": {
+          "type": "string"
+        }
       },
-      "required": ["exportLaunched", "categoriesSaved", "categoriesSaveFailed"]
+      "required": [
+        "exportLaunched",
+        "categoriesSaved",
+        "categoriesSaveFailed"
+      ]
     },
     "prompts": {
       "type": "object",
       "properties": {
-        "deleteFeed": { 
+        "deleteFeed": {
           "type": "object",
           "properties": {
-            "title": { "type": "string" },
-            "description": { "type": "string" }
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
           }
         },
-        "deleteFeedFile": { 
+        "deleteFeedFile": {
           "type": "object",
           "properties": {
-            "title": { "type": "string" },
-            "description": { "type": "string" }
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
           }
         }
       },
-      "required": ["deleteFeed", "deleteFeedFile"]
+      "required": [
+        "deleteFeed",
+        "deleteFeedFile"
+      ]
     },
     "tooltips": {
       "type": "object",
       "properties": {
-        "schedule": { "type": "string" }
+        "schedule": {
+          "type": "string"
+        }
       },
-      "required": ["schedule"]
+      "required": [
+        "schedule"
+      ]
     },
     "buttons": {
       "type": "object",
       "properties": {
-        "save": { "type": "string" },
-        "cancel": { "type": "string" },
-        "launchNow": { "type": "string" },
-        "create": { "type": "string" }
+        "save": {
+          "type": "string"
+        },
+        "cancel": {
+          "type": "string"
+        },
+        "launchNow": {
+          "type": "string"
+        },
+        "create": {
+          "type": "string"
+        }
       },
-      "required": ["save", "cancel", "launchNow"]
+      "required": [
+        "save",
+        "cancel",
+        "launchNow"
+      ]
     },
     "activityContainer": {
       "type": "object",
       "properties": {
-        "title": { "type": "string" },
-        "subtitle": { "type": "string" }
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        }
       },
-      "required": ["title", "subtitle"]
+      "required": [
+        "title",
+        "subtitle"
+      ]
     },
     "fields": {
       "type": "object",
       "properties": {
-        "title": { "type": "string" },
-        "fileName": { "type": "string" },
-        "filePath": { "type": "string" },
-        "lastExport": { "type": "string" },
-        "status": { "type": "string" },
-        "schedule": { "type": "string" },
-        "ID": { "type": "string" },
-        "fileUrl": { "type": "string" },
-        "Created": { "type": "string" },
-        "Updated": { "type": "string" },
-        "name": { "type": "string" },
-        "company": { "type": "string" },
-        "url": { "type": "string" },
-        "platform": { "type": "string" }
+        "title": {
+          "type": "string"
+        },
+        "fileName": {
+          "type": "string"
+        },
+        "filePath": {
+          "type": "string"
+        },
+        "lastExport": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "schedule": {
+          "type": "string"
+        },
+        "ID": {
+          "type": "string"
+        },
+        "fileUrl": {
+          "type": "string"
+        },
+        "Created": {
+          "type": "string"
+        },
+        "Updated": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "company": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        }
       },
       "required": [
         "title",
