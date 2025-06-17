@@ -168,25 +168,29 @@ Below is an example of a generated YML-file:
 
 ## Testing
 
-You can run two types of tests for this plugin:
-
-### Module Tests
-
-These verify the internal logic, such as services and models.
+To run tests, navigate to the `examples/feed-yandex/medusa` directory:
 
 ```bash
-yarn test:integration:modules
+cd examples/feed-yandex/medusa
 ```
 
-### Integration Tests
-
-Integration tests include tests for API Routes and Workflows
+Make sure your `.env.test` file includes the following variables: `DB_USERNAME`, `DB_PASSWORD`:
 
 ```bash
+cp .env.test.example .env.test
+```
+
+Then, run tests:
+
+```bash
+# Run module tests
+# These verify the internal logic, such as services and models
+yarn test:integration:modules
+
+# Run integration tests
+# Integration tests include tests for API Routes and Workflows
 yarn test:integration:http
 ```
-
-Before running the tests, make sure your `.env.test` file includes the following variables: `DB_USERNAME`, `DB_PASSWORD`, `DB_HOST`, `DB_TEMP_NAME`.
 
 ## License
 

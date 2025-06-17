@@ -10,7 +10,7 @@ moduleIntegrationTestRunner<FeedModuleService>({
   resolve: path.join(__dirname, "../"),
   testSuite: ({ service }) => {
     describe("FeedModuleService", () => {
-      it("Create feed 1", async () => {
+      it("Create feed", async () => {
         const input = {
           title: "Feed to create",
           file_name: "testName",
