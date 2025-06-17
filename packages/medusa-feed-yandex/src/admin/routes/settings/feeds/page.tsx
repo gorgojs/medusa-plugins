@@ -26,9 +26,11 @@ import { useNavigate } from "react-router-dom"
 import { t } from "i18next"
 import { sdk } from "../../../lib/sdk"
 import { Header } from "../../../components/header"
-import { scheduleData } from "../../../lib/constants"
+import { DateCell } from "../../../components/table/date-cell"
+import { PlaceholderCell } from "../../../components/table/placeholder-cell"
+import { scheduleData, fileExtension } from "../../../lib/constants"
 import type { Feed, FeedsResponse, CreatedFeeds } from "../../../types"
-import { I18n } from "../../../components/i18n"
+import { I18n } from "../../../components/utilities/i18n"
 import { getScheduleLabel } from "../../../lib/utils"
 
 const PAGE_SIZE = 20
@@ -36,7 +38,6 @@ const PAGE_SIZE = 20
 const FeedsPage = () => {
   const { t } = useTranslation()
   const columnHelper = createDataTableColumnHelper<Feed>()
-
 
   const [createOpen, openCreate, closeCreate] = useToggleState()
   const [title, setTitle] = useState("")
@@ -100,7 +101,12 @@ const FeedsPage = () => {
 
   const columns = [
     columnHelper.accessor("title", { header: t("feeds.fields.title") }),
-    columnHelper.accessor("file_name", { header: t("feeds.fields.fileName") }),
+    columnHelper.accessor("file_name", {
+      header: t("feeds.fields.fileName"),
+      cell: ({ row }) => {
+        return row.original.file_name + fileExtension
+      },  
+    }),
     columnHelper.accessor("file_path", {
       header: t("feeds.fields.feedUrl"),
       cell: ({ row }) => {
@@ -109,12 +115,12 @@ const FeedsPage = () => {
         const fileName = row.original.file_name
 
         if (!filePath || !id || !fileName) {
-          return "-"
+          return <PlaceholderCell />
         }
 
         try {
           const url = new URL(filePath)
-          const fullLink = `${url.origin}/feeds/${id}/${fileName}.xml`
+          const fullLink = `${url.origin}/feeds/${id}/${fileName}${fileExtension}`
           return (
             <a href={fullLink} target="_blank" rel="noopener noreferrer">
               <Badge size="xsmall">
@@ -125,18 +131,15 @@ const FeedsPage = () => {
             </a>
           )
         } catch {
-          return "-"
+          return <PlaceholderCell />
         }
       },
     }),
     columnHelper.accessor("last_export_at", {
       header: t("feeds.fields.lastExport"),
       cell: ({ getValue }) => {
-        const raw = getValue()
-        if (!raw) return "-"
-
-        const date = new Date(raw)
-        return date.toLocaleString()
+        const rawDate = getValue()
+        return <DateCell date={rawDate} mode="relative" />
       }
     }),
     columnHelper.accessor("is_active", {
@@ -197,6 +200,7 @@ const FeedsPage = () => {
     <>
       <I18n />
       <Container className="divide-y p-0">
+        
         <DataTable instance={table}>
           <Header
             key={createOpen ? "create-open" : "create-closed"}
@@ -217,15 +221,10 @@ const FeedsPage = () => {
         </DataTable>
 
         <FocusModal open={createOpen} onOpenChange={(open) => { if (!open) closeCreate() }}>
-
           <FocusModal.Content>
+            <FocusModal.Header />
 
-            <FocusModal.Header>
-
-            </FocusModal.Header>
             <FocusModal.Body className="flex flex-col items-center py-16">
-
-
               <div className="flex w-full max-w-lg flex-col gap-y-8">
                 <div className="flex flex-col gap-y-1">
                   <Heading>{t("feeds.create.title")}</Heading>
@@ -233,17 +232,14 @@ const FeedsPage = () => {
                     {t("feeds.create.description")}
                   </Text>
                 </div>
-
                 <div className="flex flex-col gap-y-2">
                   <Label htmlFor="title" size="small">{t("feeds.fields.title")}</Label>
                   <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
                 </div>
-
                 <div className="flex flex-col gap-y-2">
                   <Label htmlFor="file_name" size="small">{t("feeds.fields.fileName")}</Label>
                   <Input id="file_name" value={fileName} onChange={(e) => setFileName(e.target.value)} />
                 </div>
-
                 <div className="flex flex-col gap-y-2">
                   <div className="flex items-center gap-1">
                     <Label htmlFor="schedule_selector" size="small">{t("feeds.fields.schedule")}</Label>
@@ -264,7 +260,6 @@ const FeedsPage = () => {
                     </Select.Content>
                   </Select>
                 </div>
-
                 <div className="flex flex-col gap-y-2">
                   <Label htmlFor="is-active-switch" size="small">{t("feeds.activityContainer.title")}</Label>
                   <Container>
@@ -280,7 +275,6 @@ const FeedsPage = () => {
                   </Container>
                 </div>
               </div>
-
             </FocusModal.Body>
 
             <FocusModal.Footer>
@@ -289,6 +283,7 @@ const FeedsPage = () => {
               </FocusModal.Close>
               <Button onClick={saveFeed}>{t("actions.save")}</Button>
             </FocusModal.Footer>
+
           </FocusModal.Content>
         </FocusModal>
       </Container>

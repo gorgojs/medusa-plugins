@@ -1,9 +1,6 @@
-export type Translations = {
-  [key: string]: string | Translations
-}
+import type { Locale } from "date-fns"
 
-export interface LanguageConfig {
-  defaultLanguage: string
-  supportedLanguages: string[]
-  translationPath: string
+export type Language = {
+  code: string
+  date_locale: Locale
 }

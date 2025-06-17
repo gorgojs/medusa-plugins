@@ -12,3 +12,5 @@ export const scheduleData: ScheduleOption[] = [
   { value: 720 },
   { value: 1440 }
 ]
+
+export const fileExtension: string = ".xml"

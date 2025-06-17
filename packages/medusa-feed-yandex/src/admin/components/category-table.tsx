@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useState, useMemo, useEffect } from "react"
 import { sdk } from "../lib/sdk"
 import { Header } from "./header"
-import { I18n } from "./i18n"
+import { I18n } from "./utilities/i18n"
 import { useTranslation } from "react-i18next"
 
 type Category = {

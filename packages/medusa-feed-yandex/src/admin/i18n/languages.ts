@@ -1,9 +1,16 @@
-import en from "./translations/en.json"
-import ru from "./translations/ru.json"
-
-export const translations = {
-  en,
+import {
+  enUS,
   ru,
-}
+} from "date-fns/locale"
+import { Language } from "./types"
 
-export type Language = keyof typeof translations
+export const languages: Language[] = [
+  {
+    code: "en",
+    date_locale: enUS,
+  },
+  {
+    code: "ru",
+    date_locale: ru,
+  },
+]

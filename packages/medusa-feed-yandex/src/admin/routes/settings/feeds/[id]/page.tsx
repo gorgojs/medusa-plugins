@@ -11,7 +11,8 @@ import {
   Select,
   Prompt,
   Badge,
-  toast
+  toast,
+  Tooltip
 } from "@medusajs/ui"
 import { Pencil, Trash, Folder } from "@medusajs/icons"
 import { useState, useEffect } from "react"
@@ -19,17 +20,16 @@ import { useParams, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { SectionRow } from "../../../../components/export-section-row"
+import { SectionRow } from "../../../../components/section-row"
 import { sdk } from "../../../../lib/sdk"
 import { Header } from "../../../../components/header"
-import { TwoColumnLayout } from "../../../../layouts/two-column"
-import { scheduleData } from "../../../../lib/constants"
+import { TwoColumnLayout } from "../../../../components/layouts/two-column"
+import { scheduleData, fileExtension } from "../../../../lib/constants"
 import type { Feed, FeedResponse } from "../../../../types"
 import CategoryTable from "../../../../components/category-table"
-import { I18n } from "../../../../components/i18n"
+import { I18n } from "../../../../components/utilities/i18n"
 import { getScheduleLabel } from "../../../../lib/utils"
-
-const FILE_EXTENTION = ".xml"
+import { useDate } from "../../../../hooks/use-date"
 
 let feedTitle: string | undefined
 
@@ -49,6 +49,8 @@ const FeedDetailsPage = () => {
   const [shopName, setShopName] = useState("")
   const [shopCompany, setShopCompany] = useState("")
   const [shopUrl, setShopUrl] = useState("")
+  const { getFullDate, getRelativeDate } = useDate()
+
 
   const { data, isError, error } = useQuery<FeedResponse>({
     queryFn: () => sdk.client.fetch(`/admin/feeds/${id}`),
@@ -280,7 +282,7 @@ const FeedDetailsPage = () => {
               />
               <SectionRow
                 title={t("feeds.fields.fileName")}
-                value={feedData?.file_name + FILE_EXTENTION || "-"}
+                value={feedData?.file_name + fileExtension || "-"}
                 className="break-all"
               />
               <SectionRow
@@ -289,7 +291,7 @@ const FeedDetailsPage = () => {
                   feedData?.file_path && feedData?.id && feedData?.file_name ? (
                     (() => {
                       const url = new URL(feedData.file_path)
-                      const feedViewUrl = `${url.origin}/feeds/${feedData.id}/${feedData.file_name}${FILE_EXTENTION}`
+                      const feedViewUrl = `${url.origin}/feeds/${feedData.id}/${feedData.file_name}${fileExtension}`
                       return (
                         <a href={feedViewUrl} target="_blank" rel="noopener noreferrer">
                           <Badge size="base" className="h-full">
@@ -301,6 +303,20 @@ const FeedDetailsPage = () => {
                   ) : (
                     "-"
                   )
+                }
+              />
+              <SectionRow
+                title={t("feeds.fields.filePath")}
+                value={
+                  feedData?.file_path
+                    ? (
+                      <a href={feedData?.file_path} target="_blank" rel="noopener noreferrer">
+                        <Badge size="base" className="h-full">
+                          <Text size="xsmall" className="text-ui-fg-interactive break-all">{feedData?.file_path}</Text>
+                        </Badge>
+                      </a>
+                    )
+                    : "-"
                 }
               />
               <SectionRow
@@ -323,17 +339,53 @@ const FeedDetailsPage = () => {
                 }
               />
               <SectionRow
-                title={t("feeds.fields.filePath")}
-                value={feedData?.file_path ?
-                  <a href={feedData?.file_path} target="_blank" rel="noopener noreferrer">
-                    <Badge size="base" className="h-full">
-                      <Text size="xsmall" className="text-ui-fg-interactive break-all">{feedData?.file_path}</Text>
-                    </Badge>
-                  </a> : "-"} />
-              <SectionRow title={t("feeds.fields.lastExport")} value={feedData?.last_export_at ? new Date(feedData.last_export_at).toLocaleString() : "-"} />
-              <SectionRow title={t("feeds.fields.created")} value={feedData?.created_at ? new Date(feedData.created_at).toLocaleString() : "-"} />
-              <SectionRow title={t("feeds.fields.updated")} value={feedData?.updated_at ? new Date(feedData.updated_at).toLocaleString() : "-"} />
-
+                title={t("feeds.fields.lastExport")}
+                value={
+                  feedData?.last_export_at
+                    ? (
+                      <Tooltip
+                        className="z-10"
+                        content={
+                          <span className="text-pretty">{`${getFullDate({
+                            date: feedData.last_export_at,
+                            includeTime: true,
+                          })}`}</span>
+                        }
+                      >
+                        <Text
+                          size="small"
+                          leading="compact"
+                          className="whitespace-pre-line text-pretty"
+                        >
+                          {getRelativeDate(feedData.last_export_at)}
+                        </Text>
+                      </Tooltip>
+                    )
+                    : ""
+                }
+              />
+              <SectionRow
+                title={t("feeds.fields.created")}
+                value={
+                  feedData?.created_at
+                    ? getFullDate({
+                      date: feedData.created_at,
+                      includeTime: true,
+                    })
+                    : ""
+                }
+              />
+              <SectionRow
+                title={t("feeds.fields.updated")}
+                value={
+                  feedData?.updated_at
+                    ? getFullDate({
+                      date: feedData.updated_at,
+                      includeTime: true,
+                    })
+                    : ""
+                }
+              />
               <Drawer open={editOpen} onOpenChange={(open) => {
                 if (!open) closeEdit()
               }}>
@@ -364,7 +416,7 @@ const FeedDetailsPage = () => {
                           <Input className="pr-14" id="feed-file-name-input" value={fileName} onChange={(e) => setFileName(e.target.value)} />
                           <div className="absolute inset-y-0 right-0 z-10 flex w-12 items-center justify-center border-l">
                             <p className="font-medium font-sans txt-compact-small text-ui-fg-muted">
-                              {FILE_EXTENTION}
+                              {fileExtension}
                             </p>
                           </div>
                         </div>
@@ -447,13 +499,11 @@ const FeedDetailsPage = () => {
               }}
             />
           </>
-
         }
         secondCol={
           <Container className="divide-y p-0">
             <Header
               key={`${editShopOpen ? "edit-shop-open" : "edit-shop-closed"}`}
-
               title={t("settings.shop.title")}
               subtitle={t("settings.shop.subtitle")}
               actions={[
