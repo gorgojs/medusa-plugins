@@ -23,4 +23,21 @@ module.exports = defineConfig({
       }
     },
   },
+  modules: [
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "@gorgo/medusa-payment-tkassa/providers/payment-tkassa",
+            id: "tkassa",
+            options: {
+              
+            },
+          },
+          
+        ],
+      },
+    },
+  ],
 })

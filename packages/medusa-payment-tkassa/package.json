@@ -68,6 +68,9 @@
     "awilix": "^8.0.1",
     "pg": "^8.14.1"
   },
+  "dependencies": {
+    "t-kassa-api": "^1.0.6"
+  },
   "engines": {
     "node": ">=20"
   },
