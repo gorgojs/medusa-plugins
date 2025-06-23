@@ -182,7 +182,6 @@ const TkassaPaymentButton: React.FC<TkassaPaymentProps> = ({
 
   const handlePayment = () => {
     setSubmitting(true)
-    console.log("paymentSession", paymentSession)
     const paymentUrl = (paymentSession?.data as any).PaymentURL
     if (paymentUrl) {
       router.push(paymentUrl)

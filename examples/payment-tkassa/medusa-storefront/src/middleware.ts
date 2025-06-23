@@ -105,9 +105,7 @@ async function getCountryCode(
  */
 export async function middleware(request: NextRequest) {
   let redirectUrl = request.nextUrl.href
-  console.log("redirectUrl", redirectUrl)
   let response = NextResponse.redirect(redirectUrl, 307)
-  console.log("redirect after")
   let cacheIdCookie = request.cookies.get("_medusa_cache_id")
 
   let cacheId = cacheIdCookie?.value || crypto.randomUUID()
