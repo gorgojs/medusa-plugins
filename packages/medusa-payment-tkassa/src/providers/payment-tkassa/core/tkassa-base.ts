@@ -20,7 +20,6 @@ import { TKassa, WebhookBody } from "t-kassa-api"
 import { TKassaProviderOptions } from "../types"
 import axios, { AxiosError } from "axios"
 import {
-  getAmountFromSmallestUnit,
   getSmallestUnit,
 } from "../utils/get-smallest-unit"
 
@@ -47,14 +46,15 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     const amountValue = getSmallestUnit(amount, currency_code)
     const idKey = context.idempotency_key
     const successUrl = input.data?.SuccessURL as string
-
+    const payType = this.options_.capture ? "O" : "T"
     try {
       const response = await this.client.init({
         TerminalKey: this.options_.terminalKey,
         Password: this.options_.password,
         Amount: amountValue,
         OrderId: idKey || "",
-        SuccessURL: successUrl
+        SuccessURL: successUrl,
+        PayType: payType
       })
       const paymentId = String(response.PaymentId)
       return { id: paymentId, data: response }
@@ -259,7 +259,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
 
     try {
       await this.client.emit(raw as WebhookBody)
-    } catch (err: any) {
+    } catch (e) {
       return { action: PaymentActions.NOT_SUPPORTED }
     }
 
