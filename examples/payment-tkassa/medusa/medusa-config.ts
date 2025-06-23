@@ -32,7 +32,10 @@ module.exports = defineConfig({
             resolve: "@gorgo/medusa-payment-tkassa/providers/payment-tkassa",
             id: "tkassa",
             options: {
-              
+              terminalKey: process.env.TKASSA_TERMINAL_KEY,
+              password: process.env.TKASSA_PASSWORD,
+              server: process.env.TKASSA_SERVER,
+              capture: true
             },
           },
           

@@ -238,6 +238,8 @@ export async function initiatePaymentSession(
   cart: HttpTypes.StoreCart,
   data: HttpTypes.StoreInitializePaymentSession
 ) {
+  console.log("cart", cart)
+  console.log("data", data)
   const headers = {
     ...(await getAuthHeaders()),
   }
