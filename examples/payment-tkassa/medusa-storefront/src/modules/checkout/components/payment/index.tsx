@@ -87,7 +87,8 @@ const Payment = ({
         await initiatePaymentSession(cart, {
           provider_id: selectedPaymentMethod,
           data: {
-            SuccessURL: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`
+            SuccessURL: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`,
+            FailURL: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`
           }
         })
       }

@@ -47,6 +47,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     const amountValue = getSmallestUnit(amount, currency_code)
     const idKey = context.idempotency_key
     const successUrl = input.data?.SuccessURL as string
+    const failUrl = input.data?.FailURL as string
     const payType = this.options_.capture ? "O" : "T"
     try {
       const response = await this.client_.init({
@@ -55,6 +56,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
         Amount: amountValue,
         OrderId: idKey || "",
         SuccessURL: successUrl,
+        FailURL: failUrl,
         PayType: payType
       })
       const paymentId = String(response.PaymentId)
