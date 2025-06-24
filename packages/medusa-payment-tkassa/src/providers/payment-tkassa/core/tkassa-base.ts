@@ -25,15 +25,16 @@ import {
 
 abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions> {
   static identifier = "tkassa"
+  protected serverUrl_ = "https://securepay.tinkoff.ru"
   protected options_: TKassaProviderOptions
-  protected client: TKassa
+  protected client_: TKassa
   protected logger_: Logger
 
   constructor(container: { logger: Logger }, options: TKassaProviderOptions) {
     super(container, options)
     this.options_ = options
     this.logger_ = container.logger
-    this.client = new TKassa(options.terminalKey, options.password, { server: options.server })
+    this.client_ = new TKassa(options.terminalKey, options.password, { server: this.serverUrl_ })
   }
 
   /**
@@ -48,7 +49,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     const successUrl = input.data?.SuccessURL as string
     const payType = this.options_.capture ? "O" : "T"
     try {
-      const response = await this.client.init({
+      const response = await this.client_.init({
         TerminalKey: this.options_.terminalKey,
         Password: this.options_.password,
         Amount: amountValue,
@@ -72,7 +73,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     const paymentId = input.data?.PaymentId as string
 
     try {
-      const response = await this.client.confirm({
+      const response = await this.client_.confirm({
         TerminalKey: this.options_.terminalKey,
         Password: this.options_.password,
         PaymentId: paymentId
@@ -118,19 +119,23 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
    */
   async refundPayment({
     amount,
-    data
+    data,
   }: RefundPaymentInput): Promise<RefundPaymentOutput> {
     this.logger_.debug(`TkassaBase.refundPayment input:\n${JSON.stringify({ amount, data }, null, 2)}`)
 
     const paymentId = data?.PaymentId as string
-
+    const amountValue = typeof amount === 'object' && 'value' in amount 
+    ? amount.value 
+    : typeof amount === 'string' || typeof amount === 'number'
+        ? amount
+        : ""
     try {
-      const response = await this.client.cancel({
+      const response = await this.client_.cancel({
         TerminalKey: this.options_.terminalKey,
         Password: this.options_.password,
         PaymentId: paymentId,
-        ...(typeof amount === "number"
-          ? { Amount: Number(amount) }
+        ...(amountValue
+          ? { Amount: getSmallestUnit(Number(amountValue), 'RUB') }
           : {})
       })
       return { data: response }
@@ -148,7 +153,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     const paymentId = input.data?.PaymentId as string
 
     try {
-      const response = await this.client.cancel({
+      const response = await this.client_.cancel({
         TerminalKey: this.options_.terminalKey,
         Password: this.options_.password,
         PaymentId: paymentId
@@ -168,7 +173,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     const paymentId = input.data?.PaymentId as string
 
     try {
-      const response = await this.client.getState({
+      const response = await this.client_.getState({
         TerminalKey: this.options_.terminalKey,
         Password: this.options_.password,
         PaymentId: paymentId
@@ -198,7 +203,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     }
 
     try {
-      const response = await this.client.getState({
+      const response = await this.client_.getState({
         TerminalKey: this.options_.terminalKey,
         Password: this.options_.password,
         PaymentId: paymentId,
@@ -258,7 +263,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     } = data
 
     try {
-      await this.client.emit(raw as WebhookBody)
+      await this.client_.emit(raw as WebhookBody)
     } catch (e) {
       return { action: PaymentActions.NOT_SUPPORTED }
     }

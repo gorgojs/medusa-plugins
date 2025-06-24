@@ -46,6 +46,58 @@ yarn add @gorgo/medusa-payment-tkassa
 npm install @gorgo/medusa-payment-tkassa
 ```
 
+## Configuration
+
+Add the provider configuration in your `medusa-config.js` file of the Medusa admin application:
+
+```js
+# ...
+module.exports = defineConfig({
+  # ...
+  modules: [
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "@gorgo/medusa-payment-tkassa/providers/payment-tkassa",
+            id: "tkassa",
+            options: {
+              terminalKey: process.env.TKASSA_TERMINAL_KEY,
+              password: process.env.TKASSA_PASSWORD,
+              capture: true
+            },
+          }   
+        ]
+      }
+    }
+  ]
+})
+```
+
+Add environment variables:
+
+```
+TKASSA_TERMINAL_KEY=123456789
+TKASSA_PASSWORD=supersecret
+```
+
+In the terminal settings, specify notifications "Via HTTP protocol" and add a link in this format:
+
+```
+https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/tkassa_tkassa
+```
+
+## Storefront Integration
+
+Make the necessary changes to your Medusa storefront.
+You can refer to the modifications made in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-gorgo/tree/main/examples/payment-tkassa/medusa-storefront) directory.
+To see the exact differences, check the [comparison page](https://github.com/gorgojs/medusa-gorgo/compare/v0.0.0...main).
+
+## Development
+
+Find documentation on bootstrapping a development environment [here](https://github.com/gorgojs/medusa-gorgo/tree/main/examples/payment-tkassa).
+
 ## 💬 Support & Community on Telegram
 
 Join the [Medusa Telegram community chat](https://t.me/medusajs_com) to discuss features, get support, and connect with developers building on Medusa.

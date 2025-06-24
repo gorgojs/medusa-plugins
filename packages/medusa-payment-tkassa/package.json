@@ -5,25 +5,45 @@
   "files": [
     ".medusa/server"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gorgojs/medusa-gorgo",
+    "directory": "packages/medusa-payment-tkassa"
+  },
   "exports": {
     "./package.json": "./package.json",
-    "./workflows": "./.medusa/server/src/workflows/index.js",
-    "./.medusa/server/src/modules/*": "./.medusa/server/src/modules/*/index.js",
-    "./modules/*": "./.medusa/server/src/modules/*/index.js",
     "./providers/*": "./.medusa/server/src/providers/*/index.js",
+    "./admin": {
+      "import": "./.medusa/server/src/admin/index.mjs",
+      "require": "./.medusa/server/src/admin/index.js",
+      "default": "./.medusa/server/src/admin/index.js"
+    },
     "./*": "./.medusa/server/src/*.js"
   },
   "keywords": [
     "medusa",
     "plugin",
     "medusa-plugin-other",
+    "medusa-v2",
     "medusa-plugin",
-    "medusa-v2"
+    "medusa-plugin-integration",
+    "medusa-plugin-payment",
+    "medusa-payment",
+    "medusa-payment-tkassa",
+    "tkassa",
+    "tinkoff",
+    "tbank",
+    "tbank-tkassa",
+    "tbank-payment"
   ],
   "scripts": {
     "build": "medusa plugin:build",
     "dev": "medusa plugin:develop",
+    "predev": "medusa plugin:publish",
     "prepublishOnly": "medusa plugin:build"
+  },
+  "dependencies": {
+    "t-kassa-api": "^1.0.6"
   },
   "devDependencies": {
     "@medusajs/admin-sdk": "^2.7.0",
@@ -67,9 +87,6 @@
     "@mikro-orm/postgresql": "6.4.3",
     "awilix": "^8.0.1",
     "pg": "^8.14.1"
-  },
-  "dependencies": {
-    "t-kassa-api": "^1.0.6"
   },
   "engines": {
     "node": ">=20"

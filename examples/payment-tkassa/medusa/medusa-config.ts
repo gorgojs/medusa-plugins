@@ -35,7 +35,7 @@ module.exports = defineConfig({
               terminalKey: process.env.TKASSA_TERMINAL_KEY,
               password: process.env.TKASSA_PASSWORD,
               server: process.env.TKASSA_SERVER,
-              capture: process.env.TKASSA_CAPTURE === 'true'
+              capture: true
             },
           },
           
