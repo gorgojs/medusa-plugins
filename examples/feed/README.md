@@ -1,7 +1,7 @@
 
-# `@gorgo/medusa-feed-yandex` example
+# `@gorgo/medusa-feed` example
 
-Examples for the [`@gorgo/medusa-feed-yandex`](https://www.npmjs.com/package/@gorgo/medusa-feed-yandex) plugin.
+Examples for the [`@gorgo/medusa-feed`](https://www.npmjs.com/package/@gorgo/medusa-feed) plugin.
 
 ## Prerequisites
 

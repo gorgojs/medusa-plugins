@@ -16,15 +16,15 @@
     "build": "medusa build",
     "db:migrate": "medusa db:migrate",
     "dev": "yarn predev && yarn && medusa develop",
-    "dev:tunnel": "concurrently \"yarn dev\" \"dotenv -e .env -- yarn tunnel\"",
+    "dev:tunnel": "concurrently \"yarn dev\" \"yarn tunnel\"",
     "predev": "medusa plugin:add @gorgo/medusa-payment-tkassa",
     "seed": "medusa exec ./src/scripts/seed.ts",
     "start": "medusa start",
-    "start:tunnel": "concurrently \"yarn start\" \"dotenv -e .env -- yarn tunnel\"",
+    "start:tunnel": "concurrently \"yarn start\" \"yarn tunnel\"",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
     "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
     "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
-    "tunnel": "lt --port 9000 --subdomain $LOCALTUNNEL_SUBDOMAIN"
+    "tunnel": "lt --port 9000 --subdomain medusa-tkassa"
   },
   "dependencies": {
     "@gorgo/medusa-payment-tkassa": "latest",
@@ -50,7 +50,6 @@
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.2.25",
     "concurrently": "^9.1.2",
-    "dotenv-cli": "^8.0.0",
     "jest": "^29.7.0",
     "localtunnel": "^2.0.2",
     "prop-types": "^15.8.1",

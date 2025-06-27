@@ -1,0 +1,66 @@
+services:
+  db:
+    image: postgres
+    container_name: db
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    volumes:
+     - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres # Default user for PostgreSQL
+      POSTGRES_HOST_AUTH_METHOD: trust # Allow connections without a password
+    configs:
+      # This configuration file is used to initialize the database with necessary databases
+      - source: db_init
+        target: /docker-entrypoint-initdb.d/db-init.sql
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: unless-stopped
+    depends_on: 
+      - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com # Default email for pgAdmin
+      PGADMIN_DEFAULT_PASSWORD: admin # Default credentials for pgAdmin
+      PGADMIN_CONFIG_SERVER_MODE: "False" # Disable server mode to allow multiple connections
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False" # Disable master password requirement
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    configs:
+      # This configuration file is used by pgAdmin to connect to the PostgreSQL database
+      - source: pgadmin_servers
+        target: /pgadmin4/servers.json
+
+volumes:
+  pgdata:
+  pgadmin_data:
+
+configs:
+  pgadmin_servers:
+    # This file contains the configuration for pgAdmin to connect to the PostgreSQL database
+    # It defines the server connection details
+    content: |
+      {
+        "Servers": {
+          "1": {
+            "Name": "Medusa Gorgo Examples",
+            "Group": "Servers",
+            "Host": "db",
+            "Port": 5432,
+            "MaintenanceDB": "postgres",
+            "Username": "postgres",
+            "SSLMode": "prefer",
+            "PassFile": "/pgpass"
+          }
+        }
+      }
+  db_init:
+    # This file will be executed when the database is initialized
+    # It creates the necessary databases for all the examples
+    content: |
+      CREATE DATABASE medusa_feed;
+      CREATE DATABASE medusa_feed_yandex;
+      CREATE DATABASE medusa_payment_tkassa;     

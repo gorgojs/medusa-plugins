@@ -11,11 +11,11 @@
     "dev": "next dev --turbopack -p 8000",
     "build": "next build",
     "start": "next start -p 8000",
-    "start:tunnel": "concurrently \"yarn start\" \"dotenv -e .env -- yarn tunnel\"",
+    "start:tunnel": "concurrently \"yarn start\" \"yarn tunnel\"",
     "lint": "next lint",
     "analyze": "ANALYZE=true next build",
-    "dev:tunnel": "concurrently \"yarn dev\" \"dotenv -e .env -- yarn tunnel\"",
-    "tunnel": "lt --port 8000 --subdomain $LOCALTUNNEL_SUBDOMAIN"
+    "dev:tunnel": "concurrently \"yarn dev\" \"yarn tunnel\"",
+    "tunnel": "lt --port 8000 --subdomain medusa-tkassa-storefront"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
@@ -50,7 +50,6 @@
     "autoprefixer": "^10.4.2",
     "babel-loader": "^8.2.3",
     "concurrently": "^9.1.2",
-    "dotenv-cli": "^8.0.0",
     "eslint": "8.10.0",
     "eslint-config-next": "15.0.3",
     "localtunnel": "^2.0.2",
