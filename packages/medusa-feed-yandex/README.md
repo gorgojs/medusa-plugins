@@ -25,7 +25,10 @@ A Medusa plugin that generates a product feed in <a href="https://yandex.com/sup
 
 <p align="center">
   <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Medusa-^2.8.3-blue?logo=medusa" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Medusa-^2.8.0-blue?logo=medusa" alt="Medusa" />
+  </a>
+  <a href="https://medusajs.com">
+    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.8.5-green?logo=checkmarx" alt="Medusa" />
   </a>
 </p>
 
