@@ -38,7 +38,7 @@ Join the [Medusa Telegram community chat](https://t.me/medusajs_com) to discuss 
 
 ## Prerequisites
 
-- Medusa server v2.8.3 or later
+- Medusa server v2.8.0 or later
 - Node.js v20 or later
 
 ## Installation
