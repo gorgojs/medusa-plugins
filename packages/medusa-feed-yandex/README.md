@@ -18,7 +18,7 @@ A Medusa plugin that generates a product feed in <a href="https://yandex.com/sup
 </p>
 
 <p align="center">
-  <a href="https://t.me/medusajs_com">
+  <a href="https://t.me/medusajs_chat">
     <img src="https://img.shields.io/badge/Telegram-Join_Medusa_Community_Chat-0088cc?logo=telegram&style=social" alt="Join on Telegram" />
   </a>
 </p>
@@ -34,7 +34,7 @@ A Medusa plugin that generates a product feed in <a href="https://yandex.com/sup
 
 ## 💬 Support & Community on Telegram
 
-Join the [Medusa Telegram community chat](https://t.me/medusajs_com) to discuss features, get support, and connect with developers building on Medusa.
+Join the [Medusa Telegram community chat](https://t.me/medusajs_chat) to discuss features, get support, and connect with developers building on Medusa.
 
 ## Prerequisites
 
