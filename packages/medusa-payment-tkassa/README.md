@@ -93,7 +93,7 @@ https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/tkassa_tkassa
 Make the necessary changes to your Medusa storefront.
 You can refer to the modifications made in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-gorgo/tree/main/examples/payment-tkassa/medusa-storefront) directory.
 
-To view the specific changes, visit the [comparison page](https://github.com/gorgojs/medusa-gorgo/compare/%40gorgo/medusa-payment-tkassa%400.0.1...main) and explore the differencies under the `examples/payment-tkassa/medusa-storefront` dirrectory. Or run diff in the terminal:
+To view the specific changes, visit the [comparison page](https://github.com/gorgojs/medusa-gorgo/compare/%40gorgo/medusa-payment-tkassa%400.0.1...main), open the "Files changed" tab, and explore the differences under the `examples/payment-tkassa/medusa-storefront` directory. Or run diff in the terminal:
 
 ```bash
 git clone https://github.com/gorgojs/medusa-gorgo
