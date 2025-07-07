@@ -1,5 +1,11 @@
 # @gorgo/medusa-feed-yandex
 
+## 0.2.0
+
+### Minor Changes
+
+- Refactor and improve overall
+
 ## 0.1.3
 
 ### Patch Changes
