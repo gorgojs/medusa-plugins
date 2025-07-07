@@ -1,6 +1,6 @@
 import { Tooltip } from "@medusajs/ui"
 import { PlaceholderCell } from "../placeholder-cell"
-import { useDate } from "../../../hooks/use-date"
+import { useDate } from "../../../../hooks/use-date"
 
 type DateCellProps = {
   date?: Date | string | null,

@@ -1,19 +1,5 @@
 import { Settings } from "../../types/settings"
 
-export type FeedsResponse = {
-  feeds: Feed[]
-  count: number
-  limit: number
-  offset: number
-}
-
-export type CreatedFeeds = {
-  title: string
-  file_name: string
-  is_active: boolean
-  schedule?: number
-}[]
-
 export type Feed = {
   id: string
   title?: string
@@ -30,4 +16,11 @@ export type Feed = {
 
 export type FeedResponse = {
   feed: Feed
+}
+
+export type FeedsResponse = {
+  feeds: Feed[]
+  count: number
+  limit: number
+  offset: number
 }
