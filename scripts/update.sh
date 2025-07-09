@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Color definitions
 RED='\033[0;31m'
@@ -18,6 +18,12 @@ INTEGRATION_TEST_DIRS=(
 # Directories that should skip migrations inside examples
 SKIP_MIGRATIONS_DIRS=(
 )
+
+# Mapping of example directories to package directories
+declare -A EXAMPLE_PACKAGE_MAP
+EXAMPLE_PACKAGE_MAP["./examples/feed-yandex"]=./packages/medusa-feed-yandex
+EXAMPLE_PACKAGE_MAP["./examples/payment-robokassa"]=./packages/medusa-payment-robokassa
+EXAMPLE_PACKAGE_MAP["./examples/payment-tkassa"]=./packages/medusa-payment-tkassa
 
 # Function to print script messages
 log() {
@@ -114,7 +120,7 @@ handle_error() {
 
 # Function to process a directory
 process_directory() {
-    local dir=$1
+    local dir="$1/medusa"
     log "$dir" "Processing directory"
     echo -e "Processing"
     
@@ -175,12 +181,26 @@ process_directory() {
         done
         
         success "$dir" "Successfully updated and built"
+        cd - > /dev/null
+        
+        # Update version badge of the package's readme
+        local package_dir="${EXAMPLE_PACKAGE_MAP[$1]}"
+        if [ -d $package_dir ] && [ -f "$package_dir/README.md" ]; then
+            cd "$package_dir" || handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
+            echo -e "\n${YELLOW}[$package_dir] Updating version badge in $package_dir/README.md${NC}\n"
+            sed -i '' -E "s/(Tested_with_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\\1$VERSION/" README.md || \
+            handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
+        fi
+
+        success "$package_dir" "Successfully updated version badge in README.md"
+
     else
         warning "$dir" "No @medusajs packages found, skipping..."
     fi
     
     # Store the last successful directory
     LAST_SUCCESSFUL_DIR="$dir"
+    LAST_SUCCESSFUL_PACKAGE_DIR="$package_dir"
     
     # Return to the original directory
     cd - > /dev/null
@@ -244,15 +264,9 @@ for dir in "${DIRS[@]}"; do
         continue
     fi
 
-    if [ -f "$dir/medusa/package.json" ]; then
-        # Process the directory if it contains @medusajs dependencies
-        if grep -q "\"@medusajs" "$dir/medusa/package.json"; then
-            process_directory "$dir/medusa"
-        fi
-        # Check if this directory has a medusa subdirectory
-        # if [ -d "$dir/medusa" ] && [ -f "$dir/medusa/package.json" ]; then
-        #     process_directory "$dir/medusa"
-        # fi
+    # Check if this directory has a medusa subdirectory
+    if [ -d "$dir/medusa" ] && [ -f "$dir/medusa/package.json" ]; then
+        process_directory "$dir"
     fi
 done
 
