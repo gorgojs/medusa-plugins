@@ -28,7 +28,7 @@ A Medusa plugin that provides TKassa payments.
     <img src="https://img.shields.io/badge/Medusa-^2.7.0-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.8.6-green?logo=checkmarx" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.8.7-green?logo=checkmarx" alt="Medusa" />
   </a>
 </p>
 
