@@ -28,7 +28,7 @@ A Medusa plugin that provides Robokassa payments.
     <img src="https://img.shields.io/badge/Medusa-^2.7.0-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.8.5-green?logo=checkmarx" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.8.7-green?logo=checkmarx" alt="Medusa" />
   </a>
 </p>
 
@@ -67,8 +67,8 @@ module.exports = defineConfig({
               hashAlgorithm: process.env.ROBOKASSA_HASH_ALGORITHM,
               password1: process.env.ROBOKASSA_PASSWORD_1,
               password2: process.env.ROBOKASSA_PASSWORD_2,
-              test_password1: process.env.ROBOKASSA_TEST_PASSWORD_1,
-              test_password2: process.env.ROBOKASSA_TEST_PASSWORD_2,
+              testPassword1: process.env.ROBOKASSA_TEST_PASSWORD_1,
+              testPassword2: process.env.ROBOKASSA_TEST_PASSWORD_2,
               capture: true,
               isTest: false
             },

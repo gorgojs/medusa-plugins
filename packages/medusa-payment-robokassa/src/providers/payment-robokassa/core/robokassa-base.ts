@@ -16,10 +16,18 @@ import {
   DeletePaymentInput, DeletePaymentOutput,
   UpdatePaymentInput, UpdatePaymentOutput,
 } from "@medusajs/framework/types"
-import { RobokassaOptions, RobokassaEvent } from "../types"
+import {
+  HashAlgorithms,
+  Payment,
+  RobokassaEvent,
+  RobokassaOptions,
+} from "../types"
 import axios, { AxiosError } from "axios"
 import { XMLParser } from 'fast-xml-parser'
-import { stringToNumberHash } from "../utils/string-to-number-hash"
+import {
+  stringToNumberHash,
+  createSignature
+ } from "../utils"
 import { createHash } from "crypto"
 
 abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
@@ -30,12 +38,15 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
   protected paymentUrl_ = `${this.baseUrl_}/Merchant/Index.aspx`
   protected getPaymentUrl_ = `${this.baseUrl_}/Merchant/WebService/Service.asmx/OpStateExt`
   protected capturePaymentUrl_ = `${this.baseUrl_}/Merchant/Payment/Confirm`
-  static readonly hashAlgorithms = ['md5', 'ripemd160', 'sha1', 'sha256', 'sha384', 'sha512'] as const
 
   static validateOptions(options: RobokassaOptions): void {
-    if(!isDefined(options.hashAlgorithm) || !this.hashAlgorithms.includes(options.hashAlgorithm as (typeof this.hashAlgorithms)[number])){
-      throw new Error("Required option `alg` is missing in Robokassa plugin")
+    if (!isDefined(options.merchantLogin)) {
+      throw new Error("Required option `merchantLogin` is missing in Robokassa provider")
     }
+    if(!isDefined(options.hashAlgorithm) || !HashAlgorithms.includes(options.hashAlgorithm as (typeof HashAlgorithms)[number])){
+      throw new Error("Required option `hashAlgorithm` is missing in Robokassa provider")
+    }
+    // TODO all the rest required...
   }
 
   constructor(container: { logger: Logger }, options: RobokassaOptions) {
@@ -43,6 +54,16 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     this.options_ = options
     this.logger_ = container.logger
   }
+
+  // private normalizePaymentParameters(
+  //   extra?: Record<string, unknown>
+  // ): Partial<> {
+  //   const res = {} as Partial<Payment>
+
+  // TODO: finish
+  // TODO: define capture=true if not defined
+  //   return res
+  // }
 
   /**
    * Initiate a new payment.
@@ -53,12 +74,14 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     )
 
     const { amount, context = {} } = input
+    // TODO: refactor to normalize
     const invId = stringToNumberHash(context.idempotency_key as string).toString()
     const outSum = Number(amount).toFixed(2)
     const successUrl2 = input.data?.SuccessUrl2 as string
     const failUrl2 = input.data?.FailUrl2 as string
     const email = input.data?.EMail as string
     const sessionId = input.data?.session_id as string
+
     const raw = [
       this.options_.merchantLogin,
       outSum,
@@ -71,10 +94,9 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
       this.options_.isTest ? this.options_.testPassword1 : this.options_.password1,
       `Shp_SessionID=${sessionId}`
     ].filter(v => v).join(":")
-
     const signature = createHash(this.options_.hashAlgorithm).update(raw).digest('hex')
-
-    const params = new URLSearchParams({
+    // const signature = createSignature()
+    const payment: Payment = {
       MerchantLogin: this.options_.merchantLogin,
       OutSum: outSum,
       InvoiceID: invId,
@@ -87,8 +109,8 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
       Shp_SessionID: sessionId,
       ...(this.options_.isTest ? { IsTest: "1" } : {}),
       ...(!this.options_.capture ? { StepByStep: "true" } : {})
-    }).toString()
-
+    }
+    const params = new URLSearchParams(payment as unknown as Record<string, string>).toString()
     const paymentUrl = `${this.paymentUrl_}?${params}`
 
     return {
@@ -118,12 +140,14 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     ].join(":")
     const signature = createHash(this.options_.hashAlgorithm).update(raw).digest('hex')
 
-    const params = new URLSearchParams({
+    // TODO: make similar everywhere else
+    const capturePayment: Partial<Payment> = {
       MerchantLogin: this.options_.merchantLogin,
       InvoiceID: invId,
       SignatureValue: signature,
       OutSum: outSum
-    }).toString()
+    }
+    const params = new URLSearchParams(capturePayment as unknown as Record<string, string>).toString()
     const capturePaymentUrl = `${this.capturePaymentUrl_}?${params}`
 
     try {
@@ -325,6 +349,7 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
 
     const requestData = { data: { id: invId } }
 
+    // TODO: make it straitforward without checking the status
     const status = (await this.getPaymentStatus(requestData)).status
 
     switch (status) {
