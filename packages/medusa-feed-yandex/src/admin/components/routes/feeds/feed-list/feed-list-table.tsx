@@ -68,9 +68,7 @@ export const FeedListTable = ({
         }
 
         try {
-          const url = new URL(filePath)
-          // TODO: get correct origin from env
-          const fullLink = `${url.origin}/feeds/${id}/${fileName}${fileExtension}`
+          const fullLink = `${window.location.origin}/feeds/${id}/${fileName}${fileExtension}`
           return (
             <a href={fullLink} target="_blank" rel="noopener noreferrer">
               <Badge size="xsmall">

@@ -239,8 +239,7 @@ export const FeedGeneralSection = () => {
           feed?.file_path && feed?.id && feed?.file_name
           ? (
             (() => {
-              const url = new URL(feed.file_path)
-              const feedViewUrl = `${url.origin}/feeds/${feed.id}/${feed.file_name}${fileExtension}`
+              const feedViewUrl = `${window.location.origin}/feeds/${feed.id}/${feed.file_name}${fileExtension}`
               return (
                 <a href={feedViewUrl} target="_blank" rel="noopener noreferrer">
                   <Badge size="base" className="h-full">
