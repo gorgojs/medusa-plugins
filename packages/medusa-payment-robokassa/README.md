@@ -90,7 +90,7 @@ ROBOKASSA_PASSWORD_2=supersecret
 ROBOKASSA_TEST_PASSWORD_1=supersecret
 ROBOKASSA_TEST_PASSWORD_2=supersecret
 ```
-> ROBOKASSA_HASH_ALGORITHM must be one of the following values, corresponding to the value in the store: `md5`, `ripemd160`, `sha1`, `sha256`, `sha384`, `sha512`
+> ROBOKASSA_HASH_ALGORITHM must be one of the following values, corresponding to the value in the store: `md5`, `sha1`, `sha256`, `sha384`, `sha512` or `ripemd160` (an error occurs on the provider's side during testing)
 
 
 Under terminal settings in your Robokassa account, set notifications to “Via HTTP protocol” and supply a callback URL in the following format:

@@ -129,7 +129,12 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
       Shp_SessionID: sessionId,
       ...additionalParameters
     }
-    const params = new URLSearchParams(payment as unknown as Record<string, string>).toString()
+
+    const filteredPayment = Object.fromEntries(
+      Object.entries(payment).filter(([_, value]) => value !== undefined)
+    )
+
+    const params = new URLSearchParams(filteredPayment as unknown as Record<string, string>).toString()
     const paymentUrl = `${this.paymentUrl_}?${params}`
 
     return {
@@ -377,6 +382,7 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
 
     return signature === incomingSignature
   }
+
   /**
    * Helper to build errors with additional context.
    */

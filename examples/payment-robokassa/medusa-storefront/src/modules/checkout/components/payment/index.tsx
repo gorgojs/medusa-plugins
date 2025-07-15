@@ -88,7 +88,9 @@ const Payment = ({
           provider_id: selectedPaymentMethod,
           data: {
             SuccessUrl2: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`,
+            SuccessUrl2Method: "GET",
             FailUrl2: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`,
+            FailUrl2Method: "GET",
             EMail: cart?.email
           }
         })
