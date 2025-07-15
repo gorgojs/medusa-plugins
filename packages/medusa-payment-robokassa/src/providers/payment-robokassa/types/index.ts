@@ -17,9 +17,9 @@ export interface Payment {
   OutSum: string
   InvoiceID: string
   SuccessUrl2?: string
-  SuccessUrl2Method: "GET" | "POST"
+  SuccessUrl2Method?: "GET" | "POST"
   FailUrl2?: string
-  FailUrl2Method: "GET" | "POST"
+  FailUrl2Method?: "GET" | "POST"
   EMail?: string
   SignatureValue: string
   Shp_SessionID: string

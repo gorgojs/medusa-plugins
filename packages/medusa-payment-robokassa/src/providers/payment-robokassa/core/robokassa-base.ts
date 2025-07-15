@@ -27,7 +27,7 @@ import { XMLParser } from 'fast-xml-parser'
 import {
   stringToNumberHash,
   createSignature
- } from "../utils"
+} from "../utils"
 import { createHash } from "crypto"
 
 abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
@@ -43,10 +43,21 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     if (!isDefined(options.merchantLogin)) {
       throw new Error("Required option `merchantLogin` is missing in Robokassa provider")
     }
-    if(!isDefined(options.hashAlgorithm) || !HashAlgorithms.includes(options.hashAlgorithm as (typeof HashAlgorithms)[number])){
+    if (!isDefined(options.password1)) {
+      throw new Error("Required option `password1` is missing in Robokassa provider")
+    }
+    if (!isDefined(options.password2)) {
+      throw new Error("Required option `password2` is missing in Robokassa provider")
+    }
+    if (!isDefined(options.testPassword1)) {
+      throw new Error("Required option `testPassword1` is missing in Robokassa provider")
+    }
+    if (!isDefined(options.testPassword2)) {
+      throw new Error("Required option `testPassword2` is missing in Robokassa provider")
+    }
+    if (!isDefined(options.hashAlgorithm) || !HashAlgorithms.includes(options.hashAlgorithm as (typeof HashAlgorithms)[number])) {
       throw new Error("Required option `hashAlgorithm` is missing in Robokassa provider")
     }
-    // TODO all the rest required...
   }
 
   constructor(container: { logger: Logger }, options: RobokassaOptions) {
@@ -55,15 +66,36 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     this.logger_ = container.logger
   }
 
-  // private normalizePaymentParameters(
-  //   extra?: Record<string, unknown>
-  // ): Partial<> {
-  //   const res = {} as Partial<Payment>
+  protected createSignature(
+    signatureParams: string[],
+  ) {
+    const concatenatedParams = signatureParams.filter(v => v).join(":")
+    const res = createHash(this.options_.hashAlgorithm).update(concatenatedParams).digest('hex')
 
-  // TODO: finish
-  // TODO: define capture=true if not defined
-  //   return res
-  // }
+    return res
+  }
+
+  private normalizePaymentParameters(
+    extra?: InitiatePaymentInput
+  ): Partial<Payment> {
+    const res = {} as Partial<Payment>
+
+    res.SuccessUrl2 = extra?.data?.SuccessUrl2 as string
+    res.SuccessUrl2Method = extra?.data?.SuccessUrl2Method as "GET" | "POST"
+    res.FailUrl2 = extra?.data?.FailUrl2 as string
+    res.FailUrl2Method = extra?.data?.FailUrl2Method as "GET" | "POST"
+    res.EMail = extra?.data?.EMAil as string
+
+    res.isTest =
+      extra?.data?.isTest as "1" ??
+        this.options_.isTest ? "1" : undefined
+
+    res.StepByStep =
+      extra?.data?.StepByStep as "true" ??
+        this.options_.capture ? undefined : "true"
+
+    return res
+  }
 
   /**
    * Initiate a new payment.
@@ -74,41 +106,34 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     )
 
     const { amount, context = {} } = input
-    // TODO: refactor to normalize
-    const invId = stringToNumberHash(context.idempotency_key as string).toString()
+
     const outSum = Number(amount).toFixed(2)
-    const successUrl2 = input.data?.SuccessUrl2 as string
-    const failUrl2 = input.data?.FailUrl2 as string
-    const email = input.data?.EMail as string
+    const invId = stringToNumberHash(context.idempotency_key as string).toString()
     const sessionId = input.data?.session_id as string
+
+    const additionalParameters = this.normalizePaymentParameters(input)
 
     const raw = [
       this.options_.merchantLogin,
       outSum,
       invId,
-      this.options_.capture ? "" : "true",
-      successUrl2,
-      "GET",
-      failUrl2,
-      "GET",
+      additionalParameters.StepByStep,
+      additionalParameters.SuccessUrl2,
+      additionalParameters.SuccessUrl2Method,
+      additionalParameters.FailUrl2,
+      additionalParameters.FailUrl2Method,
       this.options_.isTest ? this.options_.testPassword1 : this.options_.password1,
       `Shp_SessionID=${sessionId}`
-    ].filter(v => v).join(":")
-    const signature = createHash(this.options_.hashAlgorithm).update(raw).digest('hex')
-    // const signature = createSignature()
+    ]
+    const signature = createSignature(raw, this.options_.hashAlgorithm)
+
     const payment: Payment = {
       MerchantLogin: this.options_.merchantLogin,
       OutSum: outSum,
       InvoiceID: invId,
-      SuccessUrl2: successUrl2,
-      SuccessUrl2Method: "GET",
-      FailUrl2: failUrl2,
-      FailUrl2Method: "GET",
-      EMail: email,
       SignatureValue: signature,
       Shp_SessionID: sessionId,
-      ...(this.options_.isTest ? { IsTest: "1" } : {}),
-      ...(!this.options_.capture ? { StepByStep: "true" } : {})
+      ...additionalParameters
     }
     const params = new URLSearchParams(payment as unknown as Record<string, string>).toString()
     const paymentUrl = `${this.paymentUrl_}?${params}`
@@ -137,8 +162,8 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
       outSum,
       invId,
       this.options_.isTest ? this.options_.testPassword1 : this.options_.password1
-    ].join(":")
-    const signature = createHash(this.options_.hashAlgorithm).update(raw).digest('hex')
+    ]
+    const signature = createSignature(raw, this.options_.hashAlgorithm)
 
     // TODO: make similar everywhere else
     const capturePayment: Partial<Payment> = {
@@ -218,8 +243,9 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
       this.options_.merchantLogin,
       invId,
       this.options_.isTest ? this.options_.testPassword2 : this.options_.password2
-    ].join(":")
-    const signature = createHash(this.options_.hashAlgorithm).update(raw).digest('hex')
+    ]
+    const signature = createSignature(raw, this.options_.hashAlgorithm)
+
     const params = new URLSearchParams({
       MerchantLogin: this.options_.merchantLogin,
       InvoiceID: invId,
@@ -342,61 +368,26 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
       return {
         action: PaymentActions.NOT_SUPPORTED
       }
-    
-    const invId = data.InvId
+
     const sessionId = data.Shp_SessionID
     const outSum = Number(data.OutSum)
 
-    const requestData = { data: { id: invId } }
-
-    // TODO: make it straitforward without checking the status
-    const status = (await this.getPaymentStatus(requestData)).status
-
-    switch (status) {
-      case PaymentSessionStatus.AUTHORIZED:
-        return {
-          action: PaymentActions.AUTHORIZED,
-          data: { session_id: sessionId, amount: outSum }
-        }
-      case PaymentSessionStatus.CANCELED:
-        return {
-          action: PaymentActions.CANCELED,
-          data: { session_id: sessionId, amount: outSum }
-        }
-      case PaymentSessionStatus.PENDING:
-        return {
-          action: PaymentActions.PENDING,
-          data: { session_id: sessionId, amount: outSum }
-        }
-      case PaymentSessionStatus.REQUIRES_MORE:
-        return {
-          action: PaymentActions.REQUIRES_MORE,
-          data: { session_id: sessionId, amount: outSum }
-        }
-      case PaymentSessionStatus.ERROR:
-        return {
-          action: PaymentActions.FAILED,
-          data: { session_id: sessionId, amount: outSum }
-        }
-      case PaymentSessionStatus.CAPTURED:
-        return {
-          action: PaymentActions.SUCCESSFUL,
-          data: { session_id: sessionId, amount: outSum }
-        }
-      default:
-        return { action: PaymentActions.NOT_SUPPORTED }
+    return {
+      action: PaymentActions.AUTHORIZED,
+      data: { session_id: sessionId, amount: outSum }
     }
   }
-  
-  protected async isWebhookEventValid(data: RobokassaEvent): Promise<boolean>{
+
+  protected async isWebhookEventValid(data: RobokassaEvent): Promise<boolean> {
     const incomingSignature = data.SignatureValue
     const raw = [
       data.OutSum,
       data.InvId,
       this.options_.password2,
       `Shp_SessionID=${data.Shp_SessionID}`
-    ].join(":")
-    const signature = createHash(this.options_.hashAlgorithm).update(raw).digest('hex')    
+    ]
+    const signature = createSignature(raw, this.options_.hashAlgorithm)
+
     return signature === incomingSignature
   }
   /**
