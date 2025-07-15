@@ -92,11 +92,7 @@ export const ProductCategoriesSection = () => {
     columnHelper.select(),
     columnHelper.accessor("name", {
       header: "Name",
-      cell: ({ getValue }) => <Text className="whitespace-pre">{getValue()}</Text>,
-    }),
-    columnHelper.accessor("description", {
-      header: "Description",
-      cell: ({ getValue }) => getValue() || "-",
+      cell: ({ getValue }) => <Text className="whitespace-pre h-12 flex items-center">{getValue()}</Text>,
     }),
   ]
 
@@ -105,7 +101,7 @@ export const ProductCategoriesSection = () => {
     queryFn: async () => {
       const { product_categories } = await sdk.admin.productCategory.list({
         is_active: true,
-        fields: "id,name,description,rank,parent_category_id",
+        fields: "id,name,rank,parent_category_id",
       })
       const tree = buildCategoryTree(product_categories)
       return flattenCategoryTree(tree)
