@@ -5,7 +5,7 @@ export interface RobokassaOptions {
   password2: string
   testPassword1?: string
   testPassword2?: string
-  capture: boolean,
+  capture?: boolean,
   isTest?: boolean
 }
 

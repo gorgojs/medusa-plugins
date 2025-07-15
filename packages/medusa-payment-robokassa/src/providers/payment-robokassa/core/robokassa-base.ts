@@ -49,12 +49,6 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     if (!isDefined(options.password2)) {
       throw new Error("Required option `password2` is missing in Robokassa provider")
     }
-    if (!isDefined(options.testPassword1)) {
-      throw new Error("Required option `testPassword1` is missing in Robokassa provider")
-    }
-    if (!isDefined(options.testPassword2)) {
-      throw new Error("Required option `testPassword2` is missing in Robokassa provider")
-    }
     if (!isDefined(options.hashAlgorithm) || !HashAlgorithms.includes(options.hashAlgorithm as (typeof HashAlgorithms)[number])) {
       throw new Error("Required option `hashAlgorithm` is missing in Robokassa provider")
     }
@@ -84,7 +78,7 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     res.SuccessUrl2Method = extra?.data?.SuccessUrl2Method as "GET" | "POST"
     res.FailUrl2 = extra?.data?.FailUrl2 as string
     res.FailUrl2Method = extra?.data?.FailUrl2Method as "GET" | "POST"
-    res.EMail = extra?.data?.EMAil as string
+    res.EMail = extra?.data?.EMail as string
 
     res.isTest =
       extra?.data?.isTest as "1" ??
@@ -165,7 +159,6 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     ]
     const signature = createSignature(raw, this.options_.hashAlgorithm)
 
-    // TODO: make similar everywhere else
     const capturePayment: Partial<Payment> = {
       MerchantLogin: this.options_.merchantLogin,
       InvoiceID: invId,
@@ -256,11 +249,6 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
 
     try {
       const { data: xml } = await axios.post(url)
-      // 100 captured
-      //const testXml = `<? xml version = "1.0" encoding = "utf-8" ?> <OperationStateResponse xmlns="http://auth.robokassa.ru/Merchant/WebService/" > <Result> <Code>0</Code> <Description>успешно</Description> </Result> <State> <Code>100</Code> <RequestDate>03.07.2025</RequestDate> <StateDate>03.07.2025</StateDate> </State> <Info> <IncCurrLabel>string</IncCurrLabel> <IncSum>decimal</IncSum> <IncAccount>string</IncAccount> <PaymentMethod> <Code>string</Code> <Description>string</Description> </PaymentMethod> <OutCurrLabel>string</OutCurrLabel> <OutSum>decimal</OutSum> <OpKey>string</OpKey> <BankCardRRN>string</BankCardRRN> </Info> <UserField> <Field> <Name>string</Name> <Value>string</Value> </Field> </UserField> </OperationStateResponse>`
-      // 5 authorized
-      //const testXml = `<? xml version = "1.0" encoding = "utf-8" ?> <OperationStateResponse xmlns="http://auth.robokassa.ru/Merchant/WebService/" > <Result> <Code>0</Code> <Description>успешно</Description> </Result> <State> <Code>5</Code> <RequestDate>03.07.2025</RequestDate> <StateDate>03.07.2025</StateDate> </State> <Info> <IncCurrLabel>string</IncCurrLabel> <IncSum>decimal</IncSum> <IncAccount>string</IncAccount> <PaymentMethod> <Code>string</Code> <Description>string</Description> </PaymentMethod> <OutCurrLabel>string</OutCurrLabel> <OutSum>decimal</OutSum> <OpKey>string</OpKey> <BankCardRRN>string</BankCardRRN> </Info> <UserField> <Field> <Name>string</Name> <Value>string</Value> </Field> </UserField> </OperationStateResponse>`
-
       const parser = new XMLParser({
         ignoreAttributes: false,
         attributeNamePrefix: "@_",
@@ -356,7 +344,6 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     }
   }
 
-  // TODO: Webhooks
   async getWebhookActionAndData(payload: ProviderWebhookPayload["payload"]): Promise<WebhookActionResult> {
     this.logger_.debug(
       `RobokassaBase.getWebhookActionAndData payload:\n${JSON.stringify(payload, null, 2)}`
@@ -373,7 +360,7 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     const outSum = Number(data.OutSum)
 
     return {
-      action: PaymentActions.AUTHORIZED,
+      action: PaymentActions.SUCCESSFUL,
       data: { session_id: sessionId, amount: outSum }
     }
   }
@@ -406,4 +393,3 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
 }
 
 export default RobokassaBase
-
