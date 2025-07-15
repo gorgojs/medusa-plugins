@@ -10,7 +10,7 @@ import {
 import { Pencil } from "@medusajs/icons"
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { useTranslation } from "react-i18next"
+import { t } from "i18next"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { SectionRow } from "../../../common/section-row"
@@ -19,7 +19,6 @@ import { Header } from "../../../common/header"
 import type { Feed, FeedResponse } from "../../../../types"
 
 export const ShopSettingsSection = () => {
-  const { t } = useTranslation()
   const { id } = useParams()
   const [editShopOpen, openEditShop, closeEditShop] = useToggleState()
 

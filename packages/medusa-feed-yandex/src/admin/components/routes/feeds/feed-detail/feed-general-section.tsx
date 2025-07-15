@@ -17,7 +17,7 @@ import {
 import { Pencil, Trash, Folder } from "@medusajs/icons"
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { useTranslation } from "react-i18next"
+import { t } from "i18next"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { SectionRow } from "../../../common/section-row"
@@ -29,7 +29,6 @@ import { getScheduleLabel } from "../../../../lib/utils"
 import { useDate } from "../../../../hooks/use-date"
 
 export const FeedGeneralSection = () => {
-  const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
 

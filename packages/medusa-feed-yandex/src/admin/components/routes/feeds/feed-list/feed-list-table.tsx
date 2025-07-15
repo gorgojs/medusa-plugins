@@ -9,7 +9,8 @@ import {
 import { SquareGreenSolid, SquareRedSolid } from "@medusajs/icons"
 import { useQuery } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
-import { useTranslation } from "react-i18next"
+import { t } from "i18next"
+
 import { useNavigate } from "react-router-dom"
 import { sdk } from "../../../../lib/sdk"
 import { Header } from "../../../common/header"
@@ -28,7 +29,6 @@ export const FeedListTable = ({
   stateModal: boolean,
   openModal: () => void
 }) => {
-  const { t } = useTranslation()
   const columnHelper = createDataTableColumnHelper<Feed>()
 
   const navigate = useNavigate()

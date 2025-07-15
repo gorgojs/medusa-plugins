@@ -14,10 +14,9 @@ import {
 } from "@tanstack/react-query"
 import { useState, useMemo, useEffect } from "react"
 import { useParams } from "react-router-dom"
+import { t } from "i18next"
 import { sdk } from "../../../../lib/sdk"
 import { Header } from "../../../common/header"
-import { I18n } from "../../../utilities/i18n"
-import { useTranslation } from "react-i18next"
 import { Feed, FeedResponse } from "../../../../types"
 
 type Category = {
@@ -74,7 +73,6 @@ function flattenCategoryTree(tree: CategoryWithChildren[], level = 0): Category[
 }
 
 export const ProductCategoriesSection = () => {
-  const { t } = useTranslation()
   const { id } = useParams()
   const [rowSelection, setRowSelection] = useState<DataTableRowSelectionState>({})
 
@@ -182,7 +180,6 @@ export const ProductCategoriesSection = () => {
 
   return (
     <>
-      <I18n />
       <Container className="divide-y p-0">
         <DataTable instance={table}>
           <Header

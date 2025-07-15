@@ -13,7 +13,8 @@ import {
 import { InformationCircleSolid } from "@medusajs/icons"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
-import { useTranslation } from "react-i18next"
+import { t } from "i18next"
+
 import { sdk } from "../../../../lib/sdk"
 import { scheduleIntervals, fileExtension } from "../../../../lib/constants"
 import type { Feed } from "../../../../types"
@@ -26,8 +27,6 @@ export const FeedCreateModal = ({
   stateModal: boolean,
   closeModal: () => void
 }) => {
-  const { t } = useTranslation()
-
   const [title, setTitle] = useState("")
   const [fileName, setFileName] = useState("")
   const [schedule, setSchedule] = useState<number>(scheduleIntervals[1])
