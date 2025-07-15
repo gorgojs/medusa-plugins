@@ -1,5 +1,11 @@
 # @gorgo/medusa-feed-yandex
 
+## 0.2.2
+
+### Patch Changes
+
+- Fix i18n and minor improvemnts
+
 ## 0.2.1
 
 ### Patch Changes
