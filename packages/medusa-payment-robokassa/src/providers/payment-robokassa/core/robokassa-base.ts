@@ -116,7 +116,8 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     const { amount, context = {} } = input
 
     const outSum = Number(amount).toFixed(2)
-    const invId = stringToNumberHash(context.idempotency_key as string).toString()
+    // TODO: can we avoide generating invoice id?
+    const invoiceId = stringToNumberHash(context.idempotency_key as string).toString()
     const sessionId = input.data?.session_id as string
 
     const additionalParameters = this.normalizePaymentParameters(input)
@@ -124,7 +125,7 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     const raw = [
       this.options_.merchantLogin,
       outSum,
-      invId,
+      invoiceId,
       additionalParameters.StepByStep,
       additionalParameters.SuccessUrl2,
       additionalParameters.SuccessUrl2Method,
@@ -138,7 +139,7 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     const payment: Payment = {
       MerchantLogin: this.options_.merchantLogin,
       OutSum: outSum,
-      InvoiceID: invId,
+      InvoiceID: invoiceId,
       SignatureValue: signature,
       Shp_SessionID: sessionId,
       ...additionalParameters
@@ -148,11 +149,10 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     const paymentUrl = `${this.paymentUrl_}?${params}`
 
     return {
-      id: invId,
+      id: invoiceId,
       data: {
-        id: invId,
-        outSum: outSum,
-        paymentUrl: paymentUrl
+        paymentUrl: paymentUrl,
+        ...payment
       }
     }
   }
@@ -163,20 +163,20 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
   async capturePayment(input: CapturePaymentInput): Promise<CapturePaymentOutput> {
     this.logger_.debug(`RobokassaBase.capturePayment input:\n${JSON.stringify(input, null, 2)}`)
 
-    const invId = input.data?.id as string
-    const outSum = input.data?.outSum as string
+    const invoiceId = input.data?.InvoiceID as string
+    const outSum = input.data?.OutSum as string
 
     const raw = [
       this.options_.merchantLogin,
       outSum,
-      invId,
+      invoiceId,
       this.options_.isTest ? this.options_.testPassword1 : this.options_.password1
     ]
     const signature = createSignature(raw, this.options_.hashAlgorithm)
 
     const capturePayment: Partial<Payment> = {
       MerchantLogin: this.options_.merchantLogin,
-      InvoiceID: invId,
+      InvoiceID: invoiceId,
       SignatureValue: signature,
       OutSum: outSum
     }
@@ -246,17 +246,17 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
   async retrievePayment(input: RetrievePaymentInput): Promise<RetrievePaymentOutput> {
     this.logger_.debug(`RobokassaBase.retrievePayment input:\n${JSON.stringify(input, null, 2)}`)
 
-    const invId = input.data?.id as string
+    const invoiceId = input.data?.InvoiceID as string
     const raw = [
       this.options_.merchantLogin,
-      invId,
+      invoiceId,
       this.options_.isTest ? this.options_.testPassword2 : this.options_.password2
     ]
     const signature = createSignature(raw, this.options_.hashAlgorithm)
 
     const params = new URLSearchParams({
       MerchantLogin: this.options_.merchantLogin,
-      InvoiceID: invId,
+      InvoiceID: invoiceId,
       Signature: signature,
     }).toString()
 
@@ -312,14 +312,17 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
         case 10: // 10 is canceled
         case 60: // 60 is refunded
           return {
-            status: PaymentSessionStatus.CANCELED, data: {
+            status: PaymentSessionStatus.CANCELED,
+            // TODO: why we need input.data here?
+            data: {
               ...input.data,
               response: response
             }
           }
         case 20: // 20 is on hold (capture not done yet)
           return {
-            status: PaymentSessionStatus.AUTHORIZED, data: {
+            status: PaymentSessionStatus.AUTHORIZED,
+            data: {
               ...input.data,
               response: response
             }
@@ -327,28 +330,32 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
         case 5: // 5 is initiated
         case 50: // 50 is payed, but still processing
           return {
-            status: PaymentSessionStatus.PENDING, data: {
+            status: PaymentSessionStatus.PENDING,
+            data: {
               ...input.data,
               response: response
             }
           }
         case 80: // 80 is paused
           return {
-            status: PaymentSessionStatus.REQUIRES_MORE, data: {
+            status: PaymentSessionStatus.REQUIRES_MORE,
+            data: {
               ...input.data,
               response: response
             }
           }
         case 100: // is successfully captured
           return {
-            status: PaymentSessionStatus.CAPTURED, data: {
+            status: PaymentSessionStatus.CAPTURED,
+            data: {
               ...input.data,
               response: response
             }
           }
         default:
           return {
-            status: PaymentSessionStatus.ERROR, data: {
+            status: PaymentSessionStatus.ERROR,
+            data: {
               ...input.data,
               response: response
             }
