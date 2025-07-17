@@ -1817,7 +1817,7 @@ __metadata:
     i18next-browser-languagedetector: ^7.2.0
     i18next-http-backend: ^2.4.2
     react-i18next: ^13.5.0
-    zod: ^3.25.76
+    zod: ^3.22.4
   languageName: unknown
   linkType: soft
 
@@ -12621,9 +12621,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"medusa-gorgo@workspace:.":
+"medusa-plugins@workspace:.":
   version: 0.0.0-use.local
-  resolution: "medusa-gorgo@workspace:."
+  resolution: "medusa-plugins@workspace:."
   dependencies:
     "@changesets/changelog-github": "npm:^0.5.1"
     "@changesets/cli": "npm:^2.29.5"

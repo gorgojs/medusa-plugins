@@ -91,19 +91,19 @@ https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/tkassa_tkassa
 ## Storefront Integration
 
 Make the necessary changes to your Medusa storefront.
-You can refer to the modifications made in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-gorgo/tree/main/examples/payment-tkassa/medusa-storefront) directory.
+You can refer to the modifications made in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-tkassa/medusa-storefront) directory.
 
-To view the specific changes, visit the [comparison page](https://github.com/gorgojs/medusa-gorgo/compare/%40gorgo/medusa-payment-tkassa%400.0.1...main), open the "Files changed" tab, and explore the differences under the `examples/payment-tkassa/medusa-storefront` directory. Or run diff in the terminal:
+To view the specific changes, visit the [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-payment-tkassa%400.0.1...main), open the "Files changed" tab, and explore the differences under the `examples/payment-tkassa/medusa-storefront` directory. Or run diff in the terminal:
 
 ```bash
-git clone https://github.com/gorgojs/medusa-gorgo
-cd medusa-gorgo
+git clone https://github.com/gorgojs/medusa-plugins
+cd medusa-plugins
 git diff @gorgo/medusa-payment-tkassa@0.0.1...main -- examples/payment-tkassa/medusa-storefront
 ```
 
 ## Development
 
-Find documentation on bootstrapping a development environment [here](https://github.com/gorgojs/medusa-gorgo/tree/main/examples/payment-tkassa).
+Find documentation on bootstrapping a development environment [here](https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-tkassa).
 
 ## 💬 Support & Community on Telegram
 

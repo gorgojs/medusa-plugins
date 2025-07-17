@@ -1,4 +1,4 @@
-# Medusa Gorgo Examples
+# Examples for Medusa Gorgo plugins 
 
 Handy examples for Medusa Gorgo plugins.
 
@@ -14,8 +14,8 @@ To install any example do the following:
 
 1. Clone the repository and change to examples:
    ```bash
-   git clone https://github.com/gorgojs/medusa-gorgo
-   cd medusa-gorgo
+   git clone https://github.com/gorgojs/medusa-plugins
+   cd medusa-plugins
    ```
 
 2. (optional) Install PostgreSQL and pgAdmin using Docker Compose:

@@ -1,5 +1,5 @@
 {
-  "name": "medusa-gorgo",
+  "name": "medusa-plugins",
   "private": true,
   "workspaces": [
     "packages/*"

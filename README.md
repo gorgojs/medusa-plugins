@@ -1,4 +1,4 @@
-# Medusa Gorgo plugins
+# Medusa Plugins by Gorgo
 
 This repository contains:
 
