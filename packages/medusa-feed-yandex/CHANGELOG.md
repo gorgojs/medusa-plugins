@@ -1,5 +1,11 @@
 # @gorgo/medusa-feed-yandex
 
+## 0.2.3
+
+### Patch Changes
+
+- Release payment-robokassa and rename monorepo
+
 ## 0.2.2
 
 ### Patch Changes

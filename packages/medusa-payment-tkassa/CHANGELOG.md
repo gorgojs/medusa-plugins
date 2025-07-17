@@ -1,5 +1,11 @@
 # @gorgo/medusa-payment-tkassa
 
+## 0.1.6
+
+### Patch Changes
+
+- Release payment-robokassa and rename monorepo
+
 ## 0.1.5
 
 ### Patch Changes
