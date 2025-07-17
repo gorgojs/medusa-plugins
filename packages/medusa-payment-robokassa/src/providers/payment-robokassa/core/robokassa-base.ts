@@ -74,19 +74,33 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
   ): Partial<Payment> {
     const res = {} as Partial<Payment>
 
-    res.SuccessUrl2 = extra?.data?.SuccessUrl2 as string
-    res.SuccessUrl2Method = extra?.data?.SuccessUrl2Method as "GET" | "POST"
-    res.FailUrl2 = extra?.data?.FailUrl2 as string
-    res.FailUrl2Method = extra?.data?.FailUrl2Method as "GET" | "POST"
-    res.EMail = extra?.data?.EMail as string
+    if(extra?.data?.SuccessUrl2)
+      res.SuccessUrl2 = extra?.data?.SuccessUrl2 as Payment["SuccessUrl2"]
 
-    res.isTest =
-      extra?.data?.isTest as "1" ??
-        this.options_.isTest ? "1" : undefined
+    if(extra?.data?.SuccessUrl2Method)
+      res.SuccessUrl2Method = extra?.data?.SuccessUrl2Method as Payment["SuccessUrl2Method"]
 
-    res.StepByStep =
-      extra?.data?.StepByStep as "true" ??
-        this.options_.capture ? undefined : "true"
+    if(extra?.data?.FailUrl2)
+      res.FailUrl2 = extra?.data?.FailUrl2 as Payment["FailUrl2"]
+
+    if(extra?.data?.FailUrl2Method)
+      res.FailUrl2Method = extra?.data?.FailUrl2Method as Payment["FailUrl2Method"]
+
+    if(extra?.data?.EMail)
+      res.EMail = extra?.data?.EMail as Payment["EMail"]
+
+    if( extra?.data?.Culture)
+      res.Culture = extra?.data?.Culture as Payment["Culture"]
+
+    if(extra?.data?.isTest)
+      res.isTest =
+        extra?.data?.isTest as Payment["isTest"] ??
+          this.options_.isTest ? "1" : undefined
+          
+    if(extra?.data?.StepByStep)
+      res.StepByStep =
+        extra?.data?.StepByStep as Payment["StepByStep"] ??
+          this.options_.capture ? undefined : "true"
 
     return res
   }
@@ -130,11 +144,7 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
       ...additionalParameters
     }
 
-    const filteredPayment = Object.fromEntries(
-      Object.entries(payment).filter(([_, value]) => value !== undefined)
-    )
-
-    const params = new URLSearchParams(filteredPayment as unknown as Record<string, string>).toString()
+    const params = new URLSearchParams(payment as unknown as Record<string, string>).toString()
     const paymentUrl = `${this.paymentUrl_}?${params}`
 
     return {

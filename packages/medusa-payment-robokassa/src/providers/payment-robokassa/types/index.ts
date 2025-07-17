@@ -25,6 +25,7 @@ export interface Payment {
   Shp_SessionID: string
   isTest?: "1"
   StepByStep? : "true"
+  Culture?: "ru" | "en"
 }
 
 export interface RobokassaEvent {

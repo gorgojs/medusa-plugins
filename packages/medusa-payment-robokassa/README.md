@@ -69,8 +69,8 @@ module.exports = defineConfig({
               password2: process.env.ROBOKASSA_PASSWORD_2,
               testPassword1: process.env.ROBOKASSA_TEST_PASSWORD_1,
               testPassword2: process.env.ROBOKASSA_TEST_PASSWORD_2,
-              capture: true,
-              isTest: false
+              capture: false,  // default is true
+              isTest: true,  // default is false
             },
           }   
         ]
@@ -80,7 +80,7 @@ module.exports = defineConfig({
 })
 ```
 
-Add environment variables with your shop identifier `merchantLogin`, hash calculation algorithm `hashAlgorithm` and secret passwords `password1`, `password2` and for testing `testPassword1`, `testPassword2`:
+Add environment variables with your shop identifier `merchantLogin`, hash calculation algorithm `hashAlgorithm`, secret passwords `password1`, `password2`, and secret passwords for testing `testPassword1`, `testPassword2`:
 
 ```
 ROBOKASSA_MERCHANT_LOGIN=test-shop
@@ -90,10 +90,10 @@ ROBOKASSA_PASSWORD_2=supersecret
 ROBOKASSA_TEST_PASSWORD_1=supersecret
 ROBOKASSA_TEST_PASSWORD_2=supersecret
 ```
-> ROBOKASSA_HASH_ALGORITHM must be one of the following values, corresponding to the value in the store: `md5`, `sha1`, `sha256`, `sha384`, `sha512` or `ripemd160` (an error occurs on the provider's side during testing)
 
+> `ROBOKASSA_HASH_ALGORITHM` must be one of the following values corresponding to the value in the Robokassa account: `md5`, `sha1`, `sha256`, `sha384`, `sha512` or `ripemd160` (note, an error occurs for `ripemd160` on the provider's side)
 
-Under terminal settings in your Robokassa account, set notifications to “Via HTTP protocol” and supply a callback URL in the following format:
+Under shop settings in your Robokassa account, set the **Method of sending data to Result Url** to `GET` or `POST` and supply a **Result Url** in the following format:
 
 ```
 https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/robokassa_robokassa
@@ -104,21 +104,21 @@ https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/robokassa_robokassa
 Make the necessary changes to your Medusa storefront.
 You can refer to the modifications made in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-gorgo/tree/main/examples/payment-robokassa/medusa-storefront) directory.
 
-To view the specific changes, visit the [comparison page](https://github.com/gorgojs/medusa-gorgo/compare/%40gorgo/medusa-payment-robokassa%400.0.1...main) and explore the differencies under the `examples/payment-robokassa/medusa-storefront` dirrectory. Or run diff in the terminal:
+To view the specific changes, visit the [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-payment-robokassa%400.0.1...main) and explore the differencies under the `examples/payment-robokassa/medusa-storefront` dirrectory. Or run diff in the terminal:
 
 ```bash
-git clone https://github.com/gorgojs/medusa-gorgo
-cd medusa-gorgo
+git clone https://github.com/gorgojs/medusa-plugins
+cd medusa-plugins
 git diff @gorgo/medusa-payment-robokassa@0.0.1...main -- examples/payment-robokassa/medusa-storefront
 ```
 
 ## Development
 
-Find documentation on bootstrapping a development environment [here](https://github.com/gorgojs/medusa-gorgo/tree/main/examples/payment-robokassa).
+Find documentation on bootstrapping a development environment [here](https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-robokassa).
 
 ## 💬 Support & Community on Telegram
 
-Join the [Medusa Telegram community chat](https://t.me/medusajs_com) to discuss features, get support, and connect with developers building on Medusa.
+Join the [Medusa Telegram community chat](https://t.me/medusajs_chat) to discuss features, get support, and connect with developers building on Medusa.
 
 ## License
 

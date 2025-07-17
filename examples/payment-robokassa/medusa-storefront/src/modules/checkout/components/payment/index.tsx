@@ -91,7 +91,8 @@ const Payment = ({
             SuccessUrl2Method: "GET",
             FailUrl2: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`,
             FailUrl2Method: "GET",
-            EMail: cart?.email
+            EMail: cart?.email,
+            Culture: countryCode === "ru" ? "ru" : "en",
           }
         })
       }
