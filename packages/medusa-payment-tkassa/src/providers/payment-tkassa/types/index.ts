@@ -10,6 +10,16 @@ export interface TKassaProviderOptions extends TKassaOptions {
 export interface PaymentOptions {
 }
 
+export interface Payment {
+  TerminalKey: string
+  Password: string
+  Amount: number
+  OrderId: string
+  SuccessURL?: string
+  FailURL?: string
+  PayType?: "O" | "T"  
+}
+
 export interface TKassaWebhookEvent {
   body: WebhookBody
 }

@@ -17,7 +17,7 @@ import {
 } from "@medusajs/framework/types"
 import crypto from "crypto"
 import { TKassa, WebhookBody } from "t-kassa-api"
-import { TKassaProviderOptions } from "../types"
+import { TKassaProviderOptions, Payment } from "../types"
 import axios, { AxiosError } from "axios"
 import {
   getSmallestUnit,
@@ -37,6 +37,30 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     this.client_ = new TKassa(options.terminalKey, options.password, { server: this.serverUrl_ })
   }
 
+  private normalizePaymentParameters(
+    extra?: InitiatePaymentInput
+  ): Partial<Payment> {
+    const res = {} as Partial<Payment>
+
+    if (extra?.data?.SuccessURL)
+      res.SuccessURL = extra?.data?.SuccessURL as Payment["SuccessURL"]
+
+    if (extra?.data?.FailURL)
+      res.FailURL = extra?.data?.FailURL as Payment["FailURL"]
+
+    if (extra?.data?.PayType) {
+      res.PayType = extra.data.PayType as Payment["PayType"]
+    } else {
+      if (this.options_.capture !== undefined) {
+        res.PayType = this.options_.capture ? "O" : "T"
+      } else {
+        res.PayType = "O"
+      }
+    }
+
+    return res
+  }
+
   /**
    * Initiate a new payment.
    */
@@ -46,18 +70,16 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     const { amount, context = {}, currency_code } = input
     const amountValue = getSmallestUnit(amount, currency_code)
     const idKey = context.idempotency_key
-    const successUrl = input.data?.SuccessURL as string
-    const failUrl = input.data?.FailURL as string
-    const payType = this.options_.capture ? "O" : "T"
+
+    const additionalParameters = this.normalizePaymentParameters(input)
+
     try {
       const response = await this.client_.init({
         TerminalKey: this.options_.terminalKey,
         Password: this.options_.password,
         Amount: amountValue,
         OrderId: idKey || "",
-        SuccessURL: successUrl,
-        FailURL: failUrl,
-        PayType: payType
+        ...additionalParameters
       })
       const paymentId = String(response.PaymentId)
       return { id: paymentId, data: response }
@@ -126,9 +148,9 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     this.logger_.debug(`TkassaBase.refundPayment input:\n${JSON.stringify({ amount, data }, null, 2)}`)
 
     const paymentId = data?.PaymentId as string
-    const amountValue = typeof amount === 'object' && 'value' in amount 
-    ? amount.value 
-    : typeof amount === 'string' || typeof amount === 'number'
+    const amountValue = typeof amount === 'object' && 'value' in amount
+      ? amount.value
+      : typeof amount === 'string' || typeof amount === 'number'
         ? amount
         : ""
     try {
