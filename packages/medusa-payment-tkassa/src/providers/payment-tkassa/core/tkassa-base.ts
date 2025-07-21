@@ -16,8 +16,14 @@ import {
   UpdatePaymentInput, UpdatePaymentOutput,
 } from "@medusajs/framework/types"
 import crypto from "crypto"
-import { TKassa, WebhookBody } from "t-kassa-api"
-import { TKassaProviderOptions, Payment } from "../types"
+import { TKassa } from "t-kassa-api"
+import {
+  Payment,
+  PaymentStatuses,
+  PaymentStatusesMap,
+  TKassaProviderOptions,
+  TkassaEvent
+} from "../types"
 import axios, { AxiosError } from "axios"
 import {
   getSmallestUnit,
@@ -38,18 +44,18 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
   }
 
   private normalizePaymentParameters(
-    extra?: InitiatePaymentInput
+    extra?: Record<string, unknown>
   ): Partial<Payment> {
     const res = {} as Partial<Payment>
 
-    if (extra?.data?.SuccessURL)
-      res.SuccessURL = extra?.data?.SuccessURL as Payment["SuccessURL"]
+    if (extra?.SuccessURL)
+      res.SuccessURL = extra?.SuccessURL as Payment["SuccessURL"]
 
-    if (extra?.data?.FailURL)
-      res.FailURL = extra?.data?.FailURL as Payment["FailURL"]
+    if (extra?.FailURL)
+      res.FailURL = extra?.FailURL as Payment["FailURL"]
 
-    if (extra?.data?.PayType) {
-      res.PayType = extra.data.PayType as Payment["PayType"]
+    if (extra?.PayType) {
+      res.PayType = extra.PayType as Payment["PayType"]
     } else {
       if (this.options_.capture !== undefined) {
         res.PayType = this.options_.capture ? "O" : "T"
@@ -64,24 +70,25 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
   /**
    * Initiate a new payment.
    */
-  async initiatePayment(input: InitiatePaymentInput): Promise<InitiatePaymentOutput> {
-    this.logger_.debug(`TkassaBase.initiatePayment input:\n${JSON.stringify(input, null, 2)}`)
+  async initiatePayment({
+    currency_code,
+    amount,
+    data,
+    context,
+  }: InitiatePaymentInput): Promise<InitiatePaymentOutput> {
+    this.logger_.debug("TkassaBase.initiatePayment:\n" + JSON.stringify({ currency_code, amount, data, context }, null, 2))
 
-    const { amount, context = {}, currency_code } = input
-    const amountValue = getSmallestUnit(amount, currency_code)
-    const idKey = context.idempotency_key
-
-    const additionalParameters = this.normalizePaymentParameters(input)
-
+    const additionalParameters = this.normalizePaymentParameters(data)
     try {
       const response = await this.client_.init({
         TerminalKey: this.options_.terminalKey,
         Password: this.options_.password,
-        Amount: amountValue,
-        OrderId: idKey || "",
+        Amount: getSmallestUnit(amount, currency_code),
+        OrderId: data?.session_id as string,
         ...additionalParameters
       })
       const paymentId = String(response.PaymentId)
+      
       return { id: paymentId, data: response }
     } catch (e) {
       throw this.buildError("An error occurred in initiatePayment", e)
@@ -92,7 +99,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
    * Capture an existing payment.
    */
   async capturePayment(input: CapturePaymentInput): Promise<CapturePaymentOutput> {
-    this.logger_.debug(`TkassaBase.capturePayment input:\n${JSON.stringify(input, null, 2)}`)
+    this.logger_.debug(`TkassaBase.capturePayment:\n${JSON.stringify(input, null, 2)}`)
 
     const paymentId = input.data?.PaymentId as string
 
@@ -112,7 +119,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
    * Authorize a payment by retrieving its status.
    */
   async authorizePayment(input: AuthorizePaymentInput): Promise<AuthorizePaymentOutput> {
-    this.logger_.debug(`TkassaBase.authorizePayment input:\n${JSON.stringify(input, null, 2)}`)
+    this.logger_.debug(`TkassaBase.authorizePayment:\n${JSON.stringify(input, null, 2)}`)
 
     const statusResponse = await this.getPaymentStatus(input)
     return statusResponse
@@ -123,7 +130,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
    * Payment delete is not supported by T-Kassa.
    */
   async deletePayment(input: DeletePaymentInput): Promise<DeletePaymentOutput> {
-    this.logger_.debug(`TkassaBase.deletePayment input:\n${JSON.stringify(input, null, 2)}`)
+    this.logger_.debug(`TkassaBase.deletePayment:\n${JSON.stringify(input, null, 2)}`)
 
     return input
   }
@@ -133,7 +140,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
    * Payment update is not supported by T-Kassa.
    */
   async updatePayment(input: UpdatePaymentInput): Promise<UpdatePaymentOutput> {
-    this.logger_.debug(`TkassaBase.updatePayment input:\n${JSON.stringify(input, null, 2)}`)
+    this.logger_.debug(`TkassaBase.updatePayment:\n${JSON.stringify(input, null, 2)}`)
 
     return input
   }
@@ -145,7 +152,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     amount,
     data,
   }: RefundPaymentInput): Promise<RefundPaymentOutput> {
-    this.logger_.debug(`TkassaBase.refundPayment input:\n${JSON.stringify({ amount, data }, null, 2)}`)
+    this.logger_.debug(`TkassaBase.refundPayment:\n${JSON.stringify({ amount, data }, null, 2)}`)
 
     const paymentId = data?.PaymentId as string
     const amountValue = typeof amount === 'object' && 'value' in amount
@@ -172,7 +179,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
    * Cancel an existing payment.
    */
   async cancelPayment(input: CancelPaymentInput): Promise<CancelPaymentOutput> {
-    this.logger_.debug(`TkassaBase.cancelPayment input:\n${JSON.stringify(input, null, 2)}`)
+    this.logger_.debug(`TkassaBase.cancelPayment:\n${JSON.stringify(input, null, 2)}`)
 
     const paymentId = input.data?.PaymentId as string
 
@@ -215,7 +222,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     input: GetPaymentStatusInput
   ): Promise<GetPaymentStatusOutput> {
     this.logger_.debug(
-      `TkassaProvider.getPaymentStatus input:\n${JSON.stringify(input, null, 2)}`
+      `TkassaProvider.getPaymentStatus:\n${JSON.stringify(input, null, 2)}`
     )
 
     const paymentId = input.data?.PaymentId
@@ -233,94 +240,46 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
         PaymentId: paymentId,
       })
 
-      const status = response.Status as string
-
-      const map: Record<string, PaymentSessionStatus> = {
-        NEW: PaymentSessionStatus.PENDING,
-        FORM_SHOWED: PaymentSessionStatus.PENDING,
-        AUTHORIZING: PaymentSessionStatus.PENDING,
-        "3DS_CHECKING": PaymentSessionStatus.PENDING,
-        "3DS_CHECKED": PaymentSessionStatus.PENDING,
-        AUTHORIZED: PaymentSessionStatus.AUTHORIZED,
-        CONFIRMING: PaymentSessionStatus.PENDING,
-        CONFIRMED: PaymentSessionStatus.CAPTURED,
-        REVERSING: PaymentSessionStatus.CANCELED,
-        PARTIAL_REVERSED: PaymentSessionStatus.CANCELED,
-        REVERSED: PaymentSessionStatus.CANCELED,
-        REFUNDING: PaymentSessionStatus.CANCELED,
-        PARTIAL_REFUNDED: PaymentSessionStatus.CANCELED,
-        REFUNDED: PaymentSessionStatus.CANCELED,
-        CANCELED: PaymentSessionStatus.CANCELED,
-        DEADLINE_EXPIRED: PaymentSessionStatus.CANCELED,
-        REJECTED: PaymentSessionStatus.CANCELED,
-        AUTH_FAIL: PaymentSessionStatus.CANCELED,
+      const status = response.Status as keyof typeof PaymentStatuses
+      return {
+        status: PaymentStatusesMap[status] ?? PaymentSessionStatus.ERROR,
+        data: response as unknown as Record<string, unknown>
       }
-      const mapped = map[status] ?? PaymentSessionStatus.PENDING
-      this.logger_.debug(
-        `TkassaProvider.getPaymentStatus: T-Kassa="${status}" → Medusa="${mapped}"`
-      )
-
-      return { status: mapped, data: response as unknown as Record<string, unknown> }
     } catch (e: any) {
       throw this.buildError("An error occurred in getPaymentStatus", e)
     }
   }
 
 
-  async getWebhookActionAndData(payload: ProviderWebhookPayload["payload"]): Promise<WebhookActionResult> {
+  async getWebhookActionAndData(webhookData: ProviderWebhookPayload["payload"]): Promise<WebhookActionResult> {
     this.logger_.debug(
-      `TkassaProvider.getWebhookActionAndData payload:\n${JSON.stringify(payload, null, 2)}`
+      `TkassaProvider.getWebhookActionAndData:\n${JSON.stringify(webhookData, null, 2)}`
     )
 
-    const isValid = await this.isWebhookEventValid(payload)
+    const isValid = await this.isWebhookEventValid(webhookData)
     if (!isValid)
       return {
         action: PaymentActions.NOT_SUPPORTED
       }
 
-    const data = payload.data as any
-    const raw: {
-      PaymentId: number | string
-      Amount?: number
-      Status?: string
-      [k: string]: any
-    } = data
+    const data = webhookData.data as unknown as TkassaEvent
 
-    try {
-      await this.client_.emit(raw as WebhookBody)
-    } catch (e) {
-      return { action: PaymentActions.NOT_SUPPORTED }
-    }
-
-    const session_id = raw.OrderId as string
-    const amount = raw.Amount ?? 0
-    const status = raw.Status
-
-
-    switch (status) {
-      case "CONFIRMED":
-        return {
-          action: PaymentActions.SUCCESSFUL,
-          data: { session_id, amount }
-        }
-      case "AUTHORIZED":
-        return {
-          action: PaymentActions.AUTHORIZED,
-          data: { session_id, amount }
-        }
-      case "REJECTED":
-      case "CANCELED":
-        return {
-          action: PaymentActions.CANCELED,
-          data: { session_id, amount }
-        }
-      default:
-        return { action: PaymentActions.NOT_SUPPORTED }
+    return {
+      action: PaymentStatusesMap[PaymentStatuses[data.Status]] ?? PaymentSessionStatus.ERROR,
+      data: {
+        session_id: data.OrderId,
+        amount: data.Amount
+      }
     }
   }
 
   protected async isWebhookEventValid(payload: ProviderWebhookPayload["payload"]): Promise<boolean> {
-    const data = payload.data
+    const data = payload.data as unknown as TkassaEvent
+
+    if (!data || !data.Status || !data.OrderId || !data.Amount) {
+      return false
+    }
+
     const incomingToken = data.Token
     const requiredKeys = [
       "TerminalKey", "OrderId", "Success", "Status", "PaymentId",
@@ -346,14 +305,14 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
   /**
    * Helper to build errors with additional context.
    */
-  protected buildError(message: string, error: Error | AxiosError): Error {
-    if (axios.isAxiosError(error)) {
-      return new Error(
-        `${message}: ${error.response?.status} ${error.response?.data?.code} - ${error.response?.data?.description}`.trim()
-      )
-    }
+  protected buildError(message: string, error: Error): Error {
+    const errorDetails =
+      "raw" in error ? (error.raw as any) : error
+
     return new Error(
-      `${message}: ${error.message}`.trim()
+      `${message}: ${error.message}. ${
+        "detail" in errorDetails ? errorDetails.detail : ""
+      }`.trim()
     )
   }
 }
