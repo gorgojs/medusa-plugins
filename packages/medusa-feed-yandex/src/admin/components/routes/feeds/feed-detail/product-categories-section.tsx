@@ -14,7 +14,8 @@ import {
 } from "@tanstack/react-query"
 import { useState, useMemo, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { t } from "i18next"
+
+import { i18n } from "../../../../components/utilities/i18n"
 import { sdk } from "../../../../lib/sdk"
 import { Header } from "../../../common/header"
 import { Feed, FeedResponse } from "../../../../types"
@@ -179,24 +180,24 @@ export const ProductCategoriesSection = () => {
       <Container className="divide-y p-0">
         <DataTable instance={table}>
           <Header
-            title={t("settings.categories.title")}
-            subtitle={t("settings.categories.subtitle")}
+            title={i18n.t("settings.categories.title")}
+            subtitle={i18n.t("settings.categories.subtitle")}
             actions={[
               {
                 type: "button",
                 props: {
-                  children: t("actions.save"),
+                  children: i18n.t("actions.save"),
                   variant: "secondary",
                   onClick: () => {
                     try {
                       saveFeedCategories(selectedCategories)
-                      toast.success(t("general.success"), {
-                        description: t("feeds.toasts.categoriesSaved"),
+                      toast.success(i18n.t("general.success"), {
+                        description: i18n.t("feeds.toasts.categoriesSaved"),
                       })
                     } catch (e) {
                       console.error(e)
-                      toast.error(t("general.error"), {
-                        description: t("feeds.toasts.categoriesSaveFailed"),
+                      toast.error(i18n.t("general.error"), {
+                        description: i18n.t("feeds.toasts.categoriesSaveFailed"),
                       })
                     }
                   },

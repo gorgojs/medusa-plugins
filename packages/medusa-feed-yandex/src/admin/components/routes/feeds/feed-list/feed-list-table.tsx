@@ -9,9 +9,9 @@ import {
 import { SquareGreenSolid, SquareRedSolid } from "@medusajs/icons"
 import { useQuery } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
-import { t } from "i18next"
-
 import { useNavigate } from "react-router-dom"
+
+import { i18n } from "../../../../components/utilities/i18n"
 import { sdk } from "../../../../lib/sdk"
 import { Header } from "../../../common/header"
 import { DateCell } from "../../../common/table/date-cell"
@@ -49,15 +49,15 @@ export const FeedListTable = ({
   })
 
   const columns = [
-    columnHelper.accessor("title", { header: t("feeds.fields.title") }),
+    columnHelper.accessor("title", { header: i18n.t("feeds.fields.title") }),
     columnHelper.accessor("file_name", {
-      header: t("feeds.fields.fileName"),
+      header: i18n.t("feeds.fields.fileName"),
       cell: ({ row }) => {
         return row.original.file_name + fileExtension
       },
     }),
     columnHelper.accessor("file_path", {
-      header: t("feeds.fields.feedUrl"),
+      header: i18n.t("feeds.fields.feedUrl"),
       cell: ({ row }) => {
         const filePath = row.original.file_path
         const id = row.original.id
@@ -84,21 +84,21 @@ export const FeedListTable = ({
       },
     }),
     columnHelper.accessor("last_export_at", {
-      header: t("feeds.fields.lastExport"),
+      header: i18n.t("feeds.fields.lastExport"),
       cell: ({ getValue }) => {
         const rawDate = getValue()
         return <DateCell date={rawDate} mode="relative" />
       }
     }),
     columnHelper.accessor("is_active", {
-      header: t("feeds.fields.status"),
+      header: i18n.t("feeds.fields.status"),
       cell: ({ getValue }) => {
         const isActive = getValue()
         if (isActive) {
           return (
             <div className="flex items-center gap-1"><SquareGreenSolid />
               <Text size="small" leading="compact" className="whitespace-pre-line text-pretty">
-                {t("general.active")}
+                {i18n.t("general.active")}
               </Text>
             </div>
           )
@@ -107,7 +107,7 @@ export const FeedListTable = ({
             <div className="flex items-center gap-1">
               <SquareRedSolid />
               <Text size="small" leading="compact" className="whitespace-pre-line text-pretty">
-                {t("general.inactive")}
+                {i18n.t("general.inactive")}
               </Text>
             </div>
           )
@@ -115,7 +115,7 @@ export const FeedListTable = ({
       }
     }),
     columnHelper.accessor("schedule", {
-      header: t("feeds.fields.schedule"),
+      header: i18n.t("feeds.fields.schedule"),
       cell: ({ getValue }) => {
         const value = getValue()
         return (
@@ -147,12 +147,12 @@ export const FeedListTable = ({
     <DataTable instance={table}>
       <Header
         key={stateModal ? "create-open" : "create-closed"}
-        title={t("feeds.domain")}
+        title={i18n.t("feeds.domain")}
         actions={[
           {
             type: "button",
             props: {
-              children: t("actions.create"),
+              children: i18n.t("actions.create"),
               variant: "secondary",
               onClick: () => openModal(),
             },

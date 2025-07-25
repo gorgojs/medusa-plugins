@@ -16,7 +16,7 @@
     "build": "medusa build",
     "seed": "medusa exec ./src/scripts/seed.ts",
     "start": "medusa start",
-    "dev": " medusa develop",
+    "dev": "yarn predev && yarn && medusa develop",
     "predev": "medusa plugin:add @gorgo/medusa-feed-yandex",
     "db:migrate": "medusa db:migrate",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
@@ -25,10 +25,10 @@
   },
   "dependencies": {
     "@gorgo/medusa-feed-yandex": "file:.yalc/@gorgo/medusa-feed-yandex",
-    "@medusajs/admin-sdk": "2.8.8-snapshot-20250714090316",
-    "@medusajs/cli": "2.8.8-snapshot-20250714090316",
-    "@medusajs/framework": "2.8.8-snapshot-20250714090316",
-    "@medusajs/medusa": "2.8.8-snapshot-20250714090316",
+    "@medusajs/admin-sdk": "2.8.8",
+    "@medusajs/cli": "2.8.8",
+    "@medusajs/framework": "2.8.8",
+    "@medusajs/medusa": "2.8.8",
     "@mikro-orm/core": "6.4.3",
     "@mikro-orm/knex": "6.4.3",
     "@mikro-orm/migrations": "6.4.3",
@@ -37,7 +37,7 @@
     "pg": "^8.13.0"
   },
   "devDependencies": {
-    "@medusajs/test-utils": "2.8.8-snapshot-20250714090316",
+    "@medusajs/test-utils": "2.8.8",
     "@mikro-orm/cli": "6.4.3",
     "@swc/core": "1.5.7",
     "@swc/jest": "^0.2.36",
@@ -57,5 +57,5 @@
   "engines": {
     "node": ">=20"
   },
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "yarn@4.9.2"
 }

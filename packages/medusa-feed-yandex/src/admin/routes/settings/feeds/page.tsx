@@ -4,10 +4,9 @@ import {
   Container,
   useToggleState,
 } from "@medusajs/ui"
-import { t } from "i18next"
 import { SingleColumnLayout } from "../../../components/layout"
 import { FeedListTable, FeedCreateModal } from "../../../components/routes/feeds/feed-list"
-import { I18n } from "../../../components/utilities/i18n"
+import { I18n, i18n } from "../../../components/utilities/i18n"
 
 const FeedsPage = () => {
   const [stateModal, openModal, closeModal] = useToggleState()
@@ -25,12 +24,12 @@ const FeedsPage = () => {
 }
 
 export const config = defineRouteConfig({
-  label: t("feeds.domain"),
+  label: i18n.t("feeds.domain"),
   icon: Rss,
 })
 
 export const handle = {
-  breadcrumb: () => t("feeds.domain"),
+  breadcrumb: () => i18n.t("feeds.domain"),
 }
 
 export default FeedsPage

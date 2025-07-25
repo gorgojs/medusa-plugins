@@ -28,9 +28,19 @@ A Medusa plugin that generates a product feed in <a href="https://yandex.com/sup
     <img src="https://img.shields.io/badge/Medusa-^2.8.0-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.8.7-green?logo=checkmarx" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.8.8-green?logo=checkmarx" alt="Medusa" />
   </a>
 </p>
+
+## Features
+
+✅ Export product feeds in [Yandex Market YML](https://yandex.com/support/direct/en/feeds/requirements-yml.html) format
+✅ Easily access feed URLs for integration with Yandex Market
+✅ Internalized interface in Medusa Admin
+✅ Schedule automatic feed exports at intervals
+✅ Select specific product categories for export
+✅ Manual feed generation
+✅ Uses Medusa File Module
 
 ## 💬 Support & Community on Telegram
 

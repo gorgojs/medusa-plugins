@@ -27,7 +27,6 @@ const FeedDetailsPage = () => (
   </>
 )
 
-
 const Breadcrumb = (
   props: UIMatch<FeedResponse>
 ) => {
