@@ -34,13 +34,13 @@ A Medusa plugin that generates a product feed in <a href="https://yandex.com/sup
 
 ## Features
 
-- [x] Export product feeds in [Yandex Market YML](https://yandex.com/support/direct/en/feeds/requirements-yml.html) format
-- [x] Easily access feed URLs for integration with Yandex Market
-- [x] Internalized interface in Medusa Admin
-- [x] Schedule automatic feed exports at intervals
-- [x] Select specific product categories for export
-- [x] Manual feed generation
-- [x] Uses Medusa File Module
+- ✅ Export product feeds in [Yandex Market YML](https://yandex.com/support/direct/en/feeds/requirements-yml.html) format
+- ✅ Easily access feed URLs for integration with Yandex Market
+- ✅ Internalized interface in Medusa Admin
+- ✅ Schedule automatic feed exports at intervals
+- ✅ Select specific product categories for export
+- ✅ Manual feed generation
+- ✅ Uses Medusa File Module with built-in file provider support
 
 ## 💬 Support & Community on Telegram
 
