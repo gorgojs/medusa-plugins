@@ -1,5 +1,11 @@
 # @gorgo/medusa-feed-yandex
 
+## 0.2.6
+
+### Patch Changes
+
+- Fix readme again
+
 ## 0.2.5
 
 ### Patch Changes
