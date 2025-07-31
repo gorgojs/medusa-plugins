@@ -1,6 +1,6 @@
 {
   "name": "@gorgo/medusa-payment-tkassa",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "TKassa payment provider for Medusa",
   "files": [
     ".medusa/server"
