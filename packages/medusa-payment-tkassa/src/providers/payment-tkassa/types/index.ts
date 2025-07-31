@@ -24,6 +24,8 @@ export interface Payment {
 export interface TkassaEvent extends Partial<Payment> {
   Token: string
   Status: keyof typeof PaymentStatuses
+  OrderId: string
+  Amount: number
   [k: string]: any
 }
 
