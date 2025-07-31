@@ -1,9 +1,9 @@
 <p align="center">
   <a href="https://www.medusajs.com">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/21d1bce5-d168-41ed-a2af-87aa0d4b6b5e">
-      <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/21d1bce5-d168-41ed-a2af-87aa0d4b6b5e">
-      <img alt="Medusa-TKassa logo" src="https://github.com/user-attachments/assets/21d1bce5-d168-41ed-a2af-87aa0d4b6b5e" height="120">
+      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/1c5291d8-b708-4337-8776-fb81d7b5cf9c">
+      <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/1c5291d8-b708-4337-8776-fb81d7b5cf9c">
+      <img alt="Medusa-TKassa logo" src="https://github.com/user-attachments/assets/1c5291d8-b708-4337-8776-fb81d7b5cf9c" height="120">
     </picture>
   </a>
   
@@ -28,7 +28,7 @@ A Medusa plugin that provides TKassa payments.
     <img src="https://img.shields.io/badge/Medusa-^2.7.0-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.8.7-green?logo=checkmarx" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.8.8-green?logo=checkmarx" alt="Medusa" />
   </a>
 </p>
 
