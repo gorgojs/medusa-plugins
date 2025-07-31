@@ -24,9 +24,9 @@ import {
   TKassaProviderOptions,
   TkassaEvent
 } from "../types"
-import axios, { AxiosError } from "axios"
 import {
   getSmallestUnit,
+  getAmountFromSmallestUnit
 } from "../utils/get-smallest-unit"
 
 abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions> {
@@ -88,8 +88,14 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
         ...additionalParameters
       })
       const paymentId = String(response.PaymentId)
-      
-      return { id: paymentId, data: response }
+
+      return {
+        id: paymentId,
+        data: {
+          ...response,
+          currency_code: currency_code
+        }
+      }
     } catch (e) {
       throw this.buildError("An error occurred in initiatePayment", e)
     }
@@ -109,7 +115,12 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
         Password: this.options_.password,
         PaymentId: paymentId
       })
-      return { data: response }
+      return {
+        data: {
+          ...response,
+          currency_code: input.data?.currency_code
+        }
+      }
     } catch (e) {
       throw this.buildError("An error occurred in capturePaymentt", e)
     }
@@ -155,21 +166,28 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     this.logger_.debug(`TkassaBase.refundPayment:\n${JSON.stringify({ amount, data }, null, 2)}`)
 
     const paymentId = data?.PaymentId as string
+    const currency_code = data?.currency_code as string
     const amountValue = typeof amount === 'object' && 'value' in amount
       ? amount.value
       : typeof amount === 'string' || typeof amount === 'number'
         ? amount
         : ""
+
     try {
       const response = await this.client_.cancel({
         TerminalKey: this.options_.terminalKey,
         Password: this.options_.password,
         PaymentId: paymentId,
         ...(amountValue
-          ? { Amount: getSmallestUnit(Number(amountValue), 'RUB') }
+          ? { Amount: getSmallestUnit(Number(amountValue), currency_code) }
           : {})
       })
-      return { data: response }
+      return {
+        data: {
+          ...response,
+          currency_code
+        }
+      }
     } catch (e) {
       throw this.buildError("An error occurred in refundPayment", e)
     }
@@ -189,7 +207,12 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
         Password: this.options_.password,
         PaymentId: paymentId
       })
-      return { data: response }
+      return {
+        data: {
+          ...response,
+          currency_code: input.data?.currency_code
+        }
+      }
     } catch (e) {
       throw this.buildError("An error occurred in cancelPayment", e)
     }
@@ -209,7 +232,12 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
         Password: this.options_.password,
         PaymentId: paymentId
       })
-      return { data: response }
+      return {
+        data: {
+          ...response,
+          currency_code: input.data?.currency_code
+        }
+      }
     } catch (e) {
       throw this.buildError("An error occurred in retrievePayment", e)
     }
@@ -243,14 +271,19 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
       const status = response.Status as keyof typeof PaymentStatuses
       return {
         status: PaymentStatusesMap[status] ?? PaymentSessionStatus.ERROR,
-        data: response as unknown as Record<string, unknown>
+        data: {
+          ...response as unknown as Record<string, unknown>,
+          currency_code: input.data?.currency_code
+        }
       }
     } catch (e: any) {
       throw this.buildError("An error occurred in getPaymentStatus", e)
     }
   }
 
-
+  /**
+   * Handle webhook events from T-Kassa.
+   */
   async getWebhookActionAndData(webhookData: ProviderWebhookPayload["payload"]): Promise<WebhookActionResult> {
     this.logger_.debug(
       `TkassaProvider.getWebhookActionAndData:\n${JSON.stringify(webhookData, null, 2)}`
@@ -268,11 +301,15 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
       action: PaymentStatusesMap[PaymentStatuses[data.Status]] ?? PaymentSessionStatus.ERROR,
       data: {
         session_id: data.OrderId,
-        amount: data.Amount
+        amount: getAmountFromSmallestUnit(data.Amount, "rub") // TODO: use currency_code somehow
       }
     }
   }
 
+  /**
+   * Validate the webhook event from T-Kassa.
+   * It checks if the event has the required fields and verifies the token.
+   */
   protected async isWebhookEventValid(payload: ProviderWebhookPayload["payload"]): Promise<boolean> {
     const data = payload.data as unknown as TkassaEvent
 
@@ -281,27 +318,34 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     }
 
     const incomingToken = data.Token
+    if (!incomingToken || typeof incomingToken !== 'string') {
+      return false
+    }
+
     const requiredKeys = [
-      "TerminalKey", "OrderId", "Success", "Status", "PaymentId",
-      "ErrorCode", "Amount", "CardId", "Pan", "ExpDate"
+      "TerminalKey",
+      "OrderId",
+      "Success",
+      "Status",
+      "PaymentId",
+      "ErrorCode",
+      "Amount",
+      "CardId",
+      "Pan",
+      "ExpDate"
     ]
-
     const params: Record<string, string> = {}
-
     for (const key of requiredKeys) {
       const value = data[key]
       params[key] = String(value)
     }
     params["Password"] = this.options_.password
-    const sortedKeys = Object.keys(params).sort()
-    let concat = ""
-    for (const key of sortedKeys) {
-      concat += params[key]
-    }
-    const hash = crypto.createHash("sha256").update(concat).digest("hex")
-    const valid = incomingToken === hash
-    return valid
+    const values = Object.keys(params).sort().map(key => params[key]).join("")
+    const hash = crypto.createHash("sha256").update(values).digest("hex")
+
+    return incomingToken === hash
   }
+
   /**
    * Helper to build errors with additional context.
    */
@@ -310,9 +354,8 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
       "raw" in error ? (error.raw as any) : error
 
     return new Error(
-      `${message}: ${error.message}. ${
-        "detail" in errorDetails ? errorDetails.detail : ""
-      }`.trim()
+      `${message}: ${error.message}. ${"detail" in errorDetails ? errorDetails.detail : ""
+        }`.trim()
     )
   }
 }
