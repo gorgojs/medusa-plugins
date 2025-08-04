@@ -34,7 +34,8 @@ module.exports = defineConfig({
             options: {
               terminalKey: process.env.TKASSA_TERMINAL_KEY,
               password: process.env.TKASSA_PASSWORD,
-              server: process.env.TKASSA_SERVER,
+              taxation: "osn",
+              ffdVersion: "1.05",
               capture: true
             },
           },
