@@ -34,11 +34,9 @@ import {
 } from "../types"
 import {
   generateReceiptFfd12,
-  generateReceiptFfd105
-} from "../utils/get-receipt"
-import {
-  getSmallestUnit,
-} from "../utils/get-smallest-unit"
+  generateReceiptFfd105,
+  getSmallestUnit
+} from "../utils"
 
 abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions> {
   static identifier = "tkassa"
