@@ -58,9 +58,6 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     if (!isDefined(options.ffdVersion) || !ffdVersionValues.includes(options.ffdVersion as FfdVersion)) {
       throw new Error("Required option `ffdVersion` is missing in T-Kassa provider")
     }
-    if (!isDefined(options.capture)) {
-      throw new Error("Required option `capture` is missing in T-Kassa provider")
-    }
   }
 
   constructor(container: { logger: Logger }, options: TKassaProviderOptions) {
