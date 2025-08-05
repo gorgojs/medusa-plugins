@@ -94,7 +94,8 @@ const Payment = ({
             Phone: cart?.shipping_address.phone,
             Items: cart?.items,
             shipping_total: cart?.shipping_total,
-            shipping_methods: cart?.shipping_methods
+            shipping_methods: cart?.shipping_methods,
+            shipping_address: cart?.shipping_address
           }
         })
       }
