@@ -1,7 +1,8 @@
 import {
   AbstractPaymentProvider,
   PaymentSessionStatus,
-  PaymentActions
+  PaymentActions,
+  isDefined
 } from "@medusajs/framework/utils"
 import {
   InitiatePaymentInput, InitiatePaymentOutput,
@@ -14,25 +15,30 @@ import {
   AuthorizePaymentInput, AuthorizePaymentOutput,
   DeletePaymentInput, DeletePaymentOutput,
   UpdatePaymentInput, UpdatePaymentOutput,
+  TaxableItemDTO,
 } from "@medusajs/framework/types"
 import crypto from "crypto"
 import { TKassa } from "t-kassa-api"
 import {
-  Items_FFD_105,
+  FfdVersion,
+  ffdVersionValues,
   Payment,
   PaymentStatuses,
   PaymentStatusesMap,
   Receipt_FFD_12,
   Receipt_FFD_105,
+  Taxation,
+  taxationValues,
   TKassaProviderOptions,
   TkassaEvent,
-  Taxation
 } from "../types"
-import axios, { AxiosError } from "axios"
+import {
+  generateReceiptFfd12,
+  generateReceiptFfd105
+} from "../utils/get-receipt"
 import {
   getSmallestUnit,
 } from "../utils/get-smallest-unit"
-import { AnyTxtRecord } from "dns"
 
 abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions> {
   static identifier = "tkassa"
@@ -40,6 +46,24 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
   protected options_: TKassaProviderOptions
   protected client_: TKassa
   protected logger_: Logger
+
+  static validateOptions(options: TKassaProviderOptions): void {
+    if (!isDefined(options.terminalKey)) {
+      throw new Error("Required option `terminalKey` is missing in T-Kassa provider")
+    }
+    if (!isDefined(options.password)) {
+      throw new Error("Required option `password` is missing in T-Kassa provider")
+    }
+    if (!isDefined(options.taxation) || !taxationValues.includes(options.taxation as Taxation)) {
+      throw new Error("Required option `taxation` is missing in T-Kassa provider")
+    }
+    if (!isDefined(options.ffdVersion) || !ffdVersionValues.includes(options.ffdVersion as FfdVersion)) {
+      throw new Error("Required option `ffdVersion` is missing in T-Kassa provider")
+    }
+    if (!isDefined(options.capture)) {
+      throw new Error("Required option `capture` is missing in T-Kassa provider")
+    }
+  }
 
   constructor(container: { logger: Logger }, options: TKassaProviderOptions) {
     super(container, options)
@@ -72,49 +96,6 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     return res
   }
 
-  private generateReceiptFfd105(taxation: Taxation, items: Array<Record<string, any>>, shippingTotal: number, shippingMethods: Array<Record<string, any>>, email?: string, phone?: string): Receipt_FFD_105 {
-    const res = {} as Receipt_FFD_105
-
-    res.FfdVersion = "1.05"
-    res.Taxation = taxation
-
-    if (email)
-      res.Email = email
-
-    if (phone)
-      res.Phone = phone
-
-    const Items: Items_FFD_105[] = items.map(i => ({
-      Name: i.variant_title
-        ? `${i.product_title} (${i.variant_title})`
-        : i.product_title as string,
-      Price: getSmallestUnit(i.unit_price, "ru"),
-      Quantity: i.quantity,
-      Amount: getSmallestUnit(i.total, "ru"),
-      Tax: 'vat0',
-      PaymentMethod: 'full_payment',
-      PaymentObject: 'commodity',
-    }))
-    console.log("shippingTotal", shippingTotal)
-    if (shippingTotal > 0) {
-      const name = shippingMethods?.[0]?.name ?? 'Shipping'
-      const amt = getSmallestUnit(shippingTotal, "ru")
-      Items.push({
-        Name: name.length > 128 ? name.slice(0, 125) + '…' : name,
-        Price: amt,
-        Quantity: 1,
-        Amount: amt,
-        Tax: 'vat0',
-        PaymentMethod: 'full_payment',
-        PaymentObject: 'service',
-      })
-    }
-
-    res.Items = Items
-    console.log("res:", JSON.stringify(res))
-    return res
-  }
-
   /**
    * Initiate a new payment.
    */
@@ -132,7 +113,35 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     const items = data?.Items as Array<Record<string, any>>
     const shippingTotal = data?.shipping_total as number
     const shippingMethods = data?.shipping_methods as Array<Record<string, any>>
+    const shippingAddress = data?.shipping_address as Array<Record<string, any>>
 
+    let receipt = {} as Receipt_FFD_12 | Receipt_FFD_105
+
+    switch (this.options_.ffdVersion) {
+      case "1.05":
+        receipt = generateReceiptFfd105(
+          this.options_.taxation,
+          items, 
+          currency_code,
+          shippingTotal,
+          shippingMethods,
+          Email,
+          Phone
+        )
+        break
+      case "1.2":
+        receipt = generateReceiptFfd12(
+          this.options_.taxation,
+          items,
+          currency_code,
+          shippingTotal,
+          shippingMethods,
+          shippingAddress,
+          Email,
+          Phone
+        )
+        break
+    }
 
     try {
       const response = await this.client_.init({
@@ -141,12 +150,9 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
         Amount: getSmallestUnit(amount, currency_code),
         OrderId: data?.session_id as string,
         ...additionalParameters,
-        Receipt: this.generateReceiptFfd105(this.options_.taxation, items, shippingTotal, shippingMethods, Email, Phone),
+        ...(this.options_.ffdVersion ? { Receipt: receipt } : {}),
       })
-      console.log("RESPONSE:", response)
       const paymentId = String(response.PaymentId)
-      
-
       return { id: paymentId, data: response }
     } catch (e) {
       throw this.buildError("An error occurred in initiatePayment", e)
