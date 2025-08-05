@@ -3,18 +3,18 @@
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/1c5291d8-b708-4337-8776-fb81d7b5cf9c">
       <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/1c5291d8-b708-4337-8776-fb81d7b5cf9c">
-      <img alt="Medusa-TKassa logo" src="https://github.com/user-attachments/assets/1c5291d8-b708-4337-8776-fb81d7b5cf9c" height="120">
+      <img alt="Medusa-T-Kassa logo" src="https://github.com/user-attachments/assets/1c5291d8-b708-4337-8776-fb81d7b5cf9c" height="120">
     </picture>
   </a>
   
 </p>
 
 <h1 align="center">
-TKassa Payments for Medusa
+T-Kassa Payments for Medusa
 </h1>
 
 <p align="center">
-A Medusa plugin that provides TKassa payments.
+A Medusa plugin that provides T-Kassa payments.
 </p>
 
 <p align="center">
@@ -36,7 +36,7 @@ A Medusa plugin that provides TKassa payments.
 
 - Medusa server v2.7.0 or later
 - Node.js v20 or later
-- TKassa account
+- T-Kassa account
 
 ## Installation
 
