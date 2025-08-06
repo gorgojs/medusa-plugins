@@ -1,15 +1,9 @@
-import {
-  Items_FFD_105,
-  Items_FFD_12,
-  Receipt_FFD_12,
-  Receipt_FFD_105,
-  Taxation
-} from "../types"
+
 import {
   getSmallestUnit,
 } from "./get-smallest-unit"
 
-export function generateReceiptFfd105(
+function generateReceiptFfd105(
   taxation: Taxation,
   items: Array<Record<string, any>>,
   currencyCode: string,
@@ -58,7 +52,7 @@ export function generateReceiptFfd105(
   return res
 }
 
-export function generateReceiptFfd12(
+function generateReceiptFfd12(
   taxation: Taxation,
   items: Array<Record<string, any>>,
   currencyCode: string,
@@ -113,4 +107,45 @@ export function generateReceiptFfd12(
   res.Items = Items
 
   return res
+}
+
+export function generateReceipt(
+  // ...
+): Receipt_FFD_105 | Receipt_FFD_12 {
+
+      // const Email = data?.Email as string
+      // const Phone = data?.Phone as string
+      // const items = data?.Items as Array<Record<string, any>>
+      // const shippingTotal = data?.shipping_total as number
+      // const shippingMethods = data?.shipping_methods as Array<Record<string, any>>
+      // const shippingAddress = data?.shipping_address as Array<Record<string, any>>
+  
+      // let receipt = {} as components["schemas"]["Receipt_FFD_105"] | components["schemas"]["Receipt_FFD_12"]
+  
+      // switch (this.options_.ffdVersion) {
+      //   case "1.05":
+      //     receipt = generateReceiptFfd105(
+      //       this.options_.taxation,
+      //       items, 
+      //       currency_code,
+      //       shippingTotal,
+      //       shippingMethods,
+      //       Email,
+      //       Phone
+      //     )
+      //     break
+      //   case "1.2":
+      //     receipt = generateReceiptFfd12(
+      //       this.options_.taxation,
+      //       items,
+      //       currency_code,
+      //       shippingTotal,
+      //       shippingMethods,
+      //       shippingAddress,
+      //       Email,
+      //       Phone
+      //     )
+      //     break
+      // }
+
 }
