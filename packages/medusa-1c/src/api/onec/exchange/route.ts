@@ -174,7 +174,8 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 
 					if (errors?.length > 0) {
 						const errorMessages = errors
-							.map((e) => e.message)
+							// .map((e) => e.message)
+							.map((e) => e)
 							.join("\n");
 						logger.error(
 							`[1C Integration] Import: Workflow failed for session ${sessionId}: ${errorMessages}`,
@@ -287,7 +288,8 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
 		`[1C Integration] File Upload: Receiving file: ${filename} for session ${sessionId}`,
 	);
 
-	if (!req.body || req.body.length === 0) {
+	// if (!req.body || req.body.length === 0) {
+	if (!req.body) {
 		logger.debug(
 			`[1C Integration] File Upload: No file content for ${filename}.`,
 		);
