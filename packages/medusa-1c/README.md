@@ -21,6 +21,11 @@ Sync products and orders between Medusa and 1C:Enterprise.
   </a>
 </p>
 
+## Status
+
+🚧 Work in progress.  
+A stable release is expected around September.
+
 ## Prerequisites
 
 - Medusa server v2.8.0 or later
