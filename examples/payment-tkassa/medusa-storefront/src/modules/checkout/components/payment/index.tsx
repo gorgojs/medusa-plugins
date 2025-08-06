@@ -90,12 +90,7 @@ const Payment = ({
           data: {
             SuccessURL: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`,
             FailURL: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`,
-            Email: cart?.email,
-            Phone: cart?.shipping_address.phone,
-            Items: cart?.items,
-            shipping_total: cart?.shipping_total,
-            shipping_methods: cart?.shipping_methods,
-            shipping_address: cart?.shipping_address
+            cartId: cart?.id,
           }
         })
       }

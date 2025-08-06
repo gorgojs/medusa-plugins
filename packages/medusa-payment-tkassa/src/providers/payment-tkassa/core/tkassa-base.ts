@@ -15,52 +15,59 @@ import {
   AuthorizePaymentInput, AuthorizePaymentOutput,
   DeletePaymentInput, DeletePaymentOutput,
   UpdatePaymentInput, UpdatePaymentOutput,
-  TaxableItemDTO,
 } from "@medusajs/framework/types"
 import crypto from "crypto"
 import { TKassa } from "t-kassa-api"
+import { components } from "t-kassa-api/openapi"
 import {
-  FfdVersion,
-  ffdVersionValues,
+  FfdVersions,
   Payment,
   PaymentStatuses,
   PaymentStatusesMap,
-  Receipt_FFD_12,
-  Receipt_FFD_105,
-  Taxation,
-  taxationValues,
-  TKassaProviderOptions,
+  Taxations,
+  TKassaOptions,
   TkassaEvent,
 } from "../types"
 import {
-  generateReceiptFfd12,
-  generateReceiptFfd105,
+  generateReceipt,
   getSmallestUnit
 } from "../utils"
 
-abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions> {
+abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
   static identifier = "tkassa"
   protected serverUrl_ = "https://securepay.tinkoff.ru"
-  protected options_: TKassaProviderOptions
+  protected options_: TKassaOptions
   protected client_: TKassa
   protected logger_: Logger
 
-  static validateOptions(options: TKassaProviderOptions): void {
+  static validateOptions(options: TKassaOptions): void {
     if (!isDefined(options.terminalKey)) {
       throw new Error("Required option `terminalKey` is missing in T-Kassa provider")
     }
     if (!isDefined(options.password)) {
       throw new Error("Required option `password` is missing in T-Kassa provider")
     }
-    if (!isDefined(options.taxation) || !taxationValues.includes(options.taxation as Taxation)) {
-      throw new Error("Required option `taxation` is missing in T-Kassa provider")
-    }
-    if (!isDefined(options.ffdVersion) || !ffdVersionValues.includes(options.ffdVersion as FfdVersion)) {
-      throw new Error("Required option `ffdVersion` is missing in T-Kassa provider")
+    if (!isDefined(options.useReceipt)) {
+      if (!isDefined(options.taxation)) {
+        throw new Error("Required option `taxation` is missing in T-Kassa provider")
+      } else if (!Taxations.includes(options.taxation)) {
+        throw new Error(`Invalid option \`taxation\` provided in T-Kassa provider. Valid values are: ${Taxations.join(", ")}`)
+      }
+      // if (!isDefined(options.taxItem)) {
+      //  TODO: ...
+      // }
+      // if (!isDefined(options.taxShipping)) {
+      //  TODO: ...
+      // }
+      if (!isDefined(options.ffdVersion)) {
+        throw new Error("Required option `ffdVersion` is missing in T-Kassa provider")
+      } else if (!FfdVersions.includes(options.ffdVersion)) {
+        throw new Error(`Invalid option \`ffdVersion\` provided in T-Kassa provider. Valid values are: ${FfdVersions.join(", ")}`)
+      }
     }
   }
 
-  constructor(container: { logger: Logger }, options: TKassaProviderOptions) {
+  constructor(container: { logger: Logger }, options: TKassaOptions) {
     super(container, options)
     this.options_ = options
     this.logger_ = container.logger
@@ -103,49 +110,46 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaProviderOptions>
     this.logger_.debug("TkassaBase.initiatePayment:\n" + JSON.stringify({ currency_code, amount, data, context }, null, 2))
 
     const additionalParameters = this.normalizePaymentParameters(data)
-    const Email = data?.Email as string
-    const Phone = data?.Phone as string
-    const items = data?.Items as Array<Record<string, any>>
-    const shippingTotal = data?.shipping_total as number
-    const shippingMethods = data?.shipping_methods as Array<Record<string, any>>
-    const shippingAddress = data?.shipping_address as Array<Record<string, any>>
-
-    let receipt = {} as Receipt_FFD_12 | Receipt_FFD_105
-
-    switch (this.options_.ffdVersion) {
-      case "1.05":
-        receipt = generateReceiptFfd105(
-          this.options_.taxation,
-          items, 
-          currency_code,
-          shippingTotal,
-          shippingMethods,
-          Email,
-          Phone
-        )
-        break
-      case "1.2":
-        receipt = generateReceiptFfd12(
-          this.options_.taxation,
-          items,
-          currency_code,
-          shippingTotal,
-          shippingMethods,
-          shippingAddress,
-          Email,
-          Phone
-        )
-        break
-    }
+    let receipt = {} as components["schemas"]["Receipt_FFD_105"] | components["schemas"]["Receipt_FFD_12"]
 
     try {
+      // TODO: finish
+      /*
+      // Get Receipt
+      if(this.options_.useReceipt) {
+        const query = container.resolve("query")
+        const { data: [cart] } = await query.graph({
+          entity: "cart",
+          fields: [
+            "id",
+            ...
+            "currency_code",
+            "shipping_total",
+            "items.*",
+            "shipping_methods.*",
+            "shipping_address.*",
+          ],
+          filters: {
+            id: "cart_123", // Specify the cart ID
+          },
+        })
+        receipt = getReceipt(
+          this.options_.ffdVersion,
+          this.options_.taxation,
+          this.options_.taxItem,
+          this.options_.taxShipping,
+          cart
+        )
+      }
+      */
+      // Get Payment
       const response = await this.client_.init({
         TerminalKey: this.options_.terminalKey,
         Password: this.options_.password,
         Amount: getSmallestUnit(amount, currency_code),
         OrderId: data?.session_id as string,
         ...additionalParameters,
-        ...(this.options_.ffdVersion ? { Receipt: receipt } : {}),
+        ...(this.options_.useReceipt ? { Receipt: receipt } : {}),
       })
       const paymentId = String(response.PaymentId)
       return { id: paymentId, data: response }
