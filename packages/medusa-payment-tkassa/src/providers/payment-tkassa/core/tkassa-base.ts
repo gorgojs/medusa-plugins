@@ -25,12 +25,15 @@ import {
   PaymentStatuses,
   PaymentStatusesMap,
   Taxations,
+  TaxItem,
+  TaxShipping,
   TKassaOptions,
   TkassaEvent,
 } from "../types"
 import {
   generateReceipt,
-  getSmallestUnit
+  getAmountFromSmallestUnit,
+  getSmallestUnit,
 } from "../utils"
 
 abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
@@ -47,18 +50,22 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
     if (!isDefined(options.password)) {
       throw new Error("Required option `password` is missing in T-Kassa provider")
     }
-    if (!isDefined(options.useReceipt)) {
+    if (isDefined(options.useReceipt)) {
       if (!isDefined(options.taxation)) {
         throw new Error("Required option `taxation` is missing in T-Kassa provider")
       } else if (!Taxations.includes(options.taxation)) {
         throw new Error(`Invalid option \`taxation\` provided in T-Kassa provider. Valid values are: ${Taxations.join(", ")}`)
       }
-      // if (!isDefined(options.taxItem)) {
-      //  TODO: ...
-      // }
-      // if (!isDefined(options.taxShipping)) {
-      //  TODO: ...
-      // }
+      if (!isDefined(options.taxItem)) {
+        throw new Error("Required option `taxItem` is missing in T-Kassa provider")
+      } else if (!TaxItem.includes(options.taxItem)) {
+        throw new Error(`Invalid option \`taxItem\` provided in T-Kassa provider. Valid values are: ${TaxItem.join(", ")}`)
+      }
+      if (!isDefined(options.taxShipping)) {
+        throw new Error("Required option `taxShipping` is missing in T-Kassa provider")
+      } else if (!TaxShipping.includes(options.taxShipping)) {
+        throw new Error(`Invalid option \`taxShipping\` provided in T-Kassa provider. Valid values are: ${TaxShipping.join(", ")}`)
+      }
       if (!isDefined(options.ffdVersion)) {
         throw new Error("Required option `ffdVersion` is missing in T-Kassa provider")
       } else if (!FfdVersions.includes(options.ffdVersion)) {
@@ -110,30 +117,19 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
     this.logger_.debug("TkassaBase.initiatePayment:\n" + JSON.stringify({ currency_code, amount, data, context }, null, 2))
 
     const additionalParameters = this.normalizePaymentParameters(data)
-    let receipt = {} as components["schemas"]["Receipt_FFD_105"] | components["schemas"]["Receipt_FFD_12"]
+    const cart = data?.cart as Record<string, any>
 
+    let receipt = {} as components["schemas"]["Receipt_FFD_105"] | components["schemas"]["Receipt_FFD_12"]
+    
     try {
-      // TODO: finish
-      /*
-      // Get Receipt
-      if(this.options_.useReceipt) {
-        const query = container.resolve("query")
-        const { data: [cart] } = await query.graph({
-          entity: "cart",
-          fields: [
-            "id",
-            ...
-            "currency_code",
-            "shipping_total",
-            "items.*",
-            "shipping_methods.*",
-            "shipping_address.*",
-          ],
-          filters: {
-            id: "cart_123", // Specify the cart ID
-          },
-        })
-        receipt = getReceipt(
+      if(
+        this.options_.useReceipt && 
+        this.options_.ffdVersion && 
+        this.options_.taxation &&
+        this.options_.taxItem &&
+        this.options_.taxShipping
+      ) {
+        receipt = generateReceipt(
           this.options_.ffdVersion,
           this.options_.taxation,
           this.options_.taxItem,
@@ -141,7 +137,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
           cart
         )
       }
-      */
+      console.log("RECEIPT:", receipt)
       // Get Payment
       const response = await this.client_.init({
         TerminalKey: this.options_.terminalKey,
@@ -331,7 +327,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
       action: PaymentStatusesMap[PaymentStatuses[data.Status]] ?? PaymentSessionStatus.ERROR,
       data: {
         session_id: data.OrderId,
-        amount: data.Amount
+        amount: getAmountFromSmallestUnit(data.Amount, "rub")
       }
     }
   }

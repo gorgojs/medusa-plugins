@@ -2,17 +2,21 @@
 import {
   getSmallestUnit,
 } from "./get-smallest-unit"
+import { components } from "t-kassa-api/openapi"
+
 
 function generateReceiptFfd105(
-  taxation: Taxation,
+  taxation: components["schemas"]["Receipt_FFD_105"]["Taxation"],
+  taxItem: components["schemas"]["Items_FFD_105"]["Tax"] | components["schemas"]["Items_FFD_12"]["Tax"],
+  taxShipping: components["schemas"]["Items_FFD_105"]["Tax"] | components["schemas"]["Items_FFD_12"]["Tax"],
   items: Array<Record<string, any>>,
   currencyCode: string,
   shippingTotal: number,
   shippingMethods: Array<Record<string, any>>,
   email?: string,
   phone?: string
-): Receipt_FFD_105 {
-  const res = {} as Receipt_FFD_105
+): components["schemas"]["Receipt_FFD_105"] {
+  const res = {} as components["schemas"]["Receipt_FFD_105"]
 
   res.FfdVersion = "1.05"
   res.Taxation = taxation
@@ -23,14 +27,14 @@ function generateReceiptFfd105(
   if (phone)
     res.Phone = phone
 
-  const Items: Items_FFD_105[] = items.map(i => ({
+  const Items: components["schemas"]["Items_FFD_105"][] = items.map(i => ({
     Name: i.variant_title
       ? `${i.product_title} (${i.variant_title})`
       : i.product_title as string,
     Price: getSmallestUnit(i.unit_price, currencyCode),
     Quantity: i.quantity,
     Amount: getSmallestUnit(i.total, currencyCode),
-    Tax: 'vat0',
+    Tax: taxItem,
     PaymentMethod: 'full_payment',
     PaymentObject: 'commodity',
   }))
@@ -42,7 +46,7 @@ function generateReceiptFfd105(
       Price: amt,
       Quantity: 1,
       Amount: amt,
-      Tax: 'vat0',
+      Tax: taxShipping,
       PaymentMethod: 'full_payment',
       PaymentObject: 'service',
     })
@@ -53,7 +57,9 @@ function generateReceiptFfd105(
 }
 
 function generateReceiptFfd12(
-  taxation: Taxation,
+  taxation: components["schemas"]["Receipt_FFD_12"]["Taxation"],
+  taxItem: components["schemas"]["Items_FFD_105"]["Tax"] | components["schemas"]["Items_FFD_12"]["Tax"],
+  taxShipping: components["schemas"]["Items_FFD_105"]["Tax"] | components["schemas"]["Items_FFD_12"]["Tax"],
   items: Array<Record<string, any>>,
   currencyCode: string,
   shippingTotal: number,
@@ -61,30 +67,29 @@ function generateReceiptFfd12(
   shippingAddress: Record<string, any>,
   email?: string,
   phone?: string
-): Receipt_FFD_12{
-  const res = {} as Receipt_FFD_12
+): components["schemas"]["Receipt_FFD_12"] {
+  const res = {} as components["schemas"]["Receipt_FFD_12"]
 
   res.FfdVersion = "1.2"
   res.Taxation = taxation
-  res.ClientInfo = {DocumentCode: "21"}
 
-  if(email)
+  if (email)
     res.Email = email
 
-  if(phone)
+  if (phone)
     res.Phone = phone
 
-  if(shippingAddress.first_name && shippingAddress.last_name)
+  if (shippingAddress.first_name && shippingAddress.last_name)
     res.Customer = `${shippingAddress.last_name} ${shippingAddress.first_name}`
 
-  const Items: Items_FFD_12[] = items.map(i => ({
+  const Items: components["schemas"]["Items_FFD_12"][] = items.map(i => ({
     Name: i.variant_title
       ? `${i.product_title} (${i.variant_title})`
       : i.product_title as string,
     Price: getSmallestUnit(i.unit_price, currencyCode),
     Quantity: i.quantity,
     Amount: getSmallestUnit(i.total, currencyCode),
-    Tax: 'vat0',
+    Tax: taxItem,
     PaymentMethod: 'full_payment',
     PaymentObject: 'commodity',
     MeasurementUnit: 'шт'
@@ -97,55 +102,65 @@ function generateReceiptFfd12(
       Price: amt,
       Quantity: 1,
       Amount: amt,
-      Tax: 'vat0',
+      Tax: taxShipping,
       PaymentMethod: 'full_payment',
       PaymentObject: 'service',
       MeasurementUnit: 'шт'
     })
   }
-   
+
   res.Items = Items
 
   return res
 }
 
 export function generateReceipt(
-  // ...
-): Receipt_FFD_105 | Receipt_FFD_12 {
+  ffdVersion: "1.05" | "1.2",
+  taxation: components["schemas"]["Receipt_FFD_105"]["Taxation"] | components["schemas"]["Receipt_FFD_12"]["Taxation"],
+  taxItem: components["schemas"]["Items_FFD_105"]["Tax"] | components["schemas"]["Items_FFD_12"]["Tax"],
+  taxShipping: components["schemas"]["Items_FFD_105"]["Tax"] | components["schemas"]["Items_FFD_12"]["Tax"],
+  cart: Record<string, any>
+): components["schemas"]["Receipt_FFD_105"] | components["schemas"]["Receipt_FFD_12"] {
 
-      // const Email = data?.Email as string
-      // const Phone = data?.Phone as string
-      // const items = data?.Items as Array<Record<string, any>>
-      // const shippingTotal = data?.shipping_total as number
-      // const shippingMethods = data?.shipping_methods as Array<Record<string, any>>
-      // const shippingAddress = data?.shipping_address as Array<Record<string, any>>
-  
-      // let receipt = {} as components["schemas"]["Receipt_FFD_105"] | components["schemas"]["Receipt_FFD_12"]
-  
-      // switch (this.options_.ffdVersion) {
-      //   case "1.05":
-      //     receipt = generateReceiptFfd105(
-      //       this.options_.taxation,
-      //       items, 
-      //       currency_code,
-      //       shippingTotal,
-      //       shippingMethods,
-      //       Email,
-      //       Phone
-      //     )
-      //     break
-      //   case "1.2":
-      //     receipt = generateReceiptFfd12(
-      //       this.options_.taxation,
-      //       items,
-      //       currency_code,
-      //       shippingTotal,
-      //       shippingMethods,
-      //       shippingAddress,
-      //       Email,
-      //       Phone
-      //     )
-      //     break
-      // }
+  const Email = cart?.email as string
+  const Phone = cart?.shipping_address.phone as string
+  const items = cart?.items as Array<Record<string, any>>
+  const currencyCode = cart?.currency_code as string
+  const shippingTotal = cart?.shipping_total as number
+  const shippingMethods = cart?.shipping_methods as Array<Record<string, any>>
+  const shippingAddress = cart?.shipping_address as Array<Record<string, any>>
 
+  let receipt = {} as components["schemas"]["Receipt_FFD_105"] | components["schemas"]["Receipt_FFD_12"]
+
+  switch (ffdVersion) {
+    case "1.05":
+      receipt = generateReceiptFfd105(
+        taxation,
+        taxItem,
+        taxShipping,
+        items,
+        currencyCode,
+        shippingTotal,
+        shippingMethods,
+        Email,
+        Phone
+      )
+      break
+    case "1.2":
+      receipt = generateReceiptFfd12(
+        taxation,
+        taxItem,
+        taxShipping,
+        items,
+        currencyCode,
+        shippingTotal,
+        shippingMethods,
+        shippingAddress,
+        Email,
+        Phone
+      )
+      break
+  }
+
+  return receipt
 }
