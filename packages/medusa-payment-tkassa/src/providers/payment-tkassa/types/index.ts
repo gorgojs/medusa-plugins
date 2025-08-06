@@ -91,6 +91,32 @@ export const Taxations: TKassaOptions["taxation"][] = [
   "patent"
 ]
 
+export const TaxItem: TKassaOptions["taxItem"][] = [
+  "none",
+  "vat0",
+  "vat5",
+  "vat7",
+  "vat10",
+  "vat20",
+  "vat105",
+  "vat107",
+  "vat110",
+  "vat120"
+]
+
+export const TaxShipping: TKassaOptions["taxShipping"][] = [
+  "none",
+  "vat0",
+  "vat5",
+  "vat7",
+  "vat10",
+  "vat20",
+  "vat105",
+  "vat107",
+  "vat110",
+  "vat120"
+]
+
 export const FfdVersions: TKassaOptions["ffdVersion"][] = [
   "1.2",
   "1.05"
