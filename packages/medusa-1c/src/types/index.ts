@@ -2,17 +2,30 @@ import {
 	Classifier,
 	ClassifierGroup,
 	ClassifierProperty,
+	Offer,
+	OffersPackage,
 	Product,
+	Warehouse,
 } from "commerceml-parser-core";
 
 export type OnecExchangeWorkflowInput = {
-	filePaths: string[];
+	import: string[];
+	offers: string[];
 };
 
-export type OnecData = {
+export type ParseFileStepInput = string[];
+
+export type ImportOutput = {
 	classifier?: Classifier;
 	properties: ClassifierProperty[];
 	classifierGroups: ClassifierGroup[];
 	products: Product[];
 	settings: any;
+};
+
+export type OffersOutput = {
+	classifier?: Classifier;
+	offersPackage: OffersPackage;
+	offers: Offer[];
+	warehouses?: Warehouse[];
 };
