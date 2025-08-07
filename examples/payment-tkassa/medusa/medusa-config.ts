@@ -36,10 +36,10 @@ module.exports = defineConfig({
               password: process.env.TKASSA_PASSWORD,
               capture: true,
               useReceipt: true,
-              ffdVersion: "1.2",
+              ffdVersion: "1.05",
               taxation: "osn",
-              taxItem: "vat0",
-              taxShipping: "vat0",
+              taxItemDefault: "none",
+              taxShippingDefault: "none",
             },
           },
           

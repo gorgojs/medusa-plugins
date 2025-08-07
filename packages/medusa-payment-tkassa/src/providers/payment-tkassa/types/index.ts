@@ -10,8 +10,8 @@ export interface TKassaOptions {
   useReceipt?: boolean
   ffdVersion?: "1.2" | "1.05"
   taxation?: components["schemas"]["Receipt_FFD_105"]["Taxation"] | components["schemas"]["Receipt_FFD_12"]["Taxation"]
-  taxItem?: components["schemas"]["Items_FFD_105"]["Tax"] | components["schemas"]["Items_FFD_12"]["Tax"]
-  taxShipping?: components["schemas"]["Items_FFD_105"]["Tax"] | components["schemas"]["Items_FFD_12"]["Tax"]
+  taxItemDefault?: components["schemas"]["Items_FFD_105"]["Tax"] | components["schemas"]["Items_FFD_12"]["Tax"]
+  taxShippingDefault?: components["schemas"]["Items_FFD_105"]["Tax"] | components["schemas"]["Items_FFD_12"]["Tax"]
 }
 
 export interface PaymentOptions {
@@ -91,7 +91,7 @@ export const Taxations: TKassaOptions["taxation"][] = [
   "patent"
 ]
 
-export const TaxItem: TKassaOptions["taxItem"][] = [
+export const TaxItem: TKassaOptions["taxItemDefault"][] = [
   "none",
   "vat0",
   "vat5",
@@ -104,7 +104,7 @@ export const TaxItem: TKassaOptions["taxItem"][] = [
   "vat120"
 ]
 
-export const TaxShipping: TKassaOptions["taxShipping"][] = [
+export const TaxShipping: TKassaOptions["taxShippingDefault"][] = [
   "none",
   "vat0",
   "vat5",
