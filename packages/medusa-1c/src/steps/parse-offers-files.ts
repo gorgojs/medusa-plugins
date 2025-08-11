@@ -1,31 +1,33 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk";
-import { CommerceMlOffersParser } from "commerceml-parser";
 import {
   Classifier,
+  ClassifierProperty,
   Offer,
   OffersPackage,
   Warehouse,
 } from "commerceml-parser-core";
 import { createReadStream } from "fs";
 import { ParseFileStepInput } from "../types";
-import * as fs from "fs/promises";
-import * as path from "path";
-import { UPLOAD_DIR } from "../data/constants";
 import { Logger } from "@medusajs/framework/types";
+import { BitrixCommerceMlOffersParser } from "../utils/parsing/bitrix-offers-parser";
 
 export const parseOffersFilesStep = createStep(
   "parse-offer-files",
   async (filePaths: ParseFileStepInput, { container }) => {
     const logger = container.resolve<Logger>("logger");
-    const offerParser = new CommerceMlOffersParser();
+    const offerParser = new BitrixCommerceMlOffersParser();
 
     let classifier: Classifier | undefined;
+    let properties: ClassifierProperty[] = [];
     let offersPackage: OffersPackage = {} as OffersPackage;
     const offers: Offer[] = [];
     const warehouses: Warehouse[] = [];
 
     offerParser.onClassifier((cl) => {
       classifier = cl;
+    });
+    offerParser.onClassifierProperty((cp) => {
+      properties.push(cp);
     });
     offerParser.onOffersPackage((cg) => {
       offersPackage = cg;
@@ -56,22 +58,9 @@ export const parseOffersFilesStep = createStep(
       throw e;
     }
 
-    await fs.writeFile(
-      path.join(UPLOAD_DIR, "ouput_offers.json"),
-      JSON.stringify(
-        {
-          classifier,
-          offersPackage,
-          offers,
-          warehouses,
-        },
-        null,
-        2
-      )
-    );
-
     return new StepResponse({
       classifier,
+      properties,
       offersPackage,
       offers,
       warehouses,
