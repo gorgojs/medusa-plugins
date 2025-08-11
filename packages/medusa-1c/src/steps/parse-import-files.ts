@@ -6,7 +6,7 @@ import {
   ClassifierGroup,
   ClassifierProperty,
   Product,
-} from "commerceml-parser-core";
+} from "../types/commerceml";
 import { createReadStream } from "fs";
 import OneCSettingsService from "../modules/1c/service";
 import { ONE_C_MODULE } from "../modules/1c";
