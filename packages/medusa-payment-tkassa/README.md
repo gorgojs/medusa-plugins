@@ -36,7 +36,17 @@ A Medusa plugin that provides T-Kassa payments.
 
 - Medusa server v2.7.0 or later
 - Node.js v20 or later
-- T-Kassa account
+- T-Business account with T-Kassa internet acquiring
+
+## Features
+
+🛒 **Seamless integration** with the T-Kassa payment system   
+📝 **Receipt generation** compliant with Federal Law No. 54, supporting FFD 1.05 and 1.2 formats   
+💳 **One-step** (autocapture) **and two-step** (authorization/hold) payment flows   
+📊 **Webhook support** for real-time payment status updates   
+🔄 **Full refund** and **order cancellation** support   
+🛡 **Token-based webhook verification** for enhanced security   
+🔧 **Detailed logging** for debugging and transaction auditing   
 
 ## Installation
 
@@ -50,7 +60,7 @@ npm install @gorgo/medusa-payment-tkassa
 
 Add the provider configuration in your `medusa-config.js` file of the Medusa admin application:
 
-```js
+```ts
 # ...
 module.exports = defineConfig({
   # ...
@@ -75,31 +85,259 @@ module.exports = defineConfig({
 })
 ```
 
-Add environment variables with your shop identifier `TerminalKey` and secret `Password`:
+Add environment variables with your shop identifier `TerminalKey` and secret `Password` from your T-Business account:
 
 ```
 TKASSA_TERMINAL_KEY=123456789
 TKASSA_PASSWORD=supersecret
 ```
 
-Under terminal settings in your TBank account, set notifications to “Via HTTP protocol” and supply a callback URL in the following format:
+## Provider Options
 
-```
-https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/tkassa_tkassa
-```
+| Option | Description | Default |
+|--------|-------------|---------|
+| `terminalKey` | Terminal key provided by Tinkoff Kassa (required for authentication) | - |
+| `password` | Password for request signing (required for authentication) | - |
+| `capture` | Automatic payment capture (`true` = one-step payment "O", `false` = two-step "T") | `true` |
+| `useReceipt` | Enable receipt generation according to Russian fiscal data format (FFD) | `false` |
+| `ffdVersion` | Fiscal data format version: "1.2" or "1.05" | - |
+| `taxation` | Tax system type:<br>- `osn`: General<br>- `usn_income`: Simplified (income)<br>- `usn_income_outcome`: Simplified (income-expenses)<br>- `esn`: Agricultural<br>- `patent`: Patent | - |
+| `taxItemDefault` | Default VAT rate for products:<br>- `none`: No VAT<br>- `vat0`: 0%<br>- `vat5`: 5%<br>- `vat7`: 7%<br>- `vat10`: 10%<br>- `vat20`: 20%<br>(plus FFD 1.2 variants: vat105, vat107, etc.) | - |
+| `taxShippingDefault` | Default VAT rate for shipping (same options as taxItemDefault) | - |
 
 ## Storefront Integration
 
-Make the necessary changes to your Medusa storefront.
-You can refer to the modifications made in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-tkassa/medusa-storefront) directory.
+To integrate the T-Kassa payment provider in a Next.js storefront, start by adding the required UI components. So, the provider is displayed on the checkout page alongside other available payment methods.
 
-To view the specific changes, visit the [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-payment-tkassa%400.0.1...main), open the "Files changed" tab, and explore the differences under the `examples/payment-tkassa/medusa-storefront` directory. Or run diff in the terminal:
+When T-Kassa is selected, the storefront should call `initiatePayment` with the necessary parameters. This will create a payment session through the T-Kassa API and prepare the customer for redirection. The Place Order button should then send the customer to the T-Kassa payment page, where he can select his preferred payment method.
+
+Once the payment is completed, T-Kassa will concurrently send a webhook and redirect the customer back to the storefront. Whichever arrives first will complete the cart and create a new order in Medusa.
+
+For the Next.js start you need to make the following changes:
+
+### 1. Payment Provider Configuration
+
+To make T-Kassa available as a payment method on the storefront checkout page, you must add its configuration to the payment provider mapping in your storefront’s constants file. This mapping determines how each payment provider is displayed in the UI.
+
+Open [`src/lib/constants.tsx`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/lib/constants.tsx#L33-L36) and add the following:
+
+```ts
+export const paymentInfoMap: Record<
+  string,
+  { title: string; icon: React.ReactNode }
+> = {
+  // ... other providers
+  pp_tkassa_tkassa: {
+    title: "T-Kassa",
+    icon: <CreditCard />,
+  },
+}
+
+// Helper to check if a provider is T-Kassa
+export const isTkassa = (providerId?: string) => {
+  return providerId?.startsWith("pp_tkassa")
+}
+```
+
+You extend the `paymentInfoMap` object to include a `pp_tkassa_tkassa` entry. This entry defines the title and the icon that will be shown for T-Kassa on the checkout page.
+
+The helper function `isTkassa` checks whether a given `providerId` belongs to T-Kassa. This is useful when rendering provider-specific instructions or components.
+
+### 2. Cookie Settings Update
+
+When integrating T-Kassa, you need to adjust your cookie policy to allow cross-domain payment redirects. Some payment providers require more permissive cookie settings so the payment session can be preserved when the customer is redirected back to the storefront.
+
+Open [`src/lib/data/cookies.ts`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/lib/data/cookies.ts#L79) and update the cookie configuration as follows:
+
+```ts
+export const setCartId = async (cartId: string) => {
+  cookies.set("_medusa_cart_id", cartId, {
+    // ... other cookie settings
+    sameSite: "lax", // Changed from "strict" for payment redirects
+  })
+}
+```
+
+This helper function stores the cart ID in a cookie named `_medusa_cart_id`.
+
+The `sameSite` option is set to `lax` instead of `strict`. This change ensures the cookie is sent with cross-site requests during the T-Kassa redirect flow, preventing the payment session from being lost.
+
+### 3. Payment Session Initialization 
+
+To redirect a customer to T-Kassa, the payment session must be properly initialized with the required parameters, including the return URLs for both success and failure outcomes.
+
+Open [`src/modules/checkout/components/payment/index.tsx`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/modules/checkout/components/payment/index.tsx#L90-L91) and update the payment initialization logic to include T-Kassa’s redirect URLs:
+
+```ts
+await initiatePaymentSession(cart, {
+  provider_id: selectedPaymentMethod,
+  data: {
+    SuccessURL: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`,
+    FailURL: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`,
+    cart: cart,
+  }
+})
+```
+
+When initiating the payment session for T-Kassa, the `SuccessURL` and `FailURL` parameters define where the customer will be redirected after attempting payment. Both URLs are dynamically constructed using the storefront’s base URL, the cart ID, and the selected country code.
+
+The `cart` object is included in the initialization data to build a receipt in accordance with Federal Law No. 54.
+
+### 4. Payment Button Component 
+
+Medusa storefront requires a dedicated payment button component for each payment provider to handle the checkout flow after the customer confirms his order. This component leverages the payment session data and navigates the customer to the T-Kassa payment page.
+
+Open [`src/modules/checkout/components/payment-button/index.tsx`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/modules/checkout/components/payment-button/index.tsx#L163-L211) and add the following code:
+
+```ts
+type TkassaPaymentProps = {
+  cart: HttpTypes.StoreCart
+  notReady: boolean
+  "data-testid"?: string
+}
+
+const TkassaPaymentButton: React.FC<TkassaPaymentProps> = ({
+  cart,
+  notReady,
+  "data-testid": dataTestId,
+}) => {
+  const [submitting, setSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const router = useRouter()
+
+  const paymentSession = cart.payment_collection?.payment_sessions?.find(
+    session =>
+      session.provider_id === "pp_tkassa_tkassa"
+  )
+
+  const handlePayment = () => {
+    setSubmitting(true)
+    const paymentUrl = (paymentSession?.data as any).PaymentURL
+    if (paymentUrl) {
+      router.push(paymentUrl)
+    } else {
+      setErrorMessage("Payment URL отсутствует")
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <>
+      <Button
+        disabled={notReady}
+        isLoading={submitting}
+        onClick={handlePayment}
+        data-testid={dataTestId}
+        size="large"
+      >
+        Place order
+      </Button>
+      <ErrorMessage
+        error={errorMessage}
+        data-testid="tkassa-payment-error-message"
+      />
+    </>
+  )
+}
+```
+
+This component locates the `payment_session` for T-Kassa in the current cart and retrieves the `PaymentURL` provided by the backend. When the Place order button is clicked, the customer is redirected to this URL to complete the transaction on the T-Kassa payment page.
+
+If the `PaymentURL` is missing, the component displays an error message without proceeding. The `isLoading` state provides visual feedback while the redirection is being prepared.
+
+Integrating this component ensures that T-Kassa’s payment process is seamlessly triggered from the checkout flow.
+
+### 5. Payment Capture Endpoint
+
+After the customer completes payment on the T-Kassa page, he is redirected back to the storefront. You need an API route to handle this callback, verify the payment status, and complete the cart.
+
+Create the [`src/app/api/capture-payment/[cartId]/route.ts`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/app/api/capture-payment/%5BcartId%5D/route.ts) file with the following content:
+
+```ts
+import { NextRequest, NextResponse } from "next/server"
+import { revalidateTag } from "next/cache"
+import {
+  getCacheTag,
+  getAuthHeaders,
+  removeCartId
+} from "@lib/data/cookies"
+import { sdk } from "@lib/config"
+import { placeOrder } from "@lib/data/cart"
+
+type Params = Promise<{ cartId: string }>
+
+export async function GET(req: NextRequest, { params }: { params: Params }) {
+  const { cartId } = await params
+  const { origin, searchParams } = req.nextUrl
+
+  const countryCode = searchParams.get("country_code") || ""
+  const headers = { ...(await getAuthHeaders()) }
+
+  // Retreive fresh cart values
+  const cartCacheTag = await getCacheTag("carts")
+  revalidateTag(cartCacheTag)
+  const { cart } = await sdk.store.cart.retrieve(cartId, {
+    fields: "id, order_link.order_id"
+  },
+    headers
+  )
+  if (!cart) {
+    return NextResponse.redirect(`${origin}/${countryCode}`)
+  }
+
+  const orderId = (cart as unknown as Record<string, any>).order_link?.order_id
+  if (!orderId) {
+    await placeOrder(cartId)
+    // Fail when payment not authorized
+    return NextResponse.redirect(
+      `${origin}/${countryCode}/checkout?step=review&error=payment_failed`
+    )
+  }
+
+  const orderCacheTag = await getCacheTag("orders")
+  revalidateTag(orderCacheTag)
+  removeCartId()
+  return NextResponse.redirect(
+    `${origin}/${countryCode}/order/${orderId}/confirmed`
+  )
+}
+```
+
+This route handles the redirect from T-Kassa after a payment attempt. It retrieves the latest state of the cart to ensure any updates made during payment are reflected.
+
+If the cart does not contain an associated order ID, the route tries to place an order. If successful, the customer is redirected to the order confirmation page. If any error happens during cart completion, the customer is redirected back to the checkout page indicating an error, and he can proceed the checkout once again.
+
+When the payment is successful, the route revalidates the cached cart and order data, removes the cart cookie, and redirects the customer to the order confirmation page. This ensures a consistent post-payment experience while keeping storefront data up to date.
+
+### Example
+
+You can refer to the modifications made in the Medusa Next.js Starter Template, which are located in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-tkassa/medusa-storefront) directory.
+
+The complete integration diff can be viewed in the [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-payment-tkassa%400.0.1...main), open the "Files changed" tab, and explore the differences under the `examples/payment-tkassa/medusa-storefront` directory. Or run diff in the terminal:
 
 ```bash
 git clone https://github.com/gorgojs/medusa-plugins
 cd medusa-plugins
 git diff @gorgo/medusa-payment-tkassa@0.0.1...main -- examples/payment-tkassa/medusa-storefront
 ```
+
+## Webhook Setup
+
+To properly handle payment notifications from T-Kassa, configure webhooks in your T-Business account as following:
+
+1. Navigate to `Internet acquiring` → `Shops` → Choose your shop → `Terminals` → Choose `Testing` or `Working` Terminal → Click `Settings` to open the setting window
+
+2. Choose to send Notifications `Via HTTP protocol`
+
+3. Add a URL like:
+
+```
+https://$YOUR_MEDUSA_DOMAIN/hooks/payment/tkassa_tkassa
+```
+
+Change `{YOUR_MEDUSA_DOMAIN}` with your medusa store domain.
+
+> T-Kassa expects an OK response to confirm successful webhook processing. Currently, Medusa does not natively support custom webhook response messages, but webhooks are still processed correctly without this. For more details, check out the [related discussion](https://github.com/medusajs/medusa/discussions/12887).
 
 ## Development
 
