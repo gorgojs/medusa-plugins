@@ -2,7 +2,6 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import * as fs from "fs/promises";
 import * as path from "path";
 import { MedusaError, Modules } from "@medusajs/utils";
-import { onecExchangeWorkflow } from "../../../workflows/onec_exchange_workflow";
 import OneCSettingsService from "../../../modules/1c/service";
 import { ONE_C_MODULE } from "../../../modules/1c";
 import {
@@ -14,6 +13,8 @@ import {
   AuthenticationInput,
   IAuthModuleService,
 } from "@medusajs/framework/types";
+import { onecImportWorkflow } from "../../../workflows/onec-import-workflow";
+import { onecOffersWorkflow } from "../../../workflows/onec-offers-workflow";
 
 function sendPlainTextResponse(
   res: MedusaResponse,
@@ -189,31 +190,32 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             .filter((f) => f.startsWith("offers") && f.endsWith(".xml"))
             .map((f) => path.join(importSessionDir, f));
 
-          if (importFiles.length === 0 && offerFiles.length === 0) {
+          if (importFiles.length > 0) {
+            logger.info(
+              "[1C Integration] Found import.xml. Running Import Workflow."
+            );
+            const { errors } = await onecImportWorkflow(req.scope).run({
+              input: { import: importFiles },
+              throwOnError: true,
+            });
+            if (errors?.length > 0) throw errors[0].error;
+          } else if (offerFiles.length > 0) {
+            logger.info(
+              "[1C Integration] Found offers.xml. Running Offers Workflow."
+            );
+            const { errors } = await onecOffersWorkflow(req.scope).run({
+              input: { offers: offerFiles },
+              throwOnError: true,
+            });
+            if (errors?.length > 0) throw errors[0].error;
+          } else {
             logger.warn(
               `[1C Integration] Import: No import or offer files found to import for session ${sessionId}`
             );
-            return sendPlainTextResponse(res, 200, "success");
-          }
-
-          const { errors } = await onecExchangeWorkflow(req.scope).run({
-            input: {
-              import: importFiles,
-              offers: offerFiles,
-            },
-            throwOnError: true,
-          });
-
-          if (errors?.length > 0) {
-            const errorMessages = errors.map((e) => e.error).join("\n");
-            logger.error(
-              `[1C Integration] Import: Workflow failed for session ${sessionId}: ${errorMessages}`
-            );
-            return sendPlainTextResponse(res, 500, `failure\n${errorMessages}`);
           }
 
           logger.debug(
-            `[1C Integration] Import: Workflow completed for session ${sessionId}`
+            `[1C Integration] Import step completed for session ${sessionId}`
           );
           return sendPlainTextResponse(res, 200, "success");
         } catch (error) {

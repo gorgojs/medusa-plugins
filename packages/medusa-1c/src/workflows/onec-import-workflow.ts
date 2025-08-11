@@ -13,39 +13,22 @@ import {
   ProductCategoryDTO,
   UpdateProductWorkflowInputDTO,
 } from "@medusajs/framework/types";
-import {
-  CreateProductVariantWorkflowInputDTO,
-  ProductDTO,
-  ShippingProfileDTO,
-} from "@medusajs/types";
-import _ from "lodash";
+import { ProductDTO } from "@medusajs/types";
 import slugify from "sluga";
 import { flattenClassifierGroups } from "../utils/product-utils";
-import {
-  ImportOutput,
-  OnecExchangeWorkflowInput,
-  OffersOutput,
-} from "../types";
+import { ImportOutput, OnecExchangeWorkflowInput } from "../types";
 import { processCategoriesRecursivelyStep } from "../steps/process-categories";
 import { parseImportFilesStep } from "../steps/parse-import-files";
-import { parseOffersFilesStep } from "../steps/parse-offers-files";
 
-export const onecExchangeWorkflow = createWorkflow(
-  "sync-from-erp",
-  (input: OnecExchangeWorkflowInput) => {
+export const onecImportWorkflow = createWorkflow(
+  "onec-import-workflow",
+  (input: Pick<OnecExchangeWorkflowInput, "import">) => {
     const importData = parseImportFilesStep(input.import);
-    const offersData = parseOffersFilesStep(input.offers);
 
     const { data: stores } = useQueryGraphStep({
       entity: "store",
-      fields: ["default_sales_channel_id", "default_currency_code"],
+      fields: ["default_sales_channel_id"],
     }).config({ name: "stores" });
-
-    const { data: shippingProfiles } = useQueryGraphStep({
-      entity: "shipping_profile",
-      fields: ["id"],
-      pagination: { skip: 0, take: 1 },
-    }).config({ name: "shipping-profile" });
 
     const externalIdsFilters = transform({ onecData: importData }, (data) =>
       data.onecData.products.map((product) => `${product.id}`)
@@ -53,7 +36,7 @@ export const onecExchangeWorkflow = createWorkflow(
 
     const { data: existingProducts } = useQueryGraphStep({
       entity: "product",
-      fields: ["id", "external_id", "variants.*"],
+      fields: ["id", "external_id"],
       filters: { external_id: externalIdsFilters },
     }).config({ name: "existing-products" });
 
@@ -75,7 +58,6 @@ export const onecExchangeWorkflow = createWorkflow(
         ),
       ]
     );
-
     const { data: existingCategories } = useQueryGraphStep({
       entity: "product_category",
       fields: ["id", "handle", "metadata"],
@@ -96,54 +78,40 @@ export const onecExchangeWorkflow = createWorkflow(
       {
         processedCategories,
         existingProducts,
-        shippingProfiles,
         stores,
         importData,
-        offersData,
       },
       (data: {
         processedCategories: ProductCategoryDTO[];
         existingProducts: ProductDTO[];
-        shippingProfiles: ShippingProfileDTO[];
         stores: {
           default_sales_channel_id: string;
-          default_currency_code: string;
         }[];
         importData: ImportOutput;
-        offersData: OffersOutput;
       }) => {
         const productsToCreate: CreateProductWorkflowInputDTO[] = [];
         const productsToUpdate: UpdateProductWorkflowInputDTO[] = [];
 
-        const defaultOptions = [
-          {
-            title: "Default option",
-            values: ["Default option value"],
-          },
-        ];
-
         const defaultSalesChannelId =
           data.stores[0]?.default_sales_channel_id || "";
-        const defaultCurrencyCode =
-          data.stores[0]?.default_currency_code || "rub";
 
         data.importData.products.forEach((onecProduct) => {
-          const variants: CreateProductVariantWorkflowInputDTO[] = [];
-
           const category_ids = data.processedCategories
             .filter((cat) => cat.metadata?.onec_id === onecProduct.groupId)
             .map((cat) => cat.id);
 
-          const productPayload:
-            | CreateProductWorkflowInputDTO
-            | UpdateProductWorkflowInputDTO = {
+          const productPayload: Omit<
+            CreateProductWorkflowInputDTO,
+            "variants"
+          > = {
             title: onecProduct.name,
             category_ids,
             description: onecProduct.description,
             handle: slugify(onecProduct.name),
             external_id: onecProduct.id,
-            options: defaultOptions,
-            variants: variants,
+            options: [
+              { title: "Default Option", values: ["Default option value"] },
+            ],
             sales_channels: [{ id: defaultSalesChannelId }],
           };
 
@@ -167,13 +135,9 @@ export const onecExchangeWorkflow = createWorkflow(
       }
     );
 
-    createProductsWorkflow.runAsStep({
-      input: { products: productsToCreate },
-    });
-    updateProductsWorkflow.runAsStep({
-      input: { products: productsToUpdate },
-    });
+    createProductsWorkflow.runAsStep({ input: { products: productsToCreate } });
+    updateProductsWorkflow.runAsStep({ input: { products: productsToUpdate } });
 
-    return new WorkflowResponse({ input });
+    return new WorkflowResponse({ ok: true });
   }
 );
