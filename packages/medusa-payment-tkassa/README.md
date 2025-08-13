@@ -94,16 +94,16 @@ TKASSA_PASSWORD=supersecret
 
 ## Provider Options
 
-| Option               | Description                                                                                                                                                                             | Default |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `terminalKey`        | Terminal key provided by T-Kassa (required for authentication)                                                                                                                          | -       |
-| `password`           | Password for request signing (required for authentication)                                                                                                                              | -       |
-| `capture`            | Automatic payment capture (`true` for one-step payment, passes `O` to T-Kassa API, `false` for two-steps payment, passes `T`payment)                                                    | `true`  |
-| `useReceipt`         | Enable receipt generation according to Russian fiscal data format (FFD)                                                                                                                 | `false` |
-| `ffdVersion`         | Fiscal data format version: "1.2" or "1.05"                                                                                                                                             | -       |
-| `taxation`           | Tax system type:<br>- `osn`: General<br>- `usn_income`: Simplified (income)<br>- `usn_income_outcome`: Simplified (income-expenses)<br>- `esn`: Agricultural<br>- `patent`: Patent      | -       |
+| Option               | Description                                                                                                                                                                                                                  | Default |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `terminalKey`        | Terminal key provided by T-Kassa (required for authentication)                                                                                                                                                               | -       |
+| `password`           | Password for request signing (required for authentication)                                                                                                                                                                   | -       |
+| `capture`            | Automatic payment capture (`true` for one-step payment, passes `O` to T-Kassa API, `false` for two-steps payment, passes `T`payment)                                                                                         | `true`  |
+| `useReceipt`         | Enable receipt generation according to Russian fiscal data format (FFD)                                                                                                                                                      | `false` |
+| `ffdVersion`         | Fiscal data format version: "1.2" or "1.05"                                                                                                                                                                                  | -       |
+| `taxation`           | Tax system type:<br>- `osn`: General<br>- `usn_income`: Simplified (income)<br>- `usn_income_outcome`: Simplified (income-expenses)<br>- `esn`: Agricultural<br>- `patent`: Patent                                           | -       |
 | `taxItemDefault`     | Default VAT rate for products:<br>- `none`: No VAT<br>- `vat0`: 0%<br>- `vat5`: 5%<br>- `vat7`: 7%<br>- `vat10`: 10%<br>- `vat20`: 20%<br>- `vat105`: 5/105<br>- `vat107`: 7/107<br>- `vat110`: 10/110<br>- `vat120`: 20/120 | -       |
-| `taxShippingDefault` | Default VAT rate for shipping, same options as `taxItemDefault`                                                                                                                         | -       |
+| `taxShippingDefault` | Default VAT rate for shipping, same options as `taxItemDefault`                                                                                                                                                              | -       |
 
 ## Storefront Integration
 
