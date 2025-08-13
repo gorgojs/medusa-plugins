@@ -1,5 +1,11 @@
 # @gorgo/medusa-payment-tkassa
 
+## 0.2.0
+
+### Minor Changes
+
+- Add receipt generation compliant with Federal Law No. 54
+
 ## 0.1.8
 
 ### Patch Changes
