@@ -94,16 +94,16 @@ TKASSA_PASSWORD=supersecret
 
 ## Provider Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `terminalKey` | Terminal key provided by Tinkoff Kassa (required for authentication) | - |
-| `password` | Password for request signing (required for authentication) | - |
-| `capture` | Automatic payment capture (`true` = one-step payment "O", `false` = two-step "T") | `true` |
-| `useReceipt` | Enable receipt generation according to Russian fiscal data format (FFD) | `false` |
-| `ffdVersion` | Fiscal data format version: "1.2" or "1.05" | - |
-| `taxation` | Tax system type:<br>- `osn`: General<br>- `usn_income`: Simplified (income)<br>- `usn_income_outcome`: Simplified (income-expenses)<br>- `esn`: Agricultural<br>- `patent`: Patent | - |
-| `taxItemDefault` | Default VAT rate for products:<br>- `none`: No VAT<br>- `vat0`: 0%<br>- `vat5`: 5%<br>- `vat7`: 7%<br>- `vat10`: 10%<br>- `vat20`: 20%<br>(plus FFD 1.2 variants: vat105, vat107, etc.) | - |
-| `taxShippingDefault` | Default VAT rate for shipping (same options as taxItemDefault) | - |
+| Option               | Description                                                                                                                                                                             | Default |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `terminalKey`        | Terminal key provided by T-Kassa (required for authentication)                                                                                                                          | -       |
+| `password`           | Password for request signing (required for authentication)                                                                                                                              | -       |
+| `capture`            | Automatic payment capture (`true` for one-step payment, passes `O` to T-Kassa API, `false` for two-steps payment, passes `T`payment)                                                    | `true`  |
+| `useReceipt`         | Enable receipt generation according to Russian fiscal data format (FFD)                                                                                                                 | `false` |
+| `ffdVersion`         | Fiscal data format version: "1.2" or "1.05"                                                                                                                                             | -       |
+| `taxation`           | Tax system type:<br>- `osn`: General<br>- `usn_income`: Simplified (income)<br>- `usn_income_outcome`: Simplified (income-expenses)<br>- `esn`: Agricultural<br>- `patent`: Patent      | -       |
+| `taxItemDefault`     | Default VAT rate for products:<br>- `none`: No VAT<br>- `vat0`: 0%<br>- `vat5`: 5%<br>- `vat7`: 7%<br>- `vat10`: 10%<br>- `vat20`: 20%<br>- `vat105`: 5/105<br>- `vat107`: 7/107<br>- `vat110`: 10/110<br>- `vat120`: 20/120 | -       |
+| `taxShippingDefault` | Default VAT rate for shipping, same options as `taxItemDefault`                                                                                                                         | -       |
 
 ## Storefront Integration
 
@@ -120,6 +120,8 @@ For the Next.js start you need to make the following changes:
 To make T-Kassa available as a payment method on the storefront checkout page, you must add its configuration to the payment provider mapping in your storefront’s constants file. This mapping determines how each payment provider is displayed in the UI.
 
 Open [`src/lib/constants.tsx`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/lib/constants.tsx#L33-L36) and add the following:
+
+![Directory structure in the Medusa Storefront after updating the file for constants](https://github.com/user-attachments/assets/7bdbb99a-f822-4048-9568-e1b1cc17bf41)
 
 ```ts
 export const paymentInfoMap: Record<
@@ -149,6 +151,8 @@ When integrating T-Kassa, you need to adjust your cookie policy to allow cross-d
 
 Open [`src/lib/data/cookies.ts`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/lib/data/cookies.ts#L79) and update the cookie configuration as follows:
 
+![Directory structure in the Medusa Storefront after updating the file for cookies](https://github.com/user-attachments/assets/6490ff24-8258-4d26-94ad-ff3109ab2bad)
+
 ```ts
 export const setCartId = async (cartId: string) => {
   cookies.set("_medusa_cart_id", cartId, {
@@ -167,6 +171,8 @@ The `sameSite` option is set to `lax` instead of `strict`. This change ensures t
 To redirect a customer to T-Kassa, the payment session must be properly initialized with the required parameters, including the return URLs for both success and failure outcomes.
 
 Open [`src/modules/checkout/components/payment/index.tsx`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/modules/checkout/components/payment/index.tsx#L90-L91) and update the payment initialization logic to include T-Kassa’s redirect URLs:
+
+![Directory structure in the Medusa Storefront after updating the file for payment component](https://github.com/user-attachments/assets/af76706f-efdf-4c85-a573-2e3ccf6159b0)
 
 ```ts
 await initiatePaymentSession(cart, {
@@ -189,7 +195,31 @@ Medusa storefront requires a dedicated payment button component for each payment
 
 Open [`src/modules/checkout/components/payment-button/index.tsx`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/modules/checkout/components/payment-button/index.tsx#L163-L211) and add the following code:
 
+![Directory structure in the Medusa Storefront after updating the file for payment button component](https://github.com/user-attachments/assets/5b34bc17-91a8-40b4-80d0-acd34bf6559a)
+
 ```ts
+const PaymentButton: React.FC<PaymentButtonProps> = ({
+  cart,
+  "data-testid": dataTestId,
+}) => {
+  // ...
+  switch (true) {
+    // ... other cases
+    case isTkassa(paymentSession?.provider_id):
+      return (
+        <TkassaPaymentButton
+          notReady={notReady}
+          cart={cart}
+          data-testid={dataTestId}
+        />
+      )
+    default:
+      return <Button disabled>Select a payment method</Button>
+  }
+}
+
+// ... other payment button's components
+
 type TkassaPaymentProps = {
   cart: HttpTypes.StoreCart
   notReady: boolean
@@ -252,6 +282,8 @@ Integrating this component ensures that T-Kassa’s payment process is seamlessl
 After the customer completes payment on the T-Kassa page, he is redirected back to the storefront. You need an API route to handle this callback, verify the payment status, and complete the cart.
 
 Create the [`src/app/api/capture-payment/[cartId]/route.ts`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/app/api/capture-payment/%5BcartId%5D/route.ts) file with the following content:
+
+![Directory structure in the Medusa Storefront after creating the file for API route](https://github.com/user-attachments/assets/a0266517-0615-41f9-95ab-d848a57d869d)
 
 ```ts
 import { NextRequest, NextResponse } from "next/server"
