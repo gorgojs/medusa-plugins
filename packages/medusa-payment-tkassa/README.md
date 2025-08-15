@@ -99,16 +99,16 @@ TKASSA_PASSWORD=supersecret
 
 ## Provider Options
 
-| Option               | Description                                                                                                                                                                                                                  | Default |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `terminalKey`        | Terminal key provided by T-Kassa (required for authentication)                                                                                                                                                               | -       |
-| `password`           | Password for request signing (required for authentication)                                                                                                                                                                   | -       |
-| `capture`            | Automatic payment capture (`true` for one-step payment, passes `O` to T-Kassa API, `false` for two-steps payment, passes `T`payment)                                                                                         | `true`  |
-| `useReceipt`         | Enable receipt generation according to Russian fiscal data format (FFD)                                                                                                                                                      | `false` |
-| `ffdVersion`         | Fiscal data format version: "1.2" or "1.05"                                                                                                                                                                                  | -       |
-| `taxation`           | Tax system type:<br>- `osn`: General<br>- `usn_income`: Simplified (income)<br>- `usn_income_outcome`: Simplified (income-expenses)<br>- `esn`: Agricultural<br>- `patent`: Patent                                           | -       |
-| `taxItemDefault`     | Default VAT rate for products:<br>- `none`: No VAT<br>- `vat0`: 0%<br>- `vat5`: 5%<br>- `vat7`: 7%<br>- `vat10`: 10%<br>- `vat20`: 20%<br>- `vat105`: 5/105<br>- `vat107`: 7/107<br>- `vat110`: 10/110<br>- `vat120`: 20/120 | -       |
-| `taxShippingDefault` | Default VAT rate for shipping, same options as `taxItemDefault`                                                                                                                                                              | -       |
+| Option               | Description                                                                                                                                                                                                                                                              | Default |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------- |
+| `terminalKey`        | Terminal key provided by T-Kassa (required for authentication)                                                                                                                                                                                                           | -       |
+| `password`           | Password for request signing (required for authentication)                                                                                                                                                                                                               | -       |
+| `capture`            | Automatic payment capture:<br>- `true` for one-step payment, passes `O` to T-Kassa API<br>- `false` for two-steps payment, passes `T` payment                                                                                                                            | `true`  |
+| `useReceipt`         | Enable receipt generation according to Russian fiscal data format (FFD)                                                                                                                                                                                                  | `false` |
+| `ffdVersion`         | Fiscal data format version: "1.2" or "1.05"<br> Applicable only if `useReceipt` = `true`                                                                                                                                                                                 | -       |
+| `taxation`           | Tax system type:<br>- `osn`: General<br>- `usn_income`: Simplified (income)<br>- `usn_income_outcome`: Simplified (income-expenses)<br>- `esn`: Agricultural<br>- `patent`: Patent<br>Applicable only if `useReceipt` = `true`                                           | -       |
+| `taxItemDefault`     | Default VAT rate for products:<br>- `none`: No VAT<br>- `vat0`: 0%<br>- `vat5`: 5%<br>- `vat7`: 7%<br>- `vat10`: 10%<br>- `vat20`: 20%<br>- `vat105`: 5/105<br>- `vat107`: 7/107<br>- `vat110`: 10/110<br>- `vat120`: 20/120<br>Applicable only if `useReceipt` = `true` | -       |
+| `taxShippingDefault` | Default VAT rate for shipping, same options as `taxItemDefault`<br>Applicable only if `useReceipt` = `true`                                                                                                                                                              | -       |
 
 ## Storefront Integration
 
@@ -218,8 +218,7 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
           data-testid={dataTestId}
         />
       )
-    default:
-      return <Button disabled>Select a payment method</Button>
+    // ... other cases
   }
 }
 
@@ -376,7 +375,7 @@ https://$YOUR_MEDUSA_DOMAIN/hooks/payment/tkassa_tkassa
 
 Change `{YOUR_MEDUSA_DOMAIN}` with your medusa store domain.
 
-> **Caution.** T-Kassa expects an OK response to confirm successful webhook processing. Currently, Medusa does not natively support custom webhook response messages, but webhooks are still processed correctly without this. For more details, check out the [related discussion](https://github.com/medusajs/medusa/discussions/12887).
+> **Warning!** T-Kassa expects an `OK` response message to confirm successful webhook processing and to prevent duplicate notifications. Currently, Medusa does not natively support custom webhook response messages, but webhooks are still processed correctly without this. For more details, check out the [related discussion](https://github.com/medusajs/medusa/discussions/12887).
 
 ## Development
 
