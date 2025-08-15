@@ -83,9 +83,9 @@ export class BitrixCommerceMlOffersParser extends CommerceMlAbstractParser {
   ): void {
     this.eventEmitter.on("commercialInformation", async (data: any) => {
       const commercialInformation: CommercialInformation = {
-        schemaVersion: data.КоммерческаяИнформация._ВерсияСхемы,
+        schemaVersion: data["КоммерческаяИнформация"]["_ВерсияСхемы"],
         creationTimestamp: new Date(
-          data.КоммерческаяИнформация._ДатаФормирования
+          data["КоммерческаяИнформация"]["_ДатаФормирования"]
         ),
       };
 
@@ -101,11 +101,11 @@ export class BitrixCommerceMlOffersParser extends CommerceMlAbstractParser {
     callback: (classifier: Classifier) => void | Promise<void>
   ): void {
     this.eventEmitter.on("classifier", async (data: any) => {
-      const classifierXml = data.Классификатор;
+      const classifierXml = data["Классификатор"];
       const classifier: Classifier = {
-        id: classifierXml.Ид,
-        name: classifierXml.Наименование,
-        owner: parseCounterpartyXmlData(classifierXml.Владелец),
+        id: classifierXml["Ид"],
+        name: classifierXml["Наименование"],
+        owner: parseCounterpartyXmlData(classifierXml["Владелец"]),
       };
 
       await callback(classifier);
@@ -116,22 +116,22 @@ export class BitrixCommerceMlOffersParser extends CommerceMlAbstractParser {
     callback: (classifierProperty: ClassifierProperty) => void | Promise<void>
   ): void {
     this.eventEmitter.on("classifierProperty", async (data: any) => {
-      const propertyXml = data.Свойство;
+      const propertyXml = data["Свойство"];
 
       const classifierProperty: ClassifierProperty = {
-        id: propertyXml.Ид,
-        name: propertyXml.Наименование,
-        type: propertyXml.ТипЗначений,
+        id: propertyXml["Ид"],
+        name: propertyXml["Наименование"],
+        type: propertyXml["ТипЗначений"],
       };
 
-      if (propertyXml.ВариантыЗначений?.Справочник) {
+      if (propertyXml["ВариантыЗначений"]?.["Справочник"]) {
         classifierProperty.dictionaryValues = [];
         for (const dictionaryValue of convertToArray(
-          propertyXml.ВариантыЗначений?.Справочник
+          propertyXml["ВариантыЗначений"]?.["Справочник"]
         )) {
           classifierProperty.dictionaryValues.push({
-            id: dictionaryValue.ИдЗначения,
-            value: dictionaryValue.Значение,
+            id: dictionaryValue["ИдЗначения"],
+            value: dictionaryValue["Значение"],
           });
         }
       }
@@ -144,32 +144,32 @@ export class BitrixCommerceMlOffersParser extends CommerceMlAbstractParser {
     callback: (offersPackage: OffersPackage) => void | Promise<void>
   ): void {
     this.eventEmitter.on("offersPackage", async (data: any) => {
-      const offersPackageXml = data.ПакетПредложений;
+      const offersPackageXml = data["ПакетПредложений"];
       const offersPackage: OffersPackage = {
-        changesOnly: offersPackageXml._СодержитТолькоИзменения,
-        id: offersPackageXml.Ид,
-        name: offersPackageXml.Наименование,
-        catalogId: offersPackageXml.ИдКаталога,
-        classifierId: offersPackageXml.ИдКлассификатора,
-        owner: parseCounterpartyXmlData(offersPackageXml.Владелец),
+        changesOnly: offersPackageXml["_СодержитТолькоИзменения"],
+        id: offersPackageXml["Ид"],
+        name: offersPackageXml["Наименование"],
+        catalogId: offersPackageXml["ИдКаталога"],
+        classifierId: offersPackageXml["ИдКлассификатора"],
+        owner: parseCounterpartyXmlData(offersPackageXml["Владелец"]),
         offers: [],
         priceTypes: [],
       };
 
       for (const priceTypeXml of convertToArray(
-        offersPackageXml.ТипыЦен?.ТипЦены
+        offersPackageXml["ТипыЦен"]?.["ТипЦены"]
       )) {
         const priceType: PriceType = {
-          id: priceTypeXml.Ид,
-          name: priceTypeXml.Наименование,
-          currency: priceTypeXml.Валюта,
+          id: priceTypeXml["Ид"],
+          name: priceTypeXml["Наименование"],
+          currency: priceTypeXml["Валюта"],
         };
 
-        if (priceTypeXml.Налог) {
+        if (priceTypeXml["Налог"]) {
           priceType.tax = {
-            name: priceTypeXml.Налог.Наименование,
-            includedInSum: priceTypeXml.Налог.УчтеноВСумме,
-            excise: priceTypeXml.Налог.Акциз,
+            name: priceTypeXml["Налог"]["Наименование"],
+            includedInSum: priceTypeXml["Налог"]["УчтеноВСумме"],
+            excise: priceTypeXml["Налог"]["Акциз"],
           };
         }
 
@@ -184,10 +184,10 @@ export class BitrixCommerceMlOffersParser extends CommerceMlAbstractParser {
     callback: (warehouse: Warehouse) => void | Promise<void>
   ): void {
     this.eventEmitter.on("warehouse", async (data: any) => {
-      const warehouseXml = data.Склад;
+      const warehouseXml = data["Склад"];
       const warehouse: Warehouse = {
-        id: warehouseXml.Ид,
-        name: warehouseXml.Наименование,
+        id: warehouseXml["Ид"],
+        name: warehouseXml["Наименование"],
       };
 
       await callback(warehouse);
@@ -196,71 +196,71 @@ export class BitrixCommerceMlOffersParser extends CommerceMlAbstractParser {
 
   public onOffer(callback: (offer: Offer) => void | Promise<void>): void {
     this.eventEmitter.on("offer", async (data: any) => {
-      const offerXml = data.Предложение;
+      const offerXml = data["Предложение"];
       const offer: Offer = {
-        id: offerXml.Ид,
-        name: offerXml.Наименование,
+        id: offerXml["Ид"],
+        name: offerXml["Наименование"],
         baseMeasurementUnit: {
-          code: offerXml.БазоваяЕдиница._Код,
-          fullName: offerXml.БазоваяЕдиница._НаименованиеПолное,
-          acronym: offerXml.БазоваяЕдиница._МеждународноеСокращение,
+          code: offerXml["БазоваяЕдиница"]["_Код"],
+          fullName: offerXml["БазоваяЕдиница"]["_НаименованиеПолное"],
+          acronym: offerXml["БазоваяЕдиница"]["_МеждународноеСокращение"],
         },
-        quantity: offerXml.Количество,
+        quantity: offerXml["Количество"],
       };
 
-      if (offerXml.Артикул) {
-        offer.article = offerXml.Артикул;
+      if (offerXml["Артикул"]) {
+        offer.article = offerXml["Артикул"];
       }
 
       offer.prices = [];
-      for (const priceXml of convertToArray(offerXml.Цены?.Цена)) {
+      for (const priceXml of convertToArray(offerXml["Цены"]?.["Цена"])) {
         offer.prices.push({
-          representation: priceXml.Представление,
-          priceTypeId: priceXml.ИдТипаЦены,
-          pricePerUnit: priceXml.ЦенаЗаЕдиницу,
-          currency: priceXml.Валюта,
-          unitAcronym: priceXml.Единица,
-          coefficient: priceXml.Коэффициент,
+          representation: priceXml["Представление"],
+          priceTypeId: priceXml["ИдТипаЦены"],
+          pricePerUnit: priceXml["ЦенаЗаЕдиницу"],
+          currency: priceXml["Валюта"],
+          unitAcronym: priceXml["Единица"],
+          coefficient: priceXml["Коэффициент"],
         });
       }
 
-      if (offerXml.ХарактеристикиТовара?.ХарактеристикаТовара) {
+      if (offerXml["ХарактеристикиТовара"]?.["ХарактеристикаТовара"]) {
         offer.characteristics = [];
         for (const characteristicXml of convertToArray(
-          offerXml.ХарактеристикиТовара?.ХарактеристикаТовара
+          offerXml["ХарактеристикиТовара"]?.["ХарактеристикаТовара"]
         )) {
           offer.characteristics.push({
-            id: characteristicXml?.Ид,
-            name: characteristicXml.Наименование,
-            value: characteristicXml.Значение,
+            id: characteristicXml?.["Ид"],
+            name: characteristicXml["Наименование"],
+            value: characteristicXml["Значение"],
           });
         }
       }
 
-      if (offerXml.ЗначенияСвойств?.ЗначенияСвойства) {
+      if (offerXml["ЗначенияСвойств"]?.["ЗначенияСвойства"]) {
         offer.propertyValues = [];
         for (const propertyValue of convertToArray(
-          offerXml.ЗначенияСвойств?.ЗначенияСвойства
+          offerXml["ЗначенияСвойств"]?.["ЗначенияСвойства"]
         )) {
-          if (Array.isArray(propertyValue.Значение)) {
+          if (Array.isArray(propertyValue["Значение"])) {
             offer.propertyValues.push({
-              id: propertyValue.Ид,
-              values: propertyValue.Значение,
+              id: propertyValue["Ид"],
+              values: propertyValue["Значение"],
             });
           } else {
             offer.propertyValues.push({
-              id: propertyValue.Ид,
-              values: [propertyValue.Значение],
+              id: propertyValue["Ид"],
+              values: [propertyValue["Значение"]],
             });
           }
         }
       }
 
       offer.stocks = [];
-      for (const stockXml of convertToArray(offerXml.Склад)) {
+      for (const stockXml of convertToArray(offerXml["Склад"])) {
         offer.stocks.push({
-          warehouseId: stockXml._ИдСклада,
-          quantity: Number.parseInt(stockXml._КоличествоНаСкладе, 10),
+          warehouseId: stockXml["_ИдСклада"],
+          quantity: Number.parseInt(stockXml["_КоличествоНаСкладе"], 10),
         });
       }
 
