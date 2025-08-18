@@ -1,5 +1,11 @@
 # @gorgo/medusa-feed-yandex
 
+## 0.2.8
+
+### Patch Changes
+
+- Update Telegram links
+
 ## 0.2.7
 
 ### Patch Changes

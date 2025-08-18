@@ -1,5 +1,11 @@
 # @gorgo/medusa-payment-robokassa
 
+## 0.1.3
+
+### Patch Changes
+
+- Update Telegram links
+
 ## 0.1.2
 
 ### Patch Changes

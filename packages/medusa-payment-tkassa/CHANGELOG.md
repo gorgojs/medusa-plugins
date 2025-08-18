@@ -1,5 +1,11 @@
 # @gorgo/medusa-payment-tkassa
 
+## 0.2.3
+
+### Patch Changes
+
+- Update Telegram links
+
 ## 0.2.2
 
 ### Patch Changes
