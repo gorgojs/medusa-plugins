@@ -18,12 +18,6 @@ A Medusa plugin that provides Robokassa payments.
 </p>
 
 <p align="center">
-  <a href="https://t.me/medusajs_com">
-    <img src="https://img.shields.io/badge/Telegram-Join_Medusa_Community_Chat-0088cc?logo=telegram&style=social" alt="Join on Telegram" />
-  </a>
-</p>
-
-<p align="center">
   <a href="https://medusajs.com">
     <img src="https://img.shields.io/badge/Medusa-^2.7.0-blue?logo=medusa" alt="Medusa" />
   </a>
@@ -32,11 +26,31 @@ A Medusa plugin that provides Robokassa payments.
   </a>
 </p>
 
+<p align="center">
+  <a href="https://t.me/medusajs_robokassa">
+    <img src="https://img.shields.io/badge/Telegram-Medusa.js⊷Robokassa_Support_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js⊷Robokassa on Telegram" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://t.me/medusajs_chat">
+    <img src="https://img.shields.io/badge/Telegram-Medusa.js_Dev_Community_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js Chat on Telegram" />
+  </a>
+</p>
+
+## 💬 Plugin Support Chat on Telegram
+
+Join the [Medusa.js ⊷ Robokassa](https://t.me/medusajs_robokassa) community chat to discuss features and get support.
+
+## 👥 Medusa.js Community Chat on Telegram
+
+Join the [Medusa.js Chat](https://t.me/medusajs_chat) to connect with developers building on Medusa.
+
 ## Prerequisites
 
 - Medusa server v2.7.0 or later
 - Node.js v20 or later
-- Robokassa account
+- A [Robokassa account](https://login.robokassa.ru/reg?promoCode=gorgo) (sign in or create one)
 
 ## Installation
 
@@ -115,10 +129,6 @@ git diff @gorgo/medusa-payment-robokassa@0.0.1...main -- examples/payment-roboka
 ## Development
 
 Find documentation on bootstrapping a development environment [here](https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-robokassa).
-
-## 💬 Support & Community on Telegram
-
-Join the [Medusa Telegram community chat](https://t.me/medusajs_chat) to discuss features, get support, and connect with developers building on Medusa.
 
 ## License
 

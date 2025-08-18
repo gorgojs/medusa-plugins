@@ -18,12 +18,6 @@ A Medusa plugin that generates a product feed in <a href="https://yandex.com/sup
 </p>
 
 <p align="center">
-  <a href="https://t.me/medusajs_chat">
-    <img src="https://img.shields.io/badge/Telegram-Join_Medusa_Community_Chat-0088cc?logo=telegram&style=social" alt="Join on Telegram" />
-  </a>
-</p>
-
-<p align="center">
   <a href="https://medusajs.com">
     <img src="https://img.shields.io/badge/Medusa-^2.8.0-blue?logo=medusa" alt="Medusa" />
   </a>
@@ -31,6 +25,27 @@ A Medusa plugin that generates a product feed in <a href="https://yandex.com/sup
     <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.9.0-green?logo=checkmarx" alt="Medusa" />
   </a>
 </p>
+
+<p align="center">
+  <a href="https://t.me/medusajs_yandex">
+    <img src="https://img.shields.io/badge/Telegram-Medusa.js⊷Yandex_Support_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js⊷Yandex on Telegram" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://t.me/medusajs_chat">
+    <img src="https://img.shields.io/badge/Telegram-Medusa.js_Dev_Community_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js Chat on Telegram" />
+  </a>
+</p>
+
+
+## 💬 Plugin Support Chat on Telegram
+
+Join the [Medusa.js ⊷ Yandex](https://t.me/medusajs_yandex) community chat to discuss features and get support.
+
+## 👥 Medusa.js Community Chat on Telegram
+
+Join the [Medusa.js Chat](https://t.me/medusajs_chat) to connect with developers building on Medusa.
 
 ## Features
 
@@ -41,10 +56,6 @@ A Medusa plugin that generates a product feed in <a href="https://yandex.com/sup
 - ✅ Select specific product categories for export
 - ✅ Manual feed generation
 - ✅ Uses Medusa File Module with built-in file provider support
-
-## 💬 Support & Community on Telegram
-
-Join the [Medusa Telegram community chat](https://t.me/medusajs_chat) to discuss features, get support, and connect with developers building on Medusa.
 
 ## Prerequisites
 
