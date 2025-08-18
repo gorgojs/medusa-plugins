@@ -13,7 +13,7 @@ import {
   ProductDTO,
 } from "@medusajs/types";
 import { OnecExchangeWorkflowInput, OffersOutput } from "../types";
-import { parseOffersFilesStep } from "../steps/parse-offers-files";
+import { parseOffersFilesStep } from "./steps/parse-offers-files";
 
 export const onecOffersWorkflow = createWorkflow(
   "onec-offers-workflow",

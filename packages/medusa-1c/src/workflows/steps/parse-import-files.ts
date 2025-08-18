@@ -6,11 +6,11 @@ import {
   ClassifierGroup,
   ClassifierProperty,
   Product,
-} from "../types/commerceml";
+} from "../../types/commerceml";
 import { createReadStream } from "fs";
-import OneCSettingsService from "../modules/1c/service";
-import { ONE_C_MODULE } from "../modules/1c";
-import { ParseFileStepInput } from "../types";
+import OneCSettingsService from "../../modules/1c/service";
+import { ONE_C_MODULE } from "../../modules/1c";
+import { ParseFileStepInput } from "../../types";
 import { Logger } from "@medusajs/framework/types";
 
 export const parseImportFilesStep = createStep(

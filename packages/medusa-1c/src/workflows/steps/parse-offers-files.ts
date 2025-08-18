@@ -7,9 +7,9 @@ import {
   Warehouse,
 } from "commerceml-parser-core";
 import { createReadStream } from "fs";
-import { ParseFileStepInput } from "../types";
+import { ParseFileStepInput } from "../../types";
 import { Logger } from "@medusajs/framework/types";
-import { BitrixCommerceMlOffersParser } from "../utils/parsing/bitrix-offers-parser";
+import { BitrixCommerceMlOffersParser } from "../../utils/parsing/bitrix-offers-parser";
 
 export const parseOffersFilesStep = createStep(
   "parse-offer-files",
