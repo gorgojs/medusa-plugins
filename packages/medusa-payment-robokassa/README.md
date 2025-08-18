@@ -50,7 +50,7 @@ Join the [Medusa.js Chat](https://t.me/medusajs_chat) to connect with developers
 
 - Medusa server v2.7.0 or later
 - Node.js v20 or later
-- A [Robokassa account](https://login.robokassa.ru/reg?promoCode=gorgo) (sign in or create one)
+- A Robokassa account – [sign in or create one](https://login.robokassa.ru/reg?promoCode=gorgo)
 
 ## Installation
 

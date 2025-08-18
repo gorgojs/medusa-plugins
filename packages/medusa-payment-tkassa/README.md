@@ -50,7 +50,7 @@ Join the [Medusa.js Chat](https://t.me/medusajs_chat) to connect with developers
 
 - Medusa server v2.7.0 or later
 - Node.js v20 or later
-- T-Business account with T-Kassa internet acquiring
+- A T-Business account with T-Kassa internet acquiring – [sign in or create one](https://www.tbank.ru/kassa/?utm_source=partners_sme&utm_medium=prt.utl&utm_campaign=business.int_acquiring.7-3S975SBSY&partnerId=7-3S975SBSY&agentId=5-B6HGU9OD&agentSsoId=1316b7dd-3a90-4167-9d35-37910431a19c)
 
 ## Features
 
