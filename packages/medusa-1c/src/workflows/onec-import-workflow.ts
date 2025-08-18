@@ -17,8 +17,8 @@ import { ProductDTO } from "@medusajs/types";
 import slugify from "sluga";
 import { flattenClassifierGroups } from "../utils/product-utils";
 import { ImportOutput, OnecExchangeWorkflowInput } from "../types";
-import { processCategoriesRecursivelyStep } from "../steps/process-categories";
-import { parseImportFilesStep } from "../steps/parse-import-files";
+import { processCategoriesRecursivelyStep } from "./steps/process-categories";
+import { parseImportFilesStep } from "./steps/parse-import-files";
 
 export const onecImportWorkflow = createWorkflow(
   "onec-import-workflow",
