@@ -1,5 +1,11 @@
 # @gorgo/medusa-payment-tkassa
 
+## 0.3.0
+
+### Minor Changes
+
+- Added support for partial refund receipts compliant with Federal Law No. 54
+
 ## 0.2.3
 
 ### Patch Changes
