@@ -91,9 +91,9 @@ function generateReceiptFfd12(
     Quantity: i.quantity,
     Amount: getSmallestUnit(i.total, currencyCode),
     Tax: taxItem,
-    PaymentMethod: 'full_payment',
-    PaymentObject: 'commodity',
-    MeasurementUnit: 'шт'
+    PaymentMethod: 'full_payment', // TODO: to be prepayment and payment receipts?
+    PaymentObject: 'commodity', // TODO: to be dynamic?
+    MeasurementUnit: 'шт' // TODO: to be dynamic?
   }))
   if (shippingTotal > 0) {
     const name = shippingMethods?.[0]?.name ?? 'Shipping'
@@ -104,9 +104,9 @@ function generateReceiptFfd12(
       Quantity: 1,
       Amount: amt,
       Tax: taxShipping,
-      PaymentMethod: 'full_payment',
+      PaymentMethod: 'full_payment', // TODO: to be prepayment and payment receipts?
       PaymentObject: 'service',
-      MeasurementUnit: 'шт'
+      MeasurementUnit: 'шт' // TODO: to be dynamic?
     })
   }
 
@@ -168,7 +168,7 @@ export function generateReceipt(
 
 export function generateRefundReceipt(
   amount: BigNumberInput,
-  OrderId: string,
+  orderId: string,
   initialReceipt: components["schemas"]["Receipt_FFD_105"] | components["schemas"]["Receipt_FFD_12"]
 ) {
   const receipt = { ...initialReceipt }
@@ -178,7 +178,8 @@ export function generateRefundReceipt(
     receipt.Items = [initialReceipt.Items[0] as components["schemas"]["Receipt_FFD_105"]["Items"][number]]
   }
 
-  receipt.Items[0].Name = `Refund for Order ${OrderId}`
+  // TODO: to be specific receipts for items and shipping refunds?
+  receipt.Items[0].Name = `Refund for Order ${orderId}`
   receipt.Items[0].Quantity = 1
   receipt.Items[0].Amount = getSmallestUnit(amount, 'RUB')
   receipt.Items[0].Price = getSmallestUnit(amount, 'RUB')

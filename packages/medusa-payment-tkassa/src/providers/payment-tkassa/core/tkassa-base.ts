@@ -140,7 +140,6 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
         Password: this.options_.password,
         Amount: getSmallestUnit(amount, currency_code),
         OrderId: data?.session_id as string,
-        DATA: { "additionalProperties": "none" },
         ...additionalParameters,
         ...(this.options_.useReceipt ? { Receipt: receipt } : {}),
       }
@@ -241,9 +240,9 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
         TerminalKey: this.options_.terminalKey,
         Password: this.options_.password,
         PaymentId: paymentId,
-        ...(getSmallestUnit(amount, 'RUB') !== data?.amount ? {Receipt: receipt} : {}),
+        ...(getSmallestUnit(amount, 'RUB') !== data?.amount ? {Receipt: receipt} : {}), // TODO: to remove hardcoded currency?
         ...(amountValue
-          ? { Amount: getSmallestUnit(Number(amountValue), 'RUB') }
+          ? { Amount: getSmallestUnit(Number(amountValue), 'RUB') } // TODO: to remove hardcoded currency?
           : {})
       })
 
@@ -357,7 +356,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
       action: PaymentStatusesMap[PaymentStatuses[data.Status]] ?? PaymentSessionStatus.ERROR,
       data: {
         session_id: data.OrderId,
-        amount: getAmountFromSmallestUnit(data.Amount, "rub")
+        amount: getAmountFromSmallestUnit(data.Amount, "RUB") // TODO: to remove hardcoded currency?
       }
     }
     this.logger_.debug("TkassaBase.getWebhookActionAndData result:\n" + JSON.stringify(result, null, 2))
