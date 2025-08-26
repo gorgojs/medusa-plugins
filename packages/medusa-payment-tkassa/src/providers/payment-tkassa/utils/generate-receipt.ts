@@ -3,6 +3,7 @@ import {
   getSmallestUnit,
 } from "./get-smallest-unit"
 import { components } from "t-kassa-api/openapi"
+import { BigNumberInput } from "@medusajs/framework/types"
 
 
 function generateReceiptFfd105(
@@ -161,6 +162,26 @@ export function generateReceipt(
       )
       break
   }
+
+  return receipt
+}
+
+export function generateRefundReceipt(
+  amount: BigNumberInput,
+  OrderId: string,
+  initialReceipt: components["schemas"]["Receipt_FFD_105"] | components["schemas"]["Receipt_FFD_12"]
+) {
+  const receipt = { ...initialReceipt }
+  if (initialReceipt.FfdVersion === "1.2") {
+    receipt.Items = [initialReceipt.Items[0] as components["schemas"]["Receipt_FFD_12"]["Items"][number]]
+  } else {
+    receipt.Items = [initialReceipt.Items[0] as components["schemas"]["Receipt_FFD_105"]["Items"][number]]
+  }
+
+  receipt.Items[0].Name = `Refund for Order ${OrderId}`
+  receipt.Items[0].Quantity = 1
+  receipt.Items[0].Amount = getSmallestUnit(amount, 'RUB')
+  receipt.Items[0].Price = getSmallestUnit(amount, 'RUB')
 
   return receipt
 }

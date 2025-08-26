@@ -32,6 +32,7 @@ import {
 } from "../types"
 import {
   generateReceipt,
+  generateRefundReceipt,
   getAmountFromSmallestUnit,
   getSmallestUnit,
 } from "../utils"
@@ -139,6 +140,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
         Password: this.options_.password,
         Amount: getSmallestUnit(amount, currency_code),
         OrderId: data?.session_id as string,
+        DATA: { "additionalProperties": "none" },
         ...additionalParameters,
         ...(this.options_.useReceipt ? { Receipt: receipt } : {}),
       }
@@ -147,7 +149,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
       const response = await this.client_.init(initPaymentParams)
       const paymentId = String(response.PaymentId)
 
-      const output = { id: paymentId, data: response }
+      const output = { id: paymentId, data: { ...response, receipt } }
       this.logger_.debug("TkassaBase.initiatePayment output:\n" + JSON.stringify(output, null, 2))
       return output
     } catch (e) {
@@ -170,7 +172,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
         PaymentId: paymentId
       })
 
-      const output = { data: response }
+      const output = { data: { ...response, receipt: input.data?.receipt } }
       this.logger_.debug("TkassaBase.capturePayment output:\n" + JSON.stringify(output, null, 2))
       return output
     } catch (e) {
@@ -229,17 +231,23 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
       : typeof amount === 'string' || typeof amount === 'number'
         ? amount
         : ""
+    const receipt = generateRefundReceipt(
+      amount,
+      data?.OrderId as string,
+      data?.receipt as components["schemas"]["Receipt_FFD_105"] | components["schemas"]["Receipt_FFD_12"]
+    )
     try {
       const response = await this.client_.cancel({
         TerminalKey: this.options_.terminalKey,
         Password: this.options_.password,
         PaymentId: paymentId,
+        ...(getSmallestUnit(amount, 'RUB') !== data?.amount ? {Receipt: receipt} : {}),
         ...(amountValue
           ? { Amount: getSmallestUnit(Number(amountValue), 'RUB') }
           : {})
       })
 
-      const output = { data: response }
+      const output = { data: { ...response, receipt: data?.receipt } }
       this.logger_.debug("TkassaBase.refundPayment output:\n" + JSON.stringify(output, null, 2))
       return output
     } catch (e) {
@@ -262,7 +270,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
         PaymentId: paymentId
       })
 
-      const output = { data: response }
+      const output = { data: { ...response, receipt: input.data?.receipt } }
       this.logger_.debug("TkassaBase.cancelPayment output:\n" + JSON.stringify(output, null, 2))
       return output
     } catch (e) {
@@ -285,7 +293,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
         PaymentId: paymentId
       })
 
-      const output = { data: response }
+      const output = { data: { ...response, receipt: input.data?.receipt } }
       this.logger_.debug("TkassaBase.retrievePayment output:\n" + JSON.stringify(output, null, 2))
       return output
     } catch (e) {
@@ -322,7 +330,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
 
       const output = {
         status: PaymentStatusesMap[status] ?? PaymentSessionStatus.ERROR,
-        data: response as unknown as Record<string, unknown>
+        data: { ...response as unknown as Record<string, unknown>, receipt: input.data?.receipt },
       }
       this.logger_.debug("TkassaBase.getPaymentStatus output:\n" + JSON.stringify(output, null, 2))
       return output
