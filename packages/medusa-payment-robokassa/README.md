@@ -38,6 +38,8 @@ A Medusa plugin that provides Robokassa payments.
   </a>
 </p>
 
+> [Читать README на русском](./README.ru.md)
+
 ## Features
 
 🛒 **Seamless integration** with the Robokassa payment system   
@@ -129,12 +131,12 @@ https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/robokassa_robokassa
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
 | `merchantLogin`              | The Robokassa store ID that you created when creating the store.                                                                                                                                                                                                                                                               | Yes      | -       |
 | `hashAlgorithm`           | Signature algorithm:<br>- `md5`<br>- `sha1`<br>- `sha256`<br>- `sha384`<br>- `sha512`                                                                                                                                                                                                                                                            | Yes      | -       |
-| `password1`  | Technical password #1 used to compute the signature when initiating a payment                                                                                                                                                                                                       | No       | -       |
-| `password2`             | Technical password #2 used to verify the signature in the payment notification                                                                                                                                                                                                 | No       | `true`  |
-| `testPassword1`          | Test password #1 (from store settings) used to compute signatures in test mode.<br><br>Applicable only if `isTest` = `true`                                                                                                                                                                                                               | No       | `false` |
-| `testPassword2` | Test password #2 used to verify notifications in test mode.<br><br>Applicable only if `isTest` = `true`                                                                                                                                                                                    | No       | `false` |
-| `capture`       | Automatic payment capture (`true` for one-step payment, `false` for two-step payment)                                                                                                                               | No       | -       |
-| `isTest`      | Enables test mode | No       | -       |
+| `password1`  | Technical password #1 used to compute the signature when initiating a payment                                                                                                                                                                                                       | Yes       | -       |
+| `password2`             | Technical password #2 used to verify the signature in the payment notification                                                                                                                                                                                                 | Yes       | -  |
+| `testPassword1`          | Test password #1 (from store settings) used to compute signatures in test mode.<br><br>Applicable only if `isTest` = `true`                                                                                                                                                                                                               | No       | - |
+| `testPassword2` | Test password #2 used to verify notifications in test mode.<br><br>Applicable only if `isTest` = `true`                                                                                                                                                                                    | No       | - |
+| `capture`       | Automatic payment capture (`true` for one-step payment, `false` for two-step payment)                                                                                                                               | No       | `true`       |
+| `isTest`      | Enables test mode | No       | `false`      |
 
 ## Storefront Integration
 
@@ -367,7 +369,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
 
 This route handles the redirect from Robokassa after a payment attempt. It retrieves the latest state of the cart to ensure any updates made during payment are reflected.
 
-If the cart does not contain an associated order ID, the route tries to place an order. If successful, the customer is redirected to the order confirmation page. If any error happens during cart completion, the customer is redirected back to the checkout page indicating an error, and he can proceed the checkout once again.
+If the cart does not contain an associated `order_id`, the route tries to place an order. If successful, the customer is redirected to the order confirmation page. If any error happens during cart completion, the customer is redirected back to the checkout page indicating an error, and he can proceed the checkout once again.
 
 When the payment is successful, the route revalidates the cached cart and order data, removes the cart cookie, and redirects the customer to the order confirmation page. This ensures a consistent post-payment experience while keeping storefront data up to date.
 
