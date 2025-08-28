@@ -38,6 +38,8 @@ A Medusa plugin that provides T-Kassa payments.
   </a>
 </p>
 
+> [Читать README на русском](./README.ru.md)
+
 ## 💬 Plugin Support Chat on Telegram
 
 Join the [Medusa.js ⊷ T-Kassa (T-Bank)](https://t.me/medusajs_tkassa) community chat to discuss features and get support.
