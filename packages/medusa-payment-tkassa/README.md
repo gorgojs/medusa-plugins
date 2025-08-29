@@ -42,13 +42,14 @@ T-Kassa Payments for Medusa
   </a>
 </p>
 
-## 💬 Plugin Support Chat on Telegram
+## 💬 T-Kassa Plugin Support Chat
 
-Join the [Medusa.js ⊷ T-Kassa (T-Bank)](https://t.me/medusajs_tkassa) plugin development chat to discuss features and get support.
+Got questions or ideas for new plugin features?  
+Join the Telegram chat – [@medusajs_tkassa](https://t.me/medusajs_tkassa)
 
-## 👥 Medusa.js Community Chat on Telegram
+## 👥 Medusa.js Community Chat
 
-Join the [Medusa.js Chat](https://t.me/medusajs_chat) to connect with developers building on Medusa.
+Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.me/medusajs_chat)
 
 ## Prerequisites
 
@@ -117,16 +118,16 @@ TKASSA_PASSWORD=supersecret
 
 ## Provider Options
 
-| Option               | Description                                                                                                                                                                                                                                                              | Default |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------- |
-| `terminalKey`        | Terminal key provided by T-Kassa (required for authentication)                                                                                                                                                                                                           | -       |
-| `password`           | Password for request signing (required for authentication)                                                                                                                                                                                                               | -       |
-| `capture`            | Automatic payment capture:<br>- `true` for one-step payment, passes `O` to T-Kassa API<br>- `false` for two-steps payment, passes `T` payment                                                                                                                            | `true`  |
-| `useReceipt`         | Enable receipt generation according to Russian fiscal data format (FFD)                                                                                                                                                                                                  | `false` |
-| `ffdVersion`         | Fiscal data format version: `1.2` or `1.05`<br>Applicable only if `useReceipt` = `true`                                                                                                                                                                                 | -       |
-| `taxation`           | Tax system type:<br>- `osn`: General<br>- `usn_income`: Simplified (income)<br>- `usn_income_outcome`: Simplified (income-expenses)<br>- `esn`: Agricultural<br>- `patent`: Patent<br>Applicable only if `useReceipt` = `true`                                           | -       |
-| `taxItemDefault`     | Default VAT rate for products:<br>- `none`: No VAT<br>- `vat0`: 0%<br>- `vat5`: 5%<br>- `vat7`: 7%<br>- `vat10`: 10%<br>- `vat20`: 20%<br>- `vat105`: 5/105<br>- `vat107`: 7/107<br>- `vat110`: 10/110<br>- `vat120`: 20/120<br>Applicable only if `useReceipt` = `true` | -       |
-| `taxShippingDefault` | Default VAT rate for shipping, same options as `taxItemDefault`<br>Applicable only if `useReceipt` = `true`                                                                                                                                                              | -       |
+| Option               | Description                                                                                                                                                                                                                                                              | Required | Default |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ------- |
+| `terminalKey`        | Terminal key provided by T-Kassa (required for authentication)                                                                                                                                                                                                           | Yes      | -       |
+| `password`           | Password for request signing (required for authentication)                                                                                                                                                                                                               | Yes      | -       |
+| `capture`            | Automatic payment capture:<br>- `true` for one-step payment, passes `O` to T-Kassa API<br>- `false` for two-steps payment, passes `T` payment                                                                                                                            | No       | `true`  |
+| `useReceipt`         | Enable receipt generation according to Russian fiscal data format (FFD)                                                                                                                                                                                                  | No       | `false` |
+| `ffdVersion`         | Fiscal data format version: `1.2` or `1.05`<br>Applicable only if `useReceipt` = `true`                                                                                                                                                                                  | No       | -       |
+| `taxation`           | Tax system type:<br>- `osn`: General<br>- `usn_income`: Simplified (income)<br>- `usn_income_outcome`: Simplified (income-expenses)<br>- `esn`: Agricultural<br>- `patent`: Patent<br>Applicable only if `useReceipt` = `true`                                           | No       | -       |
+| `taxItemDefault`     | Default VAT rate for products:<br>- `none`: No VAT<br>- `vat0`: 0%<br>- `vat5`: 5%<br>- `vat7`: 7%<br>- `vat10`: 10%<br>- `vat20`: 20%<br>- `vat105`: 5/105<br>- `vat107`: 7/107<br>- `vat110`: 10/110<br>- `vat120`: 20/120<br>Applicable only if `useReceipt` = `true` | No       | -       |
+| `taxShippingDefault` | Default VAT rate for shipping, same options as `taxItemDefault`<br>Applicable only if `useReceipt` = `true`                                                                                                                                                              | No       | -       |
 
 ## Storefront Integration
 
@@ -386,12 +387,10 @@ To properly handle payment notifications from T-Kassa, configure webhooks in you
 2. Choose to send Notifications `Via HTTP protocol`
 
 3. Add a URL like:
-
-```
-https://$YOUR_MEDUSA_DOMAIN/hooks/payment/tkassa_tkassa
-```
-
-Change `{YOUR_MEDUSA_DOMAIN}` with your medusa store domain.
+    ```
+    https://$YOUR_MEDUSA_DOMAIN/hooks/payment/tkassa_tkassa
+    ```
+    Change `{YOUR_MEDUSA_DOMAIN}` with your medusa store domain.
 
 > **Warning!** T-Kassa expects an `OK` response message to confirm successful webhook processing and to prevent duplicate notifications. Currently, Medusa does not natively support custom webhook response messages, but webhooks are still processed correctly without this. For more details, check out the [related discussion](https://github.com/medusajs/medusa/discussions/12887).
 
