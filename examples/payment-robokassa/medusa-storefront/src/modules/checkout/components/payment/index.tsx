@@ -93,6 +93,7 @@ const Payment = ({
             FailUrl2Method: "GET",
             EMail: cart?.email,
             Culture: countryCode === "ru" ? "ru" : "en",
+            cart: cart
           }
         })
       }
