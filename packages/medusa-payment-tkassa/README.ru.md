@@ -116,22 +116,26 @@ TKASSA_PASSWORD=supersecret
 
 ## Параметры провайдера
 
-| Параметр             | Описание                                                                                                                                                                                                                                                                         | По умолчанию |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| `terminalKey`        | Ключ терминала, предоставленный T-Kassa (обязателен для аутентификации)                                                                                                                                                                                                          | -            |
-| `password`           | Пароль для подписи запросов (обязателен для аутентификации)                                                                                                                                                                                                                      | -            |
-| `capture`            | Определяет тип проведения платежа:<br>- `true` — одностадийная оплата (`O` в API)<br>- `false` — двухстадийная оплата (`T` в API)                                                                                                                                                | `true`       |
-| `useReceipt`         | Включает формирование онлайн-чеков по 54-ФЗ                                                                                                                                                                                                                                      | `false`      |
-| `ffdVersion`         | Версия ФФД: `1.2` или `1.05`<br>Применимо только при `useReceipt=true`                                                                                                                                                                                                           | -            |
-| `taxation`           | Система налогообложения:<br>- `osn` — общая СН<br>- `usn_income` — упрощенная СН (доходы)<br>- `usn_income_outcome` — упрощенная СН (доходы минус расходы)<br>- `esn` — единый сельскохозяйственный налог<br>- `patent` — патентная СН<br>Применимо только при `useReceipt=true` | -            |
-| `taxItemDefault`     | Ставка НДС по товарам:<br>- `none` — без НДС<br>- `vat0` — 0%<br>- `vat5` — 5%<br>- `vat7` — 7%<br>- `vat10` — 10%<br>- `vat20` — 20%<br>- `vat105` — 5/105<br>- `vat107` — 7/107<br>- `vat110` — 10/110<br>- `vat120` — 20/120<br>Применимо только при `useReceipt=true`        | -            |
-| `taxShippingDefault` | Ставка НДС для доставки (аналогично `taxItemDefault`)<br>Применимо только при `useReceipt=true`                                                                                                                                                                                  | -            |
+| Параметр             | Описание                                                                                                                                                                                                                                                                         | Обязательный  | По умолчанию |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------ |
+| `terminalKey`        | Ключ терминала, предоставленный T-Kassa (обязателен для аутентификации)                                                                                                                                                                                                          | Да            |  | -         |
+| `password`           | Пароль для подписи запросов (обязателен для аутентификации)                                                                                                                                                                                                                      | Да            |  | -         |
+| `capture`            | Определяет тип проведения платежа:<br>- `true` — одностадийная оплата (`O` в API)<br>- `false` — двухстадийная оплата (`T` в API)                                                                                                                                                | Нет           | `true`       |
+| `useReceipt`         | Включает формирование онлайн-чеков по 54-ФЗ                                                                                                                                                                                                                                      | Нет           | `false`      |
+| `ffdVersion`         | Версия ФФД: `1.2` или `1.05`<br>Применимо только при `useReceipt=true`                                                                                                                                                                                                           | Нет           |              |
+| `taxation`           | Система налогообложения:<br>- `osn` — общая СН<br>- `usn_income` — упрощенная СН (доходы)<br>- `usn_income_outcome` — упрощенная СН (доходы минус расходы)<br>- `esn` — единый сельскохозяйственный налог<br>- `patent` — патентная СН<br>Применимо только при `useReceipt=true` | Нет           |              |
+| `taxItemDefault`     | Ставка НДС по товарам:<br>- `none` — без НДС<br>- `vat0` — 0%<br>- `vat5` — 5%<br>- `vat7` — 7%<br>- `vat10` — 10%<br>- `vat20` — 20%<br>- `vat105` — 5/105<br>- `vat107` — 7/107<br>- `vat110` — 10/110<br>- `vat120` — 20/120<br>Применимо только при `useReceipt=true`        | Нет           |              |
+| `taxShippingDefault` | Ставка НДС для доставки (аналогично `taxItemDefault`)<br>Применимо только при `useReceipt=true`                                                                                                                                                                                  | Нет           |              |
 
 ## Интеграция с Storefront (витриной магазина)
 
-Чтобы подключить T-Kassa к витрине магазина на Next.js, добавьте необходимые UI-компоненты, чтобы провайдер отображался на странице checkout.
+Чтобы интегрировать платёжный провайдер T-Kassa в витрину на Next.js, сначала добавьте необходимые UI-компоненты. Это позволит отображать провайдер на странице оформления заказа наряду с другими доступными методами оплаты.
 
-При выборе T-Kassa storefront вызывает `initiatePaymentSession`, создавая сессию через API T-Kassa. Кнопка Place order перенаправляет пользователя на страницу оплаты T-Kassa. После завершения оплаты T-Kassa отправляет webhook и делает редирект назад. Любое из событий завершает корзину и создаёт заказ в Medusa.
+При выборе T-Kassa витрина должна вызвать функцию `initiatePayment` с нужными параметрами. Она создаст платёжную сессию через API T-Kassa и подготовит клиента к перенаправлению. После этого кнопка `Place Order` должна перенаправить пользователя на страницу оплаты T-Kassa, где он сможет выбрать подходящий способ оплаты.
+
+После завершения платежа T-Kassa отправляет вебхук и одновременно перенаправляет клиента обратно в витрину магазина. Первое из этих событий завершает корзину и создаёт новый заказ в Medusa.
+
+Для запуска интеграции в Next.js необходимо внести следующие изменения:
 
 ### 1. Конфигурация платежного провайдера
 
@@ -169,13 +173,13 @@ export const isTkassa = (providerId?: string) => {
 
 Откройте [`src/lib/data/cookies.ts`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/lib/data/cookies.ts#L79) и обновите конфигурацию файлов cookie следующим образом:
 
-![Структура каталогов в storefront магазина Medusa после обновления файлов cookie](https://github.com/user-attachments/assets/4274d249-6994-4d9f-b4b6-98f2016f0e9f)
+![Структура каталогов в storefront Medusa после обновления файлов cookie](https://github.com/user-attachments/assets/4274d249-6994-4d9f-b4b6-98f2016f0e9f)
 
 ```ts
 export const setCartId = async (cartId: string) => {
   cookies.set("_medusa_cart_id", cartId, {
-    // ... other cookie settings
-    sameSite: "lax", // Changed from "strict" for payment redirects
+    // ... другие настройки cookie
+    sameSite: "lax", // Переключено с режима «Strict» для перенаправлений оплаты
   })
 }
 ```
@@ -186,11 +190,11 @@ export const setCartId = async (cartId: string) => {
 
 ### 3. Инициализация платёжной сессии
 
-Чтобы перенаправить клиента на T-Kassa, платежный сеанс должен быть должным образом инициализирован с требуемыми параметрами, включая URL-адреса возврата как для успешных, так и для неудачных результатов.
+Перед перенаправлением клиента на T-Kassa необходимо инициализировать платёжный сеанс и передать все необходимые параметры, в том числе URL возврата для успешной и неудачной оплаты.
 
-Откройте [`src/modules/checkout/components/payment/index.tsx`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/modules/checkout/components/payment/index.tsx#L90-L91) и обновите логику инициализации платежа, включив в нее URL-адреса перенаправления T-Kassa:
+Откройте [`src/modules/checkout/components/payment/index.tsx`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/modules/checkout/components/payment/index.tsx#L90-L91) и обновите логику инициализации платежа, включив в нее данные корзины и URL возврата для T-Kassa:
 
-![Структура каталогов в storefront магазина Medusa после обновления файла для компонента оплаты](https://github.com/user-attachments/assets/5c4dfcf9-57e7-48f6-956c-0e0a91ec6c8f)
+![Структура каталогов в storefront Medusa после обновления файла для компонента оплаты](https://github.com/user-attachments/assets/5c4dfcf9-57e7-48f6-956c-0e0a91ec6c8f)
 
 ```ts
 await initiatePaymentSession(cart, {
@@ -203,17 +207,17 @@ await initiatePaymentSession(cart, {
 })
 ```
 
-При запуске сеанса оплаты в T-Kassa параметры `SuccessURL` и `FailURL` определяют, куда клиент будет перенаправлен после попытки оплаты. Оба URL-адреса создаются динамически с использованием базового URL-адреса магазина, идентификатора корзины и выбранного кода страны.
+При запуске сеанса оплаты в T-Kassa параметры `SuccessURL` и `FailURL` определяют, куда клиент будет перенаправлен после попытки оплаты. Оба URL создаются динамически с использованием базового URL магазина, идентификатора корзины и выбранного кода страны.
 
 Объект `cart` включен в данные инициализации для создания чеков в соответствии с Федеральным законом № 54.
 
-### 4. Кнопка оплаты
+### 4. Компонент кнопки оплаты
 
-В Medusa storefront для каждого провайдера платежных услуг требуется специальный компонент кнопки оплаты, который будет обрабатывать процесс оформления заказа после подтверждения клиентом своего заказа. Этот компонент использует данные платежного сеанса и переводит клиента на страницу оплаты T-Kassa.
+В storefront для каждого платёжного провайдера необходим отдельный компонент кнопки оплаты. Он отвечает за обработку оформления заказа после подтверждения клиентом и, используя данные платёжного сеанса, перенаправляет его на страницу оплаты T-Kassa.
 
 Откройте [`src/modules/checkout/components/payment-button/index.tsx`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/modules/checkout/components/payment-button/index.tsx#L163-L211) и добавьте следующий код:
 
-![Структура каталогов в storefront магазина Medusa после обновления файла для компонента кнопки оплаты](https://github.com/user-attachments/assets/4b76ee52-747f-452e-9160-6365f742e33e)
+![Структура каталогов в storefront Medusa после обновления файла для компонента кнопки оплаты](https://github.com/user-attachments/assets/4b76ee52-747f-452e-9160-6365f742e33e)
 
 ```ts
 const TkassaPaymentButton: React.FC<TkassaPaymentProps> = ({ cart, notReady }) => {
@@ -238,21 +242,21 @@ const TkassaPaymentButton: React.FC<TkassaPaymentProps> = ({ cart, notReady }) =
 }
 ```
 
-Этот компонент находит `payment_session` для T-Kassa в текущей корзине и извлекает `PaymentURL`, предоставленный серверной частью. При нажатии кнопки Place order клиент перенаправляется на этот URL-адрес для завершения транзакции на странице оплаты T-Kassa.
+Этот компонент находит `payment_session` для T-Kassa в текущей корзине и извлекает `PaymentURL`, предоставленный серверной частью. При нажатии кнопки `Place order` клиент перенаправляется на этот URL для завершения транзакции на странице оплаты T-Kassa.
 
 Если параметр `PaymentURL` отсутствует, компонент отображает сообщение об ошибке, не позволяя продолжить. Состояние `isLoading` обеспечивает визуальную обратную связь во время подготовки перенаправления.
 
-Компонент `PaymentButton` определяет, принадлежит ли текущий платежный сеанс T-Kassa, используя вспомогательную функцию `isTkassa`. Если это так, он отображает `TkassaPaymentButton` для обработки потока платежей.
+Компонент `PaymentButton` определяет, принадлежит ли текущий платежный сеанс T-Kassa, используя вспомогательную функцию `isTkassa`. Если это так, он отображает `TkassaPaymentButton` для обработки платежа.
 
-Интеграция этого компонента гарантирует, что процесс оплаты в T-Kassa будет легко запускаться из процесса оформления заказа.
+Благодаря интеграции этого компонента оплату через T-Kassa можно легко запустить во время оформления заказа.
 
 ### 5. Эндпоинт захвата платежа
 
-После того, как клиент завершит оплату на странице T-Kassa, он будет перенаправлен обратно на страницу магазина. Вам нужен API-интерфейс для обработки обратного вызова, проверки статуса платежа и оформления корзины.
+Когда клиент завершает оплату в T-Kassa, он возвращается на страницу магазина. В этот момент требуется API-метод, который примет обратный вызов, проверит статус платежа и завершит оформление корзины.
 
 Создайте файл [`src/app/api/capture-payment/[cartId]/route.ts`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/app/api/capture-payment/%5BcartId%5D/route.ts) со следующим содержимым:
 
-![Структура каталогов в storefront магазина Medusa после создания файла для API route](https://github.com/user-attachments/assets/89ac89de-62ad-4b6c-af61-ab6299587dbf)
+![Структура каталогов в storefront Medusa после создания файла для API route](https://github.com/user-attachments/assets/89ac89de-62ad-4b6c-af61-ab6299587dbf)
 
 ```ts
 import { NextRequest, NextResponse } from "next/server"
@@ -274,7 +278,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
   const countryCode = searchParams.get("country_code") || ""
   const headers = { ...(await getAuthHeaders()) }
 
-  // Retreive fresh cart values
+  // Получить актуальные значения корзины
   const cartCacheTag = await getCacheTag("carts")
   revalidateTag(cartCacheTag)
   const { cart } = await sdk.store.cart.retrieve(cartId, {
@@ -289,7 +293,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
   const orderId = (cart as unknown as Record<string, any>).order_link?.order_id
   if (!orderId) {
     await placeOrder(cartId)
-    // Fail when payment not authorized
+    // Ошибка при неавторизованном платеже
     return NextResponse.redirect(
       `${origin}/${countryCode}/checkout?step=review&error=payment_failed`
     )
@@ -304,17 +308,17 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
 }
 ```
 
-Этот маршрут обрабатывает перенаправление с T-Kassa после попытки оплаты. Он извлекает последнее состояние корзины, чтобы убедиться, что все изменения, внесенные во время оплаты, отражены.
+Данный маршрут отвечает за перенаправление клиента из T-Kassa после оплаты. Сначала он обновляет корзину, чтобы отразить все изменения, которые произошли в процессе платежа.
 
-Если корзина не содержит связанного идентификатора заказа, маршрут пытается разместить заказ. В случае успеха клиент перенаправляется на страницу подтверждения заказа. Если при заполнении корзины возникает какая-либо ошибка, клиент перенаправляется обратно на страницу оформления заказа с указанием ошибки, и он может продолжить оформление заказа еще раз.
+Если корзина ещё не связана с заказом, маршрут создаёт его. При успешном создании клиент попадает на страницу подтверждения. Если же при обработке корзины возникла ошибка, пользователь будет возвращён на страницу оформления заказа с указанием проблемы и сможет попробовать ещё раз.
 
-После успешной оплаты route повторно проверяет сохраненные в кэше данные о корзине и заказе, удаляет файл cookie корзины и перенаправляет клиента на страницу подтверждения заказа. Это обеспечивает последовательный процесс оплаты после оплаты, сохраняя при этом актуальность данных в storefront магазина.
+Когда оплата проходит успешно, маршрут повторно проверяет данные корзины и заказа, очищает cookie корзины и перенаправляет клиента на страницу подтверждения. Это гарантирует корректное завершение платёжного процесса и сохранение актуальных данных на витрине.
 
 ### Пример
 
-Вы можете ознакомиться с изменениями, внесенными в стартовый шаблон Medusa Next.js, которые находятся в каталоге [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), который находится в каталоге [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-tkassa/medusa-storefront).
+Вы можете ознакомиться с изменениями, внесенными в стартовый шаблон [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), в директории [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-tkassa/medusa-storefront).
 
-Полное описание интеграции можно посмотреть в разделе [сcomparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-payment-tkassa%400.0.1...main), откройте вкладку "Files changed" и изучите различия в каталоге `examples/payment-tkassa/medusa-storefront`. Или запустите diff в терминале:
+Полное описание интеграции можно посмотреть в разделе [сcomparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-payment-tkassa%400.0.1...main), откройте вкладку `Files changed` и изучите различия в каталоге `examples/payment-tkassa/medusa-storefront`. Или запустите diff в терминале:
 
 ```bash
 git clone https://github.com/gorgojs/medusa-plugins
@@ -336,11 +340,11 @@ git diff @gorgo/medusa-payment-tkassa@0.0.1...main -- examples/payment-tkassa/me
 https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/tkassa_tkassa
 ```
 
-> **Важно!** T-Kassa ожидает ответное сообщение "OK", подтверждающее успешную обработку веб-запросов и предотвращающее дублирование уведомлений. В настоящее время Medusa изначально не поддерживает пользовательские ответные сообщения webhook, но веб-запросы по-прежнему корректно обрабатываются и без этого. Для получения более подробной информации ознакомьтесь с [обсуждением по теме](https://github.com/medusajs/medusa/discussions/12887).
+> **Важно!** T-Kassa ожидает ответное сообщение "OK", подтверждающее успешную обработку вwebhook’ов и предотвращающее дублирование уведомлений. В настоящее время Medusa изначально не поддерживает пользовательские ответные сообщения, но webhook`и по-прежнему корректно обрабатываются и без этого. Для получения более подробной информации ознакомьтесь с [обсуждением по теме](https://github.com/medusajs/medusa/discussions/12887).
 
 ## Разработка
 
-Документация по запуску окружения разработки: [examples/payment-tkassa](https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-tkassa).
+Документацию по развертыванию среды разработки можно найти [здесь](https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-tkassa).
 
 ## Поддержка и сообщество
 
