@@ -21,6 +21,8 @@ import {
   Payment,
   RobokassaEvent,
   RobokassaOptions,
+  taxations,
+  taxes
 } from "../types"
 import axios, { AxiosError } from "axios"
 import { XMLParser } from 'fast-xml-parser'
@@ -52,6 +54,23 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     }
     if (!isDefined(options.hashAlgorithm) || !HashAlgorithms.includes(options.hashAlgorithm as (typeof HashAlgorithms)[number])) {
       throw new Error("Required option `hashAlgorithm` is missing in Robokassa provider")
+    }
+    if (isDefined(options.useReceipt)) {
+      if (!isDefined(options.taxation)) {
+        throw new Error("Required option `taxation` is missing in Robokassa provider")
+      } else if (!taxations.includes(options.taxation)) {
+        throw new Error(`Invalid option \`taxation\` provided in Robokassa provider. Valid values are: ${taxations.join(", ")}`)
+      }
+      if (!isDefined(options.taxItemDefault)) {
+        throw new Error("Required option `taxItemDefault` is missing in Robokassa provider")
+      } else if (!taxes.includes(options.taxItemDefault)) {
+        throw new Error(`Invalid option \`taxItemDefault\` provided in Robokassa provider. Valid values are: ${taxes.join(", ")}`)
+      }
+      if (!isDefined(options.taxShippingDefault)) {
+        throw new Error("Required option `taxShippingDefault` is missing in Robokassa provider")
+      } else if (!taxes.includes(options.taxShippingDefault)) {
+        throw new Error(`Invalid option \`taxShippingDefault\` provided in Robokassa provider. Valid values are: ${taxes.join(", ")}`)
+      }
     }
   }
 
