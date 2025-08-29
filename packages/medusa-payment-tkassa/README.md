@@ -14,8 +14,12 @@ T-Kassa Payments for Medusa
 </h1>
 
 <p align="center">
-A Medusa plugin that provides T-Kassa payments.
+  A Medusa plugin that provides T-Kassa payments.
+  <br/>
+  <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-payment-tkassa/README.ru.md">Читать README на русском →</a>
 </p>
+
+<br/>
 
 <p align="center">
   <a href="https://medusajs.com">
@@ -38,11 +42,9 @@ A Medusa plugin that provides T-Kassa payments.
   </a>
 </p>
 
-> [Читать README на русском](./README.ru.md)
-
 ## 💬 Plugin Support Chat on Telegram
 
-Join the [Medusa.js ⊷ T-Kassa (T-Bank)](https://t.me/medusajs_tkassa) community chat to discuss features and get support.
+Join the [Medusa.js ⊷ T-Kassa (T-Bank)](https://t.me/medusajs_tkassa) plugin development chat to discuss features and get support.
 
 ## 👥 Medusa.js Community Chat on Telegram
 
@@ -60,8 +62,8 @@ Join the [Medusa.js Chat](https://t.me/medusajs_chat) to connect with developers
 📝 **Receipt generation** compliant with Federal Law No. 54, supporting FFD 1.05 and 1.2 formats   
 💳 **One-step** (autocapture) **and two-step** (authorization/hold) payment flows   
 📊 **Webhook support** for real-time payment status updates   
-🔄 **Full refund** and **order cancellation** support   
-🛡 **Token-based webhook verification** for enhanced security   
+🔄 **Refund** and **order cancellation** support   
+🛡 **Token-based webhook verification** to ensure security   
 🔧 **Detailed logging** for debugging and transaction auditing   
 
 ## Installation
@@ -121,7 +123,7 @@ TKASSA_PASSWORD=supersecret
 | `password`           | Password for request signing (required for authentication)                                                                                                                                                                                                               | -       |
 | `capture`            | Automatic payment capture:<br>- `true` for one-step payment, passes `O` to T-Kassa API<br>- `false` for two-steps payment, passes `T` payment                                                                                                                            | `true`  |
 | `useReceipt`         | Enable receipt generation according to Russian fiscal data format (FFD)                                                                                                                                                                                                  | `false` |
-| `ffdVersion`         | Fiscal data format version: "1.2" or "1.05"<br> Applicable only if `useReceipt` = `true`                                                                                                                                                                                 | -       |
+| `ffdVersion`         | Fiscal data format version: `1.2` or `1.05`<br>Applicable only if `useReceipt` = `true`                                                                                                                                                                                 | -       |
 | `taxation`           | Tax system type:<br>- `osn`: General<br>- `usn_income`: Simplified (income)<br>- `usn_income_outcome`: Simplified (income-expenses)<br>- `esn`: Agricultural<br>- `patent`: Patent<br>Applicable only if `useReceipt` = `true`                                           | -       |
 | `taxItemDefault`     | Default VAT rate for products:<br>- `none`: No VAT<br>- `vat0`: 0%<br>- `vat5`: 5%<br>- `vat7`: 7%<br>- `vat10`: 10%<br>- `vat20`: 20%<br>- `vat105`: 5/105<br>- `vat107`: 7/107<br>- `vat110`: 10/110<br>- `vat120`: 20/120<br>Applicable only if `useReceipt` = `true` | -       |
 | `taxShippingDefault` | Default VAT rate for shipping, same options as `taxItemDefault`<br>Applicable only if `useReceipt` = `true`                                                                                                                                                              | -       |
@@ -164,7 +166,7 @@ export const isTkassa = (providerId?: string) => {
 
 You extend the `paymentInfoMap` object to include a `pp_tkassa_tkassa` entry. This entry defines the title and the icon that will be shown for T-Kassa on the checkout page.
 
-The helper function `isTkassa` checks whether a given `providerId` belongs to T-Kassa. This is useful when rendering provider-specific instructions or components.
+The helper function `isTkassa` checks whether a given `providerId` belongs to T-Kassa. This is useful when rendering provider-specific UI-components.
 
 ### 2. Cookie Settings Update
 
