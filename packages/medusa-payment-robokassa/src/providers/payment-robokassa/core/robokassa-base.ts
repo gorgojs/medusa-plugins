@@ -25,8 +25,9 @@ import {
 import axios, { AxiosError } from "axios"
 import { XMLParser } from 'fast-xml-parser'
 import {
-  stringToNumberHash,
-  createSignature
+  createSignature,
+  generateReceipt,
+  stringToNumberHash
 } from "../utils"
 import { createHash } from "crypto"
 
@@ -74,30 +75,30 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
   ): Partial<Payment> {
     const res = {} as Partial<Payment>
 
-    if(extra?.data?.SuccessUrl2)
+    if (extra?.data?.SuccessUrl2)
       res.SuccessUrl2 = extra?.data?.SuccessUrl2 as Payment["SuccessUrl2"]
 
-    if(extra?.data?.SuccessUrl2Method)
+    if (extra?.data?.SuccessUrl2Method)
       res.SuccessUrl2Method = extra?.data?.SuccessUrl2Method as Payment["SuccessUrl2Method"]
 
-    if(extra?.data?.FailUrl2)
+    if (extra?.data?.FailUrl2)
       res.FailUrl2 = extra?.data?.FailUrl2 as Payment["FailUrl2"]
 
-    if(extra?.data?.FailUrl2Method)
+    if (extra?.data?.FailUrl2Method)
       res.FailUrl2Method = extra?.data?.FailUrl2Method as Payment["FailUrl2Method"]
 
-    if(extra?.data?.EMail)
+    if (extra?.data?.EMail)
       res.EMail = extra?.data?.EMail as Payment["EMail"]
 
-    if( extra?.data?.Culture)
+    if (extra?.data?.Culture)
       res.Culture = extra?.data?.Culture as Payment["Culture"]
 
-    if(extra?.data?.isTest)
+    if (extra?.data?.isTest)
       res.isTest =
         extra?.data?.isTest as Payment["isTest"] ??
           this.options_.isTest ? "1" : undefined
-          
-    if(extra?.data?.StepByStep)
+
+    if (extra?.data?.StepByStep)
       res.StepByStep =
         extra?.data?.StepByStep as Payment["StepByStep"] ??
           this.options_.capture ? undefined : "true"
@@ -122,10 +123,21 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
 
     const additionalParameters = this.normalizePaymentParameters(input)
 
+    const receipt = generateReceipt(
+      this.options_.taxation!,
+      this.options_.taxItemDefault!,
+      this.options_.taxShippingDefault!,
+      input.data?.cart as Record<string, any>
+    )
+
+    const receiptJson = JSON.stringify(receipt)
+    const receiptEncoded = encodeURIComponent(receiptJson)
+
     const raw = [
       this.options_.merchantLogin,
       outSum,
       invoiceId,
+      receiptJson,
       additionalParameters.StepByStep,
       additionalParameters.SuccessUrl2,
       additionalParameters.SuccessUrl2Method,
@@ -139,6 +151,7 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     const payment: Payment = {
       MerchantLogin: this.options_.merchantLogin,
       OutSum: outSum,
+      Receipt: receiptEncoded,
       InvoiceID: invoiceId,
       SignatureValue: signature,
       Shp_SessionID: sessionId,
