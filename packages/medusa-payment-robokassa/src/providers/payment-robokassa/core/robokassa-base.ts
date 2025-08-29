@@ -19,6 +19,7 @@ import {
 import {
   HashAlgorithms,
   Payment,
+  Receipt,
   RobokassaEvent,
   RobokassaOptions,
   taxations,
@@ -139,15 +140,19 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     // TODO: can we avoide generating invoice id?
     const invoiceId = stringToNumberHash(context.idempotency_key as string).toString()
     const sessionId = input.data?.session_id as string
+    const cart = input.data?.cart as Record<string, any>
 
     const additionalParameters = this.normalizePaymentParameters(input)
 
-    const receipt = generateReceipt(
-      this.options_.taxation!,
-      this.options_.taxItemDefault!,
-      this.options_.taxShippingDefault!,
-      input.data?.cart as Record<string, any>
-    )
+    let receipt = {} as Receipt
+    if (this.options_.useReceipt && cart) {
+      receipt = generateReceipt(
+        this.options_.taxation!,
+        this.options_.taxItemDefault!,
+        this.options_.taxShippingDefault!,
+        input.data?.cart as Record<string, any>
+      )
+    }
 
     const receiptJson = JSON.stringify(receipt)
     const receiptEncoded = encodeURIComponent(receiptJson)
