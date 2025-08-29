@@ -22,7 +22,7 @@ A Medusa plugin that provides Robokassa payments.
     <img src="https://img.shields.io/badge/Medusa-^2.7.0-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.9.0-green?logo=checkmarx" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.10.1-green?logo=checkmarx" alt="Medusa" />
   </a>
 </p>
 
