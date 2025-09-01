@@ -14,8 +14,12 @@ Robokassa Payments for Medusa
 </h1>
 
 <p align="center">
-A Medusa plugin that provides Robokassa payments.
+  A Medusa plugin that provides Robokassa payments.
+  <br/>
+  <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-payment-robokassa/README.ru.md">Читать README на русском →</a>
 </p>
+
+<br/>
 
 <p align="center">
   <a href="https://medusajs.com">
@@ -38,31 +42,31 @@ A Medusa plugin that provides Robokassa payments.
   </a>
 </p>
 
-> [Читать README на русском](./README.ru.md)
+## 💬 Robokassa Plugin Support Chat
 
-## Features
+Got questions or ideas for new plugin features?  
+Join the Telegram chat – [@medusajs_robokassa](https://t.me/medusajs_robokassa)
 
-🛒 **Seamless integration** with the Robokassa payment system   
-💳 **One-step** (autocapture) **and two-step** (authorization/hold) payment flows   
-🔄 **Full refund** and **order cancellation** support   
-📊 **Webhook support** for real-time payment status updates   
-🛡 **Webhook verification** for enhanced security   
-⚙️ **Test mode** enables simulated payments without real charges   
-🔧 **Detailed logging** for debugging and transaction auditing   
+## 👥 Medusa.js Community Chat
 
-## 💬 Plugin Support Chat on Telegram
-
-Join the [Medusa.js ⊷ Robokassa](https://t.me/medusajs_robokassa) community chat to discuss features and get support.
-
-## 👥 Medusa.js Community Chat on Telegram
-
-Join the [Medusa.js Chat](https://t.me/medusajs_chat) to connect with developers building on Medusa.
+Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.me/medusajs_chat)
 
 ## Prerequisites
 
 - Medusa server v2.7.0 or later
 - Node.js v20 or later
 - A Robokassa account – [sign in or create one](https://login.robokassa.ru/reg?promoCode=gorgo)
+
+## Features
+
+🛒 **Seamless integration** with the Robokassa payment system  
+📝 **Receipt generation** compliant with Federal Law No. 54   
+💳 **One-step** (autocapture) **and two-step** (authorization/hold) payment flows 
+📊 **Webhook support** for real-time payment status updates    
+🔄 **Refund** and **order cancellation** support   
+🛡 **Webhook verification** for enhanced security   
+⚙️ **Test mode** for simulating payments without real charges   
+🔧 **Detailed logging** for debugging and transaction auditing   
 
 ## Installation
 
@@ -76,7 +80,7 @@ npm install @gorgo/medusa-payment-robokassa
 
 Add the provider configuration in your `medusa-config.js` file of the Medusa admin application:
 
-```js
+```ts
 // ...
 module.exports = defineConfig({
   // ...
@@ -137,18 +141,24 @@ https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/robokassa_robokassa
 | `testPassword2` | Test password #2 used to verify notifications in test mode.<br><br>Applicable only if `isTest` = `true`                                                                                                                                                                                    | No       | - |
 | `capture`       | Automatic payment capture (`true` for one-step payment, `false` for two-step payment)                                                                                                                               | No       | `true`       |
 | `isTest`      | Enables test mode | No       | `false`      |
+| `useReceipt`     | Enable receipt generation according to Russian fiscal data format (FFD)                                                    | No         | `false`      |
+| `taxation`         | Tax system type:<br>- `osn` — General<br>- `usn_income` — Simplified (income)<br>- `usn_income_outcome` — Simplified (income-expenses)<br>- `esn` — Agricultural<br>- `patent` — Patent<br><br>Applicable only if `useReceipt` = `true`                                                 | No         | -      |
+| `taxItemDefault`         | Default VAT rate for products:<br>- `none` — No VAT<br>- `vat0` — 0%<br>- `vat5` — 5%<br>- `vat7` — 7%<br>- `vat10` — 10%<br>- `vat20` — 20%<br>- `vat105` — 5/105<br>- `vat107` — 7/107<br>- `vat110` — 10/110<br>- `vat120` — 20/120<br><br>Applicable only if `useReceipt` = `true`                                                  | No         | -     |
+| `taxShippingDefault`         | Default VAT rate for shipping, same options as `taxItemDefault`<br><br>Applicable only if `useReceipt` = `true`                                                   | No         | -      |
 
 ## Storefront Integration
 
-To integrate the Robokassa payment provider in a Next.js storefront, start by adding the required UI components so the provider is shown on the checkout page alongside other available methods.
+To integrate the Robokassa payment provider in a Next.js storefront, start by adding the required UI components. So, the provider is displayed on the checkout page alongside other available payment methods.
 
-When Robokassa is selected, the storefront should call `initiatePaymentSession` with the necessary parameters. Your Medusa backend will create a signed payment URL and store it in the payment session data. The Place Order button should then send the customer to the Robokassa hosted payment page to complete the payment. After the customer finishes, Robokassa both redirects them back to your storefront and sends a server-to-server notification (ResultURL). Whichever arrives first can complete the cart and create the order in Medusa (final confirmation is typically based on the ResultURL notification).  ￼
+When Robokassa is selected, the storefront should call `initiatePayment` with the necessary parameters. This will create a payment session through the Robokassa API and prepare the customer for redirection. The *Place Order* button should then send the customer to the Robokassa payment page, where he can select his preferred payment method.
 
-For the Next.js starter you need to make the following changes:
+Once the payment is completed, Robokassa will concurrently send a webhook and redirect the customer back to the storefront. Whichever arrives first will complete the cart and create a new order in Medusa.
+
+For the Next.js start you need to make the following changes:
 
 ### 1. Payment Provider Configuration
 
-To make Robokassa available as a payment method on the checkout page, add its configuration to the payment provider mapping in your storefront’s constants file. This mapping determines how each payment provider is displayed in the UI.
+To make Robokassa available as a payment method on the storefront checkout page, you must add its configuration to the payment provider mapping in your storefront’s constants file. This mapping determines how each payment provider is displayed in the UI.
 
 Open [`src/lib/constants.tsx`](https://github.com/gorgojs/medusa-plugins/blob/f2e1073275317a01f1447efe9a87d6bc135c5b61/examples/payment-robokassa/medusa-storefront/src/lib/constants.tsx#L33-L36) and add the following:
 
@@ -172,9 +182,9 @@ export const isRobokassa = (providerId?: string) => {
 }
 ```
 
-You extend the `paymentInfoMap` object to include a `pp_robokassa_robokassa` entry. This entry defines the title and icon shown for Robokassa on the checkout page.
+You extend the `paymentInfoMap` object to include a `pp_robokassa_robokassa` entry. This entry defines the title and the icon that will be shown for Robokassa on the checkout page.
 
-The `isRobokassa` helper checks whether a given `providerId` belongs to Robokassa. It’s used to render provider-specific UI and to route the checkout flow to the correct payment component.
+The helper function `isRobokassa` checks whether a given `providerId` belongs to Robokassa. This is useful when rendering provider-specific UI-components.
 
 ### 2. Cookie Settings Update
 
@@ -199,7 +209,7 @@ The `sameSite` option is set to `lax` instead of `strict`. This change ensures t
 
 ### 3. Payment Session Initialization 
 
-To redirect a customer to Robokassa, the payment session must be properly initialized with the required parameters, including the success and fail return URL, language and email.
+To redirect a customer to Robokassa, the payment session must be properly initialized with the required parameters, including the return URLs for both success and failure outcomes, the language, the customer’s email address, and the shopping cart for generating receipts.
 
 Open [`src/modules/checkout/components/payment/index.tsx`](https://github.com/gorgojs/medusa-plugins/blob/f2e1073275317a01f1447efe9a87d6bc135c5b61/examples/payment-robokassa/medusa-storefront/src/modules/checkout/components/payment/index.tsx#L89-L96) and update the payment initialization logic to include Robokassa’s redirect URLs:
 
@@ -215,15 +225,18 @@ await initiatePaymentSession(cart, {
     FailUrl2Method: "GET",
     EMail: cart?.email,
     Culture: countryCode === "ru" ? "ru" : "en",
+    cart: cart
   }
 })
 ```
 
-When initiating a Robokassa payment, your backend provider returns a signed payment URL (stored on the session) which the storefront will use for the redirect. Robokassa then redirects the user back to your `SuccessUrl2`/`FailUrl2`, and also sends an asynchronous notification to your `ResultURL` for server-side verification.  ￼
+When initiating the payment session for Robokassa, the `SuccessUrl2` and `FailUrl2` parameters define where the customer will be redirected after attempting payment. Both URLs are dynamically constructed using the storefront’s base URL, the cart ID, and the selected country code.
+
+The `cart` object is included in the initialization data to build a receipt in accordance with Federal Law No. 54. ￼
 
 ### 4. Payment Button Component 
 
-Medusa storefront requires a dedicated payment button for each provider to handle the post-review step. For Robokassa, the button reads the current payment session and navigates the customer to the `paymentUrl` stored in `session.data`. If the URL is missing, it shows an error; the loading state provides feedback while preparing the redirect.
+Medusa storefront requires a dedicated payment button component for each payment provider to handle the checkout flow after the customer confirms his order. This component leverages the payment session data and navigates the customer to the Robokassa payment page.
 
 Open [`src/modules/checkout/components/payment-button/index.tsx`](https://github.com/gorgojs/medusa-plugins/blob/f2e1073275317a01f1447efe9a87d6bc135c5b61/examples/payment-robokassa/medusa-storefront/src/modules/checkout/components/payment-button/index.tsx#L163-L211) and add the following code:
 
@@ -369,7 +382,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
 
 This route handles the redirect from Robokassa after a payment attempt. It retrieves the latest state of the cart to ensure any updates made during payment are reflected.
 
-If the cart does not contain an associated `order_id`, the route tries to place an order. If successful, the customer is redirected to the order confirmation page. If any error happens during cart completion, the customer is redirected back to the checkout page indicating an error, and he can proceed the checkout once again.
+If the cart does not contain an associated order ID, the route tries to place an order. If successful, the customer is redirected to the order confirmation page. If any error happens during cart completion, the customer is redirected back to the checkout page indicating an error, and he can proceed the checkout once again.
 
 When the payment is successful, the route revalidates the cached cart and order data, removes the cart cookie, and redirects the customer to the order confirmation page. This ensures a consistent post-payment experience while keeping storefront data up to date.
 
@@ -377,7 +390,7 @@ When the payment is successful, the route revalidates the cached cart and order 
 
 You can refer to the modifications made in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-robokassa/medusa-storefront) directory.
 
-The complete integration diff can be viewed in the [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-payment-robokassa%400.0.1...main), open the "Files changed" tab, and explore the differences under the `examples/payment-robokassa/medusa-storefront` directory. Or run diff in the terminal:
+The complete integration diff can be viewed in the [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-payment-robokassa%400.0.1...main), open the `Files changed` tab, and explore the differences under the `examples/payment-robokassa/medusa-storefront` directory. Or run diff in the terminal:
 
 ```bash
 git clone https://github.com/gorgojs/medusa-plugins
