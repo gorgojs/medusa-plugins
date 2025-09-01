@@ -368,7 +368,7 @@ When the payment is successful, the route revalidates the cached cart and order 
 
 ### Example
 
-You can refer to the modifications made in the Medusa Next.js Starter Template, which are located in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-tkassa/medusa-storefront) directory.
+You can refer to the modifications made in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-tkassa/medusa-storefront) directory.
 
 The complete integration diff can be viewed in the [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-payment-tkassa%400.0.1...main), open the "Files changed" tab, and explore the differences under the `examples/payment-tkassa/medusa-storefront` directory. Or run diff in the terminal:
 
