@@ -42,30 +42,31 @@ T-Kassa Payments for Medusa
   </a>
 </p>
 
-## 💬 T-Kassa Plugin Support Chat
+
+## Features
+
+- 🔗  **Seamless integration** with the T-Kassa payment system
+- 🧾  **Receipt generation** compliant with Federal Law No. 54, supporting FFD 1.05 and 1.2 formats
+- 1️⃣  **One-step** (autocapture) and  **2️⃣  two-step** (authorization/hold) payment flows
+- 🔄  **Full refund** and **order cancellation** support
+- 🔔  **Webhook support** for real-time payment status updates
+- 🛡  **Webhook verification** for enhanced security
+- 🔍  **Detailed logging** for debugging
+
+## 💬  T-Kassa Plugin Support Chat
 
 Got questions or ideas for new plugin features?  
 Join the Telegram chat – [@medusajs_tkassa](https://t.me/medusajs_tkassa)
 
-## 👥 Medusa.js Community Chat
+## 👥  Medusa.js Community Chat
 
 Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.me/medusajs_chat)
 
-## Prerequisites
+## Requirements
 
-- Medusa server v2.7.0 or later
+- Medusa v2.7.0 or later
 - Node.js v20 or later
 - A T-Business account with T-Kassa internet acquiring – [sign in or create one](https://www.tbank.ru/kassa/?utm_source=partners_sme&utm_medium=prt.utl&utm_campaign=business.int_acquiring.7-3S975SBSY&partnerId=7-3S975SBSY&agentId=5-B6HGU9OD&agentSsoId=1316b7dd-3a90-4167-9d35-37910431a19c)
-
-## Features
-
-🛒 **Seamless integration** with the T-Kassa payment system   
-📝 **Receipt generation** compliant with Federal Law No. 54, supporting FFD 1.05 and 1.2 formats   
-💳 **One-step** (autocapture) **and two-step** (authorization/hold) payment flows   
-📊 **Webhook support** for real-time payment status updates   
-🔄 **Refund** and **order cancellation** support   
-🛡 **Token-based webhook verification** to ensure security   
-🔧 **Detailed logging** for debugging and transaction auditing   
 
 ## Installation
 
@@ -302,7 +303,7 @@ The `PaymentButton` component determines whether the current payment session bel
 
 Integrating this component ensures that T-Kassa’s payment process is seamlessly triggered from the checkout flow.
 
-### 5. Payment Capture Endpoint
+### 5. Payment Capture API Route
 
 After the customer completes payment on the T-Kassa page, he is redirected back to the storefront. You need an API route to handle this callback, verify the payment status, and complete the cart.
 
@@ -360,7 +361,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
 }
 ```
 
-This route handles the redirect from T-Kassa after a payment attempt. It retrieves the latest state of the cart to ensure any updates made during payment are reflected.
+This API route handles the redirect from T-Kassa after a payment attempt. It retrieves the latest state of the cart to ensure any updates made during payment are reflected.
 
 If the cart does not contain an associated order ID, the route tries to place an order. If successful, the customer is redirected to the order confirmation page. If any error happens during cart completion, the customer is redirected back to the checkout page indicating an error, and he can proceed the checkout once again.
 
