@@ -42,31 +42,31 @@ Robokassa Payments for Medusa
   </a>
 </p>
 
-## 💬 Robokassa Plugin Support Chat
+## Features
+
+- 🔗  **Seamless integration** with the Robokassa payment system  
+- 🧾  **Receipt generation** compliant with Federal Law No. 54   
+- 1️⃣  **One-step** (autocapture) **and two-step** (authorization/hold) payment flows 
+- 🔔  **Webhook support** for real-time payment status updates    
+- 🔄  **Refund** and **order cancellation** support   
+- 🛡  **Webhook verification** for enhanced security   
+- ⚙️  **Test mode** for simulating payments without real charges   
+- 🔍  **Detailed logging** for debugging and transaction auditing  
+
+## 💬  Robokassa Plugin Support Chat
 
 Got questions or ideas for new plugin features?  
 Join the Telegram chat – [@medusajs_robokassa](https://t.me/medusajs_robokassa)
 
-## 👥 Medusa.js Community Chat
+## 👥  Medusa.js Community Chat
 
 Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.me/medusajs_chat)
 
-## Prerequisites
+## Requirements
 
-- Medusa server v2.7.0 or later
+- Medusa v2.7.0 or later
 - Node.js v20 or later
-- A Robokassa account – [sign in or create one](https://login.robokassa.ru/reg?promoCode=gorgo)
-
-## Features
-
-🛒 **Seamless integration** with the Robokassa payment system  
-📝 **Receipt generation** compliant with Federal Law No. 54   
-💳 **One-step** (autocapture) **and two-step** (authorization/hold) payment flows 
-📊 **Webhook support** for real-time payment status updates    
-🔄 **Refund** and **order cancellation** support   
-🛡 **Webhook verification** for enhanced security   
-⚙️ **Test mode** for simulating payments without real charges   
-🔧 **Detailed logging** for debugging and transaction auditing   
+- A Robokassa account – [sign in or create one](https://login.robokassa.ru/reg?promoCode=gorgo) 
 
 ## Installation
 
@@ -322,7 +322,7 @@ If `paymentUrl` is missing, the component displays an error message instead of p
 
 The parent `PaymentButton` uses `isRobokassa` to determine whether to render the `RobokassaPaymentButton` for the current session; otherwise, it shows a disabled Select a payment method button.
 
-### 5. Payment Capture Endpoint
+### 5. Payment Capture API Route
 
 After the customer completes payment on the Robokassa page, he is redirected back to the storefront. You need an API route to handle this callback, verify the payment status, and complete the cart.
 
@@ -380,7 +380,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
 }
 ```
 
-This route handles the redirect from Robokassa after a payment attempt. It retrieves the latest state of the cart to ensure any updates made during payment are reflected.
+This API Route handles the redirect from Robokassa after a payment attempt. It retrieves the latest state of the cart to ensure any updates made during payment are reflected.
 
 If the cart does not contain an associated order ID, the route tries to place an order. If successful, the customer is redirected to the order confirmation page. If any error happens during cart completion, the customer is redirected back to the checkout page indicating an error, and he can proceed the checkout once again.
 
