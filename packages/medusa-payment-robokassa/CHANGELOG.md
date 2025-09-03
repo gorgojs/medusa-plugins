@@ -1,5 +1,12 @@
 # @gorgo/medusa-payment-robokassa
 
+## 0.2.0
+
+### Minor Changes
+
+- Add online receipt generation compliant with Federal Law No. 54
+- Add readme in Russian
+
 ## 0.1.5
 
 ### Patch Changes

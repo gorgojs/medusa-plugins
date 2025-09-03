@@ -1,5 +1,11 @@
 # @gorgo/medusa-payment-tkassa
 
+## 0.3.3
+
+### Patch Changes
+
+- Improve readme
+
 ## 0.3.2
 
 ### Patch Changes
