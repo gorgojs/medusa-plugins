@@ -46,7 +46,7 @@ Robokassa Payments for Medusa
 
 - 🔗  **Seamless integration** with the Robokassa payment system  
 - 🧾  **Receipt generation** compliant with Federal Law No. 54   
-- 1️⃣  **One-step** (autocapture) **and two-step** (authorization/hold) payment flows 
+- 1️⃣  **One-step** (autocapture) and  **2️⃣  two-step** (authorization/hold) payment flows 
 - 🔔  **Webhook support** for real-time payment status updates    
 - 🔄  **Refund** and **order cancellation** support   
 - 🛡  **Webhook verification** for enhanced security   
