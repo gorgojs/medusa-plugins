@@ -56,7 +56,7 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     if (!isDefined(options.hashAlgorithm) || !HashAlgorithms.includes(options.hashAlgorithm as (typeof HashAlgorithms)[number])) {
       throw new Error("Required option `hashAlgorithm` is missing in Robokassa provider")
     }
-    if (isDefined(options.useReceipt)) {
+    if (options.useReceipt == true) {
       if (!isDefined(options.taxation)) {
         throw new Error("Required option `taxation` is missing in Robokassa provider")
       } else if (!taxations.includes(options.taxation)) {
@@ -113,15 +113,15 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     if (extra?.data?.Culture)
       res.Culture = extra?.data?.Culture as Payment["Culture"]
 
-    if (extra?.data?.isTest)
+    if (isDefined(extra?.data?.isTest) || isDefined(this.options_.isTest))
       res.isTest =
         extra?.data?.isTest as Payment["isTest"] ??
           this.options_.isTest ? "1" : undefined
 
-    if (extra?.data?.StepByStep)
+    if (isDefined(extra?.data?.StepByStep) || isDefined(this.options_.capture))
       res.StepByStep =
         extra?.data?.StepByStep as Payment["StepByStep"] ??
-          this.options_.capture ? undefined : "true"
+          (this.options_.capture === false ? "true" : undefined)
 
     return res
   }
@@ -161,8 +161,8 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
       this.options_.merchantLogin,
       outSum,
       invoiceId,
-      receiptJson,
-      additionalParameters.StepByStep,
+      ...(this.options_.useReceipt ? [receiptJson] : []),
+      ...(additionalParameters.StepByStep ? [additionalParameters.StepByStep] : []),
       additionalParameters.SuccessUrl2,
       additionalParameters.SuccessUrl2Method,
       additionalParameters.FailUrl2,
@@ -175,7 +175,7 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     const payment: Payment = {
       MerchantLogin: this.options_.merchantLogin,
       OutSum: outSum,
-      Receipt: receiptEncoded,
+      ...(this.options_.useReceipt ? { Receipt: receiptEncoded } : {}),
       InvoiceID: invoiceId,
       SignatureValue: signature,
       Shp_SessionID: sessionId,
