@@ -113,15 +113,15 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     if (extra?.data?.Culture)
       res.Culture = extra?.data?.Culture as Payment["Culture"]
 
-    if (isDefined(extra?.data?.isTest) || isDefined(this.options_.isTest))
-      res.isTest =
-        extra?.data?.isTest as Payment["isTest"] ??
-          this.options_.isTest ? "1" : undefined
+    const isTest =
+      extra?.data?.isTest as Payment["isTest"] ??
+      (this.options_.isTest ? "1" : undefined)
+    if (isTest !== undefined) res.isTest = isTest
 
-    if (isDefined(extra?.data?.StepByStep) || isDefined(this.options_.capture))
-      res.StepByStep =
-        extra?.data?.StepByStep as Payment["StepByStep"] ??
-          (this.options_.capture === false ? "true" : undefined)
+    const stepByStep =
+      extra?.data?.StepByStep as Payment["StepByStep"] ??
+      (this.options_.capture === false ? "true" : undefined)
+    if (stepByStep !== undefined) res.StepByStep = stepByStep
 
     return res
   }
@@ -185,13 +185,15 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     const params = new URLSearchParams(payment as unknown as Record<string, string>).toString()
     const paymentUrl = `${this.paymentUrl_}?${params}`
 
-    return {
+    const output = {
       id: invoiceId,
       data: {
         paymentUrl: paymentUrl,
         ...payment
       }
     }
+    this.logger_.debug("RobokassaBase.initiatePayment output:\n" + JSON.stringify(output, null, 2))
+    return output
   }
 
   /**
@@ -222,7 +224,9 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
 
     try {
       const response = await axios.post(capturePaymentUrl)
-      return { data: response.data as unknown as Record<string, unknown> }
+      const output = { data: response.data as unknown as Record<string, unknown> }
+      this.logger_.debug("RobokassaBase.capturePayment output:\n" + JSON.stringify(output, null, 2))
+      return output
     } catch (e) {
       throw this.buildError("An error occurred in capturePayment", e)
     }
@@ -234,8 +238,9 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
   async authorizePayment(input: AuthorizePaymentInput): Promise<AuthorizePaymentOutput> {
     this.logger_.debug(`RobokassaBase.authorizePayment input:\n${JSON.stringify(input, null, 2)}`)
 
-    const statusResponse = await this.getPaymentStatus(input)
-    return statusResponse
+    const output = await this.getPaymentStatus(input)
+    this.logger_.debug("RobokassaBase.authorizePayment output:\n" + JSON.stringify(output, null, 2))
+    return output
   }
 
   /**
@@ -245,7 +250,9 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
   async deletePayment(input: DeletePaymentInput): Promise<DeletePaymentOutput> {
     this.logger_.debug(`RobokassaBase.deletePayment input:\n${JSON.stringify(input, null, 2)}`)
 
-    return input
+    const output = input
+    this.logger_.debug("RobokassaBase.deletePayment output:\n" + JSON.stringify(output, null, 2))
+    return output
   }
 
   /**
@@ -255,7 +262,9 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
   async updatePayment(input: UpdatePaymentInput): Promise<UpdatePaymentOutput> {
     this.logger_.debug(`RobokassaBase.updatePayment input:\n${JSON.stringify(input, null, 2)}`)
 
-    return input
+    const output = input
+    this.logger_.debug("RobokassaBase.updatePayment output:\n" + JSON.stringify(output, null, 2))
+    return output
   }
 
   /**
@@ -265,7 +274,9 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
   async refundPayment(input: RefundPaymentInput): Promise<RefundPaymentOutput> {
     this.logger_.debug(`RobokassaBase.refundPayment input:\n${JSON.stringify(input, null, 2)}`)
 
-    return input
+    const output = input
+    this.logger_.debug("RobokassaBase.refundPayment output:\n" + JSON.stringify(output, null, 2))
+    return output
   }
 
   /**
@@ -274,7 +285,9 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
   async cancelPayment(input: CancelPaymentInput): Promise<CancelPaymentOutput> {
     this.logger_.debug(`RobokassaBase.cancelPayment input:\n${JSON.stringify(input, null, 2)}`)
 
-    return input
+    const output = input
+    this.logger_.debug("RobokassaBase.cancelPayment output:\n" + JSON.stringify(output, null, 2))
+    return output
   }
 
   /**
@@ -308,13 +321,14 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
 
       const parsed = parser.parse(xml)
       const response = parsed['OperationStateResponse']
-
-      return {
+      const output = {
         data: {
           ...input.data,
           response: response
         }
       }
+      this.logger_.debug("RobokassaBase.retrievePayment output:\n" + JSON.stringify(output, null, 2))
+      return output
     } catch (e) {
       throw this.buildError("An error occurred in retrievePayment", e)
     }
@@ -345,59 +359,20 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
       }
       const paymentState = parseInt(state.Code, 10)
 
-      switch (paymentState) {
-        case 10: // 10 is canceled
-        case 60: // 60 is refunded
-          return {
-            status: PaymentSessionStatus.CANCELED,
-            // TODO: why we need input.data here?
-            data: {
-              ...input.data,
-              response: response
-            }
-          }
-        case 20: // 20 is on hold (capture not done yet)
-          return {
-            status: PaymentSessionStatus.AUTHORIZED,
-            data: {
-              ...input.data,
-              response: response
-            }
-          }
-        case 5: // 5 is initiated
-        case 50: // 50 is payed, but still processing
-          return {
-            status: PaymentSessionStatus.PENDING,
-            data: {
-              ...input.data,
-              response: response
-            }
-          }
-        case 80: // 80 is paused
-          return {
-            status: PaymentSessionStatus.REQUIRES_MORE,
-            data: {
-              ...input.data,
-              response: response
-            }
-          }
-        case 100: // is successfully captured
-          return {
-            status: PaymentSessionStatus.CAPTURED,
-            data: {
-              ...input.data,
-              response: response
-            }
-          }
-        default:
-          return {
-            status: PaymentSessionStatus.ERROR,
-            data: {
-              ...input.data,
-              response: response
-            }
-          }
+      const map: Record<number, PaymentSessionStatus> = {
+        10: PaymentSessionStatus.CANCELED,
+        60: PaymentSessionStatus.CANCELED,
+        20: PaymentSessionStatus.AUTHORIZED,
+        5: PaymentSessionStatus.PENDING,
+        50: PaymentSessionStatus.PENDING,
+        3: PaymentSessionStatus.PENDING,
+        80: PaymentSessionStatus.REQUIRES_MORE,
+        100: PaymentSessionStatus.CAPTURED,
       }
+      const status = map[paymentState] ?? PaymentSessionStatus.ERROR;
+      const output = { status, data: { ...input.data, response } }
+      this.logger_.debug("RobokassaBase.getPaymentStatus output:\n" + JSON.stringify(output, null, 2))
+      return output
     } catch (e) {
       throw this.buildError("An error occurred in getPaymentStatus", e)
     }
@@ -418,10 +393,12 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
     const sessionId = data.Shp_SessionID
     const outSum = Number(data.OutSum)
 
-    return {
+    const result = {
       action: PaymentActions.SUCCESSFUL,
       data: { session_id: sessionId, amount: outSum }
     }
+    this.logger_.debug("RobokassaBase.getWebhookActionAndData result:\n" + JSON.stringify(result, null, 2))
+    return result
   }
 
   protected async isWebhookEventValid(data: RobokassaEvent): Promise<boolean> {
