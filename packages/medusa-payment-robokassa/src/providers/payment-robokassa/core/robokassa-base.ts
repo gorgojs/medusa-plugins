@@ -224,6 +224,7 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
 
     try {
       const response = await axios.post(capturePaymentUrl)
+
       const output = { data: response.data as unknown as Record<string, unknown> }
       this.logger_.debug("RobokassaBase.capturePayment output:\n" + JSON.stringify(output, null, 2))
       return output
@@ -321,6 +322,7 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
 
       const parsed = parser.parse(xml)
       const response = parsed['OperationStateResponse']
+
       const output = {
         data: {
           ...input.data,
@@ -369,7 +371,8 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
         80: PaymentSessionStatus.REQUIRES_MORE,
         100: PaymentSessionStatus.CAPTURED,
       }
-      const status = map[paymentState] ?? PaymentSessionStatus.ERROR;
+      const status = map[paymentState] ?? PaymentSessionStatus.ERROR
+
       const output = { status, data: { ...input.data, response } }
       this.logger_.debug("RobokassaBase.getPaymentStatus output:\n" + JSON.stringify(output, null, 2))
       return output
