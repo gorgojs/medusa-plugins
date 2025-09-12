@@ -25,19 +25,19 @@
     <img src="https://img.shields.io/badge/Medusa-^2.7.0-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.9.0-green?logo=checkmarx" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Протестировано_с_Medusa-v2.10.2-green?logo=checkmarx" alt="Medusa" />
   </a>
 </p>
 
 <p align="center">
   <a href="https://t.me/medusajs_robokassa">
-    <img src="https://img.shields.io/badge/Telegram-Medusa.js⊷Robokassa_Support_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js⊷Robokassa on Telegram" />
+    <img src="https://img.shields.io/badge/Telegram-Чат_поддержки_Medusa.js⊷Robokassa-0088cc?logo=telegram&style=social" alt="Чат Medusa.js⊷Robokassa в Telegram" />
   </a>
 </p>
 
 <p align="center">
   <a href="https://t.me/medusajs_chat">
-    <img src="https://img.shields.io/badge/Telegram-Medusa.js_Dev_Community_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js Chat on Telegram" />
+    <img src="https://img.shields.io/badge/Telegram-Чат_dev--сообщества_Medusa.js-0088cc?logo=telegram&style=social" alt="Чат сообщества разработчиков Medusa.js в Telegram" />
   </a>
 </p>
 
