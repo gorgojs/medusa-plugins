@@ -5,6 +5,9 @@
     "packages/*"
   ],
   "packageManager": "yarn@4.9.2",
+  "scripts": {
+    "update": "./scripts/update.sh"
+  },
   "dependencies": {
     "@changesets/changelog-github": "^0.5.1",
     "@changesets/cli": "^2.29.5"
