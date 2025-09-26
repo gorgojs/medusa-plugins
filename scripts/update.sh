@@ -186,14 +186,21 @@ process_directory() {
         
         # Update version badge of the package's readme
         local package_dir="${EXAMPLE_PACKAGE_MAP[$1]}"
-        if [ -d $package_dir ] && [ -f "$package_dir/README.md" ]; then
+        if [ -d $package_dir ]; then
             cd "$package_dir" || handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
-            echo -e "\n${YELLOW}[$package_dir] Updating version badge in $package_dir/README.md${NC}\n"
-            sed -i '' -E "s/(Tested_with_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\\1$VERSION/" README.md || \
-            handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
-        fi
 
-        success "$package_dir" "Successfully updated version badge in README.md"
+            if [ -f "README.md" ]; then
+                echo -e "\n${YELLOW}[$package_dir] Updating version badge in $package_dir/README.md${NC}\n"
+                sed -i '' -E "s/(Tested_with_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\\1$VERSION/" README.md || \
+                handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
+            fi
+
+            if [ -f "README.ru.md" ]; then
+                echo -e "\n${YELLOW}[$package_dir] Updating version badge in $package_dir/README.ru.md${NC}\n"
+                sed -i '' -E "s/(Протестировано_с_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\\1$VERSION/" README.ru.md || \
+                handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
+            fi
+        fi
 
     else
         warning "$dir" "No @medusajs packages found, skipping..."
