@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import { MagnifierAlert } from '@medusajs/icons';
-import { Button } from '@medusajs/ui';
-import { SearchIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { MagnifierAlert } from "@medusajs/icons";
+import { Button } from "@medusajs/ui";
+import { SearchIcon } from "lucide-react";
+import { useLocale } from "next-intl"; // 1. Import the useLocale hook
+import { useCallback, useEffect, useState } from "react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -11,9 +12,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
-import { sidebars } from '@/lib/sidebar';
-import type { SidebarItemType } from '@/types';
+} from "@/components/ui/command";
 
 interface CommandItemType {
   id: string;
@@ -21,60 +20,90 @@ interface CommandItemType {
   description?: string;
   href: string;
   section?: string;
+  content: string;
 }
 
-const flattenSidebarItems = (
-  sidebarItems: SidebarItemType[],
-  section: string
-): CommandItemType[] => {
-  const items: CommandItemType[] = [];
-
-  const processItems = (itemsList: SidebarItemType[], parentSection: string) => {
-    itemsList.forEach((item) => {
-      if (item.href) {
-        items.push({
-          id: `${parentSection}-${item.title.toLowerCase().replace(/\s+/g, '-')}`,
-          title: item.title,
-          href: item.href,
-          section: parentSection,
-        });
-      }
-
-      if (item.children && Array.isArray(item.children)) {
-        processItems(item.children, parentSection);
-      }
-    });
-  };
-
-  processItems(sidebarItems, section);
-  return items;
-};
-
 const CmdK = () => {
-  const items = sidebars.flatMap((s) => flattenSidebarItems(s.children, s.section));
   const [open, setOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<CommandItemType[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [allContent, setAllContent] = useState<CommandItemType[]>([]);
+  const locale = useLocale(); // 2. Get the current active locale
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((open) => !open);
       }
     };
 
-    document.addEventListener('keydown', down);
-    return () => document.removeEventListener('keydown', down);
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
   }, []);
 
-  const filteredItems = searchTerm
-    ? items.filter(
-        (item) =>
-          item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.section?.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : items;
+  // 3. MODIFIED: Fetch initial content for the CURRENT LOCALE
+  useEffect(() => {
+    if (open && allContent.length === 0) {
+      const fetchAllContent = async () => {
+        try {
+          setLoading(true);
+          const response = await fetch(`/api/search?locale=${locale}`);
+          if (!response.ok) throw new Error("Failed to fetch initial content");
+          const data = await response.json();
+          const contentArray = Array.isArray(data) ? data : [];
+          setAllContent(contentArray);
+          setSearchResults(contentArray);
+        } catch (error) {
+          console.error("Error loading search content:", error);
+          setAllContent([]);
+          setSearchResults([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchAllContent();
+    }
+  }, [open, allContent.length, locale]); // Add locale to dependency array
+
+  // 4. MODIFIED: Debounced search function for the CURRENT LOCALE
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setSearchResults(allContent);
+      return; // Exit early
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        setLoading(true);
+        // Pass both the search term and the locale to the API
+        const response = await fetch(
+          `/api/search?q=${encodeURIComponent(searchTerm)}&locale=${locale}`
+        );
+        if (!response.ok) throw new Error("Failed to fetch search results");
+        const data = await response.json();
+        setSearchResults(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Error searching content:", error);
+        setSearchResults([]);
+      } finally {
+        setLoading(false);
+      }
+    }, 300); // 300ms debounce
+
+    // Cleanup function
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchTerm, allContent, locale]); // Add locale and allContent to dependencies
+
+  // 5. IMPROVEMENT: Use a stable callback for navigation
+  const handleSelect = useCallback((href: string) => {
+    window.location.href = href;
+    setOpen(false);
+    setSearchTerm("");
+  }, []);
 
   return (
     <>
@@ -102,33 +131,41 @@ const CmdK = () => {
           onValueChange={setSearchTerm}
         />
         <CommandList className="min-h-[400px] max-h-[400px] overflow-y-auto overflow-x-hidden">
-          {searchTerm && filteredItems.length === 0 && (
+          {loading && (
+            <div className="flex items-center justify-center h-[400px]">
+              <p className="text-sm text-muted-foreground">
+                Searching documentation...
+              </p>
+            </div>
+          )}
+
+          {!loading && searchTerm && searchResults.length === 0 && (
             <CommandEmpty className="text-center text-sm h-[400px] flex flex-col items-center justify-center">
               <MagnifierAlert className="mb-3" />
               <h5 className="mb-1.5 font-medium">No results found</h5>
               <p className="text-center max-w-xs text-ui-fg-subtle leading-tight">
-                We couldn't find any matches for your search. Please try changing the filters or
-                using different keywords.
+                We couldn't find any matches for your search. Please try
+                changing the filters or using different keywords.
               </p>
             </CommandEmpty>
           )}
 
           <CommandGroup heading="Documentation">
-            {filteredItems.map((item) => (
+            {searchResults.map((item) => (
               <CommandItem
                 key={item.id}
-                onSelect={() => {
-                  window.location.href = item.href;
-                  setOpen(false);
-                  setSearchTerm('');
-                }}
+                onSelect={() => handleSelect(item.href)}
                 className="flex cursor-pointer items-center justify-between px-4 py-3 hover:bg-accent"
               >
                 <div>
                   <div className="font-medium">{item.title}</div>
-                  <div className="text-xs text-muted-foreground">{item.description}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {item.description || item.content?.substring(0, 220)}
+                  </div>
                 </div>
-                <div className="text-xs text-muted-foreground">{item.section}</div>
+                <div className="text-xs text-muted-foreground">
+                  {item.section}
+                </div>
               </CommandItem>
             ))}
           </CommandGroup>
