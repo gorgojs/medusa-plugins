@@ -122,8 +122,8 @@ const getCachedSearchIndexJsonForLocale = (locale: string) => {
   )();
 };
 
-// Define search options separately for consistency (no changes)
-const searchOptions = {
+// Define search options for MiniSearch constructor
+const miniSearchOptions = {
   fields: ["title", "content", "description", "section"],
   storeFields: ["id", "title", "description", "href", "section", "content"],
   searchOptions: {
@@ -137,7 +137,7 @@ const searchOptions = {
 export const getCachedSearchIndexForLocale = async (locale: string) => {
   "use server";
   const searchIndexJson = await getCachedSearchIndexJsonForLocale(locale);
-  return MiniSearch.loadJSON(searchIndexJson, searchOptions);
+  return MiniSearch.loadJSON(searchIndexJson, miniSearchOptions);
 };
 
 const getContentSnippet = (
@@ -150,6 +150,39 @@ const getContentSnippet = (
       content.substring(0, snippetLength) +
       (content.length > snippetLength ? "..." : "")
     );
+
+  const lowerContent = content.toLowerCase();
+  const lowerSearchTerm = searchTerm.toLowerCase();
+  const index = lowerContent.indexOf(lowerSearchTerm);
+
+  if (index === -1) {
+    return (
+      content.substring(0, snippetLength) +
+      (content.length > snippetLength ? "..." : "")
+    );
+  }
+
+  let startIndex = Math.max(0, index - Math.floor(snippetLength / 2));
+  if (startIndex > 0) {
+    const spaceIndex = content.lastIndexOf(" ", startIndex);
+    if (spaceIndex > 0 && startIndex - spaceIndex < 20) {
+      startIndex = spaceIndex + 1;
+    }
+  }
+
+  let endIndex = Math.min(content.length, startIndex + snippetLength);
+  if (endIndex < content.length) {
+    const spaceIndex = content.indexOf(" ", endIndex);
+    if (spaceIndex > 0 && spaceIndex - endIndex < 20) {
+      endIndex = spaceIndex;
+    }
+  }
+
+  let snippet = content.substring(startIndex, endIndex);
+  if (startIndex > 0) snippet = "..." + snippet;
+  if (endIndex < content.length) snippet = snippet + "...";
+
+  return snippet;
 };
 
 export const getCachedContentItemsForLocale = (locale: string) => {
@@ -158,7 +191,7 @@ export const getCachedContentItemsForLocale = (locale: string) => {
       "use server";
       return await fetchContentItemsForLocale(locale);
     },
-    [`content_items_${locale}`], // Unique cache key per locale
+    [`content_items_${locale}`],
     {
       revalidate: 3600,
       tags: ["content", `content-${locale}`],
@@ -178,8 +211,15 @@ export const searchWithSnippets = async (
     const snippet = query
       ? getContentSnippet(result.content, query)
       : result.content;
+
     return {
-      ...result,
+      id: result.id,
+      score: result.score,
+      title: result.title,
+      description: result.description,
+      href: result.href,
+      section: result.section,
+      content: snippet,
     };
   });
 };

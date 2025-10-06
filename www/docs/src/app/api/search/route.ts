@@ -1,5 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { searchWithSnippets } from "@/lib/search";
+import {
+  searchWithSnippets,
+  getCachedContentItemsForLocale,
+} from "@/lib/search";
 
 export async function GET(request: NextRequest) {
   try {
