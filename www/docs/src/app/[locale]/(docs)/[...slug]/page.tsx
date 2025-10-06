@@ -1,6 +1,6 @@
-import { notFound } from 'next/navigation';
-import { routing } from '@/i18n/routing';
-import { getAllSidebarPaths } from '@/lib/sidebar';
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
+import { getAllSidebarPaths } from "@/lib/sidebar";
 
 type PageProps = {
   params: {
@@ -18,14 +18,14 @@ export async function generateStaticParams() {
 
   const params = allLocales.flatMap((locale) =>
     allPaths
-      .filter((page) => page !== '/')
+      .filter((page) => page !== "/")
       .map((href) => {
         let slug: string[];
 
-        if (href === '/') {
+        if (href === "/") {
           slug = [];
         } else {
-          slug = href.substring(1).split('/');
+          slug = href.substring(1).split("/");
         }
 
         return { locale, slug };
@@ -38,7 +38,7 @@ export async function generateStaticParams() {
 export default async function DynamicDocsPage({ params }: PageProps) {
   const { locale, slug } = await params;
 
-  const path = slug?.join('/') || 'index';
+  const path = slug?.join("/") || "index";
 
   let Post: React.ComponentType;
   try {

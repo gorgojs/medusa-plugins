@@ -1,42 +1,105 @@
-import type { SidebarType } from '@/types';
+import type { SidebarType } from "@/types";
 
 export const pluginsSidebar: SidebarType = {
-  title: 'Plugins',
-  section: 'plugins',
-  href: '/plugins',
+  title: "Plugins",
+  slug: "plugins",
+  isSection: true,
   children: [
     {
-      title: 'Welcome',
-      href: '/plugins/welcome',
-    },
-    {
-      title: 'Installation',
+      title: "YooKassa",
+      slug: "yookassa",
+      isSection: true,
       children: [
         {
-          title: 'Docker Installation',
-          href: '/plugins/installation/docker',
+          title: "Welcome",
+          slug: "welcome",
+          children: [],
+        },
+        {
+          title: "Installation",
+          slug: "installation",
+          children: [
+            {
+              title: "Docker Installation",
+              slug: "docker",
+              children: [],
+            },
+          ],
+        },
+        {
+          title: "Configuration",
+          slug: "configuration",
+          children: [],
+        },
+        {
+          title: "API Reference",
+          slug: "api",
+          children: [],
+        },
+        {
+          title: "Advanced Usage",
+          slug: "advanced-usage",
+          children: [],
+        },
+        {
+          title: "Customization",
+          slug: "customization",
+          children: [],
+        },
+        {
+          title: "Troubleshooting",
+          slug: "troubleshooting",
+          children: [],
         },
       ],
     },
     {
-      title: 'Configuration',
-      href: '/plugins/configuration',
-    },
-    {
-      title: 'API Reference',
-      href: '/plugins/api',
-    },
-    {
-      title: 'Advanced Usage',
-      href: '/plugins/advanced-usage',
-    },
-    {
-      title: 'Customization',
-      href: '/plugins/customization',
-    },
-    {
-      title: 'Troubleshooting',
-      href: '/plugins/troubleshooting',
+      title: "Moy Sklad",
+      slug: "moysklad",
+      isSection: true,
+      children: [
+        {
+          title: "Welcome",
+          slug: "welcome",
+          children: [],
+        },
+        {
+          title: "Installation",
+          slug: "installation",
+          children: [
+            {
+              title: "Docker Installation",
+              slug: "docker",
+              children: [],
+            },
+          ],
+        },
+        {
+          title: "Configuration",
+          slug: "configuration",
+          children: [],
+        },
+        {
+          title: "API Reference",
+          slug: "api",
+          children: [],
+        },
+        {
+          title: "Advanced Usage",
+          slug: "advanced-usage",
+          children: [],
+        },
+        {
+          title: "Customization",
+          slug: "customization",
+          children: [],
+        },
+        {
+          title: "Troubleshooting",
+          slug: "troubleshooting",
+          children: [],
+        },
+      ],
     },
   ],
 };

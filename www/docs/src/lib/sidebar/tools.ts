@@ -1,33 +1,39 @@
-import type { SidebarType } from '@/types';
+import type { SidebarType } from "@/types";
 
 export const toolsSidebar: SidebarType = {
-  title: 'Tools',
-  section: 'tools',
-  href: '/tools',
+  title: "Tools",
+  slug: "tools",
+  isSection: true,
   children: [
     {
-      title: 'Installation',
-      href: '/tools/installation',
+      title: "Installation",
+      slug: "installation",
+      children: [],
     },
     {
-      title: 'Configuration',
-      href: '/tools/configuration',
+      title: "Configuration",
+      slug: "configuration",
+      children: [],
     },
     {
-      title: 'Usage',
-      href: '/tools/usage',
+      title: "Usage",
+      slug: "usage",
+      children: [],
     },
     {
-      title: 'Security',
-      href: '/tools/security',
+      title: "Security",
+      slug: "security",
+      children: [],
     },
     {
-      title: 'Integration',
-      href: '/tools/integration',
+      title: "Integration",
+      slug: "integration",
+      children: [],
     },
     {
-      title: 'Troubleshooting',
-      href: '/tools/troubleshooting',
+      title: "Troubleshooting",
+      slug: "troubleshooting",
+      children: [],
     },
   ],
 };

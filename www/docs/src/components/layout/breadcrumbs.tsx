@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { TriangleRightMini } from '@medusajs/icons';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import type { Locale } from 'next-intl';
-import React from 'react';
-import { sidebars } from '@/lib/sidebar';
-import { cn, isLocale } from '@/lib/utils';
-import type { SidebarItemType } from '@/types';
+import { TriangleRightMini } from "@medusajs/icons";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type { Locale } from "next-intl";
+import React from "react";
+import { sidebars } from "@/lib/sidebar";
+import { cn, isLocale } from "@/lib/utils";
+import type { SidebarItemType, SidebarType } from "@/types";
 
 interface Breadcrumb {
   title: string;
@@ -15,44 +15,81 @@ interface Breadcrumb {
 }
 
 function getLocale(path: string): Locale {
-  const segments = path.split('/').filter(Boolean);
+  const segments = path.split("/").filter(Boolean);
   const firstSegment = segments[0];
 
   if (isLocale(firstSegment)) {
     return firstSegment;
   }
 
-  return 'en';
+  return "en";
 }
 
 function stripLocale(path: string): string {
-  const segments = path.split('/').filter(Boolean);
-  if (segments.length === 0) return '/';
+  const segments = path.split("/").filter(Boolean);
+  if (segments.length === 0) return "/";
 
   if (isLocale(segments[0])) {
-    if (segments.length === 1) return '/';
-    return '/' + segments.slice(1).join('/');
+    if (segments.length === 1) return "/";
+    return "/" + segments.slice(1).join("/");
   }
 
   return path;
 }
 
+// Updated function to work with new structure
 function findBreadcrumbPath(
   pathname: string,
-  items: SidebarItemType[],
-  currentPath: Breadcrumb[]
+  items: (SidebarItemType | SidebarType)[],
+  currentPath: Breadcrumb[],
+  basePath: string = ""
 ): Breadcrumb[] | null {
   for (const item of items) {
-    const newPath = [...currentPath, { title: item.title, href: item.href }];
+    // Handle SidebarType (sections)
+    if ("isSection" in item && item.isSection) {
+      const sectionPath = basePath
+        ? `${basePath}/${item.slug}`
+        : `/${item.slug}`;
+      const newPath = [
+        ...currentPath,
+        { title: item.title, href: sectionPath },
+      ];
 
-    if (item.href === pathname) {
-      return newPath;
+      if (sectionPath === pathname) {
+        return newPath;
+      }
+
+      if (item.children) {
+        const foundPath = findBreadcrumbPath(
+          pathname,
+          item.children,
+          newPath,
+          sectionPath
+        );
+        if (foundPath) {
+          return foundPath;
+        }
+      }
     }
+    // Handle SidebarItemType (regular items)
+    else if ("slug" in item) {
+      const itemPath = basePath ? `${basePath}/${item.slug}` : `/${item.slug}`;
+      const newPath = [...currentPath, { title: item.title, href: itemPath }];
 
-    if (item.children) {
-      const foundPath = findBreadcrumbPath(pathname, item.children, newPath);
-      if (foundPath) {
-        return foundPath;
+      if (itemPath === pathname) {
+        return newPath;
+      }
+
+      if (Array.isArray(item.children) && item.children.length > 0) {
+        const foundPath = findBreadcrumbPath(
+          pathname,
+          item.children,
+          newPath,
+          basePath
+        );
+        if (foundPath) {
+          return foundPath;
+        }
       }
     }
   }
@@ -64,16 +101,23 @@ export default function Breadcrumbs({ className }: { className?: string }) {
   const pathname = usePathname();
   if (!pathname) return null;
 
-  const sectionKey = pathname.split('/')[2] ?? '';
-  const currentSidebar = sidebars.find((sidebar) => sidebar.section === sectionKey);
+  const sectionKey = pathname.split("/")[2] ?? "";
+  const currentSidebar = sidebars.find(
+    (sidebar) => sidebar.slug === sectionKey
+  );
 
   const normalizedPath = stripLocale(pathname);
-  const homeBreadcrumb: Breadcrumb = { title: 'Documentation', href: '/' };
+  const homeBreadcrumb: Breadcrumb = { title: "Documentation", href: "/" };
 
   let breadcrumbs: Breadcrumb[] = [homeBreadcrumb];
 
   if (currentSidebar) {
-    const dynamicBreadcrumbs = findBreadcrumbPath(normalizedPath, currentSidebar.children, []);
+    const dynamicBreadcrumbs = findBreadcrumbPath(
+      normalizedPath,
+      currentSidebar.children,
+      [],
+      `/${currentSidebar.slug}`
+    );
     if (dynamicBreadcrumbs) {
       breadcrumbs = [homeBreadcrumb, ...dynamicBreadcrumbs];
     }
@@ -82,7 +126,10 @@ export default function Breadcrumbs({ className }: { className?: string }) {
   const locale = getLocale(pathname);
 
   return (
-    <nav aria-label="breadcrumb" className={cn('text-sm text-ui-fg-muted', className)}>
+    <nav
+      aria-label="breadcrumb"
+      className={cn("text-sm text-ui-fg-muted", className)}
+    >
       <ol className="flex flex-row items-center gap-x-1">
         {breadcrumbs.map((crumb, index) => {
           const isLast = index === breadcrumbs.length - 1;
@@ -91,14 +138,14 @@ export default function Breadcrumbs({ className }: { className?: string }) {
           return (
             <React.Fragment key={crumb.title + index}>
               <li
-                className={cn('breadcrumb-item', {
-                  'font-medium text-ui-fg-subtle': isLast,
+                className={cn("breadcrumb-item", {
+                  "font-medium text-ui-fg-subtle": isLast,
                 })}
-                aria-current={isLast ? 'page' : undefined}
+                aria-current={isLast ? "page" : undefined}
               >
                 {hasHref ? (
                   <Link
-                    href={`/${locale}${crumb.href === '/' ? '' : crumb.href}`}
+                    href={`/${locale}${crumb.href === "/" ? "" : crumb.href}`}
                     className="transition-colors hover:text-ui-fg-subtle"
                   >
                     {crumb.title}

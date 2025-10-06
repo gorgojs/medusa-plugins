@@ -1,131 +1,25 @@
 {
-  "HomePage": {
-    "metadata": {
-      "title": "Gorgo - Создавайте e-commerce с Medusa",
-      "description": "Плагины интеграции, чаты и каналы сообщества разработчиков, экспертная поддержка — всё для создания и масштабирования вашего e-commerce."
-    },
-    "heroTitle": "Стройте\ne-commerce на Medusa",
-    "heroPowered": "быстрее при поддержке Gorgo",
-    "heroSubtitle": "Плагины, интеграции, каналы сообщества и экспертная поддержка — всё для роста вашего e-commerce на Medusa.",
-    "browsePlugins": "Смотреть плагины",
-    "browsePluginsSubtitle": "Все интеграции Medusa",
-    "readDocs": "Чат в Telegram",
-    "readDocsSubtitle": "Dev-cообщество Medusa"
-  },
-  "Navigation": {
-    "close": "Закрыть",
-    "menu": "Меню",
-    "medusa-plugins": "Интеграции и плагины",
-    "community-channels": "Чаты и каналы",
-    "about": "О проекте Gorgo",
-    "faq": "Руководства"
-  },
-  "Footer": {
-    "title": "Легкий путь к безграничному e-commerce на Medusa",
-    "menuResourses": "Ресурсы",
-    "menuGorgo": "Gorgo"
-  },
-  "Links": {
-    "gorgoTitle": "Gorgo",
-    "gorgoSubtitle": "Легкий путь к безграничному e-commerce на Medusa.",
-    "plugins": "Интеграции и плагины\nдля Medusa",
-    "pluginsDescription": "Все расширения для Medusa\n от сообщества и официальных разработчиков.",
-    "communitySupport": "Чаты и каналы",
-    "communitySupportDescription": "Советы и мгновенная поддержка от активных разработчиков сообщества Medusa.",
-    "faqTips": "Частые вопросы и советы",
-    "helpfulBlogs": "Полезные блоги для разработчиков.",
-    "cloud": "Облако",
-    "infrastructure": "Инфраструктура для Medusa",
-    "learn": "Узнать больше",
-    "browsePlugins": "Смотреть плагины",
-    "items": {
-      "medusaChat": {
-        "title": "Чат Medusa",
-        "description": "Чат сообщества кодеров и вайбкодеров.",
-        "url": "https://t.me/medusajs",
-        "visualUrl": "@medusajs"
-      },
-      "medusaNews": {
-        "title": "Новости Medusa",
-        "description": "Канал с новостями, обновлениями и советами обо всём, что связано с Medusa.",
-        "url": "https://t.me/medusajs_rews",
-        "visualUrl": "@medusajs_rews"
-      },
-      "medusaDiscord": {
-        "title": "Discord-сообщество",
-        "description": "Официальный сервер Medusa.",
-        "url": "https://discord.gg/medusajs",
-        "visualUrl": "discord.gg/medusajs"
-      },
-      "medusaGithub": {
-        "title": "GitHub Discussions",
-        "description": "Делитесь идеями, задавайте вопросы и получайте поддержку.",
-        "url": "https://github.com/medusajs/medusa/discussions",
-        "visualUrl": "github.com/medusajs/medusa/discussions"
-      }
+  "search": {
+    "placeholder": "Поиск документации...",
+    "loadingText": "Поиск документации...",
+    "emptyResults": {
+      "title": "Результаты не найдены",
+      "description": "Мы не смогли найти совпадений для вашего поиска. Пожалуйста, попробуйте изменить фильтры или использовать другие ключевые слова."
     }
   },
-  "AboutPage": {
-    "metadata": {
-      "title": "О проекте Gorgo - Присоединяйтесь к сообществу Medusa с открытым исходным кодом",
-      "description": "Присоединяйтесь к Gorgo и помогите создать крупнейшую в мире платформу электронной коммерции с открытым исходным кодом"
-    },
-    "title1": "Medusa даёт гибкость.",
-    "title2": "Gorgo помогает двигаться быстрее.",
-    "description1": "Мы верим, что разработчики e-commerce заслуживают лучшие инструменты, а бизнесу пора выйти за рамки legacy и проприетарных решений. Medusa открывает новый путь к гибкому и современному e-commerce, и мы в Gorgo делаем всё, чтобы этот путь стал проще и доступнее.",
-    "joinCommunity": "Присоединяйтесь к сообществу, чтобы создавать e-commerce нового поколения!",
-    "contactTitle": "Связаться с нами",
-    "contactDescription": "Need help building an integration Medusa plugin? Chat with us in",
-    "contactTelegram": "– dev-сообщество в Telegram",
-    "contactEmail": "– или на почту"
+  "header": {
+    "search": {
+      "label": "Поиск док-ции...",
+      "shortLabel": "Поиск..."
+    }
   },
-  "MedusaPluginsPage": {
-    "metadata": {
-      "title": "Medusa плагины и интеграции — все решения от сообщества и официальных разработчиков",
-      "description": "Каталог плагинов и интеграций Medusa — расширения от сообщества и официальных разработчиков для платежей, доставки, ERP и других e-commerce задач."
-    },
-    "title": "Интеграции и плагины\nдля Medusa",
-    "subtitle": "Все плагины, расширения и интеграции для Medusa\n— от сообщества и официальных разработчиков.",
-    "searchPlaceholder": "Поиск плагинов...",
-    "allCategories": "Все категории",
-    "allAuthors": "Все авторы",
-    "filterPlugins": "Фильтр",
-    "clear": "Очистить",
-    "selectCategory": "Выберите категорию",
-    "authors": "Авторы",
-    "communitySupport": "Сообщество и поддержка",
-    "noPlugins": "Плагины не найдены",
-    "byAuthor": "От"
+  "keyboard": {
+    "command": "⌘",
+    "commandName": "Cmd",
+    "control": "Ctrl"
   },
-  "MedusaPluginsDetailPage": {
-    "goBack": "Плагины Medusa",
-    "category": "Категория",
-    "builtBy": "Создано",
-    "type": "Тип",
-    "lastUpdated": "Последнее обновление",
-    "githubStars": "Звезды на Github",
-    "monthlyDownloads": "Ежемесячные загрузки",
-    "npm": "NPM",
-    "github": "Github",
-    "telegram": "Telegram",
-    "discord": "Discord",
-    "docs": "Документация",
-    "moreInThisCategory": "Еще в этой категории",
-    "moreByThisAuthor": "Еще от этого автора",
-    "viewAll": "Посмотреть все",
-    "needSupport": "Нужна доработка этого плагина?",
-    "getInTouch": "Связаться с нами"
-  },
-  "FaqTipsPage": {
-    "metadata": {
-      "title": "Руководства — Частые вопросы и полезные блоги для разработчиков Medusa",
-      "description": "Ответы на часто задаваемые вопросы и полезные советы по Medusa"
-    },
-    "title": "Частые вопросы и советы"
-  },
-  "ContactSection": {
-    "title": "Нужна помощь в разработке плагина интеграции для Medusa?",
-    "browsePlugins": "Смотреть плагины",
-    "getInTouch": "Чат в Telegram"
+  "mobile": {
+    "menu": "Меню",
+    "close": "Закрыть"
   }
 }

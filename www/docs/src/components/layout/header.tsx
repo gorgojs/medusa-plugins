@@ -1,14 +1,23 @@
 "use client";
 
+import { CloudSolid, House } from "@medusajs/icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import CmdK from "@/components/layout/cmdk";
 import { MainNavigationMenu } from "@/components/layout/main-navigation-menu";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
-import GorgoWordmark from "@/svg/icons/gorgo-wordmark.svg";
-import MobileNavigationMenu from "./mobile-navigation-menu";
 import { cn } from "@/lib/utils";
+import GorgoWordmark from "@/svg/icons/gorgo-wordmark.svg";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "../ui/navigation-menu";
+import MobileNavigationMenu from "./mobile-navigation-menu";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -38,9 +47,39 @@ export default function Header() {
           className="pl-4 flex shrink-0 xl:w-[250px]"
           suppressHydrationWarning
         >
-          <Link href="/" className="flex items-start">
-            <GorgoWordmark className="h-5 text-ui-fg-base" />
-          </Link>
+          <NavigationMenu viewport={false}>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="flex justify-center p-0">
+                  <Link href="/" className="flex items-start">
+                    <GorgoWordmark className="h-5 text-ui-fg-base" />
+                  </Link>
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[224px] gap-0.5">
+                    <li>
+                      <NavigationMenuLink
+                        className="flex flex-row items-center"
+                        asChild
+                      >
+                        <Link href={`#`}>
+                          <House /> Homepage
+                        </Link>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink
+                        className="flex flex-row items-center"
+                        asChild
+                      >
+                        <Link href={`#`}>
+                          <CloudSolid /> Cloud
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
         <div
           className={cn(

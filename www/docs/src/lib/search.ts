@@ -36,7 +36,6 @@ function getAllMdxFiles(
   return arrayOfFiles;
 }
 
-// Extract text content from MDX (no changes)
 async function extractTextFromMdx(content: string): Promise<string> {
   const processor = unified()
     .use(remarkParse)
@@ -48,7 +47,6 @@ async function extractTextFromMdx(content: string): Promise<string> {
   return String(result);
 }
 
-// Create and configure MiniSearch instance (no changes)
 const createSearchIndex = (): MiniSearchType => {
   return new MiniSearch({
     fields: ["title", "content", "description", "section"],
@@ -93,7 +91,7 @@ const fetchContentItemsForLocale = async (
     const textContent = await extractTextFromMdx(content);
 
     contentItems.push({
-      id: href, // The clean, unique URL path is a perfect ID.
+      id: href,
       title,
       href,
       section,
@@ -104,7 +102,6 @@ const fetchContentItemsForLocale = async (
   return contentItems;
 };
 
-// MODIFIED: Wrap cache function to accept a locale and create a unique cache key
 const getCachedSearchIndexJsonForLocale = (locale: string) => {
   return unstable_cache(
     async () => {
@@ -114,7 +111,7 @@ const getCachedSearchIndexJsonForLocale = (locale: string) => {
       searchIndex.addAll(contentItems);
       return JSON.stringify(searchIndex);
     },
-    [`search_index_json_${locale}`], // Unique cache key per locale
+    [`search_index_json_${locale}`],
     {
       revalidate: 3600,
       tags: ["search", `search-${locale}`],
@@ -133,7 +130,6 @@ const miniSearchOptions = {
   },
 };
 
-// MODIFIED: Get search index for a specific locale
 export const getCachedSearchIndexForLocale = async (locale: string) => {
   "use server";
   const searchIndexJson = await getCachedSearchIndexJsonForLocale(locale);

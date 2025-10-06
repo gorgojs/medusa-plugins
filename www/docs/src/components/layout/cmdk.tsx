@@ -3,7 +3,7 @@
 import { MagnifierAlert } from "@medusajs/icons";
 import { Button } from "@medusajs/ui";
 import { SearchIcon } from "lucide-react";
-import { useLocale } from "next-intl"; // 1. Import the useLocale hook
+import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import {
   CommandDialog,
@@ -23,13 +23,25 @@ interface CommandItemType {
   content: string;
 }
 
+const useIsMac = () => {
+  const [isMac, setIsMac] = useState(true);
+
+  useEffect(() => {
+    setIsMac(navigator.userAgent.toLowerCase().includes("mac"));
+  }, []);
+
+  return isMac;
+};
+
 const CmdK = () => {
+  const t = useTranslations();
+  const locale = useLocale();
+  const isMac = useIsMac();
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<CommandItemType[]>([]);
   const [loading, setLoading] = useState(false);
   const [allContent, setAllContent] = useState<CommandItemType[]>([]);
-  const locale = useLocale(); // 2. Get the current active locale
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -43,7 +55,6 @@ const CmdK = () => {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
-  // 3. MODIFIED: Fetch initial content for the CURRENT LOCALE
   useEffect(() => {
     if (open && allContent.length === 0) {
       const fetchAllContent = async () => {
@@ -65,19 +76,17 @@ const CmdK = () => {
       };
       fetchAllContent();
     }
-  }, [open, allContent.length, locale]); // Add locale to dependency array
+  }, [open, allContent.length, locale]);
 
-  // 4. MODIFIED: Debounced search function for the CURRENT LOCALE
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setSearchResults(allContent);
-      return; // Exit early
+      return;
     }
 
     const timer = setTimeout(async () => {
       try {
         setLoading(true);
-        // Pass both the search term and the locale to the API
         const response = await fetch(
           `/api/search?q=${encodeURIComponent(searchTerm)}&locale=${locale}`
         );
@@ -90,15 +99,13 @@ const CmdK = () => {
       } finally {
         setLoading(false);
       }
-    }, 300); // 300ms debounce
+    }, 300);
 
-    // Cleanup function
     return () => {
       clearTimeout(timer);
     };
-  }, [searchTerm, allContent, locale]); // Add locale and allContent to dependencies
+  }, [searchTerm, allContent, locale]);
 
-  // 5. IMPROVEMENT: Use a stable callback for navigation
   const handleSelect = useCallback((href: string) => {
     window.location.href = href;
     setOpen(false);
@@ -113,10 +120,17 @@ const CmdK = () => {
         onClick={() => setOpen(true)}
       >
         <SearchIcon className="mr-2 h-4 w-4" />
-        <span className="hidden lg:inline-flex">Search docs...</span>
-        <span className="inline-flex lg:hidden">Search...</span>
+        <span className="hidden lg:inline-flex">
+          {t("header.search.label")}
+        </span>
+        <span className="inline-flex lg:hidden">
+          {t("header.search.shortLabel")}
+        </span>
         <kbd className="pointer-events-none ml-8 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-          <span className="text-xs">⌘</span>K
+          <span className="text-xs">
+            {isMac ? t("keyboard.command") : t("keyboard.control")}
+          </span>
+          K
         </kbd>
       </Button>
 
@@ -126,7 +140,7 @@ const CmdK = () => {
         className="fixed top-1/2 left-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-0 overflow-hidden rounded-xl border bg-ui-bg-base p-0 shadow-lg outline-none animate-in fade-in-90 slide-in-from-top-10 sm:zoom-in-90"
       >
         <CommandInput
-          placeholder="Search documentation..."
+          placeholder={t("search.placeholder")}
           value={searchTerm}
           onValueChange={setSearchTerm}
         />
@@ -134,7 +148,9 @@ const CmdK = () => {
           {loading && (
             <div className="flex items-center justify-center h-[400px]">
               <p className="text-sm text-muted-foreground">
-                Searching documentation...
+                {t("search.loadingText", {
+                  defaultValue: "Searching documentation...",
+                })}
               </p>
             </div>
           )}
@@ -142,26 +158,25 @@ const CmdK = () => {
           {!loading && searchTerm && searchResults.length === 0 && (
             <CommandEmpty className="text-center text-sm h-[400px] flex flex-col items-center justify-center">
               <MagnifierAlert className="mb-3" />
-              <h5 className="mb-1.5 font-medium">No results found</h5>
+              <h5 className="mb-1.5 font-medium">
+                {t("search.emptyResults.title")}
+              </h5>
               <p className="text-center max-w-xs text-ui-fg-subtle leading-tight">
-                We couldn't find any matches for your search. Please try
-                changing the filters or using different keywords.
+                {t("search.emptyResults.description")}
               </p>
             </CommandEmpty>
           )}
 
-          <CommandGroup heading="Documentation">
+          <CommandGroup>
             {searchResults.map((item) => (
               <CommandItem
                 key={item.id}
                 onSelect={() => handleSelect(item.href)}
-                className="flex cursor-pointer items-center justify-between px-4 py-3 hover:bg-accent"
+                className="flex flex-col cursor-pointer items-start justify-between px-4 py-3 hover:bg-accent gap-1"
               >
-                <div>
-                  <div className="font-medium">{item.title}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {item.description || item.content?.substring(0, 220)}
-                  </div>
+                <div className="font-medium">{item.title}</div>
+                <div className="text-xs text-muted-foreground line-clamp-2">
+                  {item.description || item.content?.substring(0, 220)}
                 </div>
                 <div className="text-xs text-muted-foreground">
                   {item.section}

@@ -1,130 +1,25 @@
 {
-  "HomePage": {
-    "metadata": {
-      "title": "Gorgo - Your simple path to powerful Medusa e-commerce",
-      "description": "Medusa plugins and integrations, community channels, and expert support to build e-commerce."
-    },
-    "heroTitle": "Build e-commerce\non Medusa",
-    "heroPowered": "faster with Gorgo",
-    "heroSubtitle": "Plugins, integrations, and community channels with expert support — to grow your commerce on Medusa.",
-    "browsePlugins": "Browse Plugins",
-    "browsePluginsSubtitle": "All Medusa Integrations",
-    "readDocs": "Chat in Telegram",
-    "readDocsSubtitle": "Medusa Dev Community"
-  },
-  "Navigation": {
-    "close": "Close",
-    "menu": "Menu",
-    "medusa-plugins": "Integrations & plugins",
-    "community-channels": "Community channels",
-    "about": "About Gorgo",
-    "faq": "Guides"
-  },
-  "Footer": {
-    "title": "Your simple path to limitless Medusa commerce",
-    "menuResourses": "Resourses",
-    "menuGorgo": "Gorgo"
-  },
-  "Links": {
-    "gorgoTitle": "Gorgo",
-    "gorgoSubtitle": "Your simple path to limitless Medusa commerce.",
-    "plugins": "Medusa\nintegrations & plugins",
-    "pluginsDescription": "Discover all community and official plugins, integrations, and extensions.",
-    "communitySupport": "Community channels",
-    "communitySupportDescription": "Get instant help and advice from active Medusa developers.",
-    "faqTips": "FAQ Tips",
-    "helpfulBlogs": "Helpful blogs for developers.",
-    "cloud": "Cloud",
-    "infrastructure": "Infrastructure for Medusa.",
-    "learn": "Learn",
-    "browsePlugins": "Browse plugins",
-    "items": {
-      "medusaChat": {
-        "title": "Medusa Chat",
-        "description": "Community chat for Medusa coders and vibecoders.",
-        "url": "https://t.me/medusajs",
-        "visualUrl": "@medusajs"
-      },
-      "medusaNews": {
-        "title": "Medusa News",
-        "description": "Channel for news, updates, and tips on all things Medusa.",
-        "url": "https://t.me/medusajs_news",
-        "visualUrl": "@medusajs_news"
-      },
-      "medusaDiscord": {
-        "title": "Community on Discord",
-        "description": "Medusa's official server.",
-        "url": "https://discord.gg/medusajs",
-        "visualUrl": "discord.gg/medusajs"
-      },
-      "medusaGithub": {
-        "title": "GitHub Discussions",
-        "description": "Share ideas, ask questions, and get support.",
-        "url": "https://github.com/medusajs/medusa/discussions",
-        "visualUrl": "github.com/medusajs/medusa/discussions"
-      }
+  "search": {
+    "placeholder": "Search documentation...",
+    "loadingText": "Searching documentation...",
+    "emptyResults": {
+      "title": "No results found",
+      "description": "We couldn't find any matches for your search. Please try changing the filters or using different keywords."
     }
   },
-  "AboutPage": {
-    "metadata": {
-      "title": "About Gorgo - Join the Medusa open-source community",
-      "description": "Join Gorgo and help build the largest open-source ecommerce platform in the world"
-    },
-    "title1": "Medusa gives flexibility.",
-    "title2": "Gorgo helps you move faster.",
-    "description1": "We believe e-commerce developers deserve a better DX, and businesses should move beyond legacy and proprietary solutions. Medusa opens a new path to flexible, modern commerce — and at Gorgo, we make that path simpler and more accessible.",
-    "contactTitle": "Сontact us",
-    "contactTelegram": "– join the dev community on Telegram",
-    "contactEmail": "– or email us"
+  "header": {
+    "search": {
+      "label": "Search docs...",
+      "shortLabel": "Search..."
+    }
   },
-  "MedusaPluginsPage": {
-    "metadata": {
-      "title": "Medusa Integrations and Plugins - Browse all community and official extensions",
-      "description": "Discover all community and official Medusa plugins, extensions, and integrations to extend your e-commerce stack with payments, shipping, ERP, and more."
-    },
-    "title": "Medusa\nIntegrations & Plugins",
-    "subtitle": "Browse all community and official plugins, extensions,\nand integrations for Medusa",
-    "searchPlaceholder": "Search plugins...",
-    "allCategories": "All categories",
-    "allAuthors": "All authors",
-    "filterPlugins": "Filter Plugins",
-    "clear": "Clear",
-    "selectCategory": "Select category",
-    "authors": "Authors",
-    "communitySupport": "Support Channels",
-    "noPlugins": "No plugins found",
-    "byAuthor": "By"
+  "keyboard": {
+    "command": "⌘",
+    "commandName": "Cmd",
+    "control": "Ctrl"
   },
-  "MedusaPluginsDetailPage": {
-    "goBack": "Medusa plugins",
-    "category": "Category",
-    "builtBy": "Built by",
-    "type": "Type",
-    "lastUpdated": "Last updated",
-    "githubStars": "Github stars",
-    "monthlyDownloads": "Monthly downloads",
-    "npm": "NPM",
-    "github": "Github",
-    "telegram": "Telegram",
-    "discord": "Discord",
-    "docs": "Documentation",
-    "moreInThisCategory": "More in this category",
-    "moreByThisAuthor": "More by this author",
-    "viewAll": "View all",
-    "needSupport": "Need customizations for this plugin?",
-    "getInTouch": "Get in touch"
-  },
-  "FaqTipsPage": {
-    "metadata": {
-      "title": "Guides - FAQ Tips and Helpful Blogs for Medusa Developers",
-      "description": "Find answers to common questions and read helpful blogs for Medusa developers"
-    },
-    "title": "Guides",
-    "subtitle": "Helpful blogs for developers"
-  },
-  "ContactSection": {
-    "title": "Need help building an integration Medusa plugin?",
-    "browsePlugins": "Browse plugins",
-    "getInTouch": "Chat in Telegram"
+  "mobile": {
+    "menu": "Menu",
+    "close": "Close"
   }
 }

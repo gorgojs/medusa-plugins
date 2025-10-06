@@ -1,23 +1,17 @@
-export type SidebarType = {
+export type SidebarItemType = {
   title: string;
-  section: string;
-  href: string;
-  children: SidebarItemType[];
+  slug: string;
+  children?: SidebarItemType[];
 };
 
-export type SidebarItemType =
-  | {
-      title: string;
-      href: string;
-      children?: SidebarItemType[];
-    }
-  | {
-      title: string;
-      children: SidebarItemType[];
-      href?: never;
-    };
+export type SidebarType = {
+  title: string;
+  slug?: string;
+  isSection?: boolean;
+  children: (SidebarItemType | SidebarType)[];
+};
 
 export type HeaderItemType = {
   title: string;
-  href: string;
+  slug: string;
 };

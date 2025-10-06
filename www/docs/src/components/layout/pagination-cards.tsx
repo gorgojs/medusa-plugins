@@ -1,27 +1,45 @@
-'use client';
+"use client";
 
-import { ArrowLeftMini, ArrowRightMini } from '@medusajs/icons';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { sidebars } from '@/lib/sidebar';
-import type { SidebarItemType } from '@/types';
-import { getSectionKey } from '@/lib/utils';
+import { ArrowLeftMini, ArrowRightMini } from "@medusajs/icons";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { sidebars } from "@/lib/sidebar";
+import type { SidebarItemType, SidebarType } from "@/types";
+import { getSectionKey } from "@/lib/utils";
 
 interface FlattenedSidebarItem {
   title: string;
   href: string;
 }
 
+// Updated function to work with new structure
 function flattenSidebarItems(
-  items: SidebarItemType[],
+  items: (SidebarItemType | SidebarType)[],
+  basePath: string,
   result: FlattenedSidebarItem[] = []
 ): FlattenedSidebarItem[] {
   for (const item of items) {
-    if (item.href) {
-      result.push({ title: item.title, href: item.href });
+    // Handle SidebarType (sections)
+    if ("isSection" in item && item.isSection) {
+      const sectionPath = basePath
+        ? `${basePath}/${item.slug}`
+        : `/${item.slug}`;
+      if (item.slug) {
+        result.push({ title: item.title, href: sectionPath });
+      }
+      if (item.children) {
+        flattenSidebarItems(item.children, sectionPath, result);
+      }
     }
-    if (item.children) {
-      flattenSidebarItems(item.children, result);
+    // Handle SidebarItemType (regular items)
+    else if ("slug" in item) {
+      const itemPath = basePath ? `${basePath}/${item.slug}` : `/${item.slug}`;
+      if (item.slug) {
+        result.push({ title: item.title, href: itemPath });
+      }
+      if (Array.isArray(item.children) && item.children.length > 0) {
+        flattenSidebarItems(item.children, basePath, result);
+      }
     }
   }
   return result;
@@ -31,18 +49,21 @@ export default function PaginationCards() {
   const pathname = usePathname();
   const sectionKey = getSectionKey(pathname);
   const currentSidebar = sidebars.find(
-    (item) => item.section.toLowerCase() === sectionKey.toLowerCase()
+    (item) => item.slug?.toLowerCase() === sectionKey.toLowerCase()
   );
 
   const currentSidebarItems = currentSidebar?.children || [];
-  const flattenedItems = flattenSidebarItems(currentSidebarItems);
+  const basePath = currentSidebar?.slug ? `/${currentSidebar.slug}` : "";
+  const flattenedItems = flattenSidebarItems(currentSidebarItems, basePath);
 
   const currentIndex = flattenedItems.findIndex((item) => {
-    return pathname?.endsWith(item.href ?? '');
+    return pathname === item.href;
   });
   const prevPage = currentIndex > 0 ? flattenedItems[currentIndex - 1] : null;
   const nextPage =
-    currentIndex < flattenedItems.length - 1 ? flattenedItems[currentIndex + 1] : null;
+    currentIndex < flattenedItems.length - 1
+      ? flattenedItems[currentIndex + 1]
+      : null;
 
   if (!prevPage && !nextPage) {
     return null;

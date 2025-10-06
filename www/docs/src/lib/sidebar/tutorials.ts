@@ -1,29 +1,34 @@
-import type { SidebarType } from '@/types';
+import type { SidebarType } from "@/types";
 
 export const tutorialsSidebar: SidebarType = {
-  title: 'Tutorials',
-  section: 'tutorials',
-  href: '/tutorials',
+  title: "Tutorials",
+  slug: "tutorials",
+  isSection: true,
   children: [
     {
-      title: 'Getting Started',
-      href: '/tutorials/getting-started',
+      title: "Getting Started",
+      slug: "getting-started",
+      children: [],
     },
     {
-      title: 'Basic Usage',
-      href: '/tutorials/basic-usage',
+      title: "Basic Usage",
+      slug: "basic-usage",
+      children: [],
     },
     {
-      title: 'Advanced Features',
-      href: '/tutorials/advanced-features',
+      title: "Advanced Features",
+      slug: "advanced-features",
+      children: [],
     },
     {
-      title: 'Security Best Practices',
-      href: '/tutorials/security',
+      title: "Security Best Practices",
+      slug: "security",
+      children: [],
     },
     {
-      title: 'Performance Optimization',
-      href: '/tutorials/performance',
+      title: "Performance Optimization",
+      slug: "performance",
+      children: [],
     },
   ],
 };
