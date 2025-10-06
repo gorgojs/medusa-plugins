@@ -1,21 +1,22 @@
-import createMDX from '@next/mdx';
-import type { NextConfig } from 'next';
-import createNextIntlPlugin from 'next-intl/plugin';
-import { redirects } from '@/lib/redirects';
+import createMDX from "@next/mdx";
+import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+import { redirects } from "@/lib/redirects";
 
 const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   redirects: redirects,
-  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   trailingSlash: false,
 
   turbopack: {
+    root: "./",
     rules: {
-      '*.svg': {
+      "*.svg": {
         loaders: [
           {
-            loader: '@svgr/webpack',
+            loader: "@svgr/webpack",
             options: {
               icon: true,
               svgo: true,
@@ -23,18 +24,19 @@ const nextConfig: NextConfig = {
             },
           },
         ],
-        as: '*.js',
+        as: "*.js",
       },
     },
     resolveAlias: {
-      '@/*': './src/*',
-      '@/content/*': './content/*',
+      "@/*": "./src/*",
+      "@/content/*": "./content/*",
     },
   },
 
   webpack(config) {
     const fileLoaderRule = config.module.rules.find(
-      (rule: { test: { test: (arg0: string) => unknown } }) => rule.test?.test?.('.svg')
+      (rule: { test: { test: (arg0: string) => unknown } }) =>
+        rule.test?.test?.(".svg")
     );
 
     config.module.rules.push(
@@ -49,7 +51,7 @@ const nextConfig: NextConfig = {
         resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] },
         use: [
           {
-            loader: '@svgr/webpack',
+            loader: "@svgr/webpack",
             options: {
               icon: true,
               svgo: true,
@@ -69,7 +71,11 @@ const nextConfig: NextConfig = {
 const withMDX = createMDX({
   extension: /\.(md|mdx)$/,
   options: {
-    remarkPlugins: ['remark-gfm', 'remark-mdx-frontmatter', 'remark-frontmatter'],
+    remarkPlugins: [
+      "remark-gfm",
+      "remark-mdx-frontmatter",
+      "remark-frontmatter",
+    ],
     rehypePlugins: [],
   },
 });
