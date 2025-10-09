@@ -1,6 +1,11 @@
 "use client";
 
-import { ArrowLeftMini, ArrowRightMini } from "@medusajs/icons";
+import {
+  ArrowLeftMini,
+  ArrowRightMini,
+  TriangleLeftMini,
+  TriangleRightMini,
+} from "@medusajs/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { sidebars } from "@/lib/sidebar";
@@ -12,14 +17,33 @@ interface FlattenedSidebarItem {
   href: string;
 }
 
-// Updated function to work with new structure
+function PaginationCard({
+  href,
+  title,
+  type,
+}: {
+  href: string;
+  title: string;
+  type: "prev" | "next";
+}) {
+  return (
+    <Link
+      href={href}
+      className="flex justify-center items-center flex-1 border rounded-lg py-2.5 px-4 gap-1.5 text-ui-fg-subtle font-medium"
+    >
+      {type == "prev" && <TriangleLeftMini />}
+      {title}
+      {type == "next" && <TriangleRightMini />}
+    </Link>
+  );
+}
+
 function flattenSidebarItems(
   items: (SidebarItemType | SidebarType)[],
   basePath: string,
   result: FlattenedSidebarItem[] = []
 ): FlattenedSidebarItem[] {
   for (const item of items) {
-    // Handle SidebarType (sections)
     if ("isSection" in item && item.isSection) {
       const sectionPath = basePath
         ? `${basePath}/${item.slug}`
@@ -30,9 +54,7 @@ function flattenSidebarItems(
       if (item.children) {
         flattenSidebarItems(item.children, sectionPath, result);
       }
-    }
-    // Handle SidebarItemType (regular items)
-    else if ("slug" in item) {
+    } else if ("slug" in item) {
       const itemPath = basePath ? `${basePath}/${item.slug}` : `/${item.slug}`;
       if (item.slug) {
         result.push({ title: item.title, href: itemPath });
@@ -72,35 +94,21 @@ export default function PaginationCards() {
   return (
     <div className="flex gap-2 mt-8">
       {prevPage ? (
-        <Link
+        <PaginationCard
           href={prevPage.href}
-          className="group flex flex-1 flex-col gap-y-1 rounded-lg border border-medusa-border-base p-4 no-underline hover:bg-medusa-bg-base-hover"
-        >
-          <div className="flex flex-row items-center gap-x-2 text-medusa-fg-muted">
-            <ArrowLeftMini />
-            <span className="txt-compact-small">Previous</span>
-          </div>
-          <span className="txt-compact-small-plus font-medium text-medusa-fg-base group-hover:text-medusa-fg-interactive">
-            {prevPage.title}
-          </span>
-        </Link>
+          title={prevPage.title}
+          type="prev"
+        />
       ) : (
         <div className="flex-1" />
       )}
 
       {nextPage ? (
-        <Link
+        <PaginationCard
           href={nextPage.href}
-          className="group flex flex-1 flex-col items-end gap-y-1 rounded-lg border border-medusa-border-base p-4 text-right no-underline hover:bg-medusa-bg-base-hover"
-        >
-          <div className="flex flex-row items-center gap-x-2 text-medusa-fg-muted">
-            <span className="txt-compact-small">Next</span>
-            <ArrowRightMini />
-          </div>
-          <span className="txt-compact-small-plus font-medium text-medusa-fg-base group-hover:text-medusa-fg-interactive">
-            {nextPage.title}
-          </span>
-        </Link>
+          title={nextPage.title}
+          type="next"
+        />
       ) : (
         <div className="flex-1" />
       )}
