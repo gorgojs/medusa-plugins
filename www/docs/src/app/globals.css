@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 @config "../../tailwind.config.js";
@@ -10,9 +10,8 @@
 }
 
 :root {
-  --buttons-accent:
-    0px 0.75px 0px 0px rgba(255, 255, 255, 0.2) inset, 0px 1px 2px 0px rgba(158, 96, 68, 0.4),
-    0px 0px 0px 1px rgba(158, 96, 68, 1);
+  --buttons-accent: 0px 0.75px 0px 0px rgba(255, 255, 255, 0.2) inset,
+    0px 1px 2px 0px rgba(158, 96, 68, 0.4), 0px 0px 0px 1px rgba(158, 96, 68, 1);
 }
 
 @layer utilities {
@@ -28,6 +27,10 @@
   body {
     letter-spacing: -0.045em;
   }
+}
+
+@theme {
+  --breakpoint-lgish: 56rem;
 }
 
 @keyframes collapsibleDown {
@@ -85,7 +88,7 @@
 
 .prose .anchor:after {
   @apply text-ui-fg-subtle;
-  content: '#';
+  content: "#";
 }
 
 .prose *:hover > .anchor {
@@ -107,7 +110,7 @@
 }
 
 .prose h1 {
-  @apply text-2xl font-medium tracking-tight mt-5 mb-3 text-ui-fg-base;
+  @apply text-4xl font-medium tracking-tight mt-5 mb-3 text-ui-fg-base;
 }
 
 .prose h2 {
@@ -149,12 +152,12 @@
 }
 
 .bg-pattern {
-  background-image: url('/pattern.svg');
+  background-image: url("/pattern.svg");
 }
 
 .dark {
   .bg-pattern {
-    background-image: url('/pattern-dark.svg');
+    background-image: url("/pattern-dark.svg");
   }
 }
 

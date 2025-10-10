@@ -5,69 +5,60 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { usePathname } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
 import type { SidebarItemType, SidebarType } from "@/types";
 
-// Type guard to check if item is SidebarType
-const isSidebarType = (
-  item: SidebarItemType | SidebarType
-): item is SidebarType => {
-  return "isSection" in item;
-};
-
 type SidebarItemProps = {
+  level?: number;
   slug?: string;
   title: string;
-  children?: (SidebarItemType | SidebarType)[];
-  basePath?: string; // The path to this item's parent section
+  items?: SidebarItemType[];
+  basePath?: string;
 };
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
+  level = 1,
   slug,
   title,
-  children,
+  items: children,
   basePath = "",
 }) => {
-  // Determine if this is a section (top-level) or regular item
-  const isSection = isSidebarType({ slug, title, children } as any);
-
-  // For sections, we construct the href as /{slug}
-  // For regular items, we construct the href using basePath + slug
-  const href = isSection ? `/${slug}` : `${basePath}/${slug}`;
+  const pathname = usePathname();
+  const href = `${basePath}/${slug}`;
+  const isActive = pathname === href;
 
   return (
     <Collapsible>
       <CollapsibleTrigger asChild>
-        {slug ? (
-          <Link
-            href={href}
-            className="text-sm py-2 w-full flex justify-between items-center cursor-pointer group"
-            suppressHydrationWarning
-          >
-            {title}
-            {Array.isArray(children) && children.length > 0 && (
-              <TriangleDownMini
-                className={"group-data-[state=open]:rotate-180"}
-              />
-            )}
-          </Link>
-        ) : (
-          <div className="text-sm py-2 w-full flex justify-between items-center cursor-pointer group">
-            {title}
-            {Array.isArray(children) && children.length > 0 && (
-              <TriangleDownMini
-                className={"group-data-[state=open]:rotate-180"}
-              />
-            )}
-          </div>
-        )}
+        <Link
+          href={href}
+          className={cn(
+            `text-sm py-2.5 px-4 w-full flex justify-between items-center cursor-pointer group rounded-lg grow border border-transparent`,
+            isActive && "bg-ui-bg-base border-ui-border-base"
+          )}
+          suppressHydrationWarning
+        >
+          {title}
+          {Array.isArray(children) && children.length > 0 && (
+            <TriangleDownMini
+              className={"group-data-[state=open]:rotate-180"}
+            />
+          )}
+        </Link>
       </CollapsibleTrigger>
-      <CollapsibleContent>
+      <CollapsibleContent
+        style={{
+          paddingLeft: `${level * 16}px`,
+        }}
+      >
         {Array.isArray(children) &&
           children.map((child) => (
             <SidebarItem
+              level={level + 1}
               key={child.slug}
               {...child}
-              basePath={isSection ? `/${slug}` : basePath}
+              basePath={`${basePath}/${slug}`}
             />
           ))}
       </CollapsibleContent>

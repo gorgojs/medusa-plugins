@@ -1,13 +1,12 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import SidebarItem from "@/components/layout/sidebar/sidebar-item";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { useSidebar } from "@/contexts/sidebar-context";
-import { sidebars } from "@/lib/sidebar";
-import { getFullSectionPath } from "@/lib/utils";
+import { usePathname } from "@/i18n/navigation";
+import { getCurrentSidebar } from "@/lib/sidebar";
 import type { SidebarItemType, SidebarType } from "@/types";
 
 const SidebarContent = ({
@@ -20,8 +19,10 @@ const SidebarContent = ({
   <nav className="flex flex-col gap-y-1 p-4">
     {items.map((item) => (
       <SidebarItem
-        key={"slug" in item ? item.slug : item.title}
-        {...item}
+        key={item.slug}
+        slug={item.slug}
+        title={item.title}
+        items={item.children as SidebarItemType[]}
         basePath={basePath}
       />
     ))}
@@ -29,45 +30,16 @@ const SidebarContent = ({
 );
 
 const useSidebarItems = (pathname: string) => {
-  return useMemo(() => {
-    const pathSegments = getFullSectionPath(pathname);
-    if (pathSegments.length === 0) {
-      return { items: sidebars, basePath: "" };
-    }
-
-    let currentLevel: (SidebarItemType | SidebarType)[] = sidebars;
-    let lastSectionWithItems: (SidebarItemType | SidebarType)[] = [];
-    let currentBasePath = "";
-    let accumulatedPath = "";
-
-    for (const segment of pathSegments) {
-      const matchingItem = currentLevel.find(
-        (item) => item.slug?.toLowerCase() === segment.toLowerCase()
-      );
-
-      if (!matchingItem) break;
-
-      accumulatedPath += `/${matchingItem.slug}`;
-      if ("isSection" in matchingItem && matchingItem.isSection) {
-        lastSectionWithItems = matchingItem.children || [];
-        currentBasePath = accumulatedPath;
-      }
-
-      currentLevel = Array.isArray(matchingItem.children)
-        ? matchingItem.children
-        : [];
-    }
-
-    return { items: lastSectionWithItems, basePath: currentBasePath };
-  }, [pathname]);
+  return useMemo(() => getCurrentSidebar(pathname), [pathname]);
 };
 
 const Sidebar = () => {
   const pathname = usePathname() ?? "";
   const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
-  const { items, basePath } = useSidebarItems(pathname);
+  const { section, baseSlugs } = useSidebarItems(pathname);
+  const basePath = `/${baseSlugs.join("/")}`;
 
-  const isMobile = useMediaQuery("(max-width: 1023px)", {
+  const isMobile = useMediaQuery("(max-width: 1279px)", {
     defaultValue: false,
     initializeWithValue: false,
   });
@@ -82,7 +54,10 @@ const Sidebar = () => {
         <DrawerTitle className="sr-only">Sidebar</DrawerTitle>
         <DrawerContent className="h-full">
           <div className="overflow-y-auto">
-            <SidebarContent items={items} basePath={basePath} />
+            <SidebarContent
+              items={section?.children ?? []}
+              basePath={basePath}
+            />
           </div>
         </DrawerContent>
       </Drawer>
@@ -92,7 +67,7 @@ const Sidebar = () => {
   return (
     <aside className="sticky top-12 w-[250px]">
       <div className="overflow-y-auto">
-        <SidebarContent items={items} basePath={basePath} />
+        <SidebarContent items={section?.children ?? []} basePath={basePath} />
       </div>
     </aside>
   );

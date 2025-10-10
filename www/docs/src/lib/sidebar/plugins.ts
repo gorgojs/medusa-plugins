@@ -9,6 +9,7 @@ export const pluginsSidebar: SidebarType = {
       title: "YooKassa",
       slug: "yookassa",
       isSection: true,
+      npmPackage: "medusa-payment-yookassa",
       children: [
         {
           title: "Welcome",

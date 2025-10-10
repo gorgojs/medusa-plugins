@@ -1,10 +1,16 @@
 "use client";
 
-import { BarsThree, XMark } from "@medusajs/icons";
+import { BarsThree, ChevronDown, XMark } from "@medusajs/icons";
 import { Button } from "@medusajs/ui";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { useMediaQuery } from "usehooks-ts";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Dialog,
   DialogContent,
@@ -12,20 +18,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuContent,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
 import { Link } from "@/i18n/navigation";
 import { getHeaderSections } from "@/lib/sidebar";
 import { cn } from "@/lib/utils";
-import { ThemeToggle } from "../theme-toggle";
 import { LocaleSwitcher } from "../locale-switcher";
+import { ThemeToggle } from "../theme-toggle";
 
 export default function MobileNavigation() {
   const t = useTranslations();
@@ -34,6 +31,11 @@ export default function MobileNavigation() {
 
   const [scrollDir, setScrollDir] = useState<"up" | "down">("up");
   const lastScrollY = useRef(0);
+
+  const isDesktop = useMediaQuery("(min-width: 900px)", {
+    defaultValue: true,
+    initializeWithValue: false,
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,6 +51,13 @@ export default function MobileNavigation() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    console.log("useEffect");
+    if (isDesktop) {
+      setIsOpen(false);
+    }
+  }, [isDesktop]);
+
   return (
     <>
       <motion.div
@@ -61,7 +70,7 @@ export default function MobileNavigation() {
           size="xlarge"
           variant="primary"
           className={cn(
-            "pointer-events-auto rounded-full sm:hidden cursor-pointer bg-ui-button-inverted backdrop-blur supports-[backdrop-filter]:bg-ui-button-inverted/60 shadow-buttons-neutral"
+            "pointer-events-auto rounded-full lg:hidden cursor-pointer bg-ui-button-inverted backdrop-blur supports-[backdrop-filter]:bg-ui-button-inverted/60 shadow-buttons-neutral"
           )}
         >
           {isOpen ? (
@@ -79,7 +88,7 @@ export default function MobileNavigation() {
       </motion.div>
       <Dialog open={isOpen}>
         <DialogContent
-          className="[&>div]:border-b-0 [&>div]:border-t-0 h-screen w-screen max-w-screen rounded-[0] p-10 flex flex-col"
+          className="[&>div]:border-b-0 [&>div]:border-t-0 h-screen sm:max-w-full max-w-full w-full rounded-[0] p-10 flex flex-col"
           showCloseButton={false}
         >
           <DialogHeader className="!border-b-0 text-start flex-row justify-between items-center h-8">
@@ -92,68 +101,54 @@ export default function MobileNavigation() {
             </div>
           </DialogHeader>
           <div className="flex-1 h-full flex items-center">
-            <NavigationMenu>
-              <NavigationMenuList className="flex flex-col items-start gap-4">
-                {headerSections.map((link) => (
-                  <NavigationMenuItem key={link.slug}>
-                    {link.children &&
-                    link.children.some(
-                      (child) => "isSection" in child && child.isSection
-                    ) ? (
-                      <>
-                        <NavigationMenuTrigger
-                          className={cn(
-                            navigationMenuTriggerStyle(),
-                            "text-2xl px-0 text-ui-fg-base"
-                          )}
-                        >
-                          {link.title}
-                        </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                          <ul className="flex flex-col gap-4 p-4">
-                            {link.children
-                              .filter(
-                                (child) =>
-                                  "isSection" in child && child.isSection
-                              ) // Show only sections in dropdown
-                              .map((child) => (
-                                <li key={child.slug}>
-                                  <Link
-                                    href={`/${link.slug}/${child.slug}`}
-                                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                                    onClick={() => setIsOpen(false)}
-                                  >
-                                    <div className="text-lg font-medium leading-none">
-                                      {child.title}
-                                    </div>
-                                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                      {`Learn about ${child.title}`}
-                                    </p>
-                                  </Link>
-                                </li>
-                              ))}
-                          </ul>
-                        </NavigationMenuContent>
-                      </>
-                    ) : (
-                      <NavigationMenuLink
-                        asChild
-                        className={navigationMenuTriggerStyle({
-                          className: "text-2xl px-0 text-ui-fg-base",
-                        })}
+            <ul className="flex flex-col items-start gap-4 w-full">
+              {headerSections.map((link) => (
+                <li key={link.slug} className="w-full">
+                  {link.children &&
+                  link.children.some(
+                    (child) => "isSection" in child && child.isSection
+                  ) ? (
+                    <Collapsible>
+                      <CollapsibleTrigger
+                        className={cn(
+                          "flex justify-between items-center w-full text-2xl px-0 text-ui-fg-base hover:opacity-80 transition-opacity font-medium"
+                        )}
                       >
-                        <Link
-                          href={`/${link.slug}`}
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {link.title}
-                        </Link>
-                      </NavigationMenuLink>
-                    )}
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
+                        <span>{link.title}</span>
+                        <ChevronDown className="h-5 w-5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="animate-collapsible-down data-[state=closed]:animate-collapsible-up overflow-hidden">
+                        <ul className="flex flex-col mt-2 border-ui-border-base">
+                          {link.children
+                            .filter(
+                              (child) => "isSection" in child && child.isSection
+                            )
+                            .map((child) => (
+                              <li key={child.slug} className="py-1">
+                                <Link
+                                  href={`/${link.slug}/${child.slug}`}
+                                  className="block text-lg py-2 hover:opacity-80 transition-opacity"
+                                  onClick={() => setIsOpen(false)}
+                                >
+                                  {child.title}
+                                </Link>
+                              </li>
+                            ))}
+                        </ul>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ) : (
+                    <Link
+                      href={`/${link.slug}`}
+                      className="text-2xl px-0 text-ui-fg-base hover:opacity-80 transition-opacity font-medium"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {link.title}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
           </div>
           <DialogFooter className="h-8" />
         </DialogContent>

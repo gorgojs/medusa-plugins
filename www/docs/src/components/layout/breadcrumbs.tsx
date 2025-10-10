@@ -1,164 +1,61 @@
 "use client";
 
 import { TriangleRightMini } from "@medusajs/icons";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import type { Locale } from "next-intl";
 import React from "react";
-import { sidebars } from "@/lib/sidebar";
-import { cn, isLocale } from "@/lib/utils";
-import type { SidebarItemType, SidebarType } from "@/types";
-
-interface Breadcrumb {
-  title: string;
-  href?: string;
-}
-
-function getLocale(path: string): Locale {
-  const segments = path.split("/").filter(Boolean);
-  const firstSegment = segments[0];
-
-  if (isLocale(firstSegment)) {
-    return firstSegment;
-  }
-
-  return "en";
-}
-
-function stripLocale(path: string): string {
-  const segments = path.split("/").filter(Boolean);
-  if (segments.length === 0) return "/";
-
-  if (isLocale(segments[0])) {
-    if (segments.length === 1) return "/";
-    return "/" + segments.slice(1).join("/");
-  }
-
-  return path;
-}
-
-// Updated function to work with new structure
-function findBreadcrumbPath(
-  pathname: string,
-  items: (SidebarItemType | SidebarType)[],
-  currentPath: Breadcrumb[],
-  basePath: string = ""
-): Breadcrumb[] | null {
-  for (const item of items) {
-    // Handle SidebarType (sections)
-    if ("isSection" in item && item.isSection) {
-      const sectionPath = basePath
-        ? `${basePath}/${item.slug}`
-        : `/${item.slug}`;
-      const newPath = [
-        ...currentPath,
-        { title: item.title, href: sectionPath },
-      ];
-
-      if (sectionPath === pathname) {
-        return newPath;
-      }
-
-      if (item.children) {
-        const foundPath = findBreadcrumbPath(
-          pathname,
-          item.children,
-          newPath,
-          sectionPath
-        );
-        if (foundPath) {
-          return foundPath;
-        }
-      }
-    }
-    // Handle SidebarItemType (regular items)
-    else if ("slug" in item) {
-      const itemPath = basePath ? `${basePath}/${item.slug}` : `/${item.slug}`;
-      const newPath = [...currentPath, { title: item.title, href: itemPath }];
-
-      if (itemPath === pathname) {
-        return newPath;
-      }
-
-      if (Array.isArray(item.children) && item.children.length > 0) {
-        const foundPath = findBreadcrumbPath(
-          pathname,
-          item.children,
-          newPath,
-          basePath
-        );
-        if (foundPath) {
-          return foundPath;
-        }
-      }
-    }
-  }
-
-  return null;
-}
+import { Link, usePathname } from "@/i18n/navigation";
+import { flattenSidebarItems, getCurrentSidebar } from "@/lib/sidebar";
+import { cn } from "@/lib/utils";
 
 export default function Breadcrumbs({ className }: { className?: string }) {
   const pathname = usePathname();
-  if (!pathname) return null;
+  const { section, baseSlugs } = getCurrentSidebar(pathname);
 
-  const sectionKey = pathname.split("/")[2] ?? "";
-  const currentSidebar = sidebars.find(
-    (sidebar) => sidebar.slug === sectionKey
+  const flattenedItems = flattenSidebarItems(
+    section?.children || [],
+    baseSlugs
   );
 
-  const normalizedPath = stripLocale(pathname);
-  const homeBreadcrumb: Breadcrumb = { title: "Documentation", href: "/" };
+  const currentPage = flattenedItems.find(
+    (i) => `/${i.path.join("/")}` === pathname
+  );
 
-  let breadcrumbs: Breadcrumb[] = [homeBreadcrumb];
-
-  if (currentSidebar) {
-    const dynamicBreadcrumbs = findBreadcrumbPath(
-      normalizedPath,
-      currentSidebar.children,
-      [],
-      `/${currentSidebar.slug}`
-    );
-    if (dynamicBreadcrumbs) {
-      breadcrumbs = [homeBreadcrumb, ...dynamicBreadcrumbs];
-    }
-  }
-
-  const locale = getLocale(pathname);
+  const breadcrumbs = currentPage?.path ?? [];
 
   return (
     <nav
       aria-label="breadcrumb"
       className={cn("text-sm text-ui-fg-muted", className)}
     >
-      <ol className="flex flex-row items-center gap-x-1">
-        {breadcrumbs.map((crumb, index) => {
-          const isLast = index === breadcrumbs.length - 1;
-          const hasHref = !!crumb.href;
+      {section?.children && (
+        <ol className="flex flex-row items-center gap-x-1">
+          <li>{section.title}</li>
+          <TriangleRightMini className="text-ui-fg-muted" />
+          {breadcrumbs.map((crumb, index) => {
+            const page = flattenedItems.find((i) => i.slug === crumb);
+            if (!page) {
+              return null;
+            }
+            const isLast = index === breadcrumbs.length - 1;
 
-          return (
-            <React.Fragment key={crumb.title + index}>
-              <li
-                className={cn("breadcrumb-item", {
-                  "font-medium text-ui-fg-subtle": isLast,
-                })}
-                aria-current={isLast ? "page" : undefined}
-              >
-                {hasHref ? (
+            return (
+              <React.Fragment key={crumb}>
+                <li
+                  className={cn(isLast && "font-medium text-ui-fg-subtle")}
+                  aria-current={isLast ? "page" : undefined}
+                >
                   <Link
-                    href={`/${locale}${crumb.href === "/" ? "" : crumb.href}`}
+                    href={`/${breadcrumbs.slice(0, index + 1).join("/")}`}
                     className="transition-colors hover:text-ui-fg-subtle"
                   >
-                    {crumb.title}
+                    {page?.title}
                   </Link>
-                ) : (
-                  <span>{crumb.title}</span>
-                )}
-              </li>
-              {!isLast && <TriangleRightMini className="text-ui-fg-muted" />}
-            </React.Fragment>
-          );
-        })}
-      </ol>
+                </li>
+                {!isLast && <TriangleRightMini className="text-ui-fg-muted" />}
+              </React.Fragment>
+            );
+          })}
+        </ol>
+      )}
     </nav>
   );
 }

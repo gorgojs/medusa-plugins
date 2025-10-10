@@ -1,16 +1,15 @@
-'use client';
+"use client";
 
-import { SiGithub } from '@icons-pack/react-simple-icons';
-import { ScrollText } from '@medusajs/icons';
-import { Button } from '@medusajs/ui';
-import { ChevronUp } from 'lucide-react';
-import { useRef } from 'react';
-import { useMediaQuery } from 'usehooks-ts';
+import { ScrollText } from "@medusajs/icons";
+import { Button } from "@medusajs/ui";
+import { ChevronUp } from "lucide-react";
+import { useRef } from "react";
+import { useMediaQuery } from "usehooks-ts";
 
-import { Drawer, DrawerContent, DrawerTitle } from '@/components/ui/drawer';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { useTOC } from '@/contexts/toc-context';
-import { cn } from '@/lib/utils';
+import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useTOC } from "@/contexts/toc-context";
+import { cn } from "@/lib/utils";
 
 interface TOCContentProps {
   tocItems: { id: string; text: string; level: number }[];
@@ -24,50 +23,33 @@ function TOCContent({ tocItems, activeId, setActiveId }: TOCContentProps) {
 
   const { setIsTocOpen } = useTOC();
 
-  // useEffect(() => {
-  //   if (!activeId) return;
-  //   const container = scrollContainerRef.current;
-  //   const item = itemRefs.current[`toc-${activeId}`];
-
-  //   if (!container || !item) return;
-
-  //   item.scrollIntoView({
-  //     behavior: 'smooth',
-  //     block: 'center',
-  //   });
-  // }, [activeId]);
-
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    id: string
+  ) => {
     e.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    window.history.pushState(null, '', `#${id}`);
+    document
+      .getElementById(id)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.history.pushState(null, "", `#${id}`);
     setActiveId(id);
     setIsTocOpen(false);
   };
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setIsTocOpen(false);
   };
 
   return (
-    <div className="flex flex-col gap-4 p-4 lg:px-9 lg:py-0 w-full">
-      <Button className="mb-8 px-4 py-2.5 hidden lg:flex">
-        <div className="flex flex-col items-start gap-1.5">
-          <div className="text-ui-fg-on-inverted/50 text-sm">Plugins are available</div>
-          <div className="text-base flex items-center gap-2">
-            <SiGithub className="size-4" /> Gorgo.js
-          </div>
-        </div>
-      </Button>
-
+    <div className="flex flex-col gap-4 p-4 px-9 py-9 xl:py-0 w-full transition-all">
       <h3 className="font-medium text-sm text-ui-fg-subtle flex gap-2 items-center">
         <ScrollText /> On This Page
       </h3>
 
       <ScrollArea
         ref={scrollContainerRef}
-        className="lg:h-[calc(100vh-20rem)]"
+        className="min-[900px]:h-[calc(100vh-20rem)]"
         showShadows
         shadowSize="32px"
       >
@@ -80,15 +62,20 @@ function TOCContent({ tocItems, activeId, setActiveId }: TOCContentProps) {
               ref={(el) => {
                 itemRefs.current[`toc-${item.id}`] = el;
               }}
-              className={cn('text-sm', {
-                'text-ui-fg-base': activeId === item.id,
-                'text-ui-fg-subtle': activeId !== item.id,
-                'pl-4': item.level > 2,
+              className={cn("text-sm text-ui-fg-subtle flex items-center", {
+                "text-ui-fg-base": activeId === item.id,
+                "pl-4": item.level > 2,
               })}
             >
+              <div
+                className={cn(
+                  "h-5 w-0 bg-transparent rounded-r-2xl shrink-0 transition-all",
+                  activeId === item.id && "bg-ui-fg-subtle w-0.5 mr-3"
+                )}
+              />
               <a
                 href={`#${item.id}`}
-                className="hover:text-foreground transition-colors"
+                className={cn("hover:text-foreground transition-colors")}
                 onClick={(e) => handleLinkClick(e, item.id)}
               >
                 {item.text}
@@ -114,7 +101,7 @@ function TOCContent({ tocItems, activeId, setActiveId }: TOCContentProps) {
 const TableOfContents = () => {
   const { tocItems, activeId, setActiveId, isTocOpen, setIsTocOpen } = useTOC();
 
-  const isDesktop = useMediaQuery('(min-width: 1280px)', {
+  const isDesktop = useMediaQuery("(min-width: 900px)", {
     defaultValue: true,
     initializeWithValue: false,
   });
@@ -125,8 +112,12 @@ const TableOfContents = () => {
 
   if (isDesktop) {
     return (
-      <aside className="sticky top-24 w-[250px]">
-        <TOCContent tocItems={tocItems} activeId={activeId} setActiveId={setActiveId} />
+      <aside className="w-[250px]">
+        <TOCContent
+          tocItems={tocItems}
+          activeId={activeId}
+          setActiveId={setActiveId}
+        />
       </aside>
     );
   }
@@ -136,7 +127,11 @@ const TableOfContents = () => {
       <DrawerTitle className="sr-only">Table of Contents</DrawerTitle>
       <DrawerContent className="h-full">
         <div className="overflow-y-auto">
-          <TOCContent tocItems={tocItems} activeId={activeId} setActiveId={setActiveId} />
+          <TOCContent
+            tocItems={tocItems}
+            activeId={activeId}
+            setActiveId={setActiveId}
+          />
         </div>
       </DrawerContent>
     </Drawer>

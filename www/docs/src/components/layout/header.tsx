@@ -1,6 +1,5 @@
 "use client";
 
-import { CloudSolid, House } from "@medusajs/icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import CmdK from "@/components/layout/cmdk";
@@ -9,14 +8,6 @@ import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 import GorgoWordmark from "@/svg/icons/gorgo-wordmark.svg";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "../ui/navigation-menu";
 import MobileNavigationMenu from "./mobile-navigation-menu";
 
 export default function Header() {
@@ -37,56 +28,21 @@ export default function Header() {
     <div className="sticky top-0 z-50">
       <header
         className={cn(
-          "flex items-center justify-center h-14 duration-300 mx-auto",
-          scrolled
-            ? "bg-ui-bg-base border-ui-border-base border-b xl:bg-transparent xl:border-none"
-            : "bg-ui-bg-base border-b lg:bg-transparent lg:border-none"
+          "bg-ui-bg-component flex items-center justify-center h-14 duration-300 mx-auto border-b xl:border-b-0"
         )}
       >
         <div
           className="pl-4 flex shrink-0 xl:w-[250px]"
           suppressHydrationWarning
         >
-          <NavigationMenu viewport={false}>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="flex justify-center p-0">
-                  <Link href="/" className="flex items-start">
-                    <GorgoWordmark className="h-5 text-ui-fg-base" />
-                  </Link>
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[224px] gap-0.5">
-                    <li>
-                      <NavigationMenuLink
-                        className="flex flex-row items-center"
-                        asChild
-                      >
-                        <Link href={`#`}>
-                          <House /> Homepage
-                        </Link>
-                      </NavigationMenuLink>
-                      <NavigationMenuLink
-                        className="flex flex-row items-center"
-                        asChild
-                      >
-                        <Link href={`#`}>
-                          <CloudSolid /> Cloud
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+          <Link href="/" className="flex items-start">
+            <GorgoWordmark className="h-5 text-ui-fg-base -mb-1" />
+          </Link>
         </div>
         <div
           className={cn(
-            "w-full flex justify-end lg:justify-between h-full transition-all border-t border-x border-transparent container mx-0",
-            scrolled
-              ? "xl:bg-ui-bg-base xl:border-ui-border-base"
-              : "bg-transparent"
+            "w-full flex justify-end lg:justify-between h-full max-w-ful transition-all xl:container xl:mx-0 border-r border-l border-transparent ",
+            scrolled && "xl:bg-ui-bg-base xl:border-ui-border-base"
           )}
         >
           <MainNavigationMenu className="hidden lg:flex" />

@@ -80,4 +80,4 @@ const withMDX = createMDX({
   },
 });
 
-export default withMDX(withNextIntl(nextConfig));
+export default withNextIntl(withMDX(nextConfig));
