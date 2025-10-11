@@ -9,6 +9,7 @@ export type SidebarType = {
   slug: string;
   isSection?: boolean;
   npmPackage?: string;
+  links?: PluginLink[];
   children: (SidebarItemType | SidebarType)[];
 };
 
@@ -22,3 +23,15 @@ export type FlattenedItem = {
   slug: string;
   path: string[];
 };
+
+export type PluginLink = {
+  service: PluginLinkService;
+  url: string;
+};
+
+export type PluginLinkService =
+  | "github"
+  | "npm"
+  | "telegram"
+  | "discord"
+  | "other";

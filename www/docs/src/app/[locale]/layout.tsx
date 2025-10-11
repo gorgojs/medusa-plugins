@@ -8,7 +8,7 @@ import Header from "@/components/layout/header";
 import MobileNavigation from "@/components/layout/mobile-navigation";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SidebarProvider } from "@/contexts/sidebar-context";
-import { TOCProvider } from "@/contexts/toc-context";
+import { RightSidebarProvider } from "@/contexts/toc-context";
 import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
@@ -56,11 +56,11 @@ export default async function RootLayout({
           >
             <TooltipProvider>
               <SidebarProvider>
-                <TOCProvider>
+                <RightSidebarProvider>
                   <Header />
                   {children}
                   <MobileNavigation />
-                </TOCProvider>
+                </RightSidebarProvider>
               </SidebarProvider>
             </TooltipProvider>
           </ThemeProvider>

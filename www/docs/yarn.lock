@@ -1841,6 +1841,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jxnblk/simple-icons@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@jxnblk/simple-icons@npm:1.0.0"
+  checksum: 10c0/0316318701b992ef3d4a29043582985e71a9b178175e1730b83ffb12c2db6ec9613aacbc662a2880027ac75cedc4e48b435bdb7d24b9c5aad91339484cc09c20
+  languageName: node
+  linkType: hard
+
 "@mdx-js/loader@npm:^3.1.1":
   version: 3.1.1
   resolution: "@mdx-js/loader@npm:3.1.1"
@@ -5296,6 +5303,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@stefanprobst/rehype-extract-toc@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@stefanprobst/rehype-extract-toc@npm:3.0.0"
+  dependencies:
+    estree-util-is-identifier-name: "npm:^3.0.0"
+    estree-util-value-to-estree: "npm:^3.3.3"
+    hast-util-heading-rank: "npm:^3.0.0"
+    hast-util-to-string: "npm:^3.0.1"
+    unist-util-visit: "npm:^5.0.0"
+  checksum: 10c0/c317616d8c5d343e00671aa590a70751187f8b064502cb18298e2f59778db80f2e89d60832fdc89a3e4aa7f208ca7247e883ce4031e0372fce65df33f038bfb6
+  languageName: node
+  linkType: hard
+
 "@svgr/babel-plugin-add-jsx-attribute@npm:8.0.0":
   version: 8.0.0
   resolution: "@svgr/babel-plugin-add-jsx-attribute@npm:8.0.0"
@@ -6326,6 +6346,7 @@ __metadata:
     "@radix-ui/react-dialog": "npm:^1.1.15"
     "@radix-ui/react-navigation-menu": "npm:^1.2.14"
     "@sindresorhus/slugify": "npm:^3.0.0"
+    "@stefanprobst/rehype-extract-toc": "npm:^3.0.0"
     "@svgr/webpack": "npm:^8.1.0"
     "@tailwindcss/postcss": "npm:^4"
     "@tailwindcss/typography": "npm:^0.5.16"
@@ -6346,6 +6367,9 @@ __metadata:
     next-themes: "npm:^0.4.6"
     react: "npm:19.1.0"
     react-dom: "npm:19.1.0"
+    react-simple-icons: "npm:^1.0.0-beta.5"
+    rehype-sanitize: "npm:^6.0.0"
+    rehype-slug: "npm:^6.0.0"
     rehype-stringify: "npm:^10.0.1"
     remark: "npm:^15.0.1"
     remark-frontmatter: "npm:^5.0.0"
@@ -6552,7 +6576,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"estree-util-value-to-estree@npm:^3.0.0":
+"estree-util-value-to-estree@npm:^3.0.0, estree-util-value-to-estree@npm:^3.3.3":
   version: 3.4.0
   resolution: "estree-util-value-to-estree@npm:3.4.0"
   dependencies:
@@ -6663,6 +6687,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"github-slugger@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "github-slugger@npm:2.0.0"
+  checksum: 10c0/21b912b6b1e48f1e5a50b2292b48df0ff6abeeb0691b161b3d93d84f4ae6b1acd6ae23702e914af7ea5d441c096453cf0f621b72d57893946618d21dd1a1c486
+  languageName: node
+  linkType: hard
+
 "glob@npm:*, glob@npm:^11.0.3":
   version: 11.0.3
   resolution: "glob@npm:11.0.3"
@@ -6692,6 +6723,26 @@ __metadata:
   dependencies:
     function-bind: "npm:^1.1.2"
   checksum: 10c0/3769d434703b8ac66b209a4cca0737519925bbdb61dd887f93a16372b14694c63ff4e797686d87c90f08168e81082248b9b028bad60d4da9e0d1148766f56eb9
+  languageName: node
+  linkType: hard
+
+"hast-util-heading-rank@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "hast-util-heading-rank@npm:3.0.0"
+  dependencies:
+    "@types/hast": "npm:^3.0.0"
+  checksum: 10c0/1879c84f629e73f1f13247ab349324355cd801363b44e3d46f763aa5c0ea3b42dcd47b46e5643a0502cf01a6b1fdb9208fd12852e44ca6c671b3e4bccf9369a1
+  languageName: node
+  linkType: hard
+
+"hast-util-sanitize@npm:^5.0.0":
+  version: 5.0.2
+  resolution: "hast-util-sanitize@npm:5.0.2"
+  dependencies:
+    "@types/hast": "npm:^3.0.0"
+    "@ungap/structured-clone": "npm:^1.0.0"
+    unist-util-position: "npm:^5.0.0"
+  checksum: 10c0/20951652078a8c21341c1c9a84f90015b2ba01cc41fa16772f122c65cda26a7adb0501fdeba5c8e37e40e2632447e8fe455d0dd2dc27d39663baacca76f2ecb6
   languageName: node
   linkType: hard
 
@@ -6758,6 +6809,15 @@ __metadata:
     unist-util-position: "npm:^5.0.0"
     vfile-message: "npm:^4.0.0"
   checksum: 10c0/27297e02848fe37ef219be04a26ce708d17278a175a807689e94a821dcffc88aa506d62c3a85beed1f9a8544f7211bdcbcde0528b7b456a57c2e342c3fd11056
+  languageName: node
+  linkType: hard
+
+"hast-util-to-string@npm:^3.0.0, hast-util-to-string@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "hast-util-to-string@npm:3.0.1"
+  dependencies:
+    "@types/hast": "npm:^3.0.0"
+  checksum: 10c0/b5fa1912a6ba6131affae52a0f4394406c4c0d23c2b0307f1d69988f1030c7bb830289303e67c5ad8f674f5f23a454c1dcd492c39e45a22c1f46d3c9bce5bd0c
   languageName: node
   linkType: hard
 
@@ -8347,6 +8407,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-simple-icons@npm:^1.0.0-beta.5":
+  version: 1.0.0-beta.5
+  resolution: "react-simple-icons@npm:1.0.0-beta.5"
+  dependencies:
+    "@jxnblk/simple-icons": "npm:^1.0.0"
+  checksum: 10c0/afd99fd66284852ef182545aa6cf4b9927780253972e52288c46777ef93180d188fa5aee725526ec99e36299f546ff1694c514e03c4a6bad2d2269e3aafed5b8
+  languageName: node
+  linkType: hard
+
 "react-stately@npm:^3.31.1":
   version: 3.42.0
   resolution: "react-stately@npm:3.42.0"
@@ -8512,6 +8581,29 @@ __metadata:
     "@types/hast": "npm:^3.0.0"
     hast-util-to-estree: "npm:^3.0.0"
   checksum: 10c0/be60d7433a7f788a14f41da3e93ba9d9272c908ddef47757026cc4bbcc912f6301d56810349adf876d294a8d048626a0dbf6988aaa574afbfc29eac1ddc1eb74
+  languageName: node
+  linkType: hard
+
+"rehype-sanitize@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "rehype-sanitize@npm:6.0.0"
+  dependencies:
+    "@types/hast": "npm:^3.0.0"
+    hast-util-sanitize: "npm:^5.0.0"
+  checksum: 10c0/43d6c056e63c994cf56e5ee0e157052d2030dc5ac160845ee494af9a26e5906bf5ec5af56c7d90c99f9c4dc0091e45a48a168618135fb6c64a76481ad3c449e9
+  languageName: node
+  linkType: hard
+
+"rehype-slug@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "rehype-slug@npm:6.0.0"
+  dependencies:
+    "@types/hast": "npm:^3.0.0"
+    github-slugger: "npm:^2.0.0"
+    hast-util-heading-rank: "npm:^3.0.0"
+    hast-util-to-string: "npm:^3.0.0"
+    unist-util-visit: "npm:^5.0.0"
+  checksum: 10c0/51303c33d039c271cabe62161b49fa737be488f70ced62f00c165e47a089a99de2060050385e5c00d0df83ed30c7fa1c79a51b78508702836aefa51f7e7a6760
   languageName: node
   linkType: hard
 

@@ -1,12 +1,9 @@
 "use client";
 
-import { useMemo } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import SidebarItem from "@/components/layout/sidebar/sidebar-item";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { useSidebar } from "@/contexts/sidebar-context";
-import { usePathname } from "@/i18n/navigation";
-import { getCurrentSidebar } from "@/lib/sidebar";
 import type { SidebarItemType, SidebarType } from "@/types";
 
 const SidebarContent = ({
@@ -16,7 +13,7 @@ const SidebarContent = ({
   items: (SidebarItemType | SidebarType)[];
   basePath?: string;
 }) => (
-  <nav className="flex flex-col gap-y-1 p-4">
+  <nav className="flex flex-col gap-y-1 px-4">
     {items.map((item) => (
       <SidebarItem
         key={item.slug}
@@ -29,14 +26,14 @@ const SidebarContent = ({
   </nav>
 );
 
-const useSidebarItems = (pathname: string) => {
-  return useMemo(() => getCurrentSidebar(pathname), [pathname]);
-};
-
-const Sidebar = () => {
-  const pathname = usePathname() ?? "";
+const Sidebar = ({
+  section,
+  baseSlugs,
+}: {
+  section: SidebarType;
+  baseSlugs: string[];
+}) => {
   const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
-  const { section, baseSlugs } = useSidebarItems(pathname);
   const basePath = `/${baseSlugs.join("/")}`;
 
   const isMobile = useMediaQuery("(max-width: 1279px)", {
@@ -53,7 +50,7 @@ const Sidebar = () => {
       >
         <DrawerTitle className="sr-only">Sidebar</DrawerTitle>
         <DrawerContent className="h-full">
-          <div className="overflow-y-auto">
+          <div className="overflow-y-auto py-4">
             <SidebarContent
               items={section?.children ?? []}
               basePath={basePath}

@@ -10,6 +10,16 @@ export const pluginsSidebar: SidebarType = {
       slug: "yookassa",
       isSection: true,
       npmPackage: "medusa-payment-yookassa",
+      links: [
+        {
+          service: "other",
+          url: "https://docs.medusajs.com/plugins/payment/yookassa",
+        },
+        {
+          service: "github",
+          url: "https://github.com/medusajs/medusa-payment-yookassa",
+        },
+      ],
       children: [
         {
           title: "Welcome",

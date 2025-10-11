@@ -3,7 +3,8 @@
 import { TriangleLeftMini, TriangleRightMini } from "@medusajs/icons";
 import Link from "next/link";
 import { usePathname } from "@/i18n/navigation";
-import { flattenSidebarItems, getCurrentSidebar } from "@/lib/sidebar";
+import { flattenSidebarItems } from "@/lib/sidebar";
+import type { SidebarType } from "@/types";
 
 function PaginationCard({
   href,
@@ -26,9 +27,14 @@ function PaginationCard({
   );
 }
 
-export default function PaginationCards() {
+export default function PaginationCards({
+  section,
+  baseSlugs,
+}: {
+  section: SidebarType;
+  baseSlugs: string[];
+}) {
   const pathname = usePathname();
-  const { section, baseSlugs } = getCurrentSidebar(pathname);
 
   const flattenedItems = flattenSidebarItems(
     section?.children ?? [],

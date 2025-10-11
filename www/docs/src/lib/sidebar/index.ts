@@ -99,7 +99,7 @@ function flattenSidebarItems(
     const currentSlugs = item.slug ? [...parentSlugs, item.slug] : parentSlugs;
 
     const self =
-      item.slug && !item.isSection
+      item.slug && "isSection" in item && !item.isSection
         ? [
             {
               title: item.title,

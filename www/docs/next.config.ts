@@ -76,7 +76,11 @@ const withMDX = createMDX({
       "remark-mdx-frontmatter",
       "remark-frontmatter",
     ],
-    rehypePlugins: [],
+    rehypePlugins: [
+      "rehype-slug",
+      "@stefanprobst/rehype-extract-toc",
+      ["@stefanprobst/rehype-extract-toc/mdx", { name: "toc" }],
+    ],
   },
 });
 
