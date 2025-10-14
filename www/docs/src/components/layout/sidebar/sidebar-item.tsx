@@ -1,11 +1,11 @@
 import { TriangleDownMini } from "@medusajs/icons";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { useLocale } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 import { cn, getLocalizedString } from "@/lib/utils";
 import type { LocalizedString, SidebarItemType } from "@/types";
@@ -30,12 +30,81 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   const href = `${basePath}/${slug}`;
   const isActive = pathname === href;
 
-  // Handle both string and LocalizedString types for title
   const displayTitle =
     typeof title === "string" ? title : getLocalizedString(title, locale);
 
+  const hasChildren = Array.isArray(children) && children.length > 0;
+  const isLink = !!slug;
+
+  if (isLink && hasChildren) {
+    return (
+      <>
+        <Link
+          href={href}
+          className={cn(
+            `text-sm py-2.5 px-4 w-full flex justify-start items-center cursor-pointer group rounded-lg grow border border-transparent`,
+            isActive && "bg-ui-bg-base border-ui-border-base"
+          )}
+          suppressHydrationWarning
+        >
+          {displayTitle}
+        </Link>
+        <div
+          style={{
+            paddingLeft: `${level * 16}px`,
+          }}
+        >
+          {children.map((child) => (
+            <SidebarItem
+              level={level + 1}
+              key={child.slug}
+              {...child}
+              basePath={`${basePath}/${slug}`}
+            />
+          ))}
+        </div>
+      </>
+    );
+  }
+
+  if (!isLink) {
+    return (
+      <Collapsible defaultOpen={true}>
+        <CollapsibleTrigger asChild>
+          <div
+            className={cn(
+              `text-sm py-2.5 px-4 w-full flex justify-between items-center cursor-pointer group rounded-lg grow border border-transparent`
+            )}
+          >
+            {displayTitle}
+            {hasChildren && (
+              <TriangleDownMini
+                className={"group-data-[state=open]:rotate-180"}
+              />
+            )}
+          </div>
+        </CollapsibleTrigger>
+        <CollapsibleContent
+          style={{
+            paddingLeft: `${level * 16}px`,
+          }}
+        >
+          {hasChildren &&
+            children.map((child) => (
+              <SidebarItem
+                level={level + 1}
+                key={child.slug}
+                {...child}
+                basePath={`${basePath}/${slug}`}
+              />
+            ))}
+        </CollapsibleContent>
+      </Collapsible>
+    );
+  }
+
   return (
-    <Collapsible>
+    <Collapsible defaultOpen={true}>
       <CollapsibleTrigger asChild>
         <Link
           href={href}
@@ -46,7 +115,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           suppressHydrationWarning
         >
           {displayTitle}
-          {Array.isArray(children) && children.length > 0 && (
+          {hasChildren && (
             <TriangleDownMini
               className={"group-data-[state=open]:rotate-180"}
             />
@@ -58,7 +127,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           paddingLeft: `${level * 16}px`,
         }}
       >
-        {Array.isArray(children) &&
+        {hasChildren &&
           children.map((child) => (
             <SidebarItem
               level={level + 1}

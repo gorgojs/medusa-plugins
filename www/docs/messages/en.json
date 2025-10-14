@@ -21,5 +21,14 @@
   "mobile": {
     "menu": "Menu",
     "close": "Close"
+  },
+  "contactSection": {
+    "title": "Need help building an integration Medusa plugin?",
+    "browsePlugins": "Browse plugins",
+    "getInTouch": "Chat in Telegram"
+  },
+  "pluginsSection": {
+    "title": "All Medusa plugins by Gorgo",
+    "subtitle": "Unlike other platforms, the Medusa Framework allows you to easily customize and extend the behavior of your commerce platform to always fit your business needs"
   }
 }
