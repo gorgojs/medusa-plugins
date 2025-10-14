@@ -1,0 +1,40 @@
+name: Notify Deploy
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'www/docs/**'
+
+jobs:
+  notify:
+    name: Notify Private Repo
+    runs-on: ubuntu-latest
+    if: github.repository == 'gorgojs/medusa-plugins'
+    
+    steps:
+    - name: Notify internal-scripts about docs changes
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        script: |
+          console.log('Notifying internal-scripts about docs changes...')
+          
+          await github.rest.repos.createDispatchEvent({
+            owner: 'gorgojs',
+            repo: 'internal-scripts', 
+            event_type: 'medusa-plugins-updated',
+            client_payload: {
+              commit: context.sha,
+              ref: context.ref,
+              repository: context.payload.repository.full_name,
+              pusher: context.payload.pusher?.name || 'unknown',
+              head_commit: {
+                message: context.payload.head_commit?.message || 'No message',
+                timestamp: context.payload.head_commit?.timestamp || new Date().toISOString()
+              },
+              changed_paths: context.payload.commits?.map(c => c.added.concat(c.modified, c.removed)).flat() || []
+            }
+          })
+          
+          console.log('Successfully notified internal-scripts for deployment')
