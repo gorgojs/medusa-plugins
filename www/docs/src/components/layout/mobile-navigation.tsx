@@ -3,7 +3,7 @@
 import { BarsThree, ChevronDown, XMark } from "@medusajs/icons";
 import { Button } from "@medusajs/ui";
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import {
@@ -20,12 +20,13 @@ import {
 } from "@/components/ui/dialog";
 import { Link } from "@/i18n/navigation";
 import { getHeaderSections } from "@/lib/sidebar";
-import { cn } from "@/lib/utils";
+import { cn, getLocalizedString } from "@/lib/utils";
 import { LocaleSwitcher } from "../locale-switcher";
 import { ThemeToggle } from "../theme-toggle";
 
 export default function MobileNavigation() {
   const t = useTranslations();
+  const locale = useLocale();
   const [isOpen, setIsOpen] = useState(false);
   const headerSections = getHeaderSections();
 
@@ -114,7 +115,11 @@ export default function MobileNavigation() {
                           "flex justify-between items-center w-full text-2xl px-0 text-ui-fg-base hover:opacity-80 transition-opacity font-medium"
                         )}
                       >
-                        <span>{link.title}</span>
+                        <span>
+                          {typeof link.title === "string"
+                            ? link.title
+                            : getLocalizedString(link.title, locale)}
+                        </span>
                         <ChevronDown className="h-5 w-5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
                       </CollapsibleTrigger>
                       <CollapsibleContent className="animate-collapsible-down data-[state=closed]:animate-collapsible-up overflow-hidden">
@@ -130,7 +135,9 @@ export default function MobileNavigation() {
                                   className="block text-lg py-2 hover:opacity-80 transition-opacity"
                                   onClick={() => setIsOpen(false)}
                                 >
-                                  {child.title}
+                                  {typeof child.title === "string"
+                                    ? child.title
+                                    : getLocalizedString(child.title, locale)}
                                 </Link>
                               </li>
                             ))}
@@ -143,7 +150,9 @@ export default function MobileNavigation() {
                       className="text-2xl px-0 text-ui-fg-base hover:opacity-80 transition-opacity font-medium"
                       onClick={() => setIsOpen(false)}
                     >
-                      {link.title}
+                      {typeof link.title === "string"
+                        ? link.title
+                        : getLocalizedString(link.title, locale)}
                     </Link>
                   )}
                 </li>

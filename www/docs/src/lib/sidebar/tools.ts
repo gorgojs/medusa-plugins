@@ -1,37 +1,58 @@
 import type { SidebarType } from "@/types";
 
 export const toolsSidebar: SidebarType = {
-  title: "Tools",
+  title: {
+    en: "Tools",
+    ru: "Инструменты",
+  },
   slug: "tools",
   isSection: true,
   children: [
     {
-      title: "Installation",
+      title: {
+        en: "Installation",
+        ru: "Установка",
+      },
       slug: "installation",
       children: [],
     },
     {
-      title: "Configuration",
+      title: {
+        en: "Configuration",
+        ru: "Конфигурация",
+      },
       slug: "configuration",
       children: [],
     },
     {
-      title: "Usage",
+      title: {
+        en: "Usage",
+        ru: "Использование",
+      },
       slug: "usage",
       children: [],
     },
     {
-      title: "Security",
+      title: {
+        en: "Security",
+        ru: "Безопасность",
+      },
       slug: "security",
       children: [],
     },
     {
-      title: "Integration",
+      title: {
+        en: "Integration",
+        ru: "Интеграция",
+      },
       slug: "integration",
       children: [],
     },
     {
-      title: "Troubleshooting",
+      title: {
+        en: "Troubleshooting",
+        ru: "Устранение неполадок",
+      },
       slug: "troubleshooting",
       children: [],
     },

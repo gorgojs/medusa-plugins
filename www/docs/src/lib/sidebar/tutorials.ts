@@ -1,32 +1,50 @@
 import type { SidebarType } from "@/types";
 
 export const tutorialsSidebar: SidebarType = {
-  title: "Tutorials",
+  title: {
+    en: "Tutorials",
+    ru: "Руководства",
+  },
   slug: "tutorials",
   isSection: true,
   children: [
     {
-      title: "Getting Started",
+      title: {
+        en: "Getting Started",
+        ru: "Начало работы",
+      },
       slug: "getting-started",
       children: [],
     },
     {
-      title: "Basic Usage",
+      title: {
+        en: "Basic Usage",
+        ru: "Базовое использование",
+      },
       slug: "basic-usage",
       children: [],
     },
     {
-      title: "Advanced Features",
+      title: {
+        en: "Advanced Features",
+        ru: "Расширенные возможности",
+      },
       slug: "advanced-features",
       children: [],
     },
     {
-      title: "Security Best Practices",
+      title: {
+        en: "Security Best Practices",
+        ru: "Рекомендации по безопасности",
+      },
       slug: "security",
       children: [],
     },
     {
-      title: "Performance Optimization",
+      title: {
+        en: "Performance Optimization",
+        ru: "Оптимизация производительности",
+      },
       slug: "performance",
       children: [],
     },

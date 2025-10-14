@@ -1,25 +1,26 @@
-import { defineRouting } from 'next-intl/routing';
+import { defineRouting } from "next-intl/routing";
+import { locales } from "@/types";
 
 export const routing = defineRouting({
-  locales: ['en', 'ru'],
-  defaultLocale: 'en',
+  locales: locales,
+  defaultLocale: "en",
   domains: [
     {
-      domain: 'gorgojs.com',
-      defaultLocale: 'en',
-      locales: ['en', 'ru'],
+      domain: "gorgojs.com",
+      defaultLocale: "en",
+      locales: [...locales],
     },
     {
-      domain: 'gorgojs.ru',
-      defaultLocale: 'ru',
-      locales: ['ru', 'en'],
+      domain: "gorgojs.ru",
+      defaultLocale: "ru",
+      locales: [...locales],
     },
   ],
   localePrefix: {
-    mode: 'as-needed',
+    mode: "as-needed",
     prefixes: {
-      ru: '/ru',
-      en: '/en',
+      ru: "/ru",
+      en: "/en",
     },
   },
 });

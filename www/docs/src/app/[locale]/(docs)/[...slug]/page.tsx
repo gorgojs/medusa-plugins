@@ -72,7 +72,11 @@ export default async function DynamicDocsPage({ params }: PageProps) {
       </nav>
       <div className="container bg-ui-bg-base py-24 lgish:rounded-lg lgish:border grow-0 mx-0">
         <div className="max-w-[600px] px-8 xl:px-0 xl:max-w-[700px] mx-auto grow-0">
-          <Breadcrumbs className="hidden lg:flex lg:mb-3" />
+          <Breadcrumbs
+            section={section}
+            baseSlugs={baseSlugs}
+            className="hidden lg:flex lg:mb-3"
+          />
           <div className="prose" suppressHydrationWarning={true}>
             <Post />
           </div>

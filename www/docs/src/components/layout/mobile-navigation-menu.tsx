@@ -1,14 +1,16 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
 import { TocToggle } from "../toc-toggle";
 import Breadcrumbs from "./breadcrumbs";
 import { SidebarToggle } from "./sidebar/sidebar-toggle";
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { getCurrentSidebar } from "@/lib/sidebar";
 
 export default function MobileNavigationMenu() {
   const pathname = usePathname();
+  const { section, baseSlugs } = getCurrentSidebar(pathname);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -22,6 +24,8 @@ export default function MobileNavigationMenu() {
     };
   }, []);
 
+  if (!section) return null;
+
   if (pathname === "/") return null;
 
   return (
@@ -32,7 +36,7 @@ export default function MobileNavigationMenu() {
       )}
     >
       <SidebarToggle />
-      <Breadcrumbs />
+      <Breadcrumbs section={section} baseSlugs={baseSlugs} />
       <TocToggle className="ml-auto lgish:hidden" />
     </div>
   );

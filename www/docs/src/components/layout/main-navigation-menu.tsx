@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,9 +12,10 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { getHeaderSections } from "@/lib/sidebar";
-import { cn } from "@/lib/utils";
+import { cn, getLocalizedString } from "@/lib/utils";
 
 export function MainNavigationMenu({ className }: { className?: string }) {
+  const locale = useLocale();
   const headerSections = getHeaderSections();
 
   return (
@@ -32,7 +34,9 @@ export function MainNavigationMenu({ className }: { className?: string }) {
                     "text-ui-fg-subtle font-normal"
                   )}
                 >
-                  {link.title}
+                  {typeof link.title === "string"
+                    ? link.title
+                    : getLocalizedString(link.title, locale)}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[224px] gap-0.5">
@@ -44,7 +48,9 @@ export function MainNavigationMenu({ className }: { className?: string }) {
                         <li key={child.slug}>
                           <NavigationMenuLink asChild>
                             <Link href={`/${link.slug}/${child.slug}`}>
-                              {child.title}
+                              {typeof child.title === "string"
+                                ? child.title
+                                : getLocalizedString(child.title, locale)}
                             </Link>
                           </NavigationMenuLink>
                         </li>
@@ -59,7 +65,11 @@ export function MainNavigationMenu({ className }: { className?: string }) {
                   className: "text-ui-fg-subtle font-normal",
                 })}
               >
-                <Link href={`/${link.slug}`}>{link.title}</Link>
+                <Link href={`/${link.slug}`}>
+                  {typeof link.title === "string"
+                    ? link.title
+                    : getLocalizedString(link.title, locale)}
+                </Link>
               </NavigationMenuLink>
             )}
           </NavigationMenuItem>

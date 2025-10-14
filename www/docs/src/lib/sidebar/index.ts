@@ -1,5 +1,9 @@
-import type { FlattenedItem, SidebarItemType, SidebarType } from "@/types";
-import { isLocale } from "../utils";
+import type {
+  FlattenedItem,
+  SidebarItemType,
+  SidebarType,
+} from "../../types/index";
+import { locales } from "../../types/index";
 import { pluginsSidebar } from "./plugins";
 import { toolsSidebar } from "./tools";
 import { tutorialsSidebar } from "./tutorials";
@@ -50,7 +54,7 @@ const getCurrentSidebar = (
 
   const pathSegments = pathname.split("/").filter(Boolean);
 
-  if (pathSegments.length > 0 && isLocale(pathSegments[0])) {
+  if (pathSegments.length > 0 && locales.includes(pathSegments[0] as any)) {
     pathSegments.shift();
   }
 
@@ -99,7 +103,7 @@ function flattenSidebarItems(
     const currentSlugs = item.slug ? [...parentSlugs, item.slug] : parentSlugs;
 
     const self =
-      item.slug && "isSection" in item && !item.isSection
+      item.slug && item.children?.length === 0
         ? [
             {
               title: item.title,

@@ -1,12 +1,18 @@
 import type { SidebarType } from "@/types";
 
 export const pluginsSidebar: SidebarType = {
-  title: "Plugins",
+  title: {
+    en: "Plugins",
+    ru: "Плагины",
+  },
   slug: "plugins",
   isSection: true,
   children: [
     {
-      title: "YooKassa",
+      title: {
+        en: "YooKassa",
+        ru: "YooKassa",
+      },
       slug: "yookassa",
       isSection: true,
       npmPackage: "medusa-payment-yookassa",
@@ -22,91 +28,142 @@ export const pluginsSidebar: SidebarType = {
       ],
       children: [
         {
-          title: "Welcome",
+          title: {
+            en: "Welcome",
+            ru: "Добро пожаловать",
+          },
           slug: "welcome",
           children: [],
         },
         {
-          title: "Installation",
+          title: {
+            en: "Installation",
+            ru: "Установка",
+          },
           slug: "installation",
           children: [
             {
-              title: "Docker Installation",
+              title: {
+                en: "Docker Installation",
+                ru: "Установка с Docker",
+              },
               slug: "docker",
               children: [],
             },
           ],
         },
         {
-          title: "Configuration",
+          title: {
+            en: "Configuration",
+            ru: "Конфигурация",
+          },
           slug: "configuration",
           children: [],
         },
         {
-          title: "API Reference",
+          title: {
+            en: "API Reference",
+            ru: "Справочник API",
+          },
           slug: "api",
           children: [],
         },
         {
-          title: "Advanced Usage",
+          title: {
+            en: "Advanced Usage",
+            ru: "Расширенное использование",
+          },
           slug: "advanced-usage",
           children: [],
         },
         {
-          title: "Customization",
+          title: {
+            en: "Customization",
+            ru: "Настройка",
+          },
           slug: "customization",
           children: [],
         },
         {
-          title: "Troubleshooting",
+          title: {
+            en: "Troubleshooting",
+            ru: "Устранение неполадок",
+          },
           slug: "troubleshooting",
           children: [],
         },
       ],
     },
     {
-      title: "Moy Sklad",
+      title: {
+        en: "Moy Sklad",
+        ru: "Мой Склад",
+      },
       slug: "moysklad",
       isSection: true,
       children: [
         {
-          title: "Welcome",
+          title: {
+            en: "Welcome",
+            ru: "Добро пожаловать",
+          },
           slug: "welcome",
           children: [],
         },
         {
-          title: "Installation",
+          title: {
+            en: "Installation",
+            ru: "Установка",
+          },
           slug: "installation",
           children: [
             {
-              title: "Docker Installation",
+              title: {
+                en: "Docker Installation",
+                ru: "Установка с Docker",
+              },
               slug: "docker",
               children: [],
             },
           ],
         },
         {
-          title: "Configuration",
+          title: {
+            en: "Configuration",
+            ru: "Конфигурация",
+          },
           slug: "configuration",
           children: [],
         },
         {
-          title: "API Reference",
+          title: {
+            en: "API Reference",
+            ru: "Справочник API",
+          },
           slug: "api",
           children: [],
         },
         {
-          title: "Advanced Usage",
+          title: {
+            en: "Advanced Usage",
+            ru: "Расширенное использование",
+          },
           slug: "advanced-usage",
           children: [],
         },
         {
-          title: "Customization",
+          title: {
+            en: "Customization",
+            ru: "Настройка",
+          },
           slug: "customization",
           children: [],
         },
         {
-          title: "Troubleshooting",
+          title: {
+            en: "Troubleshooting",
+            ru: "Устранение неполадок",
+          },
           slug: "troubleshooting",
           children: [],
         },

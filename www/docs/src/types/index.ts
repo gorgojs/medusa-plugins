@@ -1,11 +1,12 @@
 export type SidebarItemType = {
-  title: string;
+  title: LocalizedString;
   slug: string;
   children?: SidebarItemType[];
 };
 
 export type SidebarType = {
-  title: string;
+  title: LocalizedString;
+  description?: LocalizedString;
   slug: string;
   isSection?: boolean;
   npmPackage?: string;
@@ -19,7 +20,7 @@ export type HeaderItemType = {
 };
 
 export type FlattenedItem = {
-  title: string;
+  title: LocalizedString;
   slug: string;
   path: string[];
 };
@@ -35,3 +36,9 @@ export type PluginLinkService =
   | "telegram"
   | "discord"
   | "other";
+
+export const locales = ["en", "ru"] as const;
+
+export type Locale = (typeof locales)[number];
+
+export type LocalizedString = Record<Locale, string>;

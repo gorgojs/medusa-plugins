@@ -2,9 +2,11 @@
 
 import { TriangleLeftMini, TriangleRightMini } from "@medusajs/icons";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 import { flattenSidebarItems } from "@/lib/sidebar";
-import type { SidebarType } from "@/types";
+import type { LocalizedString, SidebarType } from "@/types";
+import { getLocalizedString } from "@/lib/utils";
 
 function PaginationCard({
   href,
@@ -12,16 +14,20 @@ function PaginationCard({
   type,
 }: {
   href: string;
-  title: string;
+  title: LocalizedString | string;
   type: "prev" | "next";
 }) {
+  const locale = useLocale();
+  const displayTitle =
+    typeof title === "string" ? title : getLocalizedString(title, locale);
+
   return (
     <Link
       href={href}
       className="flex justify-center items-center flex-1 border rounded-lg py-2.5 px-4 gap-1.5 text-ui-fg-subtle font-medium hover:bg-ui-bg-subtle transition-colors"
     >
       {type === "prev" && <TriangleLeftMini />}
-      <span>{title}</span>
+      <span>{displayTitle}</span>
       {type === "next" && <TriangleRightMini />}
     </Link>
   );

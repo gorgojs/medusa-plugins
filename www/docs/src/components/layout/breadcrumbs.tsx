@@ -1,14 +1,24 @@
 "use client";
 
 import { TriangleRightMini } from "@medusajs/icons";
+import { useLocale } from "next-intl";
 import React from "react";
 import { Link, usePathname } from "@/i18n/navigation";
-import { flattenSidebarItems, getCurrentSidebar } from "@/lib/sidebar";
-import { cn } from "@/lib/utils";
+import { flattenSidebarItems } from "@/lib/sidebar";
+import { cn, getLocalizedString } from "@/lib/utils";
+import type { SidebarType } from "@/types";
 
-export default function Breadcrumbs({ className }: { className?: string }) {
+export default function Breadcrumbs({
+  className,
+  section,
+  baseSlugs,
+}: {
+  className?: string;
+  section: SidebarType;
+  baseSlugs: string[];
+}) {
   const pathname = usePathname();
-  const { section, baseSlugs } = getCurrentSidebar(pathname);
+  const locale = useLocale();
 
   const flattenedItems = flattenSidebarItems(
     section?.children || [],
@@ -28,7 +38,11 @@ export default function Breadcrumbs({ className }: { className?: string }) {
     >
       {section?.children && (
         <ol className="flex flex-row items-center gap-x-1">
-          <li>{section.title}</li>
+          <li>
+            {typeof section.title === "string"
+              ? section.title
+              : getLocalizedString(section.title, locale)}
+          </li>
           <TriangleRightMini className="text-ui-fg-muted" />
           {breadcrumbs.map((crumb, index) => {
             const page = flattenedItems.find((i) => i.slug === crumb);
@@ -47,7 +61,10 @@ export default function Breadcrumbs({ className }: { className?: string }) {
                     href={`/${breadcrumbs.slice(0, index + 1).join("/")}`}
                     className="transition-colors hover:text-ui-fg-subtle"
                   >
-                    {page?.title}
+                    {page?.title &&
+                      (typeof page.title === "string"
+                        ? page.title
+                        : getLocalizedString(page.title, locale))}
                   </Link>
                 </li>
                 {!isLast && <TriangleRightMini className="text-ui-fg-muted" />}

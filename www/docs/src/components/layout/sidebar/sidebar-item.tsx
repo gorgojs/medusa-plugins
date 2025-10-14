@@ -5,14 +5,15 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { useLocale } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
-import { cn } from "@/lib/utils";
-import type { SidebarItemType } from "@/types";
+import { cn, getLocalizedString } from "@/lib/utils";
+import type { LocalizedString, SidebarItemType } from "@/types";
 
 type SidebarItemProps = {
   level?: number;
   slug?: string;
-  title: string;
+  title: LocalizedString | string;
   items?: SidebarItemType[];
   basePath?: string;
 };
@@ -25,8 +26,13 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   basePath = "",
 }) => {
   const pathname = usePathname();
+  const locale = useLocale();
   const href = `${basePath}/${slug}`;
   const isActive = pathname === href;
+
+  // Handle both string and LocalizedString types for title
+  const displayTitle =
+    typeof title === "string" ? title : getLocalizedString(title, locale);
 
   return (
     <Collapsible>
@@ -39,7 +45,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           )}
           suppressHydrationWarning
         >
-          {title}
+          {displayTitle}
           {Array.isArray(children) && children.length > 0 && (
             <TriangleDownMini
               className={"group-data-[state=open]:rotate-180"}
