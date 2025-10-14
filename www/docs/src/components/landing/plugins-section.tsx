@@ -33,7 +33,7 @@ export async function PluginsSection({
 
   return (
     <Section className="px-6 py-8 flex items-center flex-col lg:flex-row gap-4">
-      <div className="min-h-screen lg:py-8 xl:py-16 sm:px-18">
+      <div className="w-full lg:py-8 xl:py-16 sm:px-18">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12">
             <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
@@ -65,7 +65,7 @@ export async function PluginsSection({
                   {category.plugins.map((plugin) => (
                     <Card
                       key={plugin.id}
-                      className="group flex flex-row cursor-pointer items-center justify-between p-3 transition-all hover:shadow-sm grow-0"
+                      className="group flex flex-row cursor-pointer items-center justify-between p-3 transition-all hover:shadow-sm grow-0 w-full"
                     >
                       <div className="flex items-center gap-3">
                         <div
