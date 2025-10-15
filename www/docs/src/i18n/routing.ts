@@ -6,12 +6,12 @@ export const routing = defineRouting({
   defaultLocale: "en",
   domains: [
     {
-      domain: "gorgojs.com",
+      domain: "docs.gorgojs.com",
       defaultLocale: "en",
       locales: [...locales],
     },
     {
-      domain: "gorgojs.ru",
+      domain: "docs.gorgojs.ru",
       defaultLocale: "ru",
       locales: [...locales],
     },

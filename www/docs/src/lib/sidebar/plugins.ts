@@ -33,14 +33,6 @@ export const pluginsSidebar: SidebarType = {
       children: [
         {
           title: {
-            en: "Overview",
-            ru: "О плагине",
-          },
-          slug: "#",
-          children: [],
-        },
-        {
-          title: {
             en: "Getting Started",
             ru: "Быстрый старт",
           },

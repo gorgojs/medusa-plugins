@@ -2049,6 +2049,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@next/third-parties@npm:^15.5.5":
+  version: 15.5.5
+  resolution: "@next/third-parties@npm:15.5.5"
+  dependencies:
+    third-party-capital: "npm:1.0.20"
+  peerDependencies:
+    next: ^13.0.0 || ^14.0.0 || ^15.0.0
+    react: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
+  checksum: 10c0/e30e2670c4df4e764603b9fa648f6e062543dcc7fc7dac54e410bdc5da4cc806bdc4ae5fb83270ed21f546b7e51c40fcbc2aa02667b5f34387b0575b62acc893
+  languageName: node
+  linkType: hard
+
 "@radix-ui/number@npm:1.1.0":
   version: 1.1.0
   resolution: "@radix-ui/number@npm:1.1.0"
@@ -6342,6 +6354,7 @@ __metadata:
     "@medusajs/ui": "npm:^4.0.22"
     "@medusajs/ui-preset": "npm:^2.10.2"
     "@next/mdx": "npm:^15.5.3"
+    "@next/third-parties": "npm:^15.5.5"
     "@radix-ui/react-collapsible": "npm:^1.1.12"
     "@radix-ui/react-dialog": "npm:^1.1.15"
     "@radix-ui/react-navigation-menu": "npm:^1.2.14"
@@ -9096,6 +9109,13 @@ __metadata:
     minizlib: "npm:^3.1.0"
     yallist: "npm:^5.0.0"
   checksum: 10c0/0dad0596a61586180981133b20c32cfd93c5863c5b7140d646714e6ea8ec84583b879e5dc3928a4d683be6e6109ad7ea3de1cf71986d5194f81b3a016c8858c9
+  languageName: node
+  linkType: hard
+
+"third-party-capital@npm:1.0.20":
+  version: 1.0.20
+  resolution: "third-party-capital@npm:1.0.20"
+  checksum: 10c0/7f45ff156ec9d7e2957a5b39061be22b780ffbd2d93c127252d908e2bff6cdd09f827a95909d457c8096e036f155006a38e355a06ee11cb6d63c7f4b150bbfb0
   languageName: node
   linkType: hard
 

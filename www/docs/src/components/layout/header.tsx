@@ -1,5 +1,6 @@
-import { Book, CloudSolid } from "@medusajs/icons";
+import { Book, Check, House } from "@medusajs/icons";
 import Link from "next/link";
+import { getLocale } from "next-intl/server";
 import CmdK from "@/components/layout/cmdk";
 import { MainNavigationMenu } from "@/components/layout/main-navigation-menu";
 import { LocaleSwitcher } from "@/components/locale-switcher";
@@ -15,7 +16,6 @@ import {
 import { cn } from "@/lib/utils";
 import GorgoWordmark from "@/svg/icons/gorgo-wordmark.svg";
 import MobileNavigationMenu from "./mobile-navigation-menu";
-import { getLocale } from "next-intl/server";
 
 export default async function Header() {
   const locale = await getLocale();
@@ -44,8 +44,11 @@ export default async function Header() {
                     >
                       <Link href={`#`}>
                         <Book /> Docs
+                        <Check className="ml-auto" />
                       </Link>
                     </NavigationMenuLink>
+                  </li>
+                  <li>
                     <NavigationMenuLink
                       className="flex flex-row items-center"
                       asChild
@@ -57,7 +60,7 @@ export default async function Header() {
                             : "https://gorgojs.com"
                         }
                       >
-                        <CloudSolid /> Gorgo
+                        <House /> Homepage
                       </Link>
                     </NavigationMenuLink>
                   </li>
@@ -68,7 +71,7 @@ export default async function Header() {
         </NavigationMenu>
         <div
           className={cn(
-            "w-full flex justify-end lg:justify-between h-full max-w-full transition-all xl:container xl:mx-0"
+            "w-full flex justify-end lg:justify-between h-full max-w-full transition-all xl:container xl:mx-0 max-w-content"
           )}
         >
           <MainNavigationMenu className="hidden lg:flex" />

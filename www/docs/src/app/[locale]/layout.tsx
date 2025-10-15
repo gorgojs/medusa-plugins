@@ -1,5 +1,6 @@
 import "./../globals.css";
 import { TooltipProvider } from "@medusajs/ui";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Geist_Mono, Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
@@ -23,7 +24,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Gorgo Documentation",
-  description: "Documentation for Medusa plugins and integrations made by Gorgo.",
+  description:
+    "Documentation for Medusa plugins and integrations made by Gorgo.",
 };
 
 export function generateStaticParams() {
@@ -66,6 +68,9 @@ export default async function RootLayout({
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
+      <GoogleAnalytics
+        gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID ?? ""}
+      />
     </html>
   );
 }

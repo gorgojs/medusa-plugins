@@ -9,8 +9,8 @@ const nextConfig: NextConfig = {
   redirects: redirects,
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   trailingSlash: false,
-  output: 'standalone',
-  
+  output: "standalone",
+
   turbopack: {
     root: "./",
     rules: {
