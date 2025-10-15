@@ -1,0 +1,605 @@
+{
+    "result": [
+        {
+            "id": 5058187,
+            "value": "Юпитер",
+            "info": "Автотовары и электроника",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/b2e62bce-92f9-474d-9bd6-d5707a6adfb5.jpg"
+        },
+        {
+            "id": 5058518,
+            "value": "CS",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5059021,
+            "value": "LP",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/b18b565b-a10f-4a56-8883-6c6ed8f7ec4c.jpg"
+        },
+        {
+            "id": 5060973,
+            "value": "Akenori",
+            "info": "Автомобильная автоэлектроника",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/497dfa00-857c-4eb4-85ab-83fbf7f8b525.jpg"
+        },
+        {
+            "id": 5063309,
+            "value": "Coolfort",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/cddeec71-2669-46ba-aca7-b6aeda71fcb1.jpg"
+        },
+        {
+            "id": 5064554,
+            "value": "Havit",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/85ccd44b-0be7-4f3e-9615-899a4958fe96.jpg"
+        },
+        {
+            "id": 5066220,
+            "value": "Триколор",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/21bfad13-b198-46ea-b358-d46d566ccd33.jpg"
+        },
+        {
+            "id": 5068632,
+            "value": "Bawi",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5069147,
+            "value": "Garmin",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/92a17543-c739-4a3c-a400-cb665fe9a30e.jpg"
+        },
+        {
+            "id": 5069237,
+            "value": "Kodak",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/783fa6cc-b6ac-4857-ad4b-128bc3ecce5e.jpg"
+        },
+        {
+            "id": 5069835,
+            "value": "Pullman",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/0ac49c73-ec8c-4fd3-892d-1b7ff0bd2b91.jpg"
+        },
+        {
+            "id": 5069842,
+            "value": "КТК",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5070226,
+            "value": "Liberty Project",
+            "info": "Аксессуары для сотовых",
+            "picture": ""
+        },
+        {
+            "id": 5071003,
+            "value": "Ivo",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5071913,
+            "value": "AgeStar",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5072681,
+            "value": "Fiesta",
+            "info": "Продукты питания -шоколад",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/f6049875-de38-4f90-92b3-40cd8b88e475.jpg"
+        },
+        {
+            "id": 5073356,
+            "value": "Ritzenhoff & Breker",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5073389,
+            "value": "William Levene",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5073986,
+            "value": "JVC",
+            "info": "Автотовары, бытовая техника, электроника",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/9f6fece5-16f5-4c4d-a531-fb17f459c5e1.jpg"
+        },
+        {
+            "id": 5074417,
+            "value": "KEF",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5074684,
+            "value": "Cutipol",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/6c20f672-894e-4efe-82b9-71b66b42e1f6.jpg"
+        },
+        {
+            "id": 5074809,
+            "value": "Jabra",
+            "info": "Наушники и гарнитуры",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/f207df8f-1cc3-44df-81ca-1a0be4554f0a.jpg"
+        },
+        {
+            "id": 5075091,
+            "value": "BBS",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5075889,
+            "value": "Jacob Zeidler & Co",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5076255,
+            "value": "The Original Book Works Limited",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5076787,
+            "value": "Ocean Extreme",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5077287,
+            "value": "Народное искусство",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5077379,
+            "value": "Zyliss",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5078102,
+            "value": "Федоскино",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5078351,
+            "value": "Euro Album",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5079161,
+            "value": "Raphael Tuck & Sons \"Oilette\"",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5079395,
+            "value": "Dormann",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5079944,
+            "value": "Blaupunkt",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/034f46e8-9b34-4186-b13d-b3c41047a249.jpg"
+        },
+        {
+            "id": 5080743,
+            "value": "Маэста",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5081104,
+            "value": "Moranduzzo",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5082119,
+            "value": "Audio Pro",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5082500,
+            "value": "Красный монетный двор",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5082508,
+            "value": "Аннинский монетный двор",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5082729,
+            "value": "Dream Girlfriend",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5083016,
+            "value": "Silampos",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/6849f95e-25de-4d4d-b297-e3c6fef4df4f.jpg"
+        },
+        {
+            "id": 5083282,
+            "value": "Интурист",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5084636,
+            "value": "BUGATTI",
+            "info": "Насосы водяные для авто",
+            "picture": ""
+        },
+        {
+            "id": 5084716,
+            "value": "Nillkin",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/21848aed-ab46-4055-949b-c761996d90b2.jpg"
+        },
+        {
+            "id": 5084917,
+            "value": "Ritmix",
+            "info": "Техника, электроника",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/fea2264e-c092-48a2-bada-1f339ddbfc17.jpg"
+        },
+        {
+            "id": 5085054,
+            "value": "Zobele Holding Spa",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5085265,
+            "value": "Snoogy",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/ec1dff88-4635-498a-a47b-20e59cefdf94.jpg"
+        },
+        {
+            "id": 5085630,
+            "value": "ЛинкГрупп Трейд",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5086049,
+            "value": "Siemens",
+            "info": "Бытовая техника, Строительство и ремонт",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/9c676547-b321-47ce-8339-c565e39fb303.jpg"
+        },
+        {
+            "id": 5087452,
+            "value": "Interno Stile",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5087545,
+            "value": "БелОМО",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/90ae0ae9-f4e1-44b4-9e0c-b4c9a65c2793.jpg"
+        },
+        {
+            "id": 5087587,
+            "value": "Le Vele",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5087591,
+            "value": "GreenPan",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5087638,
+            "value": "Belkin",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/ab668537-7404-4a0d-b5f9-eaeeea89b697.jpg"
+        },
+        {
+            "id": 5087958,
+            "value": "EuroNOVA",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5088529,
+            "value": "Bison",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/54c37c7c-0684-4dab-90c3-21cca6372a3e.jpg"
+        },
+        {
+            "id": 5089313,
+            "value": "Clingo",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5089430,
+            "value": "Koopman",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5089612,
+            "value": "Till",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5089809,
+            "value": "Pittards",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5090064,
+            "value": "Karcher",
+            "info": "Техника для уборки",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/fed6226f-934b-4aeb-907f-f6ebbc49e700.jpg"
+        },
+        {
+            "id": 5090219,
+            "value": "Diax",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5090669,
+            "value": "BLOCH",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5090698,
+            "value": "Elmonte",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5090713,
+            "value": "Wapiti",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5090748,
+            "value": "Kenko",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5090749,
+            "value": "COXX Borba",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5090799,
+            "value": "Dicarra",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5090824,
+            "value": "Eliza di Venezia",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5090865,
+            "value": "Paul & Betty",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5090935,
+            "value": "Popushier",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5090956,
+            "value": "Rieker",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/68775c01-5dd1-487a-a76e-d8c64f285b90.jpg"
+        },
+        {
+            "id": 5090965,
+            "value": "Alex Mazurin",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5090972,
+            "value": "Shepherd's Life",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5090982,
+            "value": "S. Velani",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5091004,
+            "value": "Lacal",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5091014,
+            "value": "Paul Green",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5091018,
+            "value": "Cosy Image",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5091019,
+            "value": "Jana A+W",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5091257,
+            "value": "Samuel Radford",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5091964,
+            "value": "Woolpower",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/a4ab3da2-12b6-4e3b-ad64-78f821841635.jpg"
+        },
+        {
+            "id": 5092086,
+            "value": "Ko san yo",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5092174,
+            "value": "Sauvage",
+            "info": "Автотовары",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/d9d8ad39-92ae-49ff-ac79-b0ffbea568bd.jpg"
+        },
+        {
+            "id": 5092199,
+            "value": "AvtoVins",
+            "info": "Автотовары",
+            "picture": ""
+        },
+        {
+            "id": 5092320,
+            "value": "Neo Way",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/4f927356-88bb-4f66-a448-34ba485e0d40.jpg"
+        },
+        {
+            "id": 5092324,
+            "value": "Thule",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/d9c1d8c5-0d4a-4225-8781-078535e6e2e9.jpg"
+        },
+        {
+            "id": 5092448,
+            "value": "VIRA",
+            "info": "Инструменты и силовая техника",
+            "picture": "https://cdn1.ozone.ru/s3/multimedia-d/6740180677.jpg"
+        },
+        {
+            "id": 5092462,
+            "value": "Lavatelli",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5092475,
+            "value": "Kroft",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/f0c0a2dc-1fa5-4632-9f58-ef9986d2741f.jpg"
+        },
+        {
+            "id": 5092515,
+            "value": "Detalle",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5092572,
+            "value": "Domex",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5092609,
+            "value": "HAMA",
+            "info": "Товары широкого потребления",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/4ac6ad74-6692-4e6b-a407-5c1487006d55.jpg"
+        },
+        {
+            "id": 5092656,
+            "value": "YQ",
+            "info": "Печатные издания, Антикварные издания, Одежда, Детские товары, Антиквариат и коллекционирование, Спорт и отдых, Галантерея и украшения, Дом, Автотовары",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/a3d23640-7912-42b3-bf7c-21caa12abd9c.jpg"
+        },
+        {
+            "id": 5092705,
+            "value": "Bobino",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5092769,
+            "value": "Теско",
+            "info": "",
+            "picture": "https://cdn1.ozonusercontent.com/s3/product-service-meta-media/8b81c5b2-36c9-4063-9cd5-969040431ea3.jpg"
+        },
+        {
+            "id": 5092815,
+            "value": "Zibo Nolan Arts & Crafts Co., Ltd",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5092915,
+            "value": "Road Sign",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5092998,
+            "value": "Tinta",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5093006,
+            "value": "Good Garment",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5093053,
+            "value": "Silex",
+            "info": "",
+            "picture": ""
+        },
+        {
+            "id": 5093179,
+            "value": "Dacron Comforel",
+            "info": "",
+            "picture": ""
+        }
+    ],
+    "has_next": true
+}

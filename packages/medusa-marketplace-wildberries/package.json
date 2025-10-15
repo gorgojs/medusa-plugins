@@ -1,0 +1,81 @@
+{
+  "name": "@gorgo/medusa-marketplace-wildberries",
+  "version": "0.1.0",
+  "description": "Wildberries marketplace integration for Medusa",
+  "files": [
+    ".medusa/server"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./workflows": "./.medusa/server/src/workflows/index.js",
+    "./.medusa/server/src/modules/*": "./.medusa/server/src/modules/*/index.js",
+    "./modules/*": "./.medusa/server/src/modules/*/index.js",
+    "./providers/*": "./.medusa/server/src/providers/*/index.js",
+    "./*": "./.medusa/server/src/*.js",
+    "./admin": {
+      "import": "./.medusa/server/src/admin/index.mjs",
+      "require": "./.medusa/server/src/admin/index.js",
+      "default": "./.medusa/server/src/admin/index.js"
+    }
+  },
+  "keywords": [
+    "medusa",
+    "plugin",
+    "medusa-plugin-other",
+    "medusa-plugin",
+    "medusa-v2",
+    "medusa-marketplace",
+    "wildberries",
+    "wildberries-marketplace",
+    "marketplace"
+  ],
+  "scripts": {
+    "build": "medusa plugin:build",
+    "dev": "yarn predev && medusa plugin:develop",
+    "openapi:pull": "node scripts/openapi.js pull",
+    "openapi:gen": "node scripts/openapi.js generate",
+    "openapi:all": "node scripts/openapi.js all",
+    "prepublishOnly": "yarn openapi:gen && medusa plugin:build",
+    "predev": "medusa plugin:publish"
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "axios-rate-limit": "^1.4.0",
+    "axios-retry": "^4.5.0"
+  },
+  "devDependencies": {
+    "@gorgo/medusa-marketplace": "*",
+    "@medusajs/admin-sdk": "^2.13.3",
+    "@medusajs/cli": "^2.13.3",
+    "@medusajs/framework": "^2.13.3",
+    "@medusajs/icons": "^2.13.3",
+    "@medusajs/medusa": "^2.13.3",
+    "@medusajs/test-utils": "^2.13.3",
+    "@medusajs/ui": "^4.0.25",
+    "@openapitools/openapi-generator-cli": "^2.25.0",
+    "@swc/core": "^1.5.7",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.2.25",
+    "prop-types": "^15.8.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2",
+    "vite": "^5.2.11",
+    "yalc": "^1.0.0-pre.53"
+  },
+  "peerDependencies": {
+    "@gorgo/medusa-marketplace": "*",
+    "@medusajs/admin-sdk": "^2.13.3",
+    "@medusajs/cli": "^2.13.3",
+    "@medusajs/framework": "^2.13.3",
+    "@medusajs/icons": "^2.13.3",
+    "@medusajs/medusa": "^2.13.3",
+    "@medusajs/test-utils": "^2.13.3",
+    "@medusajs/ui": "^4.0.25",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
