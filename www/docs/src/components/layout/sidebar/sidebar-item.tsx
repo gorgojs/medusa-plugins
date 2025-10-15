@@ -16,6 +16,7 @@ type SidebarItemProps = {
   title: LocalizedString | string;
   items?: SidebarItemType[];
   basePath?: string;
+  isOverview?: boolean;
 };
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
@@ -24,10 +25,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   title,
   items: children,
   basePath = "",
+  isOverview = false,
 }) => {
   const pathname = usePathname();
   const locale = useLocale();
-  const href = `${basePath}/${slug}`;
+  // For overview item, the href is just the base path (e.g. /plugins rather than /plugins/section-slug)
+  const href = isOverview ? `${basePath}` : `${basePath}/${slug}`;
   const isActive = pathname === href;
 
   const displayTitle =

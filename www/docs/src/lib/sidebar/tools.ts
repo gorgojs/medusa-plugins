@@ -7,6 +7,7 @@ export const toolsSidebar: SidebarType = {
   },
   slug: "tools",
   isSection: true,
+  hasOverview: true,
   children: [
     {
       title: {

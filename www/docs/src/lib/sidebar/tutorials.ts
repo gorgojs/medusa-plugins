@@ -7,6 +7,7 @@ export const tutorialsSidebar: SidebarType = {
   },
   slug: "tutorials",
   isSection: true,
+  hasOverview: true,
   children: [
     {
       title: {

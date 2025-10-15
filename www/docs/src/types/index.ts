@@ -12,6 +12,7 @@ export type SidebarType = {
   npmPackage?: string;
   links?: PluginLink[];
   children: (SidebarItemType | SidebarType)[];
+  hasOverview?: boolean;
 };
 
 export type HeaderItemType = {

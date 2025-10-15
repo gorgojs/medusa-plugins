@@ -9,22 +9,42 @@ import type { SidebarItemType, SidebarType } from "@/types";
 const SidebarContent = ({
   items,
   basePath = "",
+  section,
 }: {
   items: (SidebarItemType | SidebarType)[];
   basePath?: string;
-}) => (
-  <nav className="flex flex-col gap-y-1 px-4">
-    {items.map((item) => (
-      <SidebarItem
-        key={item.slug}
-        slug={item.slug}
-        title={item.title}
-        items={item.children as SidebarItemType[]}
-        basePath={basePath}
-      />
-    ))}
-  </nav>
-);
+  section?: SidebarType;
+}) => {
+  // Create a localized "Overview" title for the overview item
+  const overviewTitle = {
+    en: "Overview",
+    ru: "Обзор",
+  };
+
+  return (
+    <nav className="flex flex-col gap-y-1 px-4">
+      {section?.hasOverview && (
+        <SidebarItem
+          key={`overview-${section.slug}`}
+          slug={section.slug}
+          title={overviewTitle}
+          items={[]}
+          basePath={basePath}
+          isOverview={true}
+        />
+      )}
+      {items.map((item) => (
+        <SidebarItem
+          key={item.slug}
+          slug={item.slug}
+          title={item.title}
+          items={item.children as SidebarItemType[]}
+          basePath={basePath}
+        />
+      ))}
+    </nav>
+  );
+};
 
 const Sidebar = ({
   section,
@@ -54,6 +74,7 @@ const Sidebar = ({
             <SidebarContent
               items={section?.children ?? []}
               basePath={basePath}
+              section={section}
             />
           </div>
         </DrawerContent>
@@ -64,7 +85,11 @@ const Sidebar = ({
   return (
     <aside className="sticky top-12 w-[250px]">
       <div className="overflow-y-auto">
-        <SidebarContent items={section?.children ?? []} basePath={basePath} />
+        <SidebarContent
+          items={section?.children ?? []}
+          basePath={basePath}
+          section={section}
+        />
       </div>
     </aside>
   );

@@ -150,6 +150,7 @@ export const pluginsSidebar: SidebarType = {
       },
       slug: "moysklad",
       isSection: true,
+      hasOverview: true,
       children: [
         {
           title: {

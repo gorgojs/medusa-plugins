@@ -13,7 +13,7 @@ const generateRedirects = (
 
     const currentPath = basePath ? `${basePath}/${item.slug}` : `/${item.slug}`;
 
-    if ("isSection" in item && item.isSection) {
+    if ("isSection" in item && item.isSection && !item.hasOverview) {
       const firstChild = item.children?.[0];
 
       if (!firstChild?.slug) {
