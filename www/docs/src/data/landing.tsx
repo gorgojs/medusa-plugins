@@ -53,18 +53,6 @@ export const pluginCategories: PluginCategory[] = [
         },
         icon: <RobokassaIcon />,
       },
-      {
-        id: "1c",
-        name: {
-          en: "1C",
-          ru: "1C",
-        },
-        description: {
-          en: "Sync products, orders, and inventory",
-          ru: "Синхронизируйте товары, заказы и остатки",
-        },
-        icon: <OneCIcon />,
-      },
     ],
   },
   {
@@ -90,71 +78,71 @@ export const pluginCategories: PluginCategory[] = [
         },
         icon: <OneCIcon />,
       },
-      {
-        id: "moysklad",
-        name: {
-          en: "MoySklad",
-          ru: "МойСклад",
-        },
-        description: {
-          en: "Sync products, orders, and inventory",
-          ru: "Синхронизируйте товары, заказы и остатки",
-        },
-        icon: <OneCIcon />,
-      },
+      // {
+      //   id: "moysklad",
+      //   name: {
+      //     en: "MoySklad",
+      //     ru: "МойСклад",
+      //   },
+      //   description: {
+      //     en: "Sync products, orders, and inventory",
+      //     ru: "Синхронизируйте товары, заказы и остатки",
+      //   },
+      //   icon: <OneCIcon />,
+      // },
     ],
   },
-  {
-    id: "marketplaces",
-    title: {
-      en: "Marketplaces",
-      ru: "Маркетплейсы",
-    },
-    description: {
-      en: "Streamline orders from variety of marketplaces.",
-      ru: "Оптимизируйте заказы с различных маркетплейсов.",
-    },
-    plugins: [
-      {
-        id: "yandex-market",
-        name: {
-          en: "Yandex Market",
-          ru: "Яндекс Маркет",
-        },
-        description: {
-          en: "Sync products, orders, and inventory",
-          ru: "Синхронизируйте товары, заказы и остатки",
-        },
-        icon: <YandexIcon />,
-      },
-      {
-        id: "wildberries",
-        name: {
-          en: "Wildberries",
-          ru: "Wildberries",
-        },
-        description: {
-          en: "Sync products, orders, and inventory",
-          ru: "Синхронизируйте товары, заказы и остатки",
-        },
-        icon: "W",
-        iconBgColor: "#3B82F6",
-      },
-      {
-        id: "ozon",
-        name: {
-          en: "Ozon",
-          ru: "Ozon",
-        },
-        description: {
-          en: "Sync products, orders, and inventory",
-          ru: "Синхронизируйте товары, заказы и остатки",
-        },
-        icon: "O",
-        iconBgColor: "#3B82F6",
-      },
-    ],
-  },
+  // {
+  //   id: "marketplaces",
+  //   title: {
+  //     en: "Marketplaces",
+  //     ru: "Маркетплейсы",
+  //   },
+  //   description: {
+  //     en: "Streamline orders from variety of marketplaces.",
+  //     ru: "Оптимизируйте заказы с различных маркетплейсов.",
+  //   },
+  //   plugins: [
+  //     {
+  //       id: "yandex-market",
+  //       name: {
+  //         en: "Yandex Market",
+  //         ru: "Яндекс Маркет",
+  //       },
+  //       description: {
+  //         en: "Sync products, orders, and inventory",
+  //         ru: "Синхронизируйте товары, заказы и остатки",
+  //       },
+  //       icon: <YandexIcon />,
+  //     },
+  //     {
+  //       id: "wildberries",
+  //       name: {
+  //         en: "Wildberries",
+  //         ru: "Wildberries",
+  //       },
+  //       description: {
+  //         en: "Sync products, orders, and inventory",
+  //         ru: "Синхронизируйте товары, заказы и остатки",
+  //       },
+  //       icon: "W",
+  //       iconBgColor: "#3B82F6",
+  //     },
+  //     {
+  //       id: "ozon",
+  //       name: {
+  //         en: "Ozon",
+  //         ru: "Ozon",
+  //       },
+  //       description: {
+  //         en: "Sync products, orders, and inventory",
+  //         ru: "Синхронизируйте товары, заказы и остатки",
+  //       },
+  //       icon: "O",
+  //       iconBgColor: "#3B82F6",
+  //     },
+  //   ],
+  // },
   {
     id: "others",
     title: {
