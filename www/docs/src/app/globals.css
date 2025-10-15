@@ -65,7 +65,7 @@
 }
 
 .prose {
-  @apply text-ui-fg-base;
+  @apply text-ui-fg-base container;
 }
 
 .prose .anchor {
@@ -175,5 +175,5 @@
 }
 
 .max-w-content {
-  max-width: 1280px;
+  max-width: 1200px;
 }

@@ -70,14 +70,14 @@ export default async function DynamicDocsPage({ params }: PageProps) {
       <nav className="sticky top-14 h-full">
         <Sidebar section={section} baseSlugs={baseSlugs} />
       </nav>
-      <div className="container bg-ui-bg-base py-24 lgish:rounded-lg lgish:border grow-0 mx-0">
+      <div className="container bg-ui-bg-base py-24 lgish:rounded-lg lgish:border grow-0 mx-0 max-w-content">
         <div className="max-w-[600px] px-8 xl:px-0 xl:max-w-[700px] mx-auto grow-0">
           <Breadcrumbs
             section={section}
             baseSlugs={baseSlugs}
             className="hidden lg:flex lg:mb-3"
           />
-          <div className="prose" suppressHydrationWarning={true}>
+          <div className="prose text-sm" suppressHydrationWarning={true}>
             <Post />
           </div>
           <PaginationCards section={section} baseSlugs={baseSlugs} />

@@ -1,0 +1,87 @@
+# Getting Started with T-Kassa Payment
+
+In this document, you’ll learn how to install and configure the T-Kassa payment provider for Medusa.
+
+## Requirements
+
+- Medusa v2.7.0 or later
+- Node.js v20 or later
+- A T-Business account with T-Kassa internet acquiring – [sign in or create one](https://www.tbank.ru/kassa/?utm_source=partners_sme&utm_medium=prt.utl&utm_campaign=business.int_acquiring.7-3S975SBSY&partnerId=7-3S975SBSY&agentId=5-B6HGU9OD&agentSsoId=1316b7dd-3a90-4167-9d35-37910431a19c)
+
+## Installation
+
+```bash
+yarn add @gorgo/medusa-payment-tkassa
+# or
+npm install @gorgo/medusa-payment-tkassa
+```
+
+## Configuration
+
+Add the provider configuration in your `medusa-config.js` file of the Medusa admin application:
+
+```ts
+# ...
+module.exports = defineConfig({
+  # ...
+  modules: [
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "@gorgo/medusa-payment-tkassa/providers/payment-tkassa",
+            id: "tkassa",
+            options: {
+              terminalKey: process.env.TKASSA_TERMINAL_KEY,
+              password: process.env.TKASSA_PASSWORD,
+              capture: true,
+              useReceipt: true,
+              ffdVersion: "1.05",
+              taxation: "osn",
+              taxItemDefault: "none",
+              taxShippingDefault: "none"
+            },
+          }   
+        ]
+      }
+    }
+  ]
+})
+```
+
+Add environment variables with your shop identifier `TerminalKey` and secret `Password` from your T-Business account:
+
+```text
+TKASSA_TERMINAL_KEY=123456789
+TKASSA_PASSWORD=supersecret
+```
+
+## Provider Options
+
+| Option               | Description                                                                                                                                                                                                                                                              | Required | Default |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ------- |
+| `terminalKey`        | Terminal key provided by T-Kassa (required for authentication)                                                                                                                                                                                                           | Yes      | -       |
+| `password`           | Password for request signing (required for authentication)                                                                                                                                                                                                               | Yes      | -       |
+| `capture`            | Automatic payment capture:<br/>- `true` for one-step payment, passes `O` to T-Kassa API<br/>- `false` for two-steps payment, passes `T` payment                                                                                                                            | No       | `true`  |
+| `useReceipt`         | Enable receipt generation according to Russian fiscal data format (FFD)                                                                                                                                                                                                  | No       | `false` |
+| `ffdVersion`         | Fiscal data format version: `1.2` or `1.05`<br/>Applicable only if `useReceipt` = `true`                                                                                                                                                                                  | No       | -       |
+| `taxation`           | Tax system type:<br/>- `osn`: General<br/>- `usn_income`: Simplified (income)<br/>- `usn_income_outcome`: Simplified (income-expenses)<br/>- `esn`: Agricultural<br/>- `patent`: Patent<br/>Applicable only if `useReceipt` = `true`                                           | No       | -       |
+| `taxItemDefault`     | Default VAT rate for products:<br/>- `none`: No VAT<br/>- `vat0`: 0%<br/>- `vat5`: 5%<br/>- `vat7`: 7%<br/>- `vat10`: 10%<br/>- `vat20`: 20%<br/>- `vat105`: 5/105<br/>- `vat107`: 7/107<br/>- `vat110`: 10/110<br/>- `vat120`: 20/120<br/>Applicable only if `useReceipt` = `true` | No       | -       |
+| `taxShippingDefault` | Default VAT rate for shipping, same options as `taxItemDefault`<br/>Applicable only if `useReceipt` = `true`                                                                                                                                                              | No       | -       |
+
+## Webhook Setup
+
+To properly handle payment notifications from T-Kassa, configure webhooks in your T-Business account as following:
+
+1. Navigate to `Internet acquiring` → `Shops` → Choose your shop → `Terminals` → Choose `Testing` or `Working` Terminal → Click `Settings` to open the setting window
+
+2. Choose to send Notifications `Via HTTP protocol`
+
+3. Add a URL like:
+    ```
+    https://$YOUR_MEDUSA_DOMAIN/hooks/payment/tkassa_tkassa
+    ```
+    Change `{YOUR_MEDUSA_DOMAIN}` with your medusa store domain.
+
+> **Warning!** T-Kassa expects an `OK` response message to confirm successful webhook processing and to prevent duplicate notifications. Currently, Medusa does not natively support custom webhook response messages, but webhooks are still processed correctly without this. For more details, check out the [related discussion](https://github.com/medusajs/medusa/discussions/12887).

@@ -29,9 +29,9 @@ function getServiceName(type: PluginLinkService) {
     case "npm":
       return "NPM";
     case "telegram":
-      return "Telegram";
+      return "Telegram Support Chat";
     case "discord":
-      return "Discord";
+      return "Discord Support";
     case "other":
       return "Other";
   }

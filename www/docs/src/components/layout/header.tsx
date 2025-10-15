@@ -44,7 +44,7 @@ export default function Header() {
         </div>
         <div
           className={cn(
-            "w-full flex justify-end lg:justify-between h-full max-w-full transition-all xl:container xl:mx-0 border-r border-l border-transparent",
+            "w-full flex justify-end lg:justify-between h-full max-w-full transition-all xl:container xl:mx-0 border-r border-l border-transparent max-w-content",
             scrolled && pathname !== "/" && "xl:bg-ui-bg-base"
           )}
         >
