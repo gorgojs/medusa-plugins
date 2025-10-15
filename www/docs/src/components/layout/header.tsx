@@ -1,8 +1,5 @@
-"use client";
-
 import { Book, CloudSolid } from "@medusajs/icons";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import CmdK from "@/components/layout/cmdk";
 import { MainNavigationMenu } from "@/components/layout/main-navigation-menu";
 import { LocaleSwitcher } from "@/components/locale-switcher";
@@ -15,40 +12,25 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import GorgoWordmark from "@/svg/icons/gorgo-wordmark.svg";
 import MobileNavigationMenu from "./mobile-navigation-menu";
-import { useLocale } from "next-intl";
+import { getLocale } from "next-intl/server";
 
-export default function Header() {
-  const locale = useLocale();
-  const [scrolled, setScrolled] = useState(false);
-  const pathname = usePathname();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 0);
-    };
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+export default async function Header() {
+  const locale = await getLocale();
 
   return (
     <div className="sticky top-0 z-50">
       <header
         className={cn(
-          "bg-ui-bg-component flex items-center justify-center h-14 duration-300 mx-auto border-b xl:border-transparent",
-          scrolled && pathname === "/" && "xl:border-ui-border-base"
+          "flex items-center justify-center h-14 duration-300 mx-auto backdrop-blur-lg bg-ui-bg-component/60"
         )}
       >
         <NavigationMenu viewport={false}>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="pl-4 justify-start flex shrink-0">
+              <NavigationMenuTrigger className="pl-4 justify-start flex shrink-0 xl:w-[250px]">
                 <Link href="/" className="flex items-start">
                   <GorgoWordmark className="h-5 text-ui-fg-base" />
                 </Link>
@@ -86,8 +68,7 @@ export default function Header() {
         </NavigationMenu>
         <div
           className={cn(
-            "w-full flex justify-end lg:justify-between h-full max-w-full transition-all xl:container xl:mx-0 border-r border-l border-transparent max-w-content",
-            scrolled && pathname !== "/" && "xl:bg-ui-bg-base"
+            "w-full flex justify-end lg:justify-between h-full max-w-full transition-all xl:container xl:mx-0"
           )}
         >
           <MainNavigationMenu className="hidden lg:flex" />
