@@ -1,0 +1,3423 @@
+openapi: 3.0.1
+info:
+  title: FBS Orders
+  version: order
+  description: |
+    <div class="description_important">
+    <b>Methods for working with assembly orders of the DBW model (Delivery by Wildberries) are now in a <a href="https://dev.wildberries.ru/en/release-notes?id=312">separate environment</a>.
+    </b>
+    </div>
+
+    Use the FBS Orders (Fulfillment by Seller) methods to:
+      - get information about [assembly orders](/openapi/orders-fbs#tag/FBS-Assembly-Orders) and their statuses, cancel assembly orders, and get stickers
+      - get, add, edit, and delete [metadata](/openapi/orders-fbs#tag/FBS-Metadata) for assembly orders
+      - manage [supplies](/openapi/orders-fbs#tag/FBS-Supplies)
+      - create, edit, and delete [passes](/openapi/orders-fbs#tag/FBS-Passes) to WB warehouses
+  x-file-name: orders-fbs
+security:
+  - HeaderApiKey: []
+tags:
+  - name: FBS Assembly Orders
+    description: ''
+  - name: FBS Metadata
+    description: ''
+  - name: FBS Supplies
+    description: ''
+  - name: FBS Passes
+    description: ''
+paths:
+  /api/v3/passes/offices:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    get:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Passes
+      summary: Get Offices for Pass
+      description: |
+        Returns a list of offices that require a pass.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                nullable: false
+                description: Offices list
+                items:
+                  $ref: '#/components/schemas/PassOffice'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/passes:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    get:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Passes
+      summary: Get Passes
+      description: |
+        Returns a list of all seller's passes.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                nullable: false
+                description: Passes list
+                items:
+                  $ref: '#/components/schemas/Pass'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+    post:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Passes
+      summary: Create Pass
+      description: |
+        Creates a supplier pass. <br> The pass is valid for 48 hours from the time of creation.
+        <div class="description_limit">
+          Maximum of 1 request per 10 <a href="/openapi/api-information#tag/Introduction/Rate-Limits">minutes</a> per one seller's account
+        </div>
+      requestBody:
+        required: true
+        description: The total length of the full name is limited from 6 to 100 characters. The car number can contain only letters and numbers.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  nullable: false
+                  minLength: 1
+                  description: First name
+                  example: Alex
+                lastName:
+                  type: string
+                  nullable: false
+                  minLength: 1
+                  description: Last name
+                  example: Petrov
+                carModel:
+                  type: string
+                  nullable: false
+                  minLength: 1
+                  maxLength: 100
+                  description: Car model
+                  example: Lamborghini
+                carNumber:
+                  type: string
+                  nullable: false
+                  minLength: 6
+                  maxLength: 9
+                  description: Car number
+                  example: A456BC123
+                officeId:
+                  type: integer
+                  format: int64
+                  nullable: false
+                  minimum: 1
+                  description: Office ID
+                  example: 15
+              required:
+                - firstName
+                - lastName
+                - carModel
+                - carNumber
+                - officeId
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    nullable: false
+                    description: Pass ID
+                    example: 2
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/passes/{passId}:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    put:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Passes
+      summary: Update Pass
+      description: |
+        Updates the seller's pass detail
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Pass'
+      requestBody:
+        required: true
+        description: |
+          The total length of the full name is limited from 6 to 100 characters. The car number can contain only letters and numbers.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  nullable: false
+                  minLength: 1
+                  description: First name
+                  example: Alex
+                lastName:
+                  type: string
+                  nullable: false
+                  minLength: 1
+                  description: Last name
+                  example: Petrov
+                carModel:
+                  type: string
+                  nullable: false
+                  minLength: 1
+                  maxLength: 100
+                  description: Car model
+                  example: Lamborghini
+                carNumber:
+                  type: string
+                  nullable: false
+                  minLength: 6
+                  maxLength: 9
+                  description: Car number
+                  example: A456BC123
+                officeId:
+                  type: integer
+                  format: int64
+                  nullable: false
+                  minimum: 1
+                  description: Office ID
+                  example: 15
+              required:
+                - firstName
+                - lastName
+                - carModel
+                - carNumber
+                - officeId
+      responses:
+        '204':
+          description: Updated
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+                WarehouseNameInvalid:
+                  $ref: '#/components/examples/WarehouseNameInvalid'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/429'
+    delete:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Passes
+      summary: Delete the Pass
+      description: |
+        Deletes the seller's pass
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Pass'
+      responses:
+        '204':
+          description: Deleted
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/orders/new:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    get:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Assembly Orders
+      summary: Get New Assembly Orders
+      description: |
+        Returns a list of all new [assembly orders](/openapi/orders-fbs#tag/FBS-Assembly-Orders/paths/~1api~1v3~1orders/get).
+
+        <div class="description_important">
+        Metadata specified in the <code>requiredMeta</code> and <code>optionalMeta</code> fields in assembly orders only affects the ability to transfer a supply to delivery. If your product requires mandatory marking with identification means, you must specify all needed metadata whether it was received in <code>requiredMeta</code> or <code>optionalMeta</code> field (see 4.6 of the <a href ="https://seller.wildberries.ru/confirm-offer-condition/product/view">Offer</a>).
+        <br>
+        We recommend adding all metadata received in the <code>requiredMeta</code> and <code>optionalMeta</code> fields to the assembly orders
+        </div>
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        </div>
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: false
+                properties:
+                  orders:
+                    type: array
+                    nullable: false
+                    description: New assembly orders list
+                    items:
+                      $ref: '#/components/schemas/OrderNew'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/orders:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    get:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Assembly Orders
+      summary: Get Assembly Orders
+      description: |
+        Returns assembly orders information without current status. <br>You can get data for a specified period, maximum of 30 calendar days per request.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Next'
+        - name: dateFrom
+          in: query
+          schema:
+            type: integer
+          description: |
+            Period start date in Unix timestamp format. By default date is 30 days before the request
+        - name: dateTo
+          in: query
+          schema:
+            type: integer
+          description: Period end date in Unix timestamp format
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: false
+                properties:
+                  next:
+                    $ref: '#/components/schemas/Next'
+                  orders:
+                    type: array
+                    nullable: false
+                    items:
+                      $ref: '#/components/schemas/Order'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/orders/status:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    post:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Assembly Orders
+      summary: Get Assembly Orders Statuses
+      description: |
+        Returns the statuses of assembly orders from the request.
+
+        `supplierStatus` is a status of an assembly order. Its change is always triggered only by the supplier.<br>
+
+        Possible values of `supplierStatus`:
+
+        | Status    | Description              | How to move the assembly orders to this status |
+        |-----------|--------------------------|---------------------------------------------|
+        | `new`       | **New order**        |                                             |
+        | `confirm`   | **In assembly** <br>For delivery by Wildberries `fbs` | [Add assembly orders to the supply](/openapi/orders-fbs#tag/FBS-Supplies/paths/~1api~1marketplace~1v3~1supplies~1%7BsupplyId%7D~1orders/patch)
+        | `complete`  | **In delivery** <br> For delivery by Wildberries `fbs` and by WB courier `wbgo` |  [Transfer the supply to delivery](/openapi/orders-fbs#tag/FBS-Supplies/paths/~1api~1v3~1supplies~1%7BsupplyId%7D~1deliver/patch) |
+        | `cancel`   | **Canceled by seller** | [Cancel the order](/openapi/orders-fbs#tag/FBS-Assembly-Orders/paths/~1api~1v3~1orders~1%7BorderId%7D~1cancel/patch) |
+
+        `wbStatus` — is a status of an order on the Wildberries side.
+
+        Possible values for this field are:
+        - `waiting` — the supplier confirmed the order, and the Wildberries has not received it yet
+        - `sorted` — the Wildberries warehouse sorted the order
+        - `sold` — the order is sold
+        - `canceled` — the supplier canceled the order
+        - `canceled_by_client` — the buyer canceled the order upon receipt
+        - `declined_by_client` — the buyer canceled the order in the first hour <br> Cancellation is available to the buyer in the first hour from the moment of order, if the order is not transferred to confirm status.
+        - `defect` — cancellation of the order due to a defect
+        - `ready_for_pickup` — the assembly orders came at pickup point and waiting for the client
+        - `postponed_delivery` — courier delivery is postponed
+        - `accepted_by_carrier` — accepted by carrier. The order is handed over to delivery service in the seller country
+        - `sent_to_carrier` — dispatched to carrier. The order is on the way to delivery service's warehouse in the seller
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - orders
+              properties:
+                orders:
+                  type: array
+                  minItems: 1
+                  maxItems: 1000
+                  description: List of assembly order IDs
+                  items:
+                    type: integer
+                    format: int64
+                    example: 5632423
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    nullable: false
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                          nullable: false
+                          description: Assembly order ID
+                          example: 5632423
+                        supplierStatus:
+                          type: string
+                          nullable: false
+                          description: Assembly order status set by the seller
+                          enum:
+                            - new
+                            - confirm
+                            - complete
+                            - cancel
+                          example: new
+                        wbStatus:
+                          type: string
+                          nullable: false
+                          description: Assembly order status set by WB system
+                          enum:
+                            - waiting
+                            - sorted
+                            - sold
+                            - canceled
+                            - canceled_by_client
+                            - declined_by_client
+                            - defect
+                            - ready_for_pickup
+                            - postponed_delivery
+                            - accepted_by_carrier
+                            - sent_to_carrier
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/supplies/orders/reshipment:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    get:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Assembly Orders
+      summary: Get All Assembly Orders for Re-shipment
+      description: |
+        Returns all assembly orders that require re-shipment
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    description: Assembly orders list
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        supplyID:
+                          description: Supply ID
+                        orderID:
+                          description: Assembly order ID
+              example:
+                orders:
+                  - supplyID: WB-GI-1234567
+                    orderID: 5632423
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/orders/{orderId}/cancel:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    patch:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Assembly Orders
+      summary: Cancel the Assembly Order
+      description: |
+        Moves the assembly orders to `cancel` ("Canceled by the supplier") status.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 100 requests | 600 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Order'
+      responses:
+        '204':
+          description: Canceled
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Error updating a status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                StatusMismatch:
+                  $ref: '#/components/examples/StatusMismatch'
+                StatusChangeNotAllowed:
+                  $ref: '#/components/examples/StatusChangeNotAllowed'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/orders/stickers:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    post:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Assembly Orders
+      summary: Get Assembly Orders Stickers
+      description: |
+        Returns a list of stickers according to the requested assembly orders.
+        You can request a sticker in `svg`, `zplv` (vertical), `zplh` (horizontal) and `png` formats.
+
+        **Method limitations**:
+        - You cannot request more than 100 stickers at a time (no more than 100 assembly orders IDs in a request).
+        - The method returns stickers only for assembly orders in the `confirm` — in assembly and `complete` — in delivery [statuses](/openapi/orders-fbs#tag/FBS-Assembly-Orders/paths/~1api~1v3~1orders~1status/post).
+        - Available dimensions:
+          - 580x400 px, with parameters `width` = 58, `height` = 40
+          - 400x300 px, with parameters `width` = 40, `height` = 30
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - name: type
+          in: query
+          required: true
+          description: Sticker format
+          schema:
+            type: string
+            enum:
+              - svg
+              - zplv
+              - zplh
+              - png
+        - name: width
+          in: query
+          required: true
+          description: Sticker width
+          schema:
+            type: integer
+            enum:
+              - 58
+              - 40
+        - name: height
+          in: query
+          required: true
+          description: Sticker height
+          schema:
+            type: integer
+            enum:
+              - 40
+              - 30
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orders:
+                  type: array
+                  minItems: 1
+                  maxItems: 100
+                  description: List of assembly order IDs
+                  items:
+                    type: integer
+                    format: int64
+                    example: 5346346
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stickers:
+                    type: array
+                    nullable: false
+                    items:
+                      type: object
+                      properties:
+                        orderId:
+                          type: integer
+                          format: int64
+                          nullable: false
+                          description: Assembly order ID
+                          example: 5346346
+                        partA:
+                          type: integer
+                          nullable: false
+                          description: The first part of the sticker identifier (for printing the signature)
+                          example: 231648
+                        partB:
+                          type: integer
+                          nullable: false
+                          description: The second part of the sticker identifier (for printing the signature)
+                          example: 9753
+                        barcode:
+                          type: string
+                          nullable: false
+                          description: The encoded value of the sticker
+                          example: '!uKEtQZVx'
+                        file:
+                          type: string
+                          format: byte
+                          nullable: false
+                          description: Base64 encoded representation of the sticker in a requested format
+                          example: iVBORw0KGgoAAAANSUhEUgAAASIAAAEiAQAAAAB1xeIbAAABiElEQVR4nO2YUW6DMAyGbUDaI0g9wI4Sjg5H2Q3IeyZPthNKV03tNiVdtf9/cFvXAvRhkh+z0G2t3R1FRKgqAokikCgCiSKQeDQJzho8yXMsmfmh1/UvqoKoNrsLdgN6S8hzXP2TV8Xc47KMyTPnx+DvX/1zVg1Xmch1z9ih6gv2HLZTuqIPXjX7ftSlPRLJ+prXnONLF9hXZL96q/fE4W1Q+O8XvQ/29djL/lvWiTg/Bt89Voeqn/j7OQ4eTLJY7tz8oEoVSFC28aN9JqKwqbX3kP+VBewrsg/KedE3qmXUn3IMYF/d3zONm38TiqckFKeyEaDv6/W96Nus9b2tPrbw2LOAvq/Pfpfn/Fb4HoA1p9UcU3SHJTLHExk+p8VeK3JwN0Q2UNPmR9+3m2OyDzPjoOFFML9vOMcUin0iHahR2CaGz/mkmo6P5zHtQdD3TeeY5NY++/sKZ+xQdUliNZszqePRkFd+tfvHqhtC1S/nmOQh7eH+Y3WoygKJIpAoAokikChqT+IDIkbb8/8OLskAAAAASUVORK5CYII=
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest'
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/marketplace/v3/orders/meta:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    post:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Metadata
+      summary: Get Assembly Orders Metadata
+      description: |
+        The method returns metadata for [assembly orders](/openapi/orders-fbs#tag/FBS-Assembly-Orders/paths/~1api~1v3~1orders/get) by the list of their IDs.
+        <br><br>
+        You can get the list of metadata available for an assembly order in the `requiredMeta` and `optionalMeta` fields in the response of the [Get New Assembly Orders](/openapi/orders-fbs#tag/FBS-Assembly-Orders/paths/~1api~1v3~1orders~1new/get) method.
+        <br><br>
+        Possible metadata:
+          - `imei` — [IMEI](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1v3~1orders~1%7BorderId%7D~1meta~1imei/put)
+          - `uin` — [UIN](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1v3~1orders~1%7BorderId%7D~1meta~1uin/put)
+          - `gtin` — [GTIN](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1v3~1orders~1%7BorderId%7D~1meta~1gtin/put)
+          - `sgtin` — [Data matrix code](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1v3~1orders~1%7BorderId%7D~1meta~1sgtin/put)
+          - `expiration` — [Expiration date](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1v3~1orders~1%7BorderId%7D~1meta~1expiration/put)
+          - `customsDeclaration` — [customs declaration number](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1marketplace~1v3~1orders~1%7BorderId%7D~1meta~1customs-declaration/put)
+
+          If any of the metadata objects are not returned in the response, it means that the assembly order cannot have such metadata, and they cannot be added
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for all methods for <strong>getting and deleting FBS metadata</strong>:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/v3.GetMetaMultiRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v3.OrdersMetaAPI'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v3.APIError'
+              example:
+                code: BadRequest
+                message: Bad request
+                data: {}
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v3.APIError'
+              example:
+                code: AccessDenied
+                message: Access denied
+                data: {}
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v3.APIError'
+              example:
+                code: NotFound
+                message: Not found
+                data: {}
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/orders/{orderId}/meta:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    delete:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Metadata
+      summary: Delete Assembly Order Metadata
+      description: |
+        Removes all assembly order metadata values for the passed key.
+        <br><br>
+        Possible metadata are:
+          - `imei` — [IMEI](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1v3~1orders~1%7BorderId%7D~1meta~1imei/put)
+          - `uin` — [UIN](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1v3~1orders~1%7BorderId%7D~1meta~1uin/put)
+          - `gtin` — [GTIN](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1v3~1orders~1%7BorderId%7D~1meta~1gtin/put)
+          - `sgtin` — [Data matrix code](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1v3~1orders~1%7BorderId%7D~1meta~1sgtin/put)
+          - `customsDeclaration` — [customs declaration number](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1marketplace~1v3~1orders~1%7BorderId%7D~1meta~1customs-declaration/put)
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for all methods for <strong>getting and deleting FBS metadata</strong>:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Order'
+        - name: key
+          in: query
+          schema:
+            type: string
+          description: Name of the metadata to remove (`imei`, `uin`, `gtin`, `sgtin`, `customsDeclaration`)
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest'
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '409':
+          description: Error deleting metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                FailedToUpdateMeta:
+                  $ref: '#/components/examples/FailedToUpdateMeta'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/orders/{orderId}/meta/sgtin:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    put:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Metadata
+      summary: Add Data Matrix Code to the Assembly Order
+      description: |
+        The method allows attaching a Data Matrix code [Chestny ZNAK](https://chestnyznak.ru/en) to an assembly order.
+
+        Attaching a Data Matrix code to an assembly order is only possible if this field is returned in the response of the method [to get the metadata of the order](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1marketplace~1v3~1orders~1meta/post), and the assembly order is in the confirm status.
+
+        The loaded Data Matrix code can be retrieved through the method [to get the metadata of the order](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1marketplace~1v3~1orders~1meta/post)
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for all methods for <strong>adding FBS metadata</strong>:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 1000 requests | 60 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Order'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sgtins:
+                  type: array
+                  description: List of Data Matrix codes.
+                  minItems: 1
+                  maxItems: 100
+                  items:
+                    type: string
+                    description: Label code on the package. From 16 to 135 characters.
+                    example: '1234567890123456'
+      responses:
+        '204':
+          description: Sent
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest'
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Error adding a Data Matrix code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                FailedToUpdateMeta:
+                  $ref: '#/components/examples/FailedToUpdateMeta'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/orders/{orderId}/meta/uin:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    put:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Metadata
+      summary: Add UIN (Unique Identification Number) to the Assembly Order
+      description: |
+        Sets the UIN for the assembly order. The assembly order can only have one UIN. You can add the code only for assembly orders in the `confirm` status.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for all methods for <strong>adding FBS metadata</strong>:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 1000 requests | 60 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Order'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uin:
+                  type: string
+                  minLength: 16
+                  maxLength: 16
+                  description: UIN
+                  example: '1234567890123456'
+              required:
+                - uin
+      responses:
+        '204':
+          description: Updated
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest'
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '409':
+          description: Error updating metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                FailedToUpdateMeta:
+                  $ref: '#/components/examples/FailedToUpdateMeta'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/orders/{orderId}/meta/imei:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    put:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Metadata
+      summary: Add IMEI to the Assembly Order
+      description: |
+        Sets the IMEI for the assembly order.
+        <br><br>
+        The assembly order can have only one IMEI. If a device has two IMEIs — **IMEI** and **IMEI2** or **IMEI1** and **IMEI2** — you should only specify **IMEI** or **IMEI1**. You don't need to specify **IMEI2**.<br><br>
+        You can add the code only for assembly orders in the `confirm` status.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for all methods for <strong>adding FBS metadata</strong>:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 1000 requests | 60 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Order'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                imei:
+                  type: string
+                  minLength: 15
+                  maxLength: 15
+                  description: IMEI
+                  example: '123456789012345'
+              required:
+                - imei
+      responses:
+        '204':
+          description: Updated
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest'
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '409':
+          description: Error updating metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                FailedToUpdateMeta:
+                  $ref: '#/components/examples/FailedToUpdateMeta'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/orders/{orderId}/meta/gtin:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    put:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Metadata
+      summary: Add GTIN to the Assembly Order
+      description: |
+        Sets the GTIN (Belarus product unique identifier) for the assembly order. The assembly order can only have one GTIN. You can add the code only for assembly orders in the `confirm` status.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for all methods for <strong>adding FBS metadata</strong>:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 1000 requests | 60 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Order'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gtin:
+                  type: string
+                  minLength: 13
+                  maxLength: 13
+                  description: GTIN
+                  example: '1234567890123'
+              required:
+                - gtin
+      responses:
+        '204':
+          description: Updated
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest'
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '409':
+          description: Error updating metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                FailedToUpdateMeta:
+                  $ref: '#/components/examples/FailedToUpdateMeta'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/orders/{orderId}/meta/expiration:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    put:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Metadata
+      summary: Add Expiration Date to the Assembly Order
+      description: |
+        Sets the expiration date for the assembly order.
+        <br>
+        The expiration date can only be added for assembly orders that are delivered by WB and are in the `confirm` status.
+        <br>
+        <br>
+        You can get the uploaded data in the [metadata of the assembly order](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1marketplace~1v3~1orders~1meta/post).
+        <br>
+        To change the expiration date, send a request with the new date.
+        It is impossible to remove the expiration date from the metadata of the assembly order.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for all methods for <strong>adding FBS metadata</strong>:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 1000 requests | 60 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Order'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                expiration:
+                  type: string
+                  description: The date until which the product is valid. No less than 30 days from the current date.
+                  format: date (dd.mm.yyyy)
+                  example: 12.09.2030
+      responses:
+        '204':
+          description: Sent
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                LowExpirationDate:
+                  $ref: '#/components/examples/LowExpirationDate'
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest'
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Error updating metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                FailedToUpdateMeta:
+                  $ref: '#/components/examples/FailedToUpdateMeta'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/marketplace/v3/orders/{orderId}/meta/customs-declaration:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    put:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Metadata
+      summary: Add Custom Declaration number to the Order
+      description: |
+        The method updates the customs declaration number in the [metadata of the assembly order](/openapi/orders-fbs#tag/FBS-Metadata/paths/~1api~1marketplace~1v3~1orders~1meta/post).
+
+        An assembly order can have only one customs declaration number.
+
+        You can add the customs declaration number only for orders in the `confirm` or `complete` [status](/openapi/orders-fbs#tag/FBS-Assembly-Orders/paths/~1api~1v3~1orders~1status/post).
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for all methods for <strong>adding FBS metadata</strong>:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 1000 requests | 60 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Order'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customsDeclaration:
+                  type: string
+                  minLength: 17
+                  maxLength: 29
+                  description: Customs declaration number
+                  example: 10704010/010624/0000302
+      responses:
+        '204':
+          description: Updated
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest'
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Error updating custom declaration number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                FailedToUpdateMeta:
+                  $ref: '#/components/examples/FailedToUpdateMeta'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/orders/stickers/cross-border:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    post:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Assembly Orders
+      summary: Get Stickers for Cross-Border Assembly Orders
+      description: |
+        Returns a list of stickers for cross-border assembly orders in PDF.<br><br>
+
+        Method limitations:
+        - You cannot request more than 100 stickers at a time (no more than 100 assembly order IDs in a request).
+        - The method returns stickers only for assembly orders that are on assembly or in delivery [status](/openapi/orders-fbs#tag/FBS-Assembly-Orders/paths/~1api~1v3~1orders~1status/post): `confirm`, `complete`.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orders:
+                  type: array
+                  minItems: 1
+                  maxItems: 100
+                  description: List of assembly order IDs
+                  items:
+                    type: integer
+                    format: int64
+                    example: 3869227998
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stickers:
+                    type: array
+                    nullable: false
+                    items:
+                      type: object
+                      properties:
+                        file:
+                          type: string
+                          format: byte
+                          nullable: false
+                          description: Base64 encoded sticker in a PDF format
+                          example: JVBERi0xLjQKJSBjcmVhdGVkIGJ5IFBpbGxvdyBQREYgZHJpdmVyCjQgMCBvYmo8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgNSAwIFIKPj5lbmRvYmoKNSAwIG9iajw8Ci9UeXBlIC9QYWdlcwovQ291bnQgMQovS2lkcyBbIDIgMCBSIF0KPj5lbmRvYmoKMSAwIG9iajw8Ci9UeXBlIC9YT2JqZWN0Ci9TdWJ0eXBlIC9JbWFnZQovV2lkdGggMjkwCi9IZWlnaHQgMjkwCi9GaWx0ZXIgWyAvQ0NJVFRGYXhEZWNvZGUgXQovRGVjb2RlUGFybXMgWyA8PAovSyAtMQovQmxhY2tJczEgdHJ1ZQovQ29sdW1ucyAyOTAKL1Jvd3MgMjkwCj4+IF0KL0JpdHNQZXJDb21wb25lbnQgMQovQ29sb3JTcGFjZSAvRGV2aWNlR3JheQovTGVuZ3RoIDY2Ngo+PnN0cmVhbQomoLYaX////////////8g2b4gpHITff///////////8nBSkIB8nBS/////////////////////+QgHkNB/IQD////////////////////////////+P//////////////////////////IQ5CHIQ////////////////////////////////jkNB/H/////////////////////4yEOQh+P//////////////////EhoKR//////yDYchDkIchDyBg2E4aCcFL////////////////////////IgFIiAhODQTg0f/////////////////+ThCICEQGgnDQTg0E4NBODZ////////////////////////4k4NESEOJCCP/////////////////8gpHIQ5CCCEEENB8hDyBg2f//////////////////////////xEZKQhOEJwhOB5f//////////////yDZviDQIjkDBS///////////////ycFLEnCCThP//////////////////kIB5CHkQEEnCEQEJwbP///////////////////////////4ycGgnBoIgFL/////////////////////+QhxIQ4kIcg0H////////////////////////8cSEOJCHEhAP//////////////////jIQDIQ+Qh5OE////////////////////////4iIiI/////////////wAQAQJAAABAwABAAAAIgEAAAEBAwABAAAAIgEAAAIBAwABAAAAAQAAAAMBAwABAAAABAAAAAYBAwABAAAAAQAAABEBBAABAAAACAAAABYBAwABAAAAIgEAABcBBAABAAAAKAIAABwBAwABAAAAAQAAAAAAAAAKZW5kc3RyZWFtCmVuZG9iagoyIDAgb2JqPDwKL1Jlc291cmNlcyA8PAovUHJvY1NldCBbIC9QREYgL0ltYWdlQiBdCi9YT2JqZWN0IDw8Ci9pbWFnZSAxIDAgUgo+Pgo+PgovTWVkaWFCb3ggWyAwIDAgMjkwLjAgMjkwLjAgXQovQ29udGVudHMgMyAwIFIKL1R5cGUgL1BhZ2UKL1BhcmVudCA1IDAgUgo+PmVuZG9iagozIDAgb2JqPDwKL0xlbmd0aCA0Nwo+PnN0cmVhbQpxIDI5MC4wMDAwMDAgMCAwIDI5MC4wMDAwMDAgMCAwIGNtIC9pbWFnZSBEbyBRCgplbmRzdHJlYW0KZW5kb2JqCjYgMCBvYmo8PAovQ3JlYXRpb25EYXRlIChEOjIwMjUxMTA3MTMzNTE1WikKL01vZERhdGUgKEQ6MjAyNTExMDcxMzM1MTVaKQo+PmVuZG9iagp4cmVmCjAgNwowMDAwMDAwMDAwIDY1NTM2IGYgCjAwMDAwMDAxNDQgMDAwMDAgbiAKMDAwMDAwMTA1MiAwMDAwMCBuIAowMDAwMDAxMjE0IDAwMDAwIG4gCjAwMDAwMDAwNDAgMDAwMDAgbiAKMDAwMDAwMDA4NyAwMDAwMCBuIAowMDAwMDAxMzA5IDAwMDAwIG4gCnRyYWlsZXIKPDwKL1Jvb3QgNCAwIFIKL1NpemUgNwovSW5mbyA2IDAgUgo+PgpzdGFydHhyZWYKMTM5MQolJUVPRg==
+                        orderId:
+                          type: integer
+                          nullable: false
+                          description: Assembly order ID
+                          example: 3869227998
+                        parcelId:
+                          type: string
+                          description: Assembly order tracking number in the sticker
+                          example: WB0000000001
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/orders/status/history:
+    post:
+      x-readonly-method: true
+      x-category: marketplace
+      servers:
+        - url: https://marketplace-api.wildberries.ru
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Assembly Orders
+      summary: Status History for Cross-Border Orders
+      description: |
+        Returns status history for cross-border orders
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orders:
+                  description: Assembly orders IDs
+                  type: array
+                  items:
+                    type: integer
+                  maxItems: 100
+                  minItems: 1
+                  example:
+                    - 123456789
+                    - 987654321
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    description: Assembly orders list
+                    items:
+                      type: object
+                      properties:
+                        deliveryDate:
+                          type: string
+                          format: date-time
+                          description: Planned delivery date, [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339)
+                        statuses:
+                          description: Statuses
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              date:
+                                type: string
+                                description: Date of the status assignment
+                                nullable: true
+                                example: null
+                              code:
+                                type: string
+                                description: |
+                                  Assembly order status code:
+                                    - `dispatched_to_delivery_service` — The order is handed over to delivery service in the seller country
+                                    - `on_way_to_delivery_service` — The order is on the way to delivery service's warehouse in the seller country
+                                    - `accepted_by_carrier` — Product accepted by the carrier
+                                    - `assembling` — Sent for assembly
+                                    - `assembled` — Assembled at the warehouse
+                                    - `sorted` — Sorted
+                                    - `replaced_at_warehouse` — Replaced at the warehouse
+                                    - `prepared_for_shipment` — Prepared for shipment
+                                    - `in_search` — In search
+                                    - `arrived_at_dct` — Arrived at the distribution center-transit
+                                    - `arrived_at_sct` — Arrived at the sorting center-transit
+                                    - `arrived_at_dc` — Arrived at the distribution center
+                                    - `arrived_at_sc` — Arrived at the sorting center
+                                    - `prepared_for_shipment_at_sc` — Prepared for shipment at the sorting center
+                                    - `shipped_at_sc` — Shipped by the sorting center
+                                    - `shipped_at_dct` — Shipped by the distribution center — transit
+                                    - `shipped_at_dc` — Shipped by the distribution center
+                                    - `delivered_at_sc` — Delivered to the SC/DC
+                                    - `on_way_to_sc` — En route to the sorting center
+                                    - `on_way_to_dc` — En route to the distribution center
+                                    - `on_way_to_pp` — En route to the pickup point
+                                    - `arrived_at_pp` — Arrived at the pickup point
+                                    - `accepted_at_pp` — Received at the pickup point
+                                    - `ready_for_pick_up` — Ready for pickup
+                                    - `arrived_at_pp` — Arrived at the pickup point
+                                    - `received_by_client` — Received by the client
+                                    - `delivered_at_parcel_locker` — Delivered to the parcel locker
+                                    - `canceled_by_client` — Buyer canceled the order upon receipt
+                                    - `cancel_after_expiration` — Canceled due to storage time limit
+                                    - `at_courier` — Transferred to the courier
+                                    - `moved_to_return_box` — Moved to the return box
+                                    - `accepted_for_return` — Accepted for return at the pickup point
+                                    - `created` — Created
+                                    - `canceled_by_seller` — Canceled by the seller
+                                    - `dispatched_by_seller` — Shipped according to seller's data
+                                    - `delivered` — Order issued
+                                    - `on_way` — En route
+                                    - `arrived_at_wb_wh` — Arrived at the WB warehouse
+                                    - `dispatched_from_wh` — Sent from the warehouse
+                                    - `customs_clearance` — Customs clearance
+                                    - `customs_clearance_completed` — Released by customs
+                                    - `departed_from_origin_country` — Sent from the seller's country
+                                    - `arrived_in_destination_country` — Arrival in the destination country
+                                    - `on_way_to_wb_sc` — Sent to the WB SC
+                                    - `accepted_at_wb_sc` — Accepted by the WB SC
+                                    - `canceled` — Canceled
+                                    - `failed_to_reach_client` — Could not reach the client
+                                example: SORTED
+                        orderID:
+                          description: Assembly order ID
+                          type: integer
+                          example: 123456789
+        '400':
+          description: Bad request
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/orders/client:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    post:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      summary: Orders with Client Information
+      tags:
+        - FBS Assembly Orders
+      description: |
+        The method allows getting information about the client by assembly order ID. <br>Only for cross-border orders from **Turkey**
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrdersRequestAPI'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrossborderTurkeyClientInfoResp'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/supplies:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    post:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Supplies
+      summary: Create a New Supply
+      description: |
+        **Supplies limitations**:
+
+        - Supplies applicable only for assembly orders in the FBS (Fulfillment by Seller) delivery.
+        - All assembly orders added to supply automatically transferred from the `new` status to the `confirm` status.
+        - Please note that if you will `cancel` (`Canceled by the seller`) the order, we will automatically remove it from the supply.
+        - A supply can only be assembled from assembly jobs (orders) with the same dimensional type (cargoType). A new supply does not have a dimensional attribute. When the first assembly order is added to a supply, the supply acquires the dimensional attribute of that assembly order.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 128
+                  description: Supply name
+                  example: Some test supply
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    nullable: false
+                    description: Supply ID
+                    example: WB-GI-1234567
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+    get:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Supplies
+      summary: Get a Supplies List
+      description: |
+        Returns the supply list.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Next'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: false
+                properties:
+                  next:
+                    $ref: '#/components/schemas/Next'
+                  supplies:
+                    type: array
+                    nullable: false
+                    description: Supplies list
+                    items:
+                      $ref: '#/components/schemas/Supply'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/marketplace/v3/supplies/{supplyId}/orders:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    patch:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Supplies
+      summary: Add Assembly Orders to the Supply
+      description: |
+        The method adds up to 100 [assembly orders](/openapi/orders-fbs#tag/FBS-Assembly-Orders/paths/~1api~1v3~1orders/get) to the supply and moves it to the `confirm` [status](/openapi/orders-fbs#tag/FBS-Assembly-Orders/paths/~1api~1v3~1orders~1status/post).
+
+        It can also move the assembly orders:
+          - between active supplies
+          - from a closed to an active supply, if the assembly order requires [reshipment](/openapi/orders-fbs#tag/FBS-Assembly-Orders/paths/~1api~1v3~1supplies~1orders~1reshipment/get).
+
+        <div class="description_important">
+          You can add assembly orders of any dimensional type to an empty supply. After adding the first assembly order, the supply acquires the dimensional type of this assembly order from the <code>cargoType</code> <a href="/openapi/orders-fbs#tag/FBS-Supplies/paths/~1api~1v3~1supplies~1%7BsupplyId%7D/get">field</a>.
+          <br>
+          After that, you can only add assembly orders of the same dimensional type as the supply.
+        </div>
+
+        <div class="description_important">
+        Assembly orders received at different warehouses cannot be added to the delivery.
+        </div>
+
+        <div class="description_important">
+          You can add assembly orders of any type to an empty supply: crossborder or non-crossborder. After adding the first assembly order, the supply acquires the type of this assembly order from the <code>crossBorderType</code> field</a>.
+          <br>
+          After that, you can add to the supply only the assembly orders of the same type as the supply.
+        </div>
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Supply'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orders:
+                  type: array
+                  minItems: 1
+                  maxItems: 100
+                  description: Assembly order IDs
+                  example:
+                    - 5632423
+                    - 3453452
+                    - 7654533
+                    - 4529544
+                  items:
+                    type: integer
+      responses:
+        '204':
+          description: The assembly orders assigned to the supply
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Error adding the assembly order to the supply
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                FailedToAddSupplyOrder:
+                  $ref: '#/components/examples/FailedToAddSupplyOrder'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/supplies/{supplyId}:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    get:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Supplies
+      summary: Get Supply Details
+      description: |
+        Returns supply details.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Supply'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supply'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/429'
+    delete:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Supplies
+      summary: Delete the Supply
+      description: |
+        Deleted the supply if it is active and does not contain any assembly orders.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Supply'
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: The supply contains orders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                SupplyHasOrders:
+                  $ref: '#/components/examples/SupplyHasOrders'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/marketplace/v3/supplies/{supplyId}/order-ids:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    get:
+      x-readonly-method: true
+      x-category: marketplace
+      tags:
+        - FBS Supplies
+      summary: Get Supply Assembly Order IDs
+      description: |
+        The method returns assembly orders IDs assigned to the supply.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - name: supplyId
+          in: path
+          description: Supply ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v3.SupplyOrderIDsAPI'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/supplies/{supplyId}/deliver:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    patch:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Supplies
+      summary: Move the Supply to the Delivery
+      description: |
+        Closes the supply and moves all assembly orders to `complete` (`In Delivery`) status. You cannot add any assembly orders to the supply after it is closed.
+
+        If the supply wasn't handed over for delivery, than scanning its QR code or accepting the first product will automatically close the supply.
+
+        You can transfer the supply to delivery only if it contains at least one assembly order.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Supply'
+      responses:
+        '204':
+          description: The supply moved to the delivery
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Error closing supply
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                SupplyHasZeroOrders:
+                  $ref: '#/components/examples/SupplyHasZeroOrders'
+                UinIsNotFilled:
+                  $ref: '#/components/examples/UinIsNotFilled'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/supplies/{supplyId}/barcode:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    get:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Supplies
+      summary: Get the Supply QR Code
+      description: |
+        Returns the QR code in svg, zplv (vertical), zplh (horizontal), png. <br>
+        Available only after the supply has been transferred to the delivery.
+        Available dimensions:
+        <dd>580x400 px
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Supply'
+        - name: type
+          in: query
+          required: true
+          description: Sticker format
+          schema:
+            type: string
+            enum:
+              - svg
+              - zplv
+              - zplh
+              - png
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: false
+                properties:
+                  barcode:
+                    type: string
+                    nullable: false
+                    description: The encoded value of the sticker (supply id)
+                    example: WB-GI-12345678
+                  file:
+                    type: string
+                    format: byte
+                    nullable: false
+                    description: Base64 encoded sticker file in the requested format.
+                    example: U3dhZ2dlciByb2Nrcw==
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Error requesting data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                SupplyNotClosed:
+                  $ref: '#/components/examples/SupplyNotClosed'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/supplies/{supplyId}/trbx:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    get:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Supplies
+      summary: Get Supply Boxes List
+      description: |
+        Returns supply boxes list.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Supply'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  trbxes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SupplyTrbx'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/429'
+    post:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Supplies
+      summary: Add Boxes to the Supply
+      description: |
+        Adds the required number of boxes to the supply.
+        <br>
+        <br>
+        Boxes should only be added to deliveries shipped to the pickup points.
+        Can only be added to an open supply.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Supply'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+              properties:
+                amount:
+                  type: integer
+                  minimum: 1
+                  maximum: 1000
+                  description: Boxes amount to add to the supply.
+                  example: 4
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  trbxIds:
+                    type: array
+                    description: List of IDs of created boxes.
+                    minItems: 1
+                    items:
+                      type: string
+                      example: WB-TRBX-1234567
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/429'
+    delete:
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Supplies
+      summary: Delete Boxes from the Supply
+      description: |
+        The method deletes boxes from the supply. Available only while the supply is being assembled.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Supply'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - trbxIds
+              properties:
+                trbxIds:
+                  type: array
+                  description: List of box IDs to delete from the supply.
+                  items:
+                    type: string
+                    example: WB-TRBX-1234567
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/supplies/{supplyId}/trbx/stickers:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    post:
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - FBS Supplies
+      summary: Get the Supply Box QR Code Stickers
+      description: |
+        Returns QR-code stickers in svg, zplv (vertical), zplh (horizontal), png.<br>
+        Available only if there are assembly orders in the box.<br>
+        Stickers dimensions: 580x400 px.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for <strong>FBS assembly orders, supplies and passes</strong> methods:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 min | 300 requests | 200 ms | 20 requests |
+
+        One request with a response code of <code>409</code> is counted as 10 requests
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Supply'
+        - name: type
+          in: query
+          required: true
+          description: Sticker format
+          schema:
+            type: string
+            enum:
+              - svg
+              - zplv
+              - zplh
+              - png
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - trbxIds
+              properties:
+                trbxIds:
+                  type: array
+                  description: List of supply box IDs for the sticker generation
+                  items:
+                    type: string
+                    example: WB-TRBX-1234567
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: false
+                properties:
+                  stickers:
+                    type: array
+                    minItems: 1
+                    items:
+                      $ref: '#/components/schemas/TrbxStickers'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/429'
+components:
+  securitySchemes:
+    HeaderApiKey:
+      type: apiKey
+      name: Authorization
+      in: header
+  parameters:
+    Supply:
+      name: supplyId
+      in: path
+      required: true
+      description: Supply ID
+      schema:
+        type: string
+        example: WB-GI-1234567
+    Order:
+      name: orderId
+      in: path
+      required: true
+      description: Assembly order ID
+      schema:
+        type: integer
+        format: int64
+        example: 5632423
+    Pass:
+      name: passId
+      in: path
+      required: true
+      description: Pass ID
+      schema:
+        type: integer
+        format: int64
+        example: 45
+    Next:
+      name: next
+      in: query
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Pagination parameter. Sets the value from which to retrieve the next batch. It should start at 0 to get the full list of data. For the subsequent requests, you must take the value from the `next` field in the response.
+    Limit:
+      name: limit
+      in: query
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+      description: Pagination parameter. Sets the limit for the amount of data returned.
+  examples:
+    LowExpirationDate:
+      description: The specified expiration date is less than the allowable limit
+      value:
+        code: LowExpirationDate
+        message: Не удалось обновить срок годности. Указан срок меньше допустимого
+    IncorrectRequestBody:
+      value:
+        message: Incorrect request body
+    WarehouseNameInvalid:
+      value:
+        message: Incorrect warehouse name
+    IncorrectRequest:
+      value:
+        message: Incorrect request parameters
+    IncorrectParameter:
+      value:
+        code: IncorrectParameter
+        message: Передан некорректный параметр
+    FailedToUpdateMeta:
+      value:
+        message: Failed to update the metadata of the assembly order. Please ensure that the assembly order meets all the necessary requirements (the assembly order exists, is in the "In assembly" status, metadata is available to the order, see the method description to Get the metadata of the order).
+    SupplyHasOrders:
+      value:
+        message: Cannot delete the supply. The supply contains orders.
+    SupplyHasZeroOrders:
+      value:
+        message: Cannot move the supply to the delivery. The supply does not satisfy the delivery conditions.
+    UinIsNotFilled:
+      value:
+        message: Transition to the "in Delivery" status is not possible. Enter UINs for all orders where necessary.
+    SupplyNotClosed:
+      value:
+        message: The supply is not moved to the delivery.
+    FailedToAddSupplyOrder:
+      value:
+        message: Cannot add the assembly order to the supply. The assembly order does not satisfy the conditions of assignment to the delivery.
+    StatusMismatch:
+      value:
+        message: Status change is not allowed for the assembly order.
+    StatusChangeNotAllowed:
+      value:
+        message: Status change to 'completed' or 'canceled by client' is not allowed for the assembly order in 'Delivery By Supplier'.
+  responses:
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                description: Error title
+              detail:
+                type: string
+                description: Error details
+              code:
+                type: string
+                description: Internal error code
+              requestId:
+                type: string
+                description: Unique request ID
+              origin:
+                type: string
+                description: WB internal service ID
+              status:
+                type: number
+                description: HTTP status code
+              statusText:
+                type: string
+                description: Text of the HTTP status code
+              timestamp:
+                type: string
+                format: date-time
+                description: Request date and time
+          example:
+            title: unauthorized
+            detail: 'token problem; token is malformed: could not base64 decode signature: illegal base64 data at input byte 84'
+            code: 07e4668e--a53a3d31f8b0-[UK-oWaVDUqNrKG]; 03bce=277; 84bd353bf-75
+            requestId: 7b80742415072fe8b6b7f7761f1d1211
+            origin: s2s-api-auth-catalog
+            status: 401
+            statusText: Unauthorized
+            timestamp: '2024-09-30T06:52:38Z'
+    '429':
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                description: Error title
+              detail:
+                type: string
+                description: Error details
+              code:
+                type: string
+                description: Internal error code
+              requestId:
+                type: string
+                description: Unique request ID
+              origin:
+                type: string
+                description: WB internal service ID
+              status:
+                type: number
+                description: HTTP status code
+              statusText:
+                type: string
+                description: Text of the HTTP status code
+              timestamp:
+                type: string
+                format: date-time
+                description: Request date and time
+          example:
+            title: too many requests
+            detail: limited by c122a060-a7fb-4bb4-abb0-32fd4e18d489
+            code: 07e4668e-ac2242c5c8c5-[UK-4dx7JUdskGZ]
+            requestId: 9d3c02cc698f8b041c661a7c28bed293
+            origin: s2s-api-auth-catalog
+            status: 429
+            statusText: Too Many Requests
+            timestamp: '2024-09-30T06:52:38Z'
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Not found
+    AccessDenied:
+      description: Access denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Access denied
+  schemas:
+    v3.SupplyOrderIDsAPI:
+      type: object
+      properties:
+        orderIds:
+          type: array
+          description: Assembly order IDs
+          items:
+            type: integer
+          example:
+            - 132334
+            - 203984
+            - 403543
+            - 598349
+    PassOffice:
+      type: object
+      description: Office details, for which a pass is required
+      properties:
+        name:
+          type: string
+          nullable: false
+          description: Name
+          example: Koledino
+        address:
+          type: string
+          nullable: false
+          description: Address
+          example: Kosmonavtov 10А
+        id:
+          type: integer
+          format: int64
+          nullable: false
+          description: ID
+          example: 1
+    Error:
+      type: object
+      nullable: false
+      properties:
+        code:
+          type: string
+          description: Error code
+          nullable: false
+        message:
+          type: string
+          description: Error description
+          nullable: false
+        data:
+          type: object
+          description: Additional data for the error
+          nullable: true
+    Next:
+      type: integer
+      format: int64
+      nullable: false
+      description: Pagination parameter. Sets the value from which to retrieve the next batch
+      example: 13833711
+    Order:
+      type: object
+      properties:
+        address:
+          type: object
+          nullable: true
+          description: Exact buyer's address for delivery, if applicable. Some of the fields may be empty due to the specifics of the address.
+          properties:
+            fullAddress:
+              description: Delivery address
+              type: string
+              example: Chelyabinsk Region, Chelyabinsk, 51st Arabkir Street, Building 10A, Apartment 42
+            longitude:
+              type: number
+              format: float64
+              nullable: false
+              description: Longitude
+              example: 44.519068
+            latitude:
+              type: number
+              format: float64
+              nullable: false
+              description: Latitude
+              example: 40.20192
+        scanPrice:
+          type: number
+          format: uint32
+          nullable: true
+          description: Acceptance price in kopecks. Displayed after the actual acceptance of the order
+          example: 1500
+        deliveryType:
+          type: string
+          nullable: false
+          description: |
+            Delivery type:
+            - `fbs` — Fulfillment By Wildberries (FBS)
+          enum:
+            - fbs
+        supplyId:
+          type: string
+          description: Supply ID. Returns if the assembly order is assigned to a supply
+          example: WB-GI-92937123
+        orderUid:
+          type: string
+          description: Transaction ID for assembly orders grouping. Orders in the same buyer's cart will have the same `orderUid`.
+          example: 165918930_629fbc924b984618a44354475ca58675
+        article:
+          type: string
+          nullable: false
+          description: Seller's article
+          example: one-ring-7548
+        colorCode:
+          type: string
+          nullable: false
+          description: Color code (for tinted products only)
+          example: RAL 3017
+        rid:
+          type: string
+          nullable: false
+          description: |
+            Unique order ID. <br>
+            Note: `rid` corresponds to `srid` in the responses of the methods:
+              - [Buyers return applications](./user-communication#tag/Buyers-Returns/paths/~1api~1v1~1claims/get)
+              - [Orders](./reports#tag/Main-Reports/paths/~1api~1v1~1supplier~1orders/get)
+              - [Sales](./reports#tag/Main-Reports/paths/~1api~1v1~1supplier~1sales/get)
+              - [Goods Return Report](./reports#tag/Goods-Return-Report)
+              - [Realization sales report](./financial-reports-and-accounting#tag/Financial-Reports/paths/~1api~1v5~1supplier~1reportDetailByPeriod/get)
+          example: f884001e44e511edb8780242ac120002
+        createdAt:
+          type: string
+          format: date-time
+          nullable: false
+          description: Assembly order creation date (RFC3339)
+          example: '2022-05-04T07:56:29Z'
+        offices:
+          type: array
+          nullable: true
+          description: List of offices where you should deliver the assembly order
+          items:
+            type: string
+            example: Kaluga
+        skus:
+          type: array
+          nullable: false
+          description: List of SKUs
+          items:
+            type: string
+            example: '6665956397512'
+        id:
+          type: integer
+          format: int64
+          nullable: false
+          description: Assembly order ID
+          example: 13833711
+        warehouseId:
+          type: integer
+          nullable: false
+          description: Seller's warehouse ID where the assembly order was received
+          example: 658434
+        officeId:
+          type: integer
+          format: int64
+          nullable: false
+          description: ID of the WB warehouse associated with the seller's warehouse
+          example: 123
+        nmId:
+          type: integer
+          nullable: false
+          description: WB article
+          example: 12345678
+        chrtId:
+          type: integer
+          nullable: false
+          description: Product size ID in WB systems
+          example: 987654321
+        price:
+          type: integer
+          nullable: false
+          description: |
+            The price in the currency of sale, including all discounts except the amount from the WB Wallet, multiplied by 100. The currency code of the sale is in the `currencyCode` field
+          example: 1014
+        convertedPrice:
+          type: integer
+          nullable: false
+          description: The price in the currency of the seller's country including all discounts, except WB Wallet discount, multiplied by 100. Provided for informational purposes only.
+          example: 28322
+        currencyCode:
+          type: integer
+          nullable: false
+          description: Sale currency code
+          format: ISO 4217
+          example: 933
+        convertedCurrencyCode:
+          type: integer
+          nullable: false
+          description: Currency code of the supplier country
+          format: ISO 4217
+          example: 643
+        cargoType:
+          type: integer
+          nullable: false
+          description: |
+            Type of cargo:
+              - `1` — small-sized goods
+              - `2` — over dimensional cargo (ODC)
+              - `3` — dimensional cargo+ (CD+)
+          enum:
+            - 1
+            - 2
+            - 3
+        crossBorderType:
+          description: |
+            Assembly order type:
+              - `0` — non-cross-border
+              - `1` — cross-border
+          enum:
+            - 0
+            - 1
+          format: int32
+          type: integer
+          example: 1
+          nullable: false
+        comment:
+          description: Buyer's comment
+          type: string
+          nullable: false
+          maxLength: 300
+          example: Упакуйте в плёнку, пожалуйста
+        isZeroOrder:
+          type: boolean
+          description: |
+            Indicator of an order for a product with zero inventory:
+              - `false` — the order is made for a product with a non-zero inventory
+              - `true` — the order is made for a product with zero inventory. Such an order can be canceled without a cancellation fee
+          example: false
+        options:
+          type: object
+          description: Order options
+          properties:
+            isB2b:
+              type: boolean
+              description: |
+                Indicator of a B2B sale:
+                  - `false` — not B2B sale
+                  - `true` — B2B sale
+    Supply:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: false
+          description: Supply ID
+          example: WB-GI-1234567
+        done:
+          type: boolean
+          nullable: false
+          description: |
+            An indication that the supply is closed
+              - `true` — closed
+              - `false` — open
+        createdAt:
+          type: string
+          format: date-time
+          nullable: false
+          description: Supply creation date (RFC3339)
+          example: '2022-05-04T07:56:29Z'
+        closedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Supply close date (RFC3339)
+          example: '2022-05-04T07:56:29Z'
+        scanDt:
+          type: string
+          nullable: true
+          format: date-time
+          description: Supply scan date (RFC3339)
+          example: '2022-05-04T07:56:29Z'
+        name:
+          type: string
+          nullable: false
+          description: Supply name
+          example: My test supply
+        cargoType:
+          type: integer
+          nullable: false
+          description: |
+            Type of cargo:
+              - `1` — small-sized goods
+              - `2` — over dimensional cargo (ODC)
+              - `3` — dimensional cargo+ (CD+)
+          enum:
+            - 0
+            - 1
+            - 2
+            - 3
+        crossBorderType:
+          description: |
+            Supply type:
+              - `0` — non-cross-border
+              - `1` — cross-border
+              - `null` — no value
+          enum:
+            - 0
+            - 1
+          format: int32
+          type: integer
+          example: 1
+          nullable: true
+        destinationOfficeId:
+          type: integer
+          format: int64
+          nullable: true
+          description: ID of the destination office for the supply. If `null`, destination office ID is not specified
+          example: 123
+    OrderNew:
+      type: object
+      properties:
+        address:
+          type: object
+          nullable: true
+          description: Exact buyer's address for delivery, if applicable. Some of the fields may be empty due to the specifics of the address
+          properties:
+            fullAddress:
+              description: Delivery address
+              type: string
+              example: Chelyabinsk Region, Chelyabinsk, 51st Arabkir Street, Building 10A, Apartment 42
+            longitude:
+              type: number
+              format: float64
+              nullable: false
+              description: Longitude
+              example: 44.519068
+            latitude:
+              type: number
+              format: float64
+              nullable: false
+              description: Latitude
+              example: 40.20192
+        ddate:
+          type: string
+          description: |
+            Planned delivery date. <br>
+            The field is displayed for assembly orders with over dimensional products `ODC`, `cargoType: 2`
+          nullable: false
+          example: 17.05.2024
+        sellerDate:
+          type: string
+          nullable: true
+          description: |
+            Recommended delivery date for `ODC` products to sorting center or warehouse. <br>
+            The field is displayed for assembly orders with over dimensional products `ODC`, `cargoType: 2`
+          example: 02.06.2025
+        salePrice:
+          description: |
+            Seller's price in the currency of sale, including seller's discount, except the WB Club discount, multiplied by 100
+          type: integer
+          nullable: true
+          example: 504600
+        requiredMeta:
+          description: |
+            List of metadata that needs to be added to the assembly order to tranfer a supply with this assembly order to the  delivery
+          type: array
+          nullable: true
+          items:
+            type: string
+          example:
+            - uin
+        optionalMeta:
+          description: |
+            List of metadata that can to be added to the assembly order.  <br>
+            A supply with the assembly order without this metadata can be transferred to the delivery, but metadata may be required, for example, when a customer returns a product
+          items:
+            type: string
+          type: array
+          nullable: true
+          example:
+            - sgtin
+        deliveryType:
+          type: string
+          nullable: false
+          description: |
+            Delivery type:
+            - `fbs` — Fulfillment By Wildberries (FBS)
+          enum:
+            - fbs
+        comment:
+          description: Buyer's comment
+          type: string
+          nullable: false
+          maxLength: 300
+          example: Упакуйте в плёнку, пожалуйста
+        scanPrice:
+          description: Acceptance price in kopecks. Displayed after the actual acceptance of the order. For this method will `null` always be returned
+          type: number
+          format: uint32
+          nullable: true
+          example: null
+        orderUid:
+          type: string
+          description: Transaction ID for assembly orders grouping. Orders in the same buyer's cart will have the same `orderUid`.
+          example: 165918930_629fbc924b984618a44354475ca58675
+        article:
+          type: string
+          nullable: false
+          description: Supplier's article
+          example: one-ring-7548
+        colorCode:
+          description: Color code (for tinted products only)
+          type: string
+          nullable: false
+          example: RAL 3017
+        rid:
+          type: string
+          nullable: false
+          description: |
+            Unique order ID. <br>
+            Note: `rid` corresponds to `srid` in the responses of the methods:
+              - [Buyers return applications](./user-communication#tag/Buyers-Returns/paths/~1api~1v1~1claims/get)
+              - [Orders](./reports#tag/Main-Reports/paths/~1api~1v1~1supplier~1orders/get)
+              - [Sales](./reports#tag/Main-Reports/paths/~1api~1v1~1supplier~1sales/get)
+              - [Goods Return Report](./reports#tag/Goods-Return-Report)
+              - [Realization sales report](./financial-reports-and-accounting#tag/Financial-Reports/paths/~1api~1v5~1supplier~1reportDetailByPeriod/get)
+          example: f884001e44e511edb8780242ac120002
+        createdAt:
+          type: string
+          format: date-time
+          nullable: false
+          description: Assembly order creation date (RFC3339)
+          example: '2022-05-04T07:56:29Z'
+        offices:
+          type: array
+          nullable: true
+          description: List of offices where you should deliver the order
+          items:
+            type: string
+            example: Калуга
+        skus:
+          type: array
+          nullable: false
+          description: List of SKUs
+          items:
+            type: string
+            example: '6665956397512'
+        id:
+          type: integer
+          format: int64
+          nullable: false
+          description: Assembly order ID
+          example: 13833711
+        warehouseId:
+          type: integer
+          nullable: false
+          description: Supplier's warehouse ID where the assembly order was received
+          example: 658434
+        officeId:
+          type: integer
+          format: int64
+          nullable: false
+          description: ID of the WB warehouse associated with the seller's warehouse
+          example: 123
+        nmId:
+          type: integer
+          nullable: false
+          description: WB article
+          example: 123456789
+        chrtId:
+          type: integer
+          nullable: false
+          description: Product size ID in WB systems
+          example: 987654321
+        price:
+          type: integer
+          nullable: false
+          description: |
+            The price in the currency of sale, including all discounts except the amount from the WB Wallet, multiplied by 100. The currency code of the sale is in the `currencyCode` field
+          example: 1014
+        finalPrice:
+          description: The sum charged to the buyer in the currency of sale including all discounts, multiplied by 100. You can find a currency code in the `currencyCode` field. Provided for informational purposes only
+          type: integer
+          example: 1014
+        convertedPrice:
+          type: integer
+          nullable: false
+          description: The price in the currency of the seller's country including all discounts, except WB Wallet discount, multiplied by 100. Provided for informational purposes only.
+          example: 28322
+        convertedFinalPrice:
+          description: The sum charged to the buyer in the currency of the seller's country including all discounts, multiplied by 100. Provided for informational purposes only
+          type: integer
+          example: 1014
+        currencyCode:
+          type: integer
+          nullable: false
+          description: Sale currency code
+          format: ISO 4217
+          example: 933
+        convertedCurrencyCode:
+          type: integer
+          nullable: false
+          description: Currency code of the supplier country
+          format: ISO 4217
+          example: 643
+        cargoType:
+          type: integer
+          nullable: false
+          description: |
+            Type of cargo:
+              - `1` — small-sized goods
+              - `2` — over dimensional cargo (ODC)
+              - `3` — dimensional cargo+ (CD+)
+          enum:
+            - 1
+            - 2
+            - 3
+        crossBorderType:
+          description: |
+            Assembly order type:
+              - `0` — non-cross-border
+              - `1` — cross-border
+          enum:
+            - 0
+            - 1
+          format: int32
+          type: integer
+          example: 1
+          nullable: false
+        isZeroOrder:
+          type: boolean
+          description: |
+            Indicator of an order for a product with zero inventory:
+              - `false` — the order is made for a product with a non-zero inventory
+              - `true` — the order is made for a product with zero inventory. Such an order can be canceled without a cancellation fee
+          example: false
+        options:
+          type: object
+          description: Order options
+          properties:
+            isB2b:
+              type: boolean
+              description: |
+                Indicator of a B2B sale:
+                  - `false` — not B2B sale
+                  - `true` — B2B sale
+    SupplyTrbx:
+      type: object
+      properties:
+        id:
+          description: Box ID
+          type: string
+          example: WB-TRBX-1234567
+    TrbxStickers:
+      type: object
+      properties:
+        barcode:
+          type: string
+          minLength: 1
+          description: The encoded value of the sticker
+          example: $WBMP:1:123:1234567
+        file:
+          type: string
+          format: byte
+          minLength: 1
+          description: Base64 encoded sticker file in the requested format
+          example: U3dhZ2dlciByb2Nrcw==
+    Meta:
+      type: object
+      description: Assembly order metadata
+      properties:
+        imei:
+          type: object
+          properties:
+            value:
+              nullable: true
+              type: string
+              example: '123456789012345'
+          description: IMEI
+        uin:
+          type: object
+          properties:
+            value:
+              nullable: true
+              type: string
+              example: '123456789012345'
+          description: UIN
+        gtin:
+          type: object
+          properties:
+            value:
+              nullable: true
+              type: string
+              example: '123456789012345'
+          description: GTIN
+        sgtin:
+          type: object
+          properties:
+            value:
+              type: array
+              items:
+                type: string
+              example:
+                - '123456789012345'
+              nullable: true
+          description: Data Matrix code (Chestny ZNAK)
+        expiration:
+          type: object
+          properties:
+            value:
+              type: string
+              example: 12.09.2030
+              nullable: true
+          description: Expiration date
+          format: date (dd.mm.yyyy)
+        customsDeclaration:
+          type: object
+          properties:
+            value:
+              type: string
+              example: 10704010/010624/0000302
+              nullable: true
+          description: Customs declaration number
+    v3.GetMetaMultiRequest:
+      type: object
+      description: Assembly order IDs
+      required:
+        - orders
+      properties:
+        orders:
+          items:
+            type: integer
+          type: array
+          maxItems: 100
+          example:
+            - 123456
+            - 234567
+            - 345678
+    v3.OrdersMetaAPI:
+      properties:
+        orders:
+          items:
+            $ref: '#/components/schemas/v3.OrderMetaAPI'
+          type: array
+      type: object
+    v3.OrderMetaAPI:
+      properties:
+        id:
+          type: integer
+          description: Assembly order ID
+        meta:
+          description: Assembly order metadata
+          $ref: '#/components/schemas/Meta'
+          type: object
+      type: object
+    Pass:
+      type: object
+      description: Supplier's pass details
+      properties:
+        firstName:
+          type: string
+          nullable: false
+          description: First name
+          example: Alex
+        dateEnd:
+          type: string
+          nullable: false
+          description: Pass expiration date
+          example: '2022-07-31 17:53:13+00:00'
+        lastName:
+          type: string
+          nullable: false
+          description: Last name
+          example: Petrov
+        carModel:
+          type: string
+          nullable: false
+          description: Car model
+          example: Lamborghini
+        carNumber:
+          type: string
+          nullable: false
+          description: Car number
+          example: A456BC123
+        officeName:
+          type: string
+          nullable: false
+          description: Office name
+          example: Koledino
+        officeAddress:
+          type: string
+          nullable: false
+          description: Office address
+          example: Kosmonavtov 10А
+        officeId:
+          type: integer
+          format: int64
+          nullable: false
+          description: Office ID
+          example: 15
+        id:
+          type: integer
+          format: int64
+          nullable: false
+          description: Pass ID
+          example: 1
+    CrossborderTurkeyClientInfo:
+      properties:
+        firstName:
+          type: string
+          description: Client's first name
+          example: Иван
+        fullName:
+          type: string
+          description: First name, Last name, Patronymic
+          example: Андреев Иван Васильевич
+        lastName:
+          type: string
+          description: Client's last name
+          example: Андреев
+        middleName:
+          type: string
+          description: Client's patronymic
+          example: Васильевич
+        orderID:
+          type: integer
+          description: Order number
+          example: 134567
+        phone:
+          type: string
+          description: Phone number for contacting the client
+          example: '79871234567'
+        phoneCode:
+          type: string
+          description: Not used
+          example: '0'
+    CrossborderTurkeyClientInfoResp:
+      properties:
+        orders:
+          description: Client information for cross-border orders from Turkey
+          items:
+            $ref: '#/components/schemas/CrossborderTurkeyClientInfo'
+          type: array
+      type: object
+    OrdersRequestAPI:
+      properties:
+        orders:
+          description: Orders list
+          items:
+            type: integer
+          type: array
+      type: object
+      example:
+        orders:
+          - 987654321
+          - 123456789
+    v3.APIError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Error description
+        data:
+          type: object
+          description: Additional data for the error
