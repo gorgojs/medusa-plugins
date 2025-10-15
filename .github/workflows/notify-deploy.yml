@@ -33,7 +33,9 @@ jobs:
                 message: context.payload.head_commit?.message || 'No message',
                 timestamp: context.payload.head_commit?.timestamp || new Date().toISOString()
               },
-              changed_paths: context.payload.commits?.map(c => c.added.concat(c.modified, c.removed)).flat() || []
+              changed_paths: context.payload.commits?.map(c => 
+                [...(c.added || []), ...(c.modified || []), ...(c.removed || [])]
+              ).flat() || []
             }
           })
           
