@@ -28,7 +28,13 @@
     "getInTouch": "Chat in Telegram"
   },
   "pluginsSection": {
+    "sectionTitle": "Plugins",
     "title": "All Medusa plugins by Gorgo",
     "subtitle": "Unlike other platforms, the Medusa Framework allows you to easily customize and extend the behavior of your commerce platform to always fit your business needs"
+  },
+  "hero": {
+    "title": "Learn how to extend your Medusa commerce with Gorgo plugins",
+    "subtitle": "Gorgo provides plugins and integrations for Medusa that help you build, customize, and scale your e-commerce faster.",
+    "button": "Learn About Gorgo"
   }
 }

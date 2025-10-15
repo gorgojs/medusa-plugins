@@ -1,23 +1,32 @@
 import { ArrowRight } from "@medusajs/icons";
 import Image from "next/image";
+import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import Section from "@/components/layout/section";
 import { Button } from "@/components/ui/button";
+import type { Locale } from "@/types";
 
-export default function Hero() {
+
+interface HeroProps {
+  locale: Locale;
+}
+
+export default async function Hero({
+  locale
+}: HeroProps) {
+  const t = await getTranslations("hero");
   return (
     <Section className="px-6 py-8 flex items-center border-transparent">
       <div className="flex flex-col lg:flex-row min-h-[420px] items-center mx-auto w-full lg:py-8 xl:py-16 sm:px-18 gap-8">
         <div className="flex-1">
           <h1 className="text-4xl font-medium mb-3">
-            Gorgo helps you build faster
+            {t("title")}
           </h1>
           <p className="text-lg max-w-lg mb-8 text-ui-fg-subtle">
-            Unlike other platforms, the Medusa Framework allows you to easily
-            customize and extend the behavior of your commerce platform to
-            always fit your business needs
+            {t("subtitle")}
           </p>
-          <Button variant="primary">
-            Learn About the Framework <ArrowRight />
+          <Button variant="primary" asChild>
+            <Link href={`https://gorgojs.${locale === "en" ? "com" : "ru"}`}>{t("button")}<ArrowRight /></Link>
           </Button>
         </div>
         <div className="flex-1 flex items-center justify-center">

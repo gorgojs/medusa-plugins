@@ -6,12 +6,12 @@ import type {
 import { locales } from "../../types/index";
 import { pluginsSidebar } from "./plugins";
 import { toolsSidebar } from "./tools";
-import { tutorialsSidebar } from "./tutorials";
+// import { tutorialsSidebar } from "./tutorials";
 
 const sidebars: SidebarType[] = [
   pluginsSidebar,
   toolsSidebar,
-  tutorialsSidebar,
+  // tutorialsSidebar,
 ];
 
 const getAllSidebarPaths = () => {
@@ -122,7 +122,7 @@ function flattenSidebarItems(
 }
 
 export {
-  tutorialsSidebar,
+  // tutorialsSidebar,
   toolsSidebar,
   pluginsSidebar,
   sidebars,

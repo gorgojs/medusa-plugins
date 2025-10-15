@@ -38,7 +38,7 @@ export async function PluginsSection({
           <div className="mb-12">
             <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
               <SquaresPlusSolid className="h-4 w-4" />
-              <span>Plugins</span>
+              <span>{t("sectionTitle")}</span>
             </div>
             <h1 className="mb-4 text-4xl font-medium">{t("title")}</h1>
             <p className="max-w-2xl text-lg text-ui-fg-subtle leading-relaxed">
