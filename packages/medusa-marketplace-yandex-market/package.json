@@ -1,9 +1,7 @@
 {
-  "name": "medusa-marketplace-yandex-market",
+  "name": "@gorgo/medusa-marketplace-yandex-market",
   "version": "0.0.1",
-  "description": "A starter for Medusa plugins.",
-  "author": "Medusa (https://medusajs.com)",
-  "license": "MIT",
+  "description": "Medusa plugin for integration with Yandex-market.",
   "files": [
     ".medusa/server"
   ],
@@ -19,12 +17,18 @@
     "medusa",
     "plugin",
     "medusa-plugin-other",
+    "medusa-v2",
     "medusa-plugin",
-    "medusa-v2"
+    "medusa-plugin-integration",
+    "yandex-marketplace",
+    "yandex-seller",
+    "yandex-market",
+    "marketplace"
   ],
   "scripts": {
     "build": "medusa plugin:build",
-    "dev": "medusa plugin:develop",
+    "dev": "yarn predev && medusa plugin:develop",
+    "predev": "medusa plugin:publish",
     "prepublishOnly": "medusa plugin:build"
   },
   "devDependencies": {
