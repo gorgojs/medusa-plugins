@@ -1,9 +1,7 @@
 {
-  "name": "medusa-marketplace-ozon",
+  "name": "@gorgo/medusa-marketplace-ozon",
   "version": "0.0.1",
-  "description": "A starter for Medusa plugins.",
-  "author": "Medusa (https://medusajs.com)",
-  "license": "MIT",
+  "description": "Medusa plugin for integration with Ozon marketplace.",
   "files": [
     ".medusa/server"
   ],
@@ -20,11 +18,17 @@
     "plugin",
     "medusa-plugin-other",
     "medusa-plugin",
-    "medusa-v2"
+    "medusa-v2",
+    "medusa-plugin-integration",
+    "ozon",
+    "ozon-seller",
+    "ozon-marketplace",
+    "marketplace"
   ],
   "scripts": {
     "build": "medusa plugin:build",
-    "dev": "medusa plugin:develop",
+    "dev": "yarn predev && medusa plugin:develop",
+    "predev": "medusa plugin:publish",
     "prepublishOnly": "medusa plugin:build"
   },
   "devDependencies": {
