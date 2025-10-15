@@ -32,9 +32,17 @@
     "title": "Все плагины Medusa от Gorgo",
     "subtitle": "Мы предоставляем широкий выбор плагинов для интеграции с различными сервисами и платформами, чтобы упростить процесс разработки и настройки вашего магазина."
   },
-  "hero": {
-    "title": "Расширяйте возможности Medusa с помощью плагинов Gorgo",
-    "subtitle": "Gorgo создаёт плагины и интеграции для Medusa, ускоряющие разработку и рост вашего e-commerce.",
-    "button": "Подробнее о Gorgo"
+  "homePage": {
+    "hero": {
+      "title": "Расширяйте возможности Medusa с помощью плагинов Gorgo",
+      "subtitle": "Gorgo создаёт плагины и интеграции для Medusa, ускоряющие разработку и рост вашего e-commerce.",
+      "button": "Подробнее о Gorgo"
+    },
+    "title": "Welcome to Medusa",
+    "subtitle": "Medusa is a powerful and flexible commerce platform that allows you to build your own online store from scratch."
+  },
+  "toc": {
+    "onThisPage": "На этой странице",
+    "backToTop": "Наверх"
   }
 }

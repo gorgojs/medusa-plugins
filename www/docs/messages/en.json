@@ -32,9 +32,19 @@
     "title": "All Medusa plugins by Gorgo",
     "subtitle": "Unlike other platforms, the Medusa Framework allows you to easily customize and extend the behavior of your commerce platform to always fit your business needs"
   },
-  "hero": {
-    "title": "Learn how to extend your Medusa commerce with Gorgo plugins",
-    "subtitle": "Gorgo provides plugins and integrations for Medusa that help you build, customize, and scale your e-commerce faster.",
-    "button": "Learn About Gorgo"
+  "homePage": {
+    "hero": {
+      "title": "Learn how to extend your Medusa commerce with Gorgo plugins",
+      "subtitle": "Gorgo provides plugins and integrations for Medusa that help you build, customize, and scale your e-commerce faster.",
+      "button": "Learn About Gorgo"
+    },
+    "metadata": {
+      "title": "Welcome to Medusa",
+      "description": "Medusa is a powerful and flexible commerce platform that allows you to build your own online store from scratch."
+    }
+  },
+  "toc": {
+    "onThisPage": "On This Page",
+    "backToTop": "Back to Top"
   }
 }

@@ -1,4 +1,5 @@
 import type { Toc } from "@stefanprobst/rehype-extract-toc";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import PaginationCards from "@/components/layout/pagination-cards";
@@ -8,6 +9,7 @@ import RightSidebar from "@/components/layout/right-sidebar";
 import Sidebar from "@/components/layout/sidebar";
 import TableOfContents from "@/components/layout/toc";
 import { routing } from "@/i18n/routing";
+import { getSeoMetadata } from "@/lib/seo";
 import { getAllSidebarPaths, getCurrentSidebar } from "@/lib/sidebar";
 
 type PageProps = {
@@ -15,6 +17,15 @@ type PageProps = {
     locale: string;
     slug?: string[];
   }>;
+};
+
+type MDXModule = {
+  default: React.ComponentType;
+  toc: Toc;
+  metadata?: {
+    title?: string;
+    description?: string;
+  };
 };
 
 export const dynamicParams = false;
@@ -43,6 +54,30 @@ export async function generateStaticParams() {
   return params;
 }
 
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const path = slug?.join("/") || "index";
+
+  let mdxModule: MDXModule;
+  try {
+    mdxModule = (await import(`../${path}/${locale}.mdx`)) as MDXModule;
+  } catch (e) {
+    console.error(e);
+    return {};
+  }
+
+  const pathname = `/${locale}${slug ? `/${slug.join("/")}` : ""}`;
+  const seoMetadata = await getSeoMetadata(pathname, locale);
+
+  return {
+    title: mdxModule.metadata?.title,
+    description: mdxModule.metadata?.description,
+    ...seoMetadata,
+  } as Metadata;
+}
+
 export default async function DynamicDocsPage({ params }: PageProps) {
   const { locale, slug } = await params;
   const path = slug?.join("/") || "index";
@@ -51,9 +86,9 @@ export default async function DynamicDocsPage({ params }: PageProps) {
   let Post: React.ComponentType;
   let toc: Toc;
   try {
-    const { default: ImportedPost, toc: ImportedToc } = await import(
+    const { default: ImportedPost, toc: ImportedToc } = (await import(
       `../${path}/${locale}.mdx`
-    );
+    )) as MDXModule;
     Post = ImportedPost;
     toc = ImportedToc;
   } catch (e) {

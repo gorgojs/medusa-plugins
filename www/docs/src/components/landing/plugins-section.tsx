@@ -9,8 +9,8 @@ export interface Plugin {
   id: string;
   name: LocalizedString;
   description: LocalizedString;
-  icon: string | React.ReactNode; // Can be either text or component
-  iconBgColor?: string; // Made optional since components might not use background color
+  icon: string | React.ReactNode;
+  iconBgColor?: string;
 }
 
 export interface PluginCategory {

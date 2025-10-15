@@ -4,6 +4,7 @@ import { ScrollText } from "@medusajs/icons";
 import { Button } from "@medusajs/ui";
 import type { Toc, TocEntry } from "@stefanprobst/rehype-extract-toc";
 import { ChevronUp } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -25,6 +26,8 @@ type ContentBlock = {
 };
 
 function TableOfContents({ toc }: { toc: Toc }) {
+  const t = useTranslations("toc");
+
   const itemRefs = useRef<Record<string, HTMLLIElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -334,7 +337,7 @@ function TableOfContents({ toc }: { toc: Toc }) {
   return (
     <div className="flex flex-col gap-4 w-full transition-all">
       <h3 className="font-medium text-sm text-ui-fg-subtle flex gap-2 items-center">
-        <ScrollText /> On This Page
+        <ScrollText /> {t("onThisPage")}
       </h3>
 
       <ScrollArea
@@ -349,12 +352,11 @@ function TableOfContents({ toc }: { toc: Toc }) {
 
       <Button
         variant="secondary"
-        size="small"
-        className="self-start flex items-center gap-1 mt-4"
+        className="self-start flex items-center gap-1 mt-4 w-full"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       >
         <ChevronUp className="w-4 h-4" />
-        Back to Top
+        {t("backToTop")}
       </Button>
     </div>
   );
