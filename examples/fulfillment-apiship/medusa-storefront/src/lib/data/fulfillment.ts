@@ -66,3 +66,69 @@ export const calculatePriceForShippingOption = async (
       return null
     })
 }
+
+export const retrieveCalculation = async (
+  cartId: string,
+  shippingOptionId: string
+) => {
+  const headers = {
+    ...(await getAuthHeaders()),
+
+  }
+
+  const next = {
+    ...(await getCacheOptions("fulfillment")),
+  }
+
+  const body = { cart_id: cartId }
+
+  return sdk.client
+    .fetch<Record<string, unknown>>(
+      `/store/apiship/${shippingOptionId}/calculate`,
+      {
+        method: "POST",
+        headers,
+        body,
+        next,
+      }
+    )
+    .then(({ data }) => data)
+    .catch((e) => {
+      return null
+    })
+}
+
+export const getPointAddresses = async (
+  cartId: string,
+  shippingOptionId: string,
+  pointIds: Array<number>
+) => {
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  const next = {
+    ...(await getCacheOptions("fulfillment")),
+  }
+
+  const body = {
+    cartId,
+    shippingOptionId,
+    pointIds
+  }
+
+  return sdk.client
+    .fetch<{
+      points: any[]
+      meta: any
+    }>(`/store/apiship/points`, {
+      method: "POST",
+      headers,
+      body,
+      next,
+    })
+    .catch((e) => {
+      console.error("getPointsAddresses error", e)
+      return null
+    })
+}

@@ -1,0 +1,96 @@
+# Getting Started with ApiShip Fulfillment
+
+In this document, you’ll learn how to install and configure the ApiShip fulfillment provider for Medusa.
+
+## Requirements
+
+- Medusa v2.7.0 or later
+- Node.js v20 or later
+- An Apiship account - [sign in or create one](https://a.apiship.ru)
+
+## Installation
+
+```bash
+yarn add @gorgo/medusa-fulfillment-apiship
+# or
+npm install @gorgo/medusa-fulfillment-apiship
+```
+
+## Configuration
+
+Add the provider configuration in your `medusa-config.ts` file of the Medusa admin application:
+
+```ts
+// ...
+module.exports = defineConfig({
+  // ...
+  modules: [
+    {
+      resolve: "@medusajs/medusa/fulfillment",
+      options: {
+        providers: [
+          {
+            resolve: "@gorgo/medusa-fulfillment-apiship/providers/fulfillment-apiship",
+            id: "apiship",
+            options: {
+              token: process.env.APISHIP_TOKEN,
+              isTest: true,
+              settings: {
+                defaultSenderSettings: {
+                  countryCode: "RU",
+                  addressString: "Москва, улица Лестева, 19к1, офис 306",
+                  contactName: "Иванов Иван Иванович",
+                  phone: "+79999999900",
+                },
+                connectionsMap: {
+                  cdek: "36253",
+                },
+                defaultProductSizes: {
+                  length: 10,
+                  width: 10,
+                  height: 10,
+                  weight: 20,
+                },
+                deliveryCostVat: -1,
+                isCod: false,
+              },
+            },
+          },
+        ],
+      },
+    },
+  ],
+  plugins: [
+    // ...
+    {
+      resolve: "@gorgo/medusa-fulfillment-apiship",
+      options: {},
+    },
+  ],
+})
+```
+
+Add environment variable with your ApiShip:
+
+```
+APISHIP_TOKEN=supersecret
+```
+
+## Provider Options
+
+| Option | Description | Required | Default |
+| --- | --- | --- | --- |
+| `token` | Apiship API token. | Yes | – |
+| `isTest` | Enables test mode for Apiship API requests. | No | `false` |
+| `settings` | Provider settings object. | Yes | – |
+| `settings.defaultSenderSettings.countryCode` | Sender country code. | Yes | – |
+| `settings.defaultSenderSettings.addressString` | Sender full address as a single string. | Yes | – |
+| `settings.defaultSenderSettings.contactName` | Sender contact full name. | Yes | – |
+| `settings.defaultSenderSettings.phone` | Sender contact phone number. | Yes | – |
+| `settings.connectionsMap` | Mapping of delivery provider keys to Apiship connection IDs. | No | – |
+| `settings.defaultProductSizes.length` | Default product length. | No | – |
+| `settings.defaultProductSizes.width` | Default product width. | No | – |
+| `settings.defaultProductSizes.height` | Default product height. | No | – |
+| `settings.defaultProductSizes.weight` | Default product weight. | No | – |
+| `settings.deliveryCostVat` | Delivery VAT rate:<br>- `-1` — No VAT<br>- `0` — 0%<br>- `5` — 5%<br>- `7` — 7%<br>- `10` — 10%<br>- `20` — 20% | Yes | – |
+| `settings.isCod` | Enables Cash on Delivery (C.O.D.) for created orders. | No | `false` |

@@ -11,7 +11,9 @@ import ErrorMessage from "@modules/checkout/components/error-message"
 import Divider from "@modules/common/components/divider"
 import MedusaRadio from "@modules/common/components/radio"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+
+import ApishipWrapper from "./apiship-wrapper"
 
 const PICKUP_OPTION_ON = "__PICKUP_ON"
 const PICKUP_OPTION_OFF = "__PICKUP_OFF"
@@ -64,6 +66,8 @@ const Shipping: React.FC<ShippingProps> = ({
     cart.shipping_methods?.at(-1)?.shipping_option_id || null
   )
 
+  const [apishipReady, setApishipReady] = useState(true)
+
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
@@ -79,6 +83,17 @@ const Shipping: React.FC<ShippingProps> = ({
   )
 
   const hasPickupOptions = !!_pickupMethods?.length
+
+  const isApishipToPoint = (option?: HttpTypes.StoreCartShippingOption | null) =>
+    option?.price_type === "calculated" && option?.data?.deliveryType === 2
+
+  const activeShippingOption = useMemo(() => {
+    return _shippingMethods?.find((option) => option.id === shippingMethodId) ?? null
+  }, [_shippingMethods, shippingMethodId])
+
+  const isApishipActive = useMemo(() => {
+    return isOpen && !!shippingMethodId && isApishipToPoint(activeShippingOption)
+  }, [isOpen, shippingMethodId, activeShippingOption])
 
   useEffect(() => {
     setIsLoadingPrices(true)
@@ -122,6 +137,7 @@ const Shipping: React.FC<ShippingProps> = ({
 
     if (variant === "pickup") {
       setShowPickupOptions(PICKUP_OPTION_ON)
+      setApishipReady(true)
     } else {
       setShowPickupOptions(PICKUP_OPTION_OFF)
     }
@@ -197,7 +213,7 @@ const Shipping: React.FC<ShippingProps> = ({
                 {hasPickupOptions && (
                   <RadioGroup
                     value={showPickupOptions}
-                    onChange={(value) => {
+                    onChange={() => {
                       const id = _pickupMethods.find(
                         (option) => !option.insufficient_inventory
                       )?.id
@@ -291,6 +307,16 @@ const Shipping: React.FC<ShippingProps> = ({
                     )
                   })}
                 </RadioGroup>
+                <ApishipWrapper
+                  enabled={isApishipActive}
+                  cart={cart}
+                  shippingOptionId={shippingMethodId}
+                  onReadyChange={(ready) => setApishipReady(ready)}
+                  onPriceUpdate={(id, amount) => {
+                    setCalculatedPricesMap((prev) => ({ ...prev, [id]: amount }))
+                  }}
+                  onError={(msg) => setError(msg)}
+                />
               </div>
             </div>
           </div>
@@ -373,11 +399,16 @@ const Shipping: React.FC<ShippingProps> = ({
               className="mt"
               onClick={handleSubmit}
               isLoading={isLoading}
-              disabled={!cart.shipping_methods?.[0]}
+              disabled={!cart.shipping_methods?.[0] || (isApishipActive && !apishipReady)}
               data-testid="submit-delivery-option-button"
             >
               Continue to payment
             </Button>
+            {isApishipActive && !apishipReady && (
+              <Text className="text-ui-fg-muted mt-2">
+                To continue, select a pickup point and click <b>Choose</b> on the desired tariff.
+              </Text>
+            )}
           </div>
         </>
       ) : (

@@ -29,3 +29,5 @@ build
 yalc.lock
 yarn.lock
 package-lock.json
+
+src/lib/apiship-client

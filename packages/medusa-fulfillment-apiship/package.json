@@ -1,6 +1,6 @@
 {
   "name": "@gorgo/medusa-fulfillment-apiship",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Apiship fulfillment provider for Medusa",
   "files": [
     ".medusa/server"
@@ -34,31 +34,42 @@
     "medusa-fulfillment",
     "medusa-fulfillment-apiship",
     "apiship",
-    "apiship-fulfillment"
+    "apiship-fulfillment",
+    "shipping",
+    "shipment"
   ],
   "scripts": {
     "build": "medusa plugin:build",
     "dev": "yarn predev && medusa plugin:develop",
+    "openapi:gen": "OAC_PATH=src/lib/apiship-client && rm -rf $OAC_PATH && openapi-generator-cli generate -i /local/openapi/upstream.yaml -g typescript-axios -o /local/$OAC_PATH --skip-validate-spec --additional-properties=useSingleRequestParameter=true",
+    "openapi:pull": "rm -rf openapi && mkdir -p openapi && curl -L https://api.apiship.ru/doc/openapi.yaml -o openapi/upstream.yaml && yarn openapi:version",
+    "openapi:version": "shasum -a 256 openapi/upstream.yaml | awk '{print $1}' > openapi/SPEC_VERSION.txt && echo 'Apiship spec updated:' && cat openapi/SPEC_VERSION.txt",
     "predev": "medusa plugin:publish",
-    "prepublishOnly": "medusa plugin:build"
+    "prepublishOnly": "yarn openapi:gen && medusa plugin:build"
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "axios-rate-limit": "^1.4.0",
+    "axios-retry": "^4.5.0"
   },
   "devDependencies": {
-    "@medusajs/admin-sdk": "^2.7.0",
-    "@medusajs/cli": "^2.7.0",
-    "@medusajs/framework": "^2.7.0",
-    "@medusajs/icons": "^2.7.0",
-    "@medusajs/medusa": "^2.7.0",
-    "@medusajs/test-utils": "^2.7.0",
+    "@medusajs/admin-sdk": "^2.7.1",
+    "@medusajs/cli": "^2.7.1",
+    "@medusajs/framework": "^2.7.1",
+    "@medusajs/icons": "^2.7.1",
+    "@medusajs/medusa": "^2.7.1",
+    "@medusajs/test-utils": "^2.7.1",
     "@medusajs/ui": "^4.0.8",
     "@mikro-orm/cli": "6.4.3",
     "@mikro-orm/core": "6.4.3",
     "@mikro-orm/knex": "6.4.3",
     "@mikro-orm/migrations": "6.4.3",
     "@mikro-orm/postgresql": "6.4.3",
+    "@openapitools/openapi-generator-cli": "^2.25.0",
     "@swc/core": "1.5.7",
     "@types/node": "^22.13.11",
-    "@types/react": "^19.0.12",
-    "@types/react-dom": "^19.0.4",
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.2.25",
     "awilix": "^8.0.1",
     "pg": "^8.14.1",
     "prop-types": "^15.8.1",
@@ -70,12 +81,12 @@
     "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
-    "@medusajs/admin-sdk": "^2.7.0",
-    "@medusajs/cli": "^2.7.0",
-    "@medusajs/framework": "^2.7.0",
-    "@medusajs/icons": "^2.7.0",
-    "@medusajs/medusa": "^2.7.0",
-    "@medusajs/test-utils": "^2.7.0",
+    "@medusajs/admin-sdk": "^2.7.1",
+    "@medusajs/cli": "^2.7.1",
+    "@medusajs/framework": "^2.7.1",
+    "@medusajs/icons": "^2.7.1",
+    "@medusajs/medusa": "^2.7.1",
+    "@medusajs/test-utils": "^2.7.1",
     "@medusajs/ui": "^4.0.8",
     "@mikro-orm/cli": "6.4.3",
     "@mikro-orm/core": "6.4.3",
