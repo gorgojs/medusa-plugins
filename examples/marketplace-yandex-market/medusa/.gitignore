@@ -24,3 +24,8 @@ build
 !.yarn/versions
 
 .medusa
+
+.yalc
+yalc.lock
+yarn.lock
+package-lock.json
