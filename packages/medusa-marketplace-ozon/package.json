@@ -23,7 +23,8 @@
     "ozon",
     "ozon-seller",
     "ozon-marketplace",
-    "marketplace"
+    "marketplace",
+    "medusa-marketplace"
   ],
   "scripts": {
     "build": "medusa plugin:build",
