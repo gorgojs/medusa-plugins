@@ -10,50 +10,23 @@ export const toolsSidebar: SidebarType = {
   children: [
     {
       title: {
-        en: "Installation",
-        ru: "Установка",
+        en: "Create Medusa Plugin",
+        ru: "Create Medusa Plugin",
       },
-      slug: "installation",
-      children: [],
-    },
-    {
-      title: {
-        en: "Configuration",
-        ru: "Конфигурация",
-      },
-      slug: "configuration",
-      children: [],
-    },
-    {
-      title: {
-        en: "Usage",
-        ru: "Использование",
-      },
-      slug: "usage",
-      children: [],
-    },
-    {
-      title: {
-        en: "Security",
-        ru: "Безопасность",
-      },
-      slug: "security",
-      children: [],
-    },
-    {
-      title: {
-        en: "Integration",
-        ru: "Интеграция",
-      },
-      slug: "integration",
-      children: [],
-    },
-    {
-      title: {
-        en: "Troubleshooting",
-        ru: "Устранение неполадок",
-      },
-      slug: "troubleshooting",
+      hasOverview: true,
+      slug: "create-medusa-plugin",
+      isSection: true,
+      npmPackage: "create-medusa-plugin",
+      links: [
+        {
+          service: "npm",
+          url: "https://www.npmjs.com/package/create-medusa-plugin",
+        },
+        {
+          service: "github",
+          url: "github.com/sergkoudi/create-medusa-plugin",
+        },
+      ],
       children: [],
     },
   ],

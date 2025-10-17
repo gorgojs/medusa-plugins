@@ -15,6 +15,7 @@ export const pluginsSidebar: SidebarType = {
       },
       slug: "t-kassa",
       isSection: true,
+      hasOverview: true,
       npmPackage: "@gorgo/medusa-payment-tkassa",
       links: [
         {
@@ -51,163 +52,81 @@ export const pluginsSidebar: SidebarType = {
     },
     {
       title: {
+        en: "1C:Enterprise",
+        ru: "1C:Предприятие",
+      },
+      slug: "1c-erp",
+      isSection: true,
+      hasOverview: true,
+      npmPackage: "@gorgo/medusa-1c",
+      links: [
+        {
+          service: "npm",
+          url: "https://www.npmjs.com/package/@gorgo/medusa-1c",
+        },
+        {
+          service: "github",
+          url: "https://github.com/gorgojs/medusa-plugins",
+        },
+      ],
+    },
+    {
+      title: {
+        en: "Robokassa",
+        ru: "Robokassa",
+      },
+      slug: "robokassa",
+      isSection: true,
+      hasOverview: true,
+      npmPackage: "@gorgo/medusa-payment-robokassa",
+      links: [
+        {
+          service: "npm",
+          url: "https://www.npmjs.com/package/@gorgo/medusa-payment-robokassa",
+        },
+        {
+          service: "github",
+          url: "https://github.com/gorgojs/medusa-plugins",
+        },
+      ],
+    },
+    {
+      title: {
         en: "YooKassa",
         ru: "YooKassa",
       },
       slug: "yookassa",
       isSection: true,
+      hasOverview: true,
       npmPackage: "medusa-payment-yookassa",
       links: [
         {
-          service: "other",
-          url: "https://docs.medusajs.com/plugins/payment/yookassa",
+          service: "npm",
+          url: "https://www.npmjs.com/package/medusa-payment-yookassa",
         },
         {
           service: "github",
           url: "https://github.com/medusajs/medusa-payment-yookassa",
         },
       ],
-      children: [
-        {
-          title: {
-            en: "Welcome",
-            ru: "Добро пожаловать",
-          },
-          slug: "welcome",
-          children: [],
-        },
-        {
-          title: {
-            en: "Installation",
-            ru: "Установка",
-          },
-          slug: "installation",
-          children: [
-            {
-              title: {
-                en: "Docker Installation",
-                ru: "Установка с Docker",
-              },
-              slug: "docker",
-              children: [],
-            },
-          ],
-        },
-        {
-          title: {
-            en: "Configuration",
-            ru: "Конфигурация",
-          },
-          slug: "configuration",
-          children: [],
-        },
-        {
-          title: {
-            en: "API Reference",
-            ru: "Справочник API",
-          },
-          slug: "api",
-          children: [],
-        },
-        {
-          title: {
-            en: "Advanced Usage",
-            ru: "Расширенное использование",
-          },
-          slug: "advanced-usage",
-          children: [],
-        },
-        {
-          title: {
-            en: "Customization",
-            ru: "Настройка",
-          },
-          slug: "customization",
-          children: [],
-        },
-        {
-          title: {
-            en: "Troubleshooting",
-            ru: "Устранение неполадок",
-          },
-          slug: "troubleshooting",
-          children: [],
-        },
-      ],
     },
     {
       title: {
-        en: "Moy Sklad",
-        ru: "Мой Склад",
+        en: "Yandex Feed",
+        ru: "Yandex Feed",
       },
-      slug: "moysklad",
+      slug: "yandex-feed",
       isSection: true,
       hasOverview: true,
-      children: [
+      npmPackage: "@gorgo/medusa-feed-yandex",
+      links: [
         {
-          title: {
-            en: "Welcome",
-            ru: "Добро пожаловать",
-          },
-          slug: "welcome",
-          children: [],
+          service: "npm",
+          url: "https://www.npmjs.com/package/@gorgo/medusa-feed-yandex",
         },
         {
-          title: {
-            en: "Installation",
-            ru: "Установка",
-          },
-          slug: "installation",
-          children: [
-            {
-              title: {
-                en: "Docker Installation",
-                ru: "Установка с Docker",
-              },
-              slug: "docker",
-              children: [],
-            },
-          ],
-        },
-        {
-          title: {
-            en: "Configuration",
-            ru: "Конфигурация",
-          },
-          slug: "configuration",
-          children: [],
-        },
-        {
-          title: {
-            en: "API Reference",
-            ru: "Справочник API",
-          },
-          slug: "api",
-          children: [],
-        },
-        {
-          title: {
-            en: "Advanced Usage",
-            ru: "Расширенное использование",
-          },
-          slug: "advanced-usage",
-          children: [],
-        },
-        {
-          title: {
-            en: "Customization",
-            ru: "Настройка",
-          },
-          slug: "customization",
-          children: [],
-        },
-        {
-          title: {
-            en: "Troubleshooting",
-            ru: "Устранение неполадок",
-          },
-          slug: "troubleshooting",
-          children: [],
+          service: "github",
+          url: "https://github.com/gorgojs/medusa-plugins",
         },
       ],
     },

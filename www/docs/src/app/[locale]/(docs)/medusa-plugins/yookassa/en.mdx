@@ -1,24 +1,389 @@
-# Welcome to Plugins
+<div align="center">
+  <a href="https://www.medusajs.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/9a99f9e8-f80e-4411-9bed-6e2032b1ab1c" />
+      <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/9a99f9e8-f80e-4411-9bed-6e2032b1ab1c" />
+      <img alt="Medusa logo" src="https://github.com/user-attachments/assets/9a99f9e8-f80e-4411-9bed-6e2032b1ab1c" height="120" />
+    </picture>
+  </a>
+</div>
 
-Welcome to the comprehensive plugins documentation. Here you will find all the information needed to understand, install, configure, and use plugins effectively in your projects.
+<h1 align="center">
+YooKassa Payments for Medusa
+</h1>
 
-## What Are Plugins?
+<p align="center">
+  A Medusa plugin that provides YooKassa payments.
+  <br/>
+  <a href="https://github.com/sergkoudi/medusa-payment-yookassa/blob/HEAD/packages/medusa-payment-yookassa/README.ru.md">Читать README на русском →</a>
+</p>
 
-Plugins are modular components that extend the functionality of the core system. They allow you to add new features without modifying the core codebase, making your setup more maintainable and flexible.
+<br/>
 
-## Key Benefits
+<p align="center">
+  <a href="https://medusajs.com">
+    <img src="https://img.shields.io/badge/Medusa-^2.7.0-blue?logo=medusa" alt="Medusa" />
+  </a>
+  <a href="https://medusajs.com">
+    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.10.3-green?logo=checkmarx" alt="Medusa" />
+  </a>
+</p>
 
-- **Modularity**: Isolate functionality in separate modules
-- **Reusability**: Use the same plugin across different projects
-- **Maintainability**: Update functionality without affecting the core system
-- **Scalability**: Add features as your needs grow
+<p align="center">
+  <a href="https://t.me/medusajs_yookassa">
+    <img src="https://img.shields.io/badge/Telegram-Medusa.js⊷YooKassa_Support_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js⊷YooKassa on Telegram" />
+  </a>
+</p>
 
-## Getting Started
+<p align="center">
+  <a href="https://t.me/medusajs_chat">
+    <img src="https://img.shields.io/badge/Telegram-Medusa.js_Dev_Community_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js Chat on Telegram" />
+  </a>
+</p>
 
-1. Explore the installation methods
-2. Learn about configuration options
-3. Review the API documentation
-4. Try the customization options
-5. Refer to troubleshooting if needed
+## Features
 
-For support, please check our community forums or contact our team.
+- 🔗  **Seamless integration** with the YooKassa payment system
+- 🧾  **Receipt generation** compliant with Federal Law No. 54, supporting FFD 1.05 and 1.2 formats
+- 1️⃣  **One-step** (autocapture) and  **2️⃣  two-step** (authorization/hold) payment flows
+- 🔄  **Full refund** and **order cancellation** support
+- 🔔  **Webhook support** for real-time payment status updates
+- 🛡  **Webhook verification** for enhanced security
+- 🔍  **Detailed logging** for debugging
+
+## 💬  YooKassa Plugin Support Chat
+
+Got questions or ideas for new plugin features?
+Join the Telegram chat – [@medusajs_yookassa](https://t.me/medusajs_yookassa)
+
+## 👥  Medusa.js Community Chat
+
+Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.me/medusajs_chat)
+
+## Requirements
+
+- Medusa v2.7.0 or later
+- Node.js v20 or later
+- A YooKassa account – [sign in or create one](https://yookassa.ru/joinups/?source=ks)
+
+## Installation
+
+```bash
+yarn add medusa-payment-yookassa
+# or
+npm install medusa-payment-yookassa
+```
+
+## Configuration
+
+Add the provider configuration in your `medusa-config.js` file of the Medusa Admin application:
+
+```ts
+// ...
+module.exports = defineConfig({
+  // ...
+  modules: [
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "medusa-payment-yookassa/providers/payment-yookassa",
+            id: "yookassa",
+            options: {
+              shopId: process.env.YOOKASSA_SHOP_ID,
+              secretKey: process.env.YOOKASSA_SECRET_KEY,
+              capture: true,
+              paymentDescription: "Test payment",
+              useReceipt: true,
+              useAtolOnlineFFD120: true,
+              taxSystemCode: 1,
+              taxItemDefault: 1,
+              taxShippingDefault: 1
+            },
+          }
+        ]
+      }
+    }
+  ]
+})
+```
+
+Add environment variables with your shop identifier `shopId` and a secret API key `secretKey`:
+
+```
+YOOKASSA_SHOP_ID=1234567
+YOOKASSA_SECRET_KEY=live_secret_api_key
+```
+
+Then, set up a webhook URL for notifications from YooKassa [here](https://yookassa.ru/my/merchant/integration/http-notifications). The URL should be in the following format:
+
+```
+https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/yookassa_yookassa
+```
+
+## Provider Options
+
+| Option                | Description                                                                                                                                                                                                                                                                                                                                            | Required                                    | Default |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------- | ------- |
+| `shopId`              | The SHOP_ID of YooKassa                                                                                                                                                                                                                                                                                                                                | Yes                                         | -       |
+| `secretKey`           | The secret key of YooKassa                                                                                                                                                                                                                                                                                                                             | Yes                                         | -       |
+| `paymentDescription`  | Default description on the payment if the context does not provide on YooKassa                                                                                                                                                                                                                                                                         | No                                          | -       |
+| `capture`             | Automatic payment capture (`true` for one-step payment, `false` for two-step payment)                                                                                                                                                                                                                                                                  | No                                          | `true`  |
+| `useReceipt`          | Enable receipt generation according to Russian fiscal data format (FFD)                                                                                                                                                                                                                                                                                | No                                          | `false` |
+| `useAtolOnlineFFD120` | Enable when Atol Online FFD 1.2 sales register is used<br />Applicable only if `useReceipt` = `true`                                                                                                                                                                                                                                                     | No                                          | `false` |
+| `taxSystemCode`       | Store tax system:<br />- `1`: General taxation system<br />- `2`: Simplified (income)<br />- `3`: Simplified (income minus expenses)<br />- `4`: Single tax on imputed income<br />- `5`: Single agricultural tax<br />- `6`: Patent taxation system<br /><br />Required if you use the Atol Online FFD 1.2 sales register<br />Applicable only if `useReceipt` = `true` | No (Yes if you use the Atol Online FFD 1.2) | -       |
+| `taxItemDefault`      | Default VAT rate for products:<br />- `1`: No VAT<br />- `2`: 0%<br />- `3`: 10%<br />- `4`: 20%<br />- `5`: 10/110<br />- `6`: 20/110<br />- `7`: 5%<br />- `8`: 7%<br />- `9`: 5/105<br />- `10`: 7/107<br /><br />For receips for self-employed - fixed value `1`<br />Applicable only if `useReceipt` = `true`                                                               | No                                          | -       |
+| `taxShippingDefault`  | Default VAT rate for shipping, same options as `taxItemDefault` <br /><br />Applicable only if `useReceipt` = `true`                                                                                                                                                                                                                                       | No                                          | -       |
+
+## Storefront Integration
+
+To integrate the YooKassa payment provider in a Next.js storefront, start by adding the required UI components. So, the provider is displayed on the checkout page alongside other available payment methods.
+
+When YooKassa is selected, the storefront should call `initiatePayment` with the necessary parameters. This will create a payment session through the YooKassa API and prepare the customer for redirection. The Place Order button should then send the customer to the YooKassa payment page, where he can select his preferred payment method.
+
+Once the payment is completed, YooKassa will concurrently send a webhook and redirect the customer back to the storefront. Whichever arrives first will complete the cart and create a new order in Medusa.
+
+### 1. Payment Provider Configuration
+
+To make YooKassa available as a payment method on the storefront checkout page, you must add its configuration to the payment provider mapping in your storefront’s constants file. This mapping determines how each payment provider is displayed in the UI.
+
+Open [`src/lib/constants.tsx`](https://github.com/sergkoudi/medusa-payment-yookassa/blob/bce2e01d8932b3c09b66a3a1b06aa1d5c4cfc445/examples/medusa-storefront/src/lib/constants.tsx#L33-L36) and add the following:
+
+![Directory structure in the Medusa Storefront after updating the file for constants](https://github.com/user-attachments/assets/0aee001e-958f-40c6-b329-618e318ff019)
+
+```ts
+export const paymentInfoMap: Record<
+  string,
+  { title: string; icon: React.ReactNode }
+> = {
+  // ... other providers
+  pp_yookassa_yookassa: {
+    title: "YooKassa",
+    icon: <CreditCard />,
+  }
+}
+
+// Helper to check if a provider is YooKassa
+export const isYookassa = (providerId?: string) => {
+  return providerId?.startsWith("pp_yookassa")
+}
+```
+
+You extend the `paymentInfoMap` object to include a `pp_yookassa_yookassa` entry. This entry defines the title and the icon that will be shown for YooKassa on the checkout page.
+
+The helper function `isYookassa` checks whether a given `providerId` belongs to YooKassa. This is useful when rendering provider-specific UI-components.
+
+### 2. Cookie Settings Update
+
+When integrating YooKassa, you need to adjust your cookie policy to allow cross-domain payment redirects. Some payment providers require more permissive cookie settings so the payment session can be preserved when the customer is redirected back to the storefront.
+
+Open [`src/lib/data/cookies.ts`](https://github.com/sergkoudi/medusa-payment-yookassa/blob/bce2e01d8932b3c09b66a3a1b06aa1d5c4cfc445/examples/medusa-storefront/src/lib/data/cookies.ts#L75) and update the cookie configuration as follows:
+
+![Directory structure in the Medusa Storefront after updating the file for cookies](https://github.com/user-attachments/assets/4274d249-6994-4d9f-b4b6-98f2016f0e9f)
+
+```ts
+export const setCartId = async (cartId: string) => {
+  cookies.set("_medusa_cart_id", cartId, {
+    // ... other cookie settings
+    sameSite: "lax", // Changed from "strict" for payment redirects
+  })
+}
+```
+
+This helper function stores the cart ID in a cookie named `_medusa_cart_id`.
+
+The `sameSite` option is set to `lax` instead of `strict`. This change ensures the cookie is sent with cross-site requests during the YooKassa redirect flow, preventing the payment session from being lost.
+
+### 3. Payment Session Initialization
+
+To redirect a customer to YooKassa, the payment session must be properly initialized with the required parameters, including the return URL for the post-payment callback and the shopping cart for generating receipts.
+
+Open [`src/modules/checkout/components/payment/index.tsx`](https://github.com/sergkoudi/medusa-payment-yookassa/blob/main/examples/medusa-storefront/src/modules/checkout/components/payment/index.tsx#L87-L96) and update the payment initialization logic to include YooKassa’s redirect URL and cart:
+
+![Directory structure in the Medusa Storefront after updating the file for payment component](https://github.com/user-attachments/assets/5c4dfcf9-57e7-48f6-956c-0e0a91ec6c8f)
+
+```ts
+await initiatePaymentSession(cart, {
+  provider_id: selectedPaymentMethod,
+  data: {
+    confirmation: {
+      type: "redirect",
+      return_url: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`
+    },
+    cart: cart
+  }
+})
+```
+
+When initiating a payment for YooKassa, pass a `confirmation` object with `type: "redirect"` and a `return_url`. YooKassa will later provide a `confirmation_url` to which the customer should be redirected.
+
+The `return_url` points back to your storefront’s capture endpoint and is used for both successful and failed payment attempts.
+
+The `cart` object is included to build a compliant receipt in accordance with Federal Law No. 54.
+
+### 4. Payment Button Component
+
+Medusa storefront requires a dedicated payment button component for each payment provider to handle the checkout flow after the customer confirms his order. This component leverages the payment session data and navigates the customer to the YooKassa payment page.
+
+Open [`src/modules/checkout/components/payment-button/index.tsx`](https://github.com/sergkoudi/medusa-payment-yookassa/blob/bce2e01d8932b3c09b66a3a1b06aa1d5c4cfc445/examples/medusa-storefront/src/modules/checkout/components/payment-button/index.tsx#L205-L247) and add the following code:
+
+![Directory structure in the Medusa Storefront after updating the file for payment button component](https://github.com/user-attachments/assets/4b76ee52-747f-452e-9160-6365f742e33e)
+
+```ts
+const PaymentButton: React.FC<PaymentButtonProps> = ({
+  cart,
+  "data-testid": dataTestId,
+}) => {
+  // ...
+  switch (true) {
+    // ... other cases
+    case isYookassa(paymentSession?.provider_id):
+      return (
+        <YookassaPaymentButton
+          notReady={notReady}
+          cart={cart}
+          data-testid={dataTestId}
+        />
+      )
+    default:
+      return <Button disabled>Select a payment method</Button>
+  }
+}
+
+// ... other payment button's components
+
+const YookassaPaymentButton = ({
+  cart,
+  notReady
+}: {
+  cart: HttpTypes.StoreCart
+  notReady: boolean
+  "data-testid"?: string
+}) => {
+  const [submitting, setSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const router = useRouter()
+
+  const paymentSession = cart.payment_collection?.payment_sessions?.find(
+    session => session.provider_id === "pp_yookassa_yookassa"
+  )
+
+  const handlePayment = () => {
+    setSubmitting(true)
+
+    const confirmation = paymentSession?.data?.confirmation as IConfirmation
+    if (confirmation?.confirmation_url) {
+      router.push(confirmation.confirmation_url)
+    }
+  }
+
+  return (
+    <>
+      <Button
+        disabled={notReady}
+        isLoading={submitting}
+        onClick={handlePayment}
+        size="large"
+        data-testid="submit-order-button"
+      >
+        Place an order and pay
+      </Button>
+      <ErrorMessage
+        error={errorMessage}
+        data-testid="manual-payment-error-message"
+      />
+    </>
+  )
+}
+```
+
+This component locates the YooKassa `payment_session` in the active cart and extracts `data.confirmation.confirmation_url`. When the Place an order and pay button is clicked, the customer is redirected to this URL to complete the payment on the YooKassa page.
+
+If the `confirmation_url` is missing, the component displays an error message instead of proceeding. The `isLoading` state provides visual feedback while the redirection is being prepared.
+
+The parent `PaymentButton` uses `isYookassa` to determine whether to render the `YookassaPaymentButton` for the current session; otherwise, it shows a disabled Select a payment method button.
+
+### 5. Payment Capture API route
+
+After the customer completes payment on the YooKassa page, he is redirected back to the storefront. You need an API route to handle this callback, verify the payment status, and complete the cart.
+
+Create the [`src/app/api/capture-payment/[cartId]/route.ts`](https://github.com/sergkoudi/medusa-payment-yookassa/blob/main/examples/medusa-storefront/src/app/api/capture-payment/%5BcartId%5D/route.ts) file with the following content:
+
+![Directory structure in the Medusa Storefront after creating the file for API route](https://github.com/user-attachments/assets/89ac89de-62ad-4b6c-af61-ab6299587dbf)
+
+```ts
+import { NextRequest, NextResponse } from "next/server"
+import { revalidateTag } from "next/cache"
+import {
+  getCacheTag,
+  getAuthHeaders,
+  removeCartId
+} from "@lib/data/cookies"
+import { sdk } from "@lib/config"
+import { placeOrder } from "@lib/data/cart"
+
+type Params = Promise<{ cartId: string }>
+
+export async function GET(req: NextRequest, { params }: { params: Params }) {
+  const { cartId } = await params
+  const { origin, searchParams } = req.nextUrl
+
+  const countryCode = searchParams.get("country_code") || ""
+  const headers = { ...(await getAuthHeaders()) }
+
+  // Retrieve fresh cart values
+  const cartCacheTag = await getCacheTag("carts")
+  revalidateTag(cartCacheTag)
+  const { cart } = await sdk.store.cart.retrieve(cartId, {
+    fields: "id, order_link.order_id"
+  },
+    headers
+  )
+  if (!cart) {
+    return NextResponse.redirect(`${origin}/${countryCode}`)
+  }
+
+  const orderId = (cart as unknown as Record<string, any>).order_link?.order_id
+  if (!orderId) {
+    await placeOrder(cartId)
+    // Fail when payment not authorized
+    return NextResponse.redirect(
+      `${origin}/${countryCode}/checkout?step=review&error=payment_failed`
+    )
+  }
+
+  const orderCacheTag = await getCacheTag("orders")
+  revalidateTag(orderCacheTag)
+  removeCartId()
+  return NextResponse.redirect(
+    `${origin}/${countryCode}/order/${orderId}/confirmed`
+  )
+}
+```
+
+This API route handles the redirect from YooKassa after a payment attempt. It retrieves the latest state of the cart to ensure any updates made during payment are reflected.
+
+If the cart does not contain an associated order ID, the route tries to place an order. If successful, the customer is redirected to the order confirmation page. If any error happens during cart completion, the customer is redirected back to the checkout page indicating an error, and he can proceed the checkout once again.
+
+When the payment is successful, the route revalidates the cached cart and order data, removes the cart cookie, and redirects the customer to the order confirmation page. This ensures a consistent post-payment experience while keeping storefront data up to date.
+
+### Example
+
+You can refer to the modifications made in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/sergkoudi/medusa-payment-yookassa/tree/main/examples/medusa-storefront) directory.
+
+The complete integration diff can be viewed in the [comparison page](https://github.com/sergkoudi/medusa-payment-yookassa/compare/v0.0.3...main), open the `Files changed` tab, and explore the differences under the `examples/medusa-storefront` directory. Or run diff in the terminal:
+
+```bash
+git clone https://github.com/sergkoudi/medusa-payment-yookassa
+cd medusa-payment-yookassa
+git diff v0.0.3...main -- examples/medusa-storefront
+```
+
+## Development
+
+Find documentation on bootstrapping a development environment [here](https://github.com/sergkoudi/medusa-payment-yookassa/tree/main/examples).
+
+## License
+
+Licensed under the [MIT License](LICENSE).
