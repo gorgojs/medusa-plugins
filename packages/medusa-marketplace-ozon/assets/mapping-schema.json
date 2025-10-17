@@ -1,0 +1,47 @@
+[
+  {
+    "ozon_category": {
+      "description_category_id": 88979652,
+      "type_id": 970861191
+    },
+    "medusa_categories": [
+      "dsf34gewrsfvdsdfvsd"
+    ],
+    "fields": [
+      {
+        "from": "id",
+        "to": "offer_id"
+      },
+      {
+        "from": "title",
+        "to": "name"
+      },
+      {
+        "from": "description",
+        "to": "description"
+      },
+      {
+        "from": "price_cents",
+        "to": "price"
+      },
+      {
+        "from": "currency",
+        "to": "currency_code"
+      },
+      {
+        "from": "sku",
+        "to": "barcode"
+      },
+      {
+        "from": "weight_g",
+        "to": "weight",
+        "default": 0
+      },
+      {
+        "from": "attributes",
+        "to": "attrs",
+        "default": {}
+      }
+    ]
+  }
+]
