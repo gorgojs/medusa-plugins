@@ -24,7 +24,7 @@ export const pluginsSidebar: SidebarType = {
         },
         {
           service: "github",
-          url: "https://github.com/gorgojs/medusa-plugins/packages/medusa-payment-tkassa",
+          url: "https://github.com/gorgojs/medusa-plugins/tree/main/packages/medusa-payment-tkassa",
         },
         {
           service: "telegram",
@@ -52,36 +52,6 @@ export const pluginsSidebar: SidebarType = {
     },
     {
       title: {
-        en: "1C:Enterprise",
-        ru: "1C:Предприятие",
-      },
-      slug: "1c-erp",
-      isSection: true,
-      hasOverview: true,
-      npmPackage: "@gorgo/medusa-1c",
-      links: [
-        {
-          service: "npm",
-          url: "https://www.npmjs.com/package/@gorgo/medusa-1c",
-        },
-        {
-          service: "github",
-          url: "https://github.com/gorgojs/medusa-plugins",
-        },
-      ],
-      children: [
-        {
-          title: {
-            en: "Getting Started",
-            ru: "Быстрый старт",
-          },
-          slug: "getting-started",
-          children: [],
-        },
-      ],
-    },
-    {
-      title: {
         en: "Robokassa",
         ru: "Robokassa",
       },
@@ -96,7 +66,11 @@ export const pluginsSidebar: SidebarType = {
         },
         {
           service: "github",
-          url: "https://github.com/gorgojs/medusa-plugins",
+          url: "https://github.com/gorgojs/medusa-plugins/tree/main/packages/medusa-payment-robokassa",
+        },
+        {
+          service: "telegram",
+          url: "https://t.me/medusajs_robokassa",
         },
       ],
       children: [
@@ -134,7 +108,11 @@ export const pluginsSidebar: SidebarType = {
         },
         {
           service: "github",
-          url: "https://github.com/medusajs/medusa-payment-yookassa",
+          url: "https://github.com/sergkoudi/medusa-payment-yookassa/tree/main/packages/medusa-payment-yookassa",
+        },
+        {
+          service: "telegram",
+          url: "https://t.me/medusajs_yookassa",
         },
       ],
       children: [
@@ -158,6 +136,40 @@ export const pluginsSidebar: SidebarType = {
     },
     {
       title: {
+        en: "1C:Enterprise",
+        ru: "1C:Предприятие",
+      },
+      slug: "1c-enterprise",
+      isSection: true,
+      hasOverview: true,
+      npmPackage: "@gorgo/medusa-1c",
+      links: [
+        {
+          service: "npm",
+          url: "https://www.npmjs.com/package/@gorgo/medusa-1c",
+        },
+        {
+          service: "github",
+          url: "https://github.com/gorgojs/medusa-plugins/tree/main/packages/medusa-1c",
+        },
+        {
+          service: "telegram",
+          url: "https://t.me/medusajs_1c",
+        },
+      ],
+      children: [
+        {
+          title: {
+            en: "Getting Started",
+            ru: "Быстрый старт",
+          },
+          slug: "getting-started",
+          children: [],
+        },
+      ],
+    },
+    {
+      title: {
         en: "Yandex Feed",
         ru: "Yandex Feed",
       },
@@ -172,7 +184,11 @@ export const pluginsSidebar: SidebarType = {
         },
         {
           service: "github",
-          url: "https://github.com/gorgojs/medusa-plugins",
+          url: "https://github.com/gorgojs/medusa-plugins/tree/main/packages/medusa-feed-yandex",
+        },
+        {
+          service: "telegram",
+          url: "https://t.me/medusajs_yandex",
         },
       ],
       children: [

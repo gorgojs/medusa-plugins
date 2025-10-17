@@ -67,7 +67,7 @@ export const pluginCategories: PluginCategory[] = [
     },
     plugins: [
       {
-        id: "1c-erp",
+        id: "1c-enterprse",
         name: {
           en: "1C",
           ru: "1C",
