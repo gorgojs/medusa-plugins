@@ -13,8 +13,10 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { siteLinks } from "@/data/site-links";
 import { cn } from "@/lib/utils";
 import GorgoWordmark from "@/svg/icons/gorgo-wordmark.svg";
+import type { Locale } from "@/types";
 import MobileNavigationMenu from "./mobile-navigation-menu";
 
 export default async function Header() {
@@ -53,13 +55,7 @@ export default async function Header() {
                       className="flex flex-row items-center"
                       asChild
                     >
-                      <Link
-                        href={
-                          locale === "ru"
-                            ? "https://gorgojs.ru"
-                            : "https://gorgojs.com"
-                        }
-                      >
+                      <Link href={siteLinks[locale as Locale]}>
                         <House /> Homepage
                       </Link>
                     </NavigationMenuLink>
