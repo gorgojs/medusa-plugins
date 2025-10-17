@@ -11,7 +11,12 @@
     "./.medusa/server/src/modules/*": "./.medusa/server/src/modules/*/index.js",
     "./modules/*": "./.medusa/server/src/modules/*/index.js",
     "./providers/*": "./.medusa/server/src/providers/*/index.js",
-    "./*": "./.medusa/server/src/*.js"
+    "./*": "./.medusa/server/src/*.js",
+    "./admin": {
+      "import": "./.medusa/server/src/admin/index.mjs",
+      "require": "./.medusa/server/src/admin/index.js",
+      "default": "./.medusa/server/src/admin/index.js"
+    }
   },
   "keywords": [
     "medusa",
@@ -23,33 +28,34 @@
     "ozon",
     "ozon-seller",
     "ozon-marketplace",
-    "marketplace"
+    "marketplace",
+    "medusa-marketplace"
   ],
   "scripts": {
     "build": "medusa plugin:build",
     "dev": "yarn predev && medusa plugin:develop",
-    "predev": "medusa plugin:publish",
-    "prepublishOnly": "medusa plugin:build"
+    "openapi:fix": "OAS_PATH=openapi/swagger.json node scripts/fix-openapi.js && yarn openapi:version",
+    "openapi:lint": "redocly lint openapi/swagger.json",
+    "openapi:gen": "OAC_PATH=src/lib/ozon-seller-api && rm -rf $OAC_PATH && openapi-generator-cli generate -i /local/openapi/swagger.json -g typescript-axios -o /local/$OAC_PATH --skip-validate-spec --additional-properties=useSingleRequestParameter=true",
+    "openapi:version": "date -u '+%Y-%m-%dT%H:%M:%SZ' > openapi/SPEC_VERSION.txt && shasum -a 256 openapi/swagger.json | awk '{print $1}' >> openapi/SPEC_VERSION.txt && echo '✅ Ozon spec updated:\n' && cat openapi/SPEC_VERSION.txt",
+    "openapi:pull": "echo 'Fetching latest Ozon Seller OpenAPI spec is not automated.\nPlease download the latest spec from https://docs.ozon.ru/api/seller/swagger.json and place it in openapi/swagger.json' && yarn openapi:fix && yarn openapi:lint",
+    "prepublishOnly": "yarn openapi:gen && medusa plugin:build",
+    "predev": "medusa plugin:publish"
   },
   "devDependencies": {
-    "@medusajs/admin-sdk": "2.4.0",
-    "@medusajs/cli": "2.4.0",
-    "@medusajs/framework": "2.4.0",
-    "@medusajs/icons": "2.4.0",
-    "@medusajs/medusa": "2.4.0",
-    "@medusajs/test-utils": "2.4.0",
-    "@medusajs/ui": "4.0.4",
-    "@mikro-orm/cli": "6.4.3",
-    "@mikro-orm/core": "6.4.3",
-    "@mikro-orm/knex": "6.4.3",
-    "@mikro-orm/migrations": "6.4.3",
-    "@mikro-orm/postgresql": "6.4.3",
-    "@swc/core": "1.5.7",
+    "@medusajs/admin-sdk": "^2.11.2",
+    "@medusajs/cli": "^2.11.2",
+    "@medusajs/framework": "^2.11.2",
+    "@medusajs/icons": "^2.11.2",
+    "@medusajs/medusa": "^2.11.2",
+    "@medusajs/test-utils": "^2.11.2",
+    "@medusajs/ui": "^4.0.25",
+    "@openapitools/openapi-generator-cli": "^2.25.0",
+    "@redocly/cli": "^2.11.1",
+    "@swc/core": "^1.5.7",
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.2.25",
-    "awilix": "^8.0.1",
-    "pg": "^8.13.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -59,22 +65,19 @@
     "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
-    "@medusajs/admin-sdk": "2.4.0",
-    "@medusajs/cli": "2.4.0",
-    "@medusajs/framework": "2.4.0",
-    "@medusajs/icons": "2.4.0",
-    "@medusajs/medusa": "2.4.0",
-    "@medusajs/test-utils": "2.4.0",
-    "@medusajs/ui": "4.0.3",
-    "@mikro-orm/cli": "6.4.3",
-    "@mikro-orm/core": "6.4.3",
-    "@mikro-orm/knex": "6.4.3",
-    "@mikro-orm/migrations": "6.4.3",
-    "@mikro-orm/postgresql": "6.4.3",
-    "awilix": "^8.0.1",
-    "pg": "^8.13.0"
+    "@gorgo/medusa-marketplace": "*",
+    "@medusajs/admin-sdk": "^2.11.2",
+    "@medusajs/cli": "^2.11.2",
+    "@medusajs/framework": "^2.11.2",
+    "@medusajs/icons": "^2.11.2",
+    "@medusajs/medusa": "^2.11.2",
+    "@medusajs/test-utils": "^2.11.2",
+    "@medusajs/ui": "^4.0.25"
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "axios": "^1.13.2"
   }
 }

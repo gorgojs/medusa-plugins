@@ -22,5 +22,5 @@ export default async function (container: MedusaContainer) {
 
 export const config = {
   name: "sync-marketplace-products",
-  schedule: "0 0 * * *", // change to * * * * * for debugging
+  schedule: "* * * *", // change to * * * * * for debugging
 }
