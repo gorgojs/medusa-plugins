@@ -1,0 +1,99 @@
+# Getting Started with Robokassa Payment
+
+In this document, you'll learn how to install and configure the Robokassa payment provider for Medusa.
+
+## Requirements
+
+- Medusa v2.7.0 or later
+- Node.js v20 or later
+- A Robokassa account – [sign in or create one](https://login.robokassa.ru/reg?promoCode=gorgo)
+
+## Installation
+
+```bash
+yarn add @gorgo/medusa-payment-robokassa
+# or
+npm install @gorgo/medusa-payment-robokassa
+```
+
+## Configuration
+
+Add the provider configuration in your `medusa-config.js` file of the Medusa admin application:
+
+```ts
+// ...
+module.exports = defineConfig({
+  // ...
+  modules: [
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "@gorgo/medusa-payment-robokassa/providers/payment-robokassa",
+            id: "robokassa",
+            options: {
+              merchantLogin: process.env.ROBOKASSA_MERCHANT_LOGIN,
+              hashAlgorithm: process.env.ROBOKASSA_HASH_ALGORITHM,
+              password1: process.env.ROBOKASSA_PASSWORD_1,
+              password2: process.env.ROBOKASSA_PASSWORD_2,
+              testPassword1: process.env.ROBOKASSA_TEST_PASSWORD_1,
+              testPassword2: process.env.ROBOKASSA_TEST_PASSWORD_2,
+              capture: false,  // default is true
+              isTest: true,  // default is false
+            },
+          }
+        ]
+      }
+    }
+  ]
+})
+```
+
+Add environment variables with your shop identifier `merchantLogin`, hash calculation algorithm `hashAlgorithm`, secret passwords `password1`, `password2`, and secret passwords for testing `testPassword1`, `testPassword2`:
+
+```
+ROBOKASSA_MERCHANT_LOGIN=test-shop
+ROBOKASSA_HASH_ALGORITHM=md5
+ROBOKASSA_PASSWORD_1=supersecret
+ROBOKASSA_PASSWORD_2=supersecret
+ROBOKASSA_TEST_PASSWORD_1=supersecret
+ROBOKASSA_TEST_PASSWORD_2=supersecret
+```
+
+> **Attention!** `ROBOKASSA_HASH_ALGORITHM` must be one of the following values corresponding to the value in the Robokassa account: `md5`, `sha1`, `sha256`, `sha384`, `sha512` or `ripemd160` (note, an error occurs for `ripemd160` on the provider's side)
+
+Under shop settings in your Robokassa account, set the **Method of sending data to Result Url** to `GET` or `POST` and supply a **Result Url** in the following format:
+
+```
+https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/robokassa_robokassa
+```
+
+## Provider Options
+
+| Option                | Description                                                                                                                                                                                                                                                                           | Required | Default |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| `merchantLogin`              | The Robokassa store ID that you created when creating the store.                                                                                                                                                                                                                                                               | Yes      | -       |
+| `hashAlgorithm`           | Signature algorithm:<br />- `md5`<br />- `sha1`<br />- `sha256`<br />- `sha384`<br />- `sha512`                                                                                                                                                                                                                                                            | Yes      | -       |
+| `password1`  | Technical password #1 used to compute the signature when initiating a payment                                                                                                                                                                                                       | Yes       | -       |
+| `password2`             | Technical password #2 used to verify the signature in the payment notification                                                                                                                                                                                                 | Yes       | -  |
+| `testPassword1`          | Test password #1 (from store settings) used to compute signatures in test mode.<br /><br />Applicable only if `isTest` = `true`                                                                                                                                                                                                               | No       | - |
+| `testPassword2` | Test password #2 used to verify notifications in test mode.<br /><br />Applicable only if `isTest` = `true`                                                                                                                                                                                    | No       | - |
+| `capture`       | Automatic payment capture (`true` for one-step payment, `false` for two-step payment)                                                                                                                               | No       | `true`       |
+| `isTest`      | Enables test mode | No       | `false`      |
+| `useReceipt`     | Enable receipt generation according to Russian fiscal data format (FFD)                                                    | No         | `false`      |
+| `taxation`         | Tax system type:<br />- `osn` — General<br />- `usn_income` — Simplified (income)<br />- `usn_income_outcome` — Simplified (income-expenses)<br />- `esn` — Agricultural<br />- `patent` — Patent<br /><br />Applicable only if `useReceipt` = `true`                                                 | No         | -      |
+| `taxItemDefault`         | Default VAT rate for products:<br />- `none` — No VAT<br />- `vat0` — 0%<br />- `vat5` — 5%<br />- `vat7` — 7%<br />- `vat10` — 10%<br />- `vat20` — 20%<br />- `vat105` — 5/105<br />- `vat107` — 7/107<br />- `vat110` — 10/110<br />- `vat120` — 20/120<br /><br />Applicable only if `useReceipt` = `true`                                                  | No         | -     |
+| `taxShippingDefault`         | Default VAT rate for shipping, same options as `taxItemDefault`<br /><br />Applicable only if `useReceipt` = `true`                                                   | No         | -      |
+
+## Webhook Setup
+
+To properly handle payment notifications from Robokassa, configure the webhook URL in your Robokassa account as following:
+
+Under shop settings in your Robokassa account, set the **Method of sending data to Result Url** to `GET` or `POST` and supply a **Result Url** in the following format:
+
+```
+https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/robokassa_robokassa
+```
+
+Robokassa will send payment status updates to this URL, allowing Medusa to update the payment status accordingly.

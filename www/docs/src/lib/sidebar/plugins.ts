@@ -69,6 +69,16 @@ export const pluginsSidebar: SidebarType = {
           url: "https://github.com/gorgojs/medusa-plugins",
         },
       ],
+      children: [
+        {
+          title: {
+            en: "Getting Started",
+            ru: "Быстрый старт",
+          },
+          slug: "getting-started",
+          children: [],
+        },
+      ],
     },
     {
       title: {
@@ -87,6 +97,24 @@ export const pluginsSidebar: SidebarType = {
         {
           service: "github",
           url: "https://github.com/gorgojs/medusa-plugins",
+        },
+      ],
+      children: [
+        {
+          title: {
+            en: "Getting Started",
+            ru: "Быстрый старт",
+          },
+          slug: "getting-started",
+          children: [],
+        },
+        {
+          title: {
+            en: "Storefront Integration",
+            ru: "Интеграция с Storefront",
+          },
+          slug: "storefront-integration",
+          children: [],
         },
       ],
     },
@@ -109,6 +137,24 @@ export const pluginsSidebar: SidebarType = {
           url: "https://github.com/medusajs/medusa-payment-yookassa",
         },
       ],
+      children: [
+        {
+          title: {
+            en: "Getting Started",
+            ru: "Быстрый старт",
+          },
+          slug: "getting-started",
+          children: [],
+        },
+        {
+          title: {
+            en: "Storefront Integration",
+            ru: "Интеграция с Storefront",
+          },
+          slug: "storefront-integration",
+          children: [],
+        },
+      ],
     },
     {
       title: {
@@ -127,6 +173,24 @@ export const pluginsSidebar: SidebarType = {
         {
           service: "github",
           url: "https://github.com/gorgojs/medusa-plugins",
+        },
+      ],
+      children: [
+        {
+          title: {
+            en: "Getting Started",
+            ru: "Быстрый старт",
+          },
+          slug: "getting-started",
+          children: [],
+        },
+        {
+          title: {
+            en: "Admin UI Extension",
+            ru: "Расширение Admin UI",
+          },
+          slug: "admin-ui-extension",
+          children: [],
         },
       ],
     },

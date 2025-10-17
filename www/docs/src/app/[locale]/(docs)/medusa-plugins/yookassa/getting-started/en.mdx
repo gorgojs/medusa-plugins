@@ -1,0 +1,94 @@
+# Getting Started with YooKassa Payment
+
+In this document, you'll learn how to install and configure the YooKassa payment provider for Medusa.
+
+## Requirements
+
+- Medusa v2.7.0 or later
+- Node.js v20 or later
+- A YooKassa account – [sign in or create one](https://yookassa.ru/joinups/?source=ks)
+
+## Installation
+
+```bash
+yarn add medusa-payment-yookassa
+# or
+npm install medusa-payment-yookassa
+```
+
+## Configuration
+
+Add the provider configuration in your `medusa-config.js` file of the Medusa Admin application:
+
+```ts
+// ...
+module.exports = defineConfig({
+  // ...
+  modules: [
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "medusa-payment-yookassa/providers/payment-yookassa",
+            id: "yookassa",
+            options: {
+              shopId: process.env.YOOKASSA_SHOP_ID,
+              secretKey: process.env.YOOKASSA_SECRET_KEY,
+              capture: true,
+              paymentDescription: "Test payment",
+              useReceipt: true,
+              useAtolOnlineFFD120: true,
+              taxSystemCode: 1,
+              taxItemDefault: 1,
+              taxShippingDefault: 1
+            },
+          }
+        ]
+      }
+    }
+  ]
+})
+```
+
+Add environment variables with your shop identifier `shopId` and a secret API key `secretKey`:
+
+```
+YOOKASSA_SHOP_ID=1234567
+YOOKASSA_SECRET_KEY=live_secret_api_key
+```
+
+Then, set up a webhook URL for notifications from YooKassa [here](https://yookassa.ru/my/merchant/integration/http-notifications). The URL should be in the following format:
+
+```
+https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/yookassa_yookassa
+```
+
+## Provider Options
+
+| Option                | Description                                                                                                                                                                                                                                                                                                                                            | Required                                    | Default |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------- | ------- |
+| `shopId`              | The SHOP_ID of YooKassa                                                                                                                                                                                                                                                                                                                                | Yes                                         | -       |
+| `secretKey`           | The secret key of YooKassa                                                                                                                                                                                                                                                                                                                             | Yes                                         | -       |
+| `paymentDescription`  | Default description on the payment if the context does not provide on YooKassa                                                                                                                                                                                                                                                                         | No                                          | -       |
+| `capture`             | Automatic payment capture (`true` for one-step payment, `false` for two-step payment)                                                                                                                                                                                                                                                                  | No                                          | `true`  |
+| `useReceipt`          | Enable receipt generation according to Russian fiscal data format (FFD)                                                                                                                                                                                                                                                                                | No                                          | `false` |
+| `useAtolOnlineFFD120` | Enable when Atol Online FFD 1.2 sales register is used<br />Applicable only if `useReceipt` = `true`                                                                                                                                                                                                                                                     | No                                          | `false` |
+| `taxSystemCode`       | Store tax system:<br />- `1`: General taxation system<br />- `2`: Simplified (income)<br />- `3`: Simplified (income minus expenses)<br />- `4`: Single tax on imputed income<br />- `5`: Single agricultural tax<br />- `6`: Patent taxation system<br /><br />Required if you use the Atol Online FFD 1.2 sales register<br />Applicable only if `useReceipt` = `true` | No (Yes if you use the Atol Online FFD 1.2) | -       |
+| `taxItemDefault`      | Default VAT rate for products:<br />- `1`: No VAT<br />- `2`: 0%<br />- `3`: 10%<br />- `4`: 20%<br />- `5`: 10/110<br />- `6`: 20/110<br />- `7`: 5%<br />- `8`: 7%<br />- `9`: 5/105<br />- `10`: 7/107<br /><br />For receips for self-employed - fixed value `1`<br />Applicable only if `useReceipt` = `true`                                                               | No                                          | -       |
+| `taxShippingDefault`  | Default VAT rate for shipping, same options as `taxItemDefault` <br /><br />Applicable only if `useReceipt` = `true`                                                                                                                                                                                                                                       | No                                          | -       |
+
+## Webhook Setup
+
+To properly handle payment notifications from YooKassa, configure the webhook URL in your YooKassa account as following:
+
+1. Navigate to your YooKassa merchant account at [yookassa.ru/my/merchant/integration/http-notifications](https://yookassa.ru/my/merchant/integration/http-notifications)
+2. Add a new webhook URL in the following format:
+    ```
+    https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/yookassa_yookassa
+    ```
+    Change `{YOUR_MEDUSA_DOMAIN}` with your medusa store domain.
+
+YooKassa will send payment status updates to this URL, allowing Medusa to update the payment status accordingly.
+
+> **Warning!** YooKassa expects an `OK` response message to confirm successful webhook processing. Currently, Medusa does not natively support custom webhook response messages, but webhooks are still processed correctly without this.

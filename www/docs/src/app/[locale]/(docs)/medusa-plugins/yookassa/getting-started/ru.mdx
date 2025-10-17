@@ -1,0 +1,94 @@
+# Начало работы с платежами YooKassa
+
+В этом документе вы узнаете, как установить и настроить платежный провайдер YooKassa для Medusa.
+
+## Требования
+
+- Medusa v2.7.0 или выше
+- Node.js v20 или выше
+- Аккаунт YooKassa – [зарегистрируйтесь или войдите](https://yookassa.ru/joinups/?source=ks)
+
+## Установка
+
+```bash
+yarn add medusa-payment-yookassa
+# или
+npm install medusa-payment-yookassa
+```
+
+## Настройка
+
+Добавьте конфигурацию провайдера в файл `medusa-config.js` в приложении Medusa Admin:
+
+```ts
+// ...
+module.exports = defineConfig({
+  // ...
+  modules: [
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "medusa-payment-yookassa/providers/payment-yookassa",
+            id: "yookassa",
+            options: {
+              shopId: process.env.YOOKASSA_SHOP_ID,
+              secretKey: process.env.YOOKASSA_SECRET_KEY,
+              capture: true,
+              paymentDescription: "Test payment",
+              useReceipt: true,
+              useAtolOnlineFFD120: true,
+              taxSystemCode: 1,
+              taxItemDefault: 1,
+              taxShippingDefault: 1
+            },
+          }
+        ]
+      }
+    }
+  ]
+})
+```
+
+Добавьте следующие переменные окружения: идентификатор магазина `shopId` и секретный ключ `secretKey`:
+
+```
+YOOKASSA_SHOP_ID=1234567
+YOOKASSA_SECRET_KEY=live_secret_api_key
+```
+
+Затем настройте URL вебхука для уведомлений от YooKassa [здесь](https://yookassa.ru/my/merchant/integration/http-notifications). URL должен иметь следующий формат:
+
+```
+https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/yookassa_yookassa
+```
+
+## Параметры провайдера
+
+| Параметр              | Описание                                                                                                                                                                                                                                                                                                                                                                                  | Обязательный | По умолчанию |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | ------------ |
+| `shopId`              | Идентификатор вашего магазина в ЮKassa                                                                                                                                                                                                                                                                                                                                                    | Да           | -            |
+| `secretKey`           | Секретный ключ, который используется для проведения операций через ЮKassa                                                                                                                                                                                                                                                                                                                 | Да           | -            |
+| `paymentDescription`  | Описание платежа по умолчанию, если контекст не указан в YooKassa                                                                                                                                                                                                                                                                                                                         | Нет          | -            |
+| `capture`             | Определяет тип проведения платежа:<br />- `true` — одностадийная оплата<br />- `false` — двухстадийная оплата                                                                                                                                                                                                                                                                                 | Нет          | `true`       |
+| `useReceipt`          | Включает формирование онлайн-чеков по 54-ФЗ                                                                                                                                                                                                                                                                                                                                               | Нет          | `false`      |
+| `useAtolOnlineFFD120` | Включается, если вы используете онлайн-кассу Атол Онлайн, обновленную до ФФД 1.2<br /><br />Применимо только при `useReceipt=true`                                                                                                                                                                                                                                                            | Нет          | `false`      |
+| `taxSystemCode`       | Система налогообложения:<br />- `1`: — общая СН<br />- `2`: — упрощенная СН (доходы)<br />- `3`: — упрощенная СН (доходы минус расходы)<br />- `4`: — единый налог на вмененный доход<br />- `5`: — единый сельскохозяйственный налог<br />- `6`: — патентная СН<br /><br /> Обязательный, если вы используете онлайн-кассу Атол Онлайн, обновленную до ФФД 1.2<br />Применимо только при `useReceipt=true` | Нет          | -            |
+| `taxItemDefault`      | Ставка НДС по товарам::<br />- `1`: — без НДС<br />- `2`: — 0%<br />- `3`: — 10%<br />- `4`: — 20%<br />- `5`: — 10/110<br />- `6`: — 20/110<br />- `7`: — 5%<br />- `8`: — 7%<br />- `9`: — 5/105<br />- `10`: — 7/107<br /><br />Для самозанятый - фиксированное значеие `1`<br />Применимо только при `useReceipt=true`                                                                                          | Нет          | -            |
+| `taxShippingDefault`  | Ставка НДС для доставки (аналогично `taxItemDefault`) <br /><br />Применимо только при `useReceipt=true`                                                                                                                                                                                                                                                                                      | Нет          | -            |
+
+## Настройка вебхуков
+
+Чтобы корректно обрабатывать платёжные уведомления от YooKassa, настройте URL вебхука в своём аккаунте YooKassa следующим образом:
+
+1. Перейдите в личный кабинет YooKassa по адресу [yookassa.ru/my/merchant/integration/http-notifications](https://yookassa.ru/my/merchant/integration/http-notifications)
+2. Добавьте новый URL вебхука в следующем формате:
+    ```
+    https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/yookassa_yookassa
+    ```
+    Замените `{YOUR_MEDUSA_DOMAIN}` на домен вашей витрины Medusa.
+
+YooKassa будет отправлять обновления статуса платежей на этот URL, что позволяет Medusa обновлять статус платежа соответствующим образом.
+
+> **Внимание!** YooKassa ожидает сообщение `OK` в ответе, чтобы подтвердить успешную обработку вебхука. В настоящее время Medusa не поддерживает кастомные ответные сообщения вебхуков «из коробки», но сами вебхуки обрабатываются корректно и без этого.

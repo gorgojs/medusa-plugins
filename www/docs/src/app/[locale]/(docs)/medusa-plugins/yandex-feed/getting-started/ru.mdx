@@ -1,0 +1,161 @@
+# Начало работы с генератором фидов Яндекс.Маркета YML
+
+В этом документе вы узнаете, как установить и настроить генератор фидов Яндекс.Маркета YML для Medusa.
+
+## Требования
+
+- Medusa сервер v2.8.0 или новее
+- Node.js v20 или новее
+
+## Установка
+
+```bash
+yarn add @gorgo/medusa-feed-yandex
+# или
+npm install @gorgo/medusa-feed-yandex
+```
+
+## Настройка
+
+Добавьте конфигурацию провайдера в файл `medusa-config.js` приложения Medusa Admin:
+
+```ts
+# ...
+module.exports = defineConfig({
+  # ...
+  modules: [
+    {
+      resolve: "@gorgo/medusa-feed-yandex/modules/feed",
+    },
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/file-local",
+            id: "local",
+            options: {
+              upload_dir: "static",
+              backend_url: "http://localhost:9000/static"
+            },
+          },
+        ],
+      },
+    },
+  ],
+  plugins: [
+    {
+      resolve: "@gorgo/medusa-feed-yandex",
+      options: {}
+    }
+  ],
+})
+```
+
+> Плагин в настоящее время тестировался с локальным файловым модулем Medusa (`file-local`) и сохраняет сгенерированные XML-фиды в локальный статический каталог.
+
+## Использование
+
+Откройте панель администратора Medusa и перейдите в раздел **Настройки** -> **Фиды** в разделе Расширения — здесь доступен интерфейс плагина.
+
+![Страница списка фидов](https://github.com/user-attachments/assets/7998358a-a0ed-4f46-8927-0db3189aea31)
+
+На странице отображаются все существующие фиды с их основной информацией.
+
+URL-адреса фидов соответствуют следующему формату, что позволяет получить прямой доступ к сгенерированным XML-файлам (в формате YML):
+
+```
+http://{YOUR_MEDUSA_DOMAIN}/feeds/{ID}/{FILE_NAME}.xml
+```
+
+При выборе фида открывается подробное представление, где можно редактировать метаданные, корректировать расписания экспорта, выбирать категории товаров и получать доступ к URL-адресу фида. Кнопка **Запустить сейчас** позволяет вручную запустить генерацию фида.
+
+![Страница фида](https://github.com/user-attachments/assets/551f896a-8e42-44a7-9a37-0de2f436c994)
+
+Фид, показанный на скриншоте выше, экспортирует все товары из всех категорий каждые 30 минут в файл с именем `example1.xml`. Он устанавливает `Example shop name`, `Example company name`, `https://www.example.com/` и `Medusa` в качестве значений соответствующих XML-свойств. К нему можно получить доступ по ссылке `http://localhost:9000/feeds/01JWTC5VDW8EAGHWRDQG2GKAQJ/example1.xml`, а фактический файл хранится в формате gzip-сжатия по адресу `http://localhost:9000/static/1748937061705-example1.xml.gz`.
+
+## Пример файла YML
+
+Ниже приведен пример сгенерированного файла YML:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<yml_catalog date="2025-06-03 16:31">
+  <shop>
+    <name>Пример названия магазина</name>
+    <company>Пример названия компании</company>
+    <url>https://www.example.com/</url>
+    <platform>Medusa</platform>
+    <categories>
+      <category id="pcat_01JWBFYPTZNKZT0BRWECQF84J9" value="Футболки"/>
+      <category id="pcat_01JWBFYPV0KQV6VY4HKW4W6JTN" value="Свитшоты"/>
+      <category id="pcat_01JWBFYPV16CG0MN8TF1EM4T4N" value="Штаны"/>
+      <category id="pcat_01JWBFYPV1CTZAK4JBKV0R2JZW" value="Мерч"/>
+    </categories>
+    <offers>
+      <offer id="prod_01JWBFYPVZ21W4XQRSPAVW3QBN">
+        <name>Футболка Medusa</name>
+        <categoryId>pcat_01JWBFYPTZNKZT0BRWECQF84J9</categoryId>
+        <picture>https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-black-front.png</picture>
+        <description>
+          <![CDATA[Переосмыслите ощущение от классической футболки. С нашими хлопковыми футболками повседневные вещи больше не будут обычными.]]>
+        </description>
+        <weight>400</weight>
+      </offer>
+      <offer id="prod_01JWBFYPVZFHDPM6RF1DFAX4RZ">
+        <name>Свитшот Medusa</name>
+        <categoryId>pcat_01JWBFYPV0KQV6VY4HKW4W6JTN</categoryId>
+        <picture>https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatshirt-vintage-front.png</picture>
+        <description>
+          <![CDATA[Переосмыслите ощущение от классического свитшота. С нашими хлопковыми свитшотами повседневные вещи больше не будут обычными.]]>
+        </description>
+        <weight>400</weight>
+      </offer>
+      <offer id="prod_01JWBFYPVZJQH2KABER77PSEMG">
+        <name>Спортивные брюки Medusa</name>
+        <categoryId>pcat_01JWBFYPV16CG0MN8TF1EM4T4N</categoryId>
+        <picture>https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatpants-gray-front.png</picture>
+        <description>
+          <![CDATA[Переосмыслите ощущение от классических спортивных брюк. С нашими хлопковыми брюками повседневные вещи больше не будут обычными.]]>
+        </description>
+        <weight>400</weight>
+      </offer>
+      <offer id="prod_01JWBFYPVZ2E5D5CSB0F53XX3W">
+        <name>Шорты Medusa</name>
+        <categoryId>pcat_01JWBFYPV1CTZAK4JBKV0R2JZW</categoryId>
+        <picture>https://medusa-public-images.s3.eu-west-1.amazonaws.com/shorts-vintage-front.png</picture>
+        <description>
+          <![CDATA[Переосмыслите ощущение от классических шорт. С нашими хлопковыми шортами повседневные вещи больше не будут обычными.]]>
+        </description>
+        <weight>400</weight>
+      </offer>
+    </offers>
+  </shop>
+</yml_catalog>
+```
+
+## Тестирование
+
+Для запуска тестов перейдите в каталог `examples/feed-yandex/medusa`:
+
+```bash
+cd examples/feed-yandex/medusa
+```
+
+Убедитесь, что в вашем файле `.env.test` содержатся следующие переменные: `DB_USERNAME`, `DB_PASSWORD`:
+
+```bash
+cp .env.test.example .env.test
+```
+
+Затем запустите тесты:
+
+```bash
+# Запустить тесты модуля
+# Они проверяют внутреннюю логику, такую как сервисы и модели
+yarn test:integration:modules
+
+# Запустить интеграционные тесты
+# Интеграционные тесты включают тесты для API-маршрутов и рабочих процессов
+yarn test:integration:http
+```

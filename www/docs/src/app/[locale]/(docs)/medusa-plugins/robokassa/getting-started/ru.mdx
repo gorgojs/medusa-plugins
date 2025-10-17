@@ -1,0 +1,99 @@
+# Начало работы с платежами Robokassa
+
+В этом документе вы узнаете, как установить и настроить платежный провайдер Robokassa для Medusa.
+
+## Требования
+
+- Medusa v2.7.0 или новее
+- Node.js v20 или новее
+- Аккаунт Robokassa — [зарегистрируйтесь или войдите](https://login.robokassa.ru/reg?promoCode=gorgo)
+
+## Установка
+
+```bash
+yarn add @gorgo/medusa-payment-robokassa
+# или
+npm install @gorgo/medusa-payment-robokassa
+```
+
+## Настройка
+
+Добавьте конфигурацию провайдера в `medusa-config.js` вашего приложения Medusa:
+
+```ts
+// ...
+module.exports = defineConfig({
+  // ...
+  modules: [
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "@gorgo/medusa-payment-robokassa/providers/payment-robokassa",
+            id: "robokassa",
+            options: {
+              merchantLogin: process.env.ROBOKASSA_MERCHANT_LOGIN,
+              hashAlgorithm: process.env.ROBOKASSA_HASH_ALGORITHM,
+              password1: process.env.ROBOKASSA_PASSWORD_1,
+              password2: process.env.ROBOKASSA_PASSWORD_2,
+              testPassword1: process.env.ROBOKASSA_TEST_PASSWORD_1,
+              testPassword2: process.env.ROBOKASSA_TEST_PASSWORD_2,
+              capture: false,  // по умолчанию true
+              isTest: true,    // по умолчанию false
+            },
+          }
+        ]
+      }
+    }
+  ]
+})
+```
+
+Добавьте следующие переменные окружения: идентификатор магазина `merchantLogin`, алгоритм подписи `hashAlgorithm`, секретные пароли `password1`, `password2`, а также тестовые пароли `testPassword1`, `testPassword2`:
+
+```
+ROBOKASSA_MERCHANT_LOGIN=test-shop
+ROBOKASSA_HASH_ALGORITHM=md5
+ROBOKASSA_PASSWORD_1=supersecret
+ROBOKASSA_PASSWORD_2=supersecret
+ROBOKASSA_TEST_PASSWORD_1=supersecret
+ROBOKASSA_TEST_PASSWORD_2=supersecret
+```
+
+> **Важно!** Значение `ROBOKASSA_HASH_ALGORITHM` должно совпадать с настройкой в аккаунте Robokassa и быть одним из: `md5`, `sha1`, `sha256`, `sha384`, `sha512` или `ripemd160` (обратите внимание: для `ripemd160` возможны ошибки на стороне провайдера).
+
+В настройках магазина Robokassa укажите **Метод отправки данных на Result URL** — `GET` или `POST`, и задайте **Result URL** в формате:
+
+```
+https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/robokassa_robokassa
+```
+
+## Параметры провайдера
+
+| Опция            | Описание                                                                 | Обязательный | По умолчанию |
+|------------------|--------------------------------------------------------------------------|-------------|--------------|
+| `merchantLogin`  | Идентификатор магазина Robokassa                                         | Да          | -            |
+| `hashAlgorithm`  | Алгоритм подписи: `md5`, `sha1`, `sha256`, `sha384`, `sha512`            | Да          | -            |
+| `password1`      | Технический пароль №1 для расчёта подписи при инициализации платежа      | Да         | -            |
+| `password2`      | Технический пароль №2 для проверки подписи в уведомлениях об оплате      | Да         | -            |
+| `testPassword1`  | Тестовый пароль №1 для подписи в тестовом режиме *(если `isTest=true`)*  | Нет         | -            |
+| `testPassword2`  | Тестовый пароль №2 для уведомлений в тестовом режиме *(если `isTest=true`)* | Нет       | -            |
+| `capture`        | Автосписание: `true` — 1‑стадийно; `false` — предавторизация (двухстадийно) | Нет       | `true`       |
+| `isTest`         | Включает тестовый режим                                                   | Нет         | `false`      |
+| `useReceipt`     | Включает формирование онлайн-чеков по 54-ФЗ                                                    | Нет         | `false`      |
+| `taxation`         | Система налогообложения:<br />- `osn` — общая СН<br />- `usn_income` — упрощенная СН (доходы)<br />- `usn_income_outcome` — упрощенная СН (доходы минус расходы)<br />- `esn` — единый сельскохозяйственный налог<br />- `patent` — патентная СН<br /><br />Применимо только при `useReceipt=true`                                                  | Нет         | -      |
+| `taxItemDefault`         | Ставка НДС по товарам:<br />- `none` — без НДС<br />- `vat0` — 0%<br />- `vat5` — 5%<br />- `vat7` — 7%<br />- `vat10` — 10%<br />- `vat20` — 20%<br />- `vat105` — 5/105<br />- `vat107` — 7/107<br />- `vat110` — 10/110<br />- `vat120` — 20/120<br /><br />Применимо только при `useReceipt=true`                                                  | Нет         | -     |
+| `taxShippingDefault`         | Ставка НДС для доставки (аналогично `taxItemDefault`)<br /><br />Применимо только при `useReceipt=true`                                                   | Нет         | -      |
+
+## Настройка вебхуков
+
+Чтобы корректно обрабатывать платежные уведомления от Robokassa, настройте URL вебхука в вашем аккаунте Robokassa следующим образом:
+
+В настройках магазина Robokassa укажите **Метод отправки данных на Result URL** — `GET` или `POST`, и задайте **Result URL** в формате:
+
+```
+https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/robokassa_robokassa
+```
+
+Robokassa будет отправлять обновления статуса платежей на этот URL, что позволяет Medusa обновлять статус платежа соответствующим образом.
