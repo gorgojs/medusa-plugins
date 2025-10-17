@@ -4,10 +4,12 @@ import { Card } from "@/components/ui/card";
 import { getLocalizedString } from "@/lib/utils";
 import type { Locale, LocalizedString } from "@/types";
 import Section from "../layout/section";
+import { Link } from "@/i18n/navigation";
 
 export interface Plugin {
   id: string;
   name: LocalizedString;
+  href?: string;
   description: LocalizedString;
   icon: string | React.ReactNode;
   iconBgColor?: string;
@@ -67,31 +69,36 @@ export async function PluginsSection({
                       key={plugin.id}
                       className="group flex flex-row cursor-pointer items-center justify-between p-3 transition-all hover:shadow-sm grow-0 w-full"
                     >
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="shrink-0 flex size-7 items-center justify-center rounded-md overflow-clip text-sm font-bold"
-                          style={
-                            plugin.iconBgColor
-                              ? { backgroundColor: plugin.iconBgColor }
-                              : {}
-                          }
-                        >
-                          {typeof plugin.icon === "string"
-                            ? plugin.icon
-                            : plugin.icon}
+                      <Link
+                        href={`/medusa-plugins/${plugin.id}`}
+                        className="flex w-full items-center justify-between"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="shrink-0 flex size-7 items-center justify-center rounded-md overflow-clip text-sm font-bold"
+                            style={
+                              plugin.iconBgColor
+                                ? { backgroundColor: plugin.iconBgColor }
+                                : {}
+                            }
+                          >
+                            {typeof plugin.icon === "string"
+                              ? plugin.icon
+                              : plugin.icon}
+                          </div>
+
+                          <div>
+                            <h3 className="font-semibold text-foreground text-sm">
+                              {getLocalizedString(plugin.name, locale)}
+                            </h3>
+                            <p className="text-[10px] text-ui-fg-subtle line-clamp-1">
+                              {getLocalizedString(plugin.description, locale)}
+                            </p>
+                          </div>
                         </div>
 
-                        <div>
-                          <h3 className="font-semibold text-foreground text-sm">
-                            {getLocalizedString(plugin.name, locale)}
-                          </h3>
-                          <p className="text-[10px] text-ui-fg-subtle line-clamp-1">
-                            {getLocalizedString(plugin.description, locale)}
-                          </p>
-                        </div>
-                      </div>
-
-                      <TriangleRightMini className="text-muted-foreground transition-transform group-hover:translate-x-1" />
+                        <TriangleRightMini className="text-muted-foreground transition-transform group-hover:translate-x-1" />
+                      </Link>
                     </Card>
                   ))}
                 </div>
