@@ -170,10 +170,10 @@ export const pluginsSidebar: SidebarType = {
     },
     {
       title: {
-        en: "Yandex Feed",
-        ru: "Yandex Feed",
+        en: "Yandex YML Feed",
+        ru: "Яндекс YML-фид",
       },
-      slug: "yandex-feed",
+      slug: "yandex-yml-feed",
       isSection: true,
       hasOverview: true,
       npmPackage: "@gorgo/medusa-feed-yandex",
@@ -202,10 +202,18 @@ export const pluginsSidebar: SidebarType = {
         },
         {
           title: {
-            en: "Admin UI Extension",
-            ru: "Расширение Admin UI",
+            en: "Usage",
+            ru: "Использование",
           },
-          slug: "admin-ui-extension",
+          slug: "usage",
+          children: [],
+        },
+        {
+          title: {
+            en: "Testing",
+            ru: "Тестирование",
+          },
+          slug: "testing",
           children: [],
         },
       ],

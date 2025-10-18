@@ -52,7 +52,7 @@ module.exports = defineConfig({
 
 Add environment variables with your shop identifier `merchantLogin`, hash calculation algorithm `hashAlgorithm`, secret passwords `password1`, `password2`, and secret passwords for testing `testPassword1`, `testPassword2`:
 
-```
+```text
 ROBOKASSA_MERCHANT_LOGIN=test-shop
 ROBOKASSA_HASH_ALGORITHM=md5
 ROBOKASSA_PASSWORD_1=supersecret
@@ -62,12 +62,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
 ```
 
 > **Attention!** `ROBOKASSA_HASH_ALGORITHM` must be one of the following values corresponding to the value in the Robokassa account: `md5`, `sha1`, `sha256`, `sha384`, `sha512` or `ripemd160` (note, an error occurs for `ripemd160` on the provider's side)
-
-Under shop settings in your Robokassa account, set the **Method of sending data to Result Url** to `GET` or `POST` and supply a **Result Url** in the following format:
-
-```
-https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/robokassa_robokassa
-```
 
 ## Provider Options
 

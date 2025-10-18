@@ -10,8 +10,8 @@ export const toolsSidebar: SidebarType = {
   children: [
     {
       title: {
-        en: "Create Medusa Plugin",
-        ru: "Create Medusa Plugin",
+        en: "create-medusa-plugin",
+        ru: "create-medusa-plugin",
       },
       hasOverview: true,
       slug: "create-medusa-plugin",
@@ -24,7 +24,7 @@ export const toolsSidebar: SidebarType = {
         },
         {
           service: "github",
-          url: "github.com/sergkoudi/create-medusa-plugin",
+          url: "https://github.com/sergkoudi/create-medusa-plugin",
         },
       ],
       children: [],

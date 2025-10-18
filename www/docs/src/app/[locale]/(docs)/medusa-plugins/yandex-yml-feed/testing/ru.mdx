@@ -1,0 +1,25 @@
+# Тестирование
+
+Для запуска тестов перейдите в каталог [`examples/feed-yandex/medusa`](https://github.com/gorgojs/medusa-plugins/tree/main/examples/feed-yandex/medusa):
+
+```bash
+cd examples/feed-yandex/medusa
+```
+
+Убедитесь, что в файле `.env.test` присутствуют следующие переменные: `DB_USERNAME`, `DB_PASSWORD`:
+
+```bash
+cp .env.test.example .env.test
+```
+
+Затем, запустите тесты:
+
+```bash
+# Run module tests
+# These verify the internal logic, such as services and models
+yarn test:integration:modules
+
+# Run integration tests
+# Integration tests include tests for API Routes and Workflows
+yarn test:integration:http
+```

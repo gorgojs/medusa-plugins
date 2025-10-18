@@ -1,0 +1,55 @@
+# Getting Started with Yandex YML Feed Generator
+
+In this document, you'll learn how to install and configure the Yandex Market YML Feed Generator for Medusa.
+
+## Prerequisites
+
+- Medusa server v2.8.0 or later
+- Node.js v20 or later
+
+## Installation
+
+```bash
+yarn add @gorgo/medusa-feed-yandex
+# or
+npm install @gorgo/medusa-feed-yandex
+```
+
+## Configuration
+
+Add the plugin configuration in your `medusa-config.js` file of the Medusa admin application:
+
+```ts
+# ...
+module.exports = defineConfig({
+  # ...
+  modules: [
+    {
+      resolve: "@gorgo/medusa-feed-yandex/modules/feed",
+    },
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/file-local",
+            id: "local",
+            options: {
+              upload_dir: "static",
+              backend_url: "http://localhost:9000/static"
+            },
+          },
+        ],
+      },
+    },
+  ],
+  plugins: [
+    {
+      resolve: "@gorgo/medusa-feed-yandex",
+      options: {}
+    }
+  ],
+})
+```
+
+> The plugin is only tested with Medusa's local file module (`file-local`).

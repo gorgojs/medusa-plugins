@@ -1,0 +1,55 @@
+# Начало работы с генератором YML-фидов Яндекса
+
+В этой документации вы узнаете, как установить и настроить генератор YML-фидов в формате Яндекс Маркета для Medusa.
+
+## Требования
+
+- Medusa сервер v2.8.0 или новее
+- Node.js v20 или новее
+
+## Установка
+
+```bash
+yarn add @gorgo/medusa-feed-yandex
+# или
+npm install @gorgo/medusa-feed-yandex
+```
+
+## Настройка
+
+Добавьте конфигурацию плагина в файл `medusa-config.js` приложения Medusa Admin:
+
+```ts
+# ...
+module.exports = defineConfig({
+  # ...
+  modules: [
+    {
+      resolve: "@gorgo/medusa-feed-yandex/modules/feed",
+    },
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/file-local",
+            id: "local",
+            options: {
+              upload_dir: "static",
+              backend_url: "http://localhost:9000/static"
+            },
+          },
+        ],
+      },
+    },
+  ],
+  plugins: [
+    {
+      resolve: "@gorgo/medusa-feed-yandex",
+      options: {}
+    }
+  ],
+})
+```
+
+> Плагин тестировался только с локальным файловым модулем Medusa (`file-local`).

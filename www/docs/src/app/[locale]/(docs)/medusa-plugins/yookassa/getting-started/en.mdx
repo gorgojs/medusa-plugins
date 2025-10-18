@@ -53,15 +53,9 @@ module.exports = defineConfig({
 
 Add environment variables with your shop identifier `shopId` and a secret API key `secretKey`:
 
-```
+```text
 YOOKASSA_SHOP_ID=1234567
 YOOKASSA_SECRET_KEY=live_secret_api_key
-```
-
-Then, set up a webhook URL for notifications from YooKassa [here](https://yookassa.ru/my/merchant/integration/http-notifications). The URL should be in the following format:
-
-```
-https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/yookassa_yookassa
 ```
 
 ## Provider Options
@@ -84,7 +78,7 @@ To properly handle payment notifications from YooKassa, configure the webhook UR
 
 1. Navigate to your YooKassa merchant account at [yookassa.ru/my/merchant/integration/http-notifications](https://yookassa.ru/my/merchant/integration/http-notifications)
 2. Add a new webhook URL in the following format:
-    ```
+    ```text
     https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/yookassa_yookassa
     ```
     Change `{YOUR_MEDUSA_DOMAIN}` with your medusa store domain.

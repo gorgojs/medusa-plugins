@@ -1,60 +1,4 @@
-# Getting Started with Yandex Market YML Feed Generator
-
-In this document, you'll learn how to install and configure the Yandex Market YML Feed Generator for Medusa.
-
-## Prerequisites
-
-- Medusa server v2.8.0 or later
-- Node.js v20 or later
-
-## Installation
-
-```bash
-yarn add @gorgo/medusa-feed-yandex
-# or
-npm install @gorgo/medusa-feed-yandex
-```
-
-## Configuration
-
-Add the provider configuration in your `medusa-config.js` file of the Medusa admin application:
-
-```ts
-# ...
-module.exports = defineConfig({
-  # ...
-  modules: [
-    {
-      resolve: "@gorgo/medusa-feed-yandex/modules/feed",
-    },
-    {
-      resolve: "@medusajs/medusa/file",
-      options: {
-        providers: [
-          {
-            resolve: "@medusajs/medusa/file-local",
-            id: "local",
-            options: {
-              upload_dir: "static",
-              backend_url: "http://localhost:9000/static"
-            },
-          },
-        ],
-      },
-    },
-  ],
-  plugins: [
-    {
-      resolve: "@gorgo/medusa-feed-yandex",
-      options: {}
-    }
-  ],
-})
-```
-
-> The plugin is currently tested with Medusa's local file module (`file-local`) and saves the generated XML feeds to the local static directory.
-
-## Usage
+# Usage
 
 Open the Medusa Admin dashboard and navigate to **Settings** -> **Feeds** section in the Extensions — this is where the plugin interface is available.
 
@@ -132,30 +76,4 @@ Below is an example of a generated YML-file:
     </offers>
   </shop>
 </yml_catalog>
-```
-
-## Testing
-
-To run tests, navigate to the `examples/feed-yandex/medusa` directory:
-
-```bash
-cd examples/feed-yandex/medusa
-```
-
-Make sure your `.env.test` file includes the following variables: `DB_USERNAME`, `DB_PASSWORD`:
-
-```bash
-cp .env.test.example .env.test
-```
-
-Then, run tests:
-
-```bash
-# Run module tests
-# These verify the internal logic, such as services and models
-yarn test:integration:modules
-
-# Run integration tests
-# Integration tests include tests for API Routes and Workflows
-yarn test:integration:http
 ```

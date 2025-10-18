@@ -24,8 +24,8 @@ export const pluginCategories: PluginCategory[] = [
           ru: "T-Kassa",
         },
         description: {
-          en: "Enable seamless payments with TKassa",
-          ru: "Обеспечьте бесшовные платежи с помощью TKassa",
+          en: "Enable payments with TKassa",
+          ru: "Подключите платежи с помощью TKassa",
         },
         icon: <TbankIcon />,
       },
@@ -67,7 +67,7 @@ export const pluginCategories: PluginCategory[] = [
     },
     plugins: [
       {
-        id: "1c-enterprse",
+        id: "1c-enterprise",
         name: {
           en: "1C",
           ru: "1C",
@@ -87,15 +87,15 @@ export const pluginCategories: PluginCategory[] = [
       ru: "Прочие",
     },
     description: {
-      en: "A variety of plugins to integrate advanced features and third-party services.",
-      ru: "Разнообразные плагины для интеграции расширенных функций и сторонних сервисов.",
+      en: "Plugins for integrating third-party services and extending functionality.",
+      ru: "Плагины интеграции сторонних сервисов и расширенния функциональности.",
     },
     plugins: [
       {
-        id: "yandex-feed",
+        id: "yandex-yml-feed",
         name: {
-          en: "Yandex Feed",
-          ru: "Яндекс Фид",
+          en: "Yandex YML Feed",
+          ru: "Яндекс YML-фид",
         },
         description: {
           en: "Create and manage Yandex Market product feeds",
