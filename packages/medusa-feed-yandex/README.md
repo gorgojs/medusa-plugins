@@ -14,8 +14,12 @@ Yandex Market YML Feed Generator for Medusa
 </h1>
 
 <p align="center">
-A Medusa plugin that generates a product feed in <a href="https://yandex.com/support/direct/feeds/requirements-yml.html">YML (Yandex Market Language)</a> format.
+  A Medusa plugin that generates a product feed in <a href="https://yandex.com/support/direct/feeds/requirements-yml.html">YML (Yandex Market Language)</a> format.
+  <br/>
+  <a href="https://docs.gorgojs.com/medusa-plugins/yandex-yml-feed">Documentation ↗</a>
 </p>
+
+<br/>
 
 <p align="center">
   <a href="https://medusajs.com">
@@ -38,14 +42,14 @@ A Medusa plugin that generates a product feed in <a href="https://yandex.com/sup
   </a>
 </p>
 
+## 💬 Yandex Plugin Support Chat
 
-## 💬 Plugin Support Chat on Telegram
+Got questions or ideas for new plugin features?  
+Join the Telegram chat – [@medusajs_yandex](https://t.me/medusajs_yandex)
 
-Join the [Medusa.js ⊷ Yandex](https://t.me/medusajs_yandex) community chat to discuss features and get support.
+## 👥 Medusa.js Community Chat
 
-## 👥 Medusa.js Community Chat on Telegram
-
-Join the [Medusa.js Chat](https://t.me/medusajs_chat) to connect with developers building on Medusa.
+Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.me/medusajs_chat)
 
 ## Features
 
@@ -70,148 +74,9 @@ yarn add @gorgo/medusa-feed-yandex
 npm install @gorgo/medusa-feed-yandex
 ```
 
-## Configuration
+## 📘  Documentation
 
-Add the provider configuration in your `medusa-config.js` file of the Medusa admin application:
-
-```ts
-# ...
-module.exports = defineConfig({
-  # ...
-  modules: [
-    {
-      resolve: "@gorgo/medusa-feed-yandex/modules/feed",
-    },
-    {
-      resolve: "@medusajs/medusa/file",
-      options: {
-        providers: [
-          {
-            resolve: "@medusajs/medusa/file-local",
-            id: "local",
-            options: {
-              upload_dir: "static",
-              backend_url: "http://localhost:9000/static"
-            },
-          },
-        ],
-      },
-    },
-  ],
-  plugins: [
-    {
-      resolve: "@gorgo/medusa-feed-yandex",
-      options: {}
-    }
-  ],
-})
-```
-
-> The plugin is currently tested with Medusa’s local file module (`file-local`) and saves the generated XML feeds to the local static directory.
-
-## Usage
-
-Open the Medusa Admin dashboard and navigate to **Settings** -> **Feeds** section in the Extensions — this is where the plugin interface is available.
-
-![Feeds list page](https://github.com/user-attachments/assets/7998358a-a0ed-4f46-8927-0db3189aea31)
-
-The page displays all existing feeds with their key information.
-
-Feed URLs follow this format, allowing direct access to the generated XML files (in YML format):
-
-```
-http://{YOUR_MEDUSA_DOMAIN}/feeds/{ID}/{FILE_NAME}.xml
-```
-
-Selecting a feed opens a detailed view where you can edit metadata, adjust export schedules, choose product categories, and access the feed URL. A **Launch now** button lets you manually trigger feed generation.
-
-![Feed's page](https://github.com/user-attachments/assets/551f896a-8e42-44a7-9a37-0de2f436c994)
-
-The feed shown in the screenshot above exports all product from all categories every 30 minutes to a file named `example1.xml`. It sets `Example shop name`, `Example company name`, `https://www.example.com/`, and `Medusa` as values for the corresponding XML properties. It is accessible via the link `http://localhost:9000/feeds/01JWTC5VDW8EAGHWRDQG2GKAQJ/example1.xml`, while the actual file is stored in gzip-compressed format at `http://localhost:9000/static/1748937061705-example1.xml.gz`.
-
-Below is an example of a generated YML-file:
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<yml_catalog date="2025-06-03 16:31">
-  <shop>
-    <name>Example shop name</name>
-    <company>Example company name</company>
-    <url>https://www.example.com/</url>
-    <platform>Medusa</platform>
-    <categories>
-      <category id="pcat_01JWBFYPTZNKZT0BRWECQF84J9" value="Shirts"/>
-      <category id="pcat_01JWBFYPV0KQV6VY4HKW4W6JTN" value="Sweatshirts"/>
-      <category id="pcat_01JWBFYPV16CG0MN8TF1EM4T4N" value="Pants"/>
-      <category id="pcat_01JWBFYPV1CTZAK4JBKV0R2JZW" value="Merch"/>
-    </categories>
-    <offers>
-      <offer id="prod_01JWBFYPVZ21W4XQRSPAVW3QBN">
-        <name>Medusa T-Shirt</name>
-        <categoryId>pcat_01JWBFYPTZNKZT0BRWECQF84J9</categoryId>
-        <picture>https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-black-front.png</picture>
-        <description>
-          <![CDATA[Reimagine the feeling of a classic T-shirt. With our cotton T-shirts, everyday essentials no longer have to be ordinary.]]>
-        </description>
-        <weight>400</weight>
-      </offer>
-      <offer id="prod_01JWBFYPVZFHDPM6RF1DFAX4RZ">
-        <name>Medusa Sweatshirt</name>
-        <categoryId>pcat_01JWBFYPV0KQV6VY4HKW4W6JTN</categoryId>
-        <picture>https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatshirt-vintage-front.png</picture>
-        <description>
-          <![CDATA[Reimagine the feeling of a classic sweatshirt. With our cotton sweatshirt, everyday essentials no longer have to be ordinary.]]>
-        </description>
-        <weight>400</weight>
-      </offer>
-      <offer id="prod_01JWBFYPVZJQH2KABER77PSEMG">
-        <name>Medusa Sweatpants</name>
-        <categoryId>pcat_01JWBFYPV16CG0MN8TF1EM4T4N</categoryId>
-        <picture>https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatpants-gray-front.png</picture>
-        <description>
-          <![CDATA[Reimagine the feeling of classic sweatpants. With our cotton sweatpants, everyday essentials no longer have to be ordinary.]]>
-        </description>
-        <weight>400</weight>
-      </offer>
-      <offer id="prod_01JWBFYPVZ2E5D5CSB0F53XX3W">
-        <name>Medusa Shorts</name>
-        <categoryId>pcat_01JWBFYPV1CTZAK4JBKV0R2JZW</categoryId>
-        <picture>https://medusa-public-images.s3.eu-west-1.amazonaws.com/shorts-vintage-front.png</picture>
-        <description>
-          <![CDATA[Reimagine the feeling of classic shorts. With our cotton shorts, everyday essentials no longer have to be ordinary.]]>
-        </description>
-        <weight>400</weight>
-      </offer>
-    </offers>
-  </shop>
-</yml_catalog>
-```
-
-## Testing
-
-To run tests, navigate to the `examples/feed-yandex/medusa` directory:
-
-```bash
-cd examples/feed-yandex/medusa
-```
-
-Make sure your `.env.test` file includes the following variables: `DB_USERNAME`, `DB_PASSWORD`:
-
-```bash
-cp .env.test.example .env.test
-```
-
-Then, run tests:
-
-```bash
-# Run module tests
-# These verify the internal logic, such as services and models
-yarn test:integration:modules
-
-# Run integration tests
-# Integration tests include tests for API Routes and Workflows
-yarn test:integration:http
-```
+The complete installation, configuration, and usage guide for this plugin is available on the [Gorgo documentation website](https://docs.gorgojs.com/medusa-plugins/yandex-yml-feed).
 
 ## License
 

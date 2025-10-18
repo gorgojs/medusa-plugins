@@ -3,8 +3,12 @@
 </h1>
 
 <p align="center">
-Sync products and orders between Medusa and 1C:Enterprise.
+  Sync products and orders between Medusa and 1C:Enterprise.
+  <br/>
+  <a href="https://docs.gorgojs.com/medusa-plugins/1c-enterprise">Documentation ↗</a>
 </p>
+
+<br/>
 
 <p align="center">
   <a href="https://medusajs.com">
@@ -32,13 +36,14 @@ Sync products and orders between Medusa and 1C:Enterprise.
 🚧 Work in progress, see the [Roadmap](#roadmap).  
 A stable release is expected around September.
 
-## 💬 Plugin Support Chat on Telegram
+## 💬 1C:Enterprise Plugin Support Chat
 
-Join the [Medusa.js ⊷ 1C](https://t.me/medusajs_1c) community chat to discuss features and get support.
+Got questions or ideas for new plugin features?  
+Join the Telegram chat – [@medusajs_1c](https://t.me/medusajs_1c)
 
-## 👥 Medusa.js Community Chat on Telegram
+## 👥 Medusa.js Community Chat
 
-Join the [Medusa.js Chat](https://t.me/medusajs_chat) to connect with developers building on Medusa.
+Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.me/medusajs_chat)
 
 ## Roadmap
 
@@ -64,20 +69,9 @@ yarn add @gorgo/medusa-1c
 npm install @gorgo/medusa-1c
 ```
 
-## Configuration
+## 📘  Documentation
 
-Add the provider configuration in your `medusa-config.js` file of the Medusa admin application:
-
-```js
-# ...
-module.exports = defineConfig({
-  # to be done...
-})
-```
-
-## Development
-
-Find documentation on bootstrapping a development environment [here](https://github.com/gorgojs/medusa-plugins/tree/main/examples/1c).
+The complete installation, configuration, and usage guide for this plugin is available on the [Gorgo documentation website](https://docs.gorgojs.com/medusa-plugins/1c-enterprise).
 
 ## License
 
