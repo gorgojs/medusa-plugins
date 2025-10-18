@@ -24,8 +24,10 @@ export default async function Hero({
           <p className="text-lg max-w-lg mb-8 text-ui-fg-subtle">
             {t("subtitle")}
           </p>
-          <Button variant="primary">
+          <Button variant="primary" asChild>
+            <Link href={`https://gorgojs.${locale === "en" ? "com" : locale}`}>
             {t("button")} <ArrowRight />
+            </Link>
           </Button>
         </div>
         <div className="flex-1 flex items-center justify-center">
