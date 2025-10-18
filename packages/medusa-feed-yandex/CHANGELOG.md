@@ -1,5 +1,11 @@
 # @gorgo/medusa-feed-yandex
 
+## 0.2.12
+
+### Patch Changes
+
+- Move docs to Gorgo documentation docs.gorgojs.com
+
 ## 0.2.11
 
 ### Patch Changes

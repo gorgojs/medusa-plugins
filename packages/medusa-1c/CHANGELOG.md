@@ -1,5 +1,11 @@
 # @gorgo/medusa-1c
 
+## 0.0.8
+
+### Patch Changes
+
+- Move docs to Gorgo documentation docs.gorgojs.com
+
 ## 0.0.7
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @gorgo/medusa-payment-robokassa
 
+## 0.2.4
+
+### Patch Changes
+
+- Move docs to Gorgo documentation docs.gorgojs.com
+
 ## 0.2.3
 
 ### Patch Changes

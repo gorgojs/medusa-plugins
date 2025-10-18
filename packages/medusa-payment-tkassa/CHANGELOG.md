@@ -1,5 +1,11 @@
 # @gorgo/medusa-payment-tkassa
 
+## 0.3.7
+
+### Patch Changes
+
+- Move docs to Gorgo documentation docs.gorgojs.com
+
 ## 0.3.6
 
 ### Patch Changes
