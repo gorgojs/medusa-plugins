@@ -22,7 +22,8 @@
     "medusa-plugin-integration",
     "yandex-marketplace",
     "yandex-market",
-    "marketplace"
+    "marketplace",
+    "medusa-marketplace"
   ],
   "scripts": {
     "build": "medusa plugin:build",
