@@ -22,6 +22,7 @@
     "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit"
   },
   "dependencies": {
+    "@gorgo/medusa-marketplace-ozon": "file:.yalc/@gorgo/medusa-marketplace-ozon",
     "@medusajs/admin-sdk": "2.10.3",
     "@medusajs/cli": "2.10.3",
     "@medusajs/framework": "2.10.3",
