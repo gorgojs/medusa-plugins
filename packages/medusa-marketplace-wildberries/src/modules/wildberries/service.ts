@@ -1,5 +1,10 @@
 import { Logger, ConfigModule } from "@medusajs/framework/types"
 
+export type WildberriesProduct = {
+  "subjectID": Number,
+  "variants": Array<any>
+}
+
 export type ModuleOptions = {
   apiKey: string
 }
@@ -52,6 +57,11 @@ class WildberriesModuleService {
 
   async pingContent(): Promise<any> {
     const res = await this.sendRequest("https://content-api-sandbox.wildberries.ru/ping", "GET")
+    return res
+  }
+
+  async createProductCards(products: Array<WildberriesProduct>): Promise<any> {
+    const res = await this.sendRequest("https://content-api-sandbox.wildberries.ru/content/v2/cards/upload", "POST", products)
     return res
   }
 
