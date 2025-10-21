@@ -37,8 +37,8 @@ export default async function Header() {
                   <GorgoWordmark className="h-5 text-ui-fg-base" />
                 </Link>
               </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[224px] gap-0.5">
+              <NavigationMenuContent className="left-4 absolute w-auto">
+                <ul className="grid w-[200px] gap-0.5">
                   <li>
                     <NavigationMenuLink
                       className="flex flex-row items-center"

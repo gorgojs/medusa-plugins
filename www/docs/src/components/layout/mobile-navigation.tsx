@@ -64,7 +64,7 @@ export default function MobileNavigation() {
       <motion.div
         animate={{ y: scrollDir === "down" ? 100 : 0 }}
         transition={{ type: "spring", stiffness: 200, damping: 20 }}
-        className="fixed left-1/2 -translate-x-1/2 bottom-10 z-[100]"
+        className="fixed left-1/2 -translate-x-1/2 bottom-4 z-[100]"
       >
         <Button
           onClick={() => setIsOpen((prev) => !prev)}
