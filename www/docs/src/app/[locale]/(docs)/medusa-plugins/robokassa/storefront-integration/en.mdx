@@ -2,6 +2,12 @@
 
 To integrate the Robokassa payment provider in a Next.js storefront, start by adding the required UI components. So, the provider is displayed on the checkout page alongside other available payment methods.
 
+export const metadata = {
+  title: "Integrate Robokassa Payment to Storefront",
+  description: "To integrate the Robokassa payment provider in a Next.js storefront, start by adding the required UI components. So, the provider is displayed on the checkout page alongside other available payment methods"
+}
+
+
 When Robokassa is selected, the storefront should call `initiatePayment` with the necessary parameters. This will create a payment session through the Robokassa API and prepare the customer for redirection. The *Place Order* button should then send the customer to the Robokassa payment page, where he can select his preferred payment method.
 
 Once the payment is completed, Robokassa will concurrently send a webhook and redirect the customer back to the storefront. Whichever arrives first will complete the cart and create a new order in Medusa.

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-// import ContactSection from "@/components/landing/contact-section";
 import Hero from "@/components/landing/hero";
 import { PluginsSection } from "@/components/landing/plugins-section";
 import { pluginCategories } from "@/data/landing";
