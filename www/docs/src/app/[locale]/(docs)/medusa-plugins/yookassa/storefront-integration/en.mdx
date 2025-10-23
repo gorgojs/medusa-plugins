@@ -1,12 +1,11 @@
+export const metadata = {
+  title: "Integrate YooKassa Payment to Storefront",
+  description: "Learn how to integrate the YooKassa payment provider into a Next.js storefront built with Medusa."
+}
+
 # Integrate YooKassa Payment to Storefront
 
 To integrate the YooKassa payment provider in a Next.js storefront, start by adding the required UI components. So, the provider is displayed on the checkout page alongside other available payment methods.
-
-export const metadata = {
-  title: "Integrate YooKassa Payment to Storefront",
-  description: "To integrate the YooKassa payment provider in a Next.js storefront, start by adding the required UI components. So, the provider is displayed on the checkout page alongside other available payment methods"
-}
-
 
 When YooKassa is selected, the storefront should call `initiatePayment` with the necessary parameters. This will create a payment session through the YooKassa API and prepare the customer for redirection. The Place Order button should then send the customer to the YooKassa payment page, where he can select his preferred payment method.
 

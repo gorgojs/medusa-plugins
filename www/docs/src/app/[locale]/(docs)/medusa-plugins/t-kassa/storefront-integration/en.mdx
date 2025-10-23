@@ -1,12 +1,11 @@
+export const metadata = {
+  title: "Integrate T-Kassa Payment to Storefront",
+  description: "Learn how to integrate the T-Kassa payment provider into a Next.js storefront for Medusa."
+}
+
 # Integrate T-Kassa Payment to Storefront
 
 To integrate the T-Kassa payment provider in a Next.js storefront, start by adding the required UI components. So, the provider is displayed on the checkout page alongside other available payment methods.
-
-export const metadata = {
-  title: "Integrate T-Kassa Payment to Storefront",
-  description: "To integrate the T-Kassa payment provider in a Next.js storefront, start by adding the required UI components. So, the provider is displayed on the checkout page alongside other available payment methods"
-}
-
 
 When T-Kassa is selected, the storefront should call `initiatePayment` with the necessary parameters. This will create a payment session through the T-Kassa API and prepare the customer for redirection. The Place Order button should then send the customer to the T-Kassa payment page, where he can select his preferred payment method.
 
