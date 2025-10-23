@@ -22,8 +22,8 @@ const RightSidebar = ({ children }: { children?: React.ReactNode }) => {
   return (
     <Drawer direction="right" open={isTocOpen} onOpenChange={setIsTocOpen}>
       <DrawerTitle className="sr-only">Table of Contents</DrawerTitle>
-      <DrawerContent className="h-full px-4">
-        <div className="overflow-y-auto py-9  space-y-8">{children}</div>
+      <DrawerContent className="h-full bg-ui-bg-component">
+        <div className="overflow-y-auto px-4 py-9 space-y-8">{children}</div>
       </DrawerContent>
     </Drawer>
   );

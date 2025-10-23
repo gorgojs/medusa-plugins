@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { BarsThree } from '@medusajs/icons';
-import { Button } from '@medusajs/ui';
-import { useSidebar } from '@/contexts/sidebar-context';
-import { cn } from '@/lib/utils';
+import { BarsThree } from "@medusajs/icons";
+import { Button } from "@/components/ui/button";
+import { useSidebar } from "@/contexts/sidebar-context";
+import { cn } from "@/lib/utils";
 
 export function SidebarToggle({ className }: { className?: string }) {
   const { toggleSidebar } = useSidebar();
@@ -12,7 +12,7 @@ export function SidebarToggle({ className }: { className?: string }) {
     <Button
       variant="transparent"
       onClick={() => toggleSidebar()}
-      className={cn(className, 'cursor-pointer p-0 size-8')}
+      className={cn(className, "cursor-pointer p-0 size-8")}
     >
       <BarsThree />
     </Button>

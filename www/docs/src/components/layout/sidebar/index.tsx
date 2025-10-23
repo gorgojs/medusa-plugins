@@ -15,7 +15,6 @@ const SidebarContent = ({
   basePath?: string;
   section?: SidebarType;
 }) => {
-  // Create a localized "Overview" title for the overview item
   const overviewTitle = {
     en: "Overview",
     ru: "Обзор",
@@ -69,7 +68,7 @@ const Sidebar = ({
         onOpenChange={setIsSidebarOpen}
       >
         <DrawerTitle className="sr-only">Sidebar</DrawerTitle>
-        <DrawerContent className="h-full">
+        <DrawerContent className="h-full bg-ui-bg-component">
           <div className="overflow-y-auto py-4">
             <SidebarContent
               items={section?.children ?? []}

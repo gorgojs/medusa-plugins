@@ -39,17 +39,27 @@ export default function Breadcrumbs({
       {section?.children && (
         <ol className="flex flex-row items-center gap-x-1">
           <li>
-            {typeof section.title === "string"
-              ? section.title
-              : getLocalizedString(section.title, locale)}
+            <Link
+              href={`/${baseSlugs.join("/")}`}
+              className="transition-colors hover:text-ui-fg-subtle"
+            >
+              {typeof section.title === "string"
+                ? section.title
+                : getLocalizedString(section.title, locale)}
+            </Link>
           </li>
-          <TriangleRightMini className="text-ui-fg-muted" />
+          {breadcrumbs.length > 0 && (
+            <li>
+              <TriangleRightMini className="text-ui-fg-muted" />
+            </li>
+          )}
           {breadcrumbs.map((crumb, index) => {
             const page = flattenedItems.find((i) => i.slug === crumb);
             if (!page) {
               return null;
             }
-            const isLast = index === breadcrumbs.length - 1;
+
+            const isLast = index === Math.max(breadcrumbs.length, 1) - 1;
 
             return (
               <React.Fragment key={crumb}>

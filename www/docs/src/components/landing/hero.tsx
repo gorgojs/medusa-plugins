@@ -6,16 +6,13 @@ import Section from "@/components/layout/section";
 import { Button } from "@/components/ui/button";
 import type { Locale } from "@/types";
 
-
 interface HeroProps {
   locale: Locale;
 }
 
-export default async function Hero({
-  locale
-}: HeroProps) {
+export default async function Hero({ locale }: HeroProps) {
   const t = await getTranslations("homePage.hero");
-  
+
   return (
     <Section className="px-6 py-8 flex items-center border-transparent">
       <div className="flex flex-col lg:flex-row min-h-[420px] items-center mx-auto w-full lg:py-8 xl:py-16 sm:px-18 gap-8">
@@ -24,9 +21,9 @@ export default async function Hero({
           <p className="text-lg max-w-lg mb-8 text-ui-fg-subtle">
             {t("subtitle")}
           </p>
-          <Button variant="primary" asChild>
+          <Button variant="primary" size="large" asChild>
             <Link href={`https://gorgojs.${locale === "en" ? "com" : locale}`}>
-            {t("button")} <ArrowRight />
+              {t("button")} <ArrowRight />
             </Link>
           </Button>
         </div>

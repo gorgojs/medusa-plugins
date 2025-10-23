@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "@/i18n/navigation";
+import { getCurrentSidebar } from "@/lib/sidebar";
 import { cn } from "@/lib/utils";
 import { TocToggle } from "../toc-toggle";
 import Breadcrumbs from "./breadcrumbs";
 import { SidebarToggle } from "./sidebar/sidebar-toggle";
-import { getCurrentSidebar } from "@/lib/sidebar";
 
 export default function MobileNavigationMenu() {
   const pathname = usePathname();

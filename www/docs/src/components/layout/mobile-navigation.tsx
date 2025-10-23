@@ -1,6 +1,6 @@
 "use client";
 
-import { BarsThree, ChevronDown, XMark } from "@medusajs/icons";
+import { BarsThree, Book, ChevronDown, House, XMark } from "@medusajs/icons";
 import { Button } from "@medusajs/ui";
 import { motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
@@ -18,11 +18,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { siteLinks } from "@/data/site-links";
 import { Link } from "@/i18n/navigation";
 import { getHeaderSections } from "@/lib/sidebar";
 import { cn, getLocalizedString } from "@/lib/utils";
 import { LocaleSwitcher } from "../locale-switcher";
 import { ThemeToggle } from "../theme-toggle";
+import { Locale } from "@/types";
 
 export default function MobileNavigation() {
   const t = useTranslations();
@@ -53,7 +55,6 @@ export default function MobileNavigation() {
   }, []);
 
   useEffect(() => {
-    console.log("useEffect");
     if (isDesktop) {
       setIsOpen(false);
     }
@@ -159,7 +160,18 @@ export default function MobileNavigation() {
               ))}
             </ul>
           </div>
-          <DialogFooter className="h-8" />
+          <DialogFooter className="flex flex-row mb-12">
+            <Button variant="secondary" className="flex-1" asChild>
+              <Link href={`#`}>
+                <Book /> Docs
+              </Link>
+            </Button>
+            <Button variant="secondary" className="flex-1" asChild>
+              <Link href={siteLinks[locale as Locale]}>
+                <House /> Homepage
+              </Link>
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

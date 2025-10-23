@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 const buttonVariants = cva({
   base: cn(
-    "transition-fg relative inline-flex w-fit items-center justify-center overflow-hidden rounded-md outline-none",
+    "transition-fg inline-flex w-fit items-center justify-center overflow-hidden rounded-md outline-none",
     "disabled:bg-ui-bg-disabled disabled:border-ui-border-base disabled:text-ui-fg-disabled disabled:shadow-buttons-neutral disabled:after:hidden",
     "after:transition-fg after:absolute after:inset-0 after:content-[''] [&_svg]:size-4"
   ),

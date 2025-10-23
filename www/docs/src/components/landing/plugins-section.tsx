@@ -67,7 +67,7 @@ export async function PluginsSection({
                   {category.plugins.map((plugin) => (
                     <Card
                       key={plugin.id}
-                      className="group flex flex-row cursor-pointer items-center justify-between p-3 transition-all hover:shadow-sm grow-0 w-full"
+                      className="bg-ui-bg-base group flex flex-row cursor-pointer items-center justify-between p-3 transition-all hover:shadow-sm grow-0 w-full"
                     >
                       <Link
                         href={`/medusa-plugins/${plugin.id}`}
