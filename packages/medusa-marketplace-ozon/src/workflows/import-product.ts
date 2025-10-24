@@ -1,7 +1,12 @@
 import { createWorkflow, createStep, StepResponse, WorkflowResponse } from "@medusajs/workflows-sdk"
+import { getDemoOzonOffers } from "../config/ozon-offers"
 
 type Input = { items: any[] }
-type Output = { ok: boolean; status: number; data: any }
+type Output = { 
+  ok: boolean;
+  status: number;
+  data: any;
+  task_id?: number;}
 
 const BASE = process.env.OZON_BASE_URL ?? "https://api-seller.ozon.ru"
 const H = {
@@ -14,7 +19,11 @@ const H = {
 const postImportStep = createStep(
   "admin-ozon-post-import",
   async (input: Input) => {
-    if (!Array.isArray(input.items) || input.items.length === 0) {
+    const items = Array.isArray(input?.items) && input.items.length
+      ? input.items
+      : getDemoOzonOffers()
+
+    if (!Array.isArray(items) || items.length === 0) {
       throw new Error("items must be a non-empty array")
     }
 
@@ -26,7 +35,14 @@ const postImportStep = createStep(
 
     if (r.ok) {
       const data = await r.json().catch(() => ({}))
-      return new StepResponse<Output>({ ok: true, status: r.status, data })
+
+      const task_id = data?.result?.task_id;
+      
+      if (!task_id) {
+        throw new Error("task_id not found in response");
+      }
+
+      return new StepResponse<Output>({ ok: true, status: r.status, data: { ...data} })
     }
 
     const text = await r.text().catch(() => "")
@@ -42,7 +58,7 @@ const postImportStep = createStep(
 export const adminOzonProductImportWorkflow = createWorkflow<Input, Output, []>(
   "admin-ozon-product-import",
   (input) => {
-    const result = postImportStep({ items: input.items })
+    const result = postImportStep(input)
     return new WorkflowResponse(result)
   }
 )
