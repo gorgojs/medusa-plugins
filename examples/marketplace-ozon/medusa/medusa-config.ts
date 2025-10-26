@@ -13,11 +13,19 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
   },
+  modules: [
+    {
+      resolve: "@gorgo/medusa-marketplace-ozon/modules/ozon-export",
+      options: {},
+    }
+  ],
   plugins: [
     {
       resolve: "@gorgo/medusa-marketplace-ozon",
       options: {
-        apiKey: true,
+        clientId: process.env.OZON_CLIENT_ID!,
+        apiKey: process.env.OZON_API_KEY!,
+        baseUrl: process.env.OZON_BASE_URL ?? "https://api-seller.ozon.ru",
       },
     },
   ],

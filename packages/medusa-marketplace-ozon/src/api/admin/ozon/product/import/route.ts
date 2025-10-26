@@ -4,7 +4,7 @@ import { getDemoOzonOffers } from "../../../../../config/ozon-offers";
 
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
-    const body = req.body as { items?: any[] }; // Уточняем тип для body
+    const body = req.body as { items?: any[] };
 
     const itemsToImport = Array.isArray(body.items) && body.items.length > 0
       ? body.items
@@ -20,7 +20,6 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
       context: { idempotencyKey: req.get("Idempotency-Key") || undefined },
     });
 
-    // Возвращаем результат
     return res.status(200).json(exec.result);
   } catch (e: any) {
     return res.status(500).json({ error: e?.message ?? "Internal error" });
