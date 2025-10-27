@@ -16,4 +16,4 @@ export default async function (container: MedusaContainer) {
   }
 }
 
-export const config = { name: "ozon-import", schedule: "* * * * *" }
+export const config = { name: "ozon-import", schedule: "*/30 * * * *" }
