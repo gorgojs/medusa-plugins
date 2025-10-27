@@ -17,8 +17,10 @@ import {
   UsersService,
   type OrderRequest,
   type OrderResponse,
+  type OrderInfoResponse,
   type LabelsRequest,
-  type LoginResponse
+  type LoginResponse,
+  
 } from "../../../apiship-client"
 import { ApishipOptions } from "../types"
 
@@ -84,6 +86,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       const result: CreateFulfillmentResult = {
         data: {
           orderId: response.orderId,
+          order: apishipOrder
         },
         labels
       }
@@ -119,9 +122,11 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     tracking_number: string
     tracking_url: string
   }> {
+    this.logger_.debug(`Apiship.getOrderTracking input: ${JSON.stringify(orderId, null, 2)}`)
+
     try {
-      const response = await OrdersService.getOrderInfo(orderId)
-      const order = (response as any)?.order
+      const orderInfo = await this.getOrderInfo(orderId)
+      const order = orderInfo.order! as any
       const result = {
         tracking_number: order.providerNumber,
         tracking_url: order.trackingUrl,
@@ -135,7 +140,22 @@ class ApishipBase extends AbstractFulfillmentProviderService {
   }
 
   /**
-   * Retrieve labels for orders.
+   * Retrieve an order information.
+   */
+  async getOrderInfo(orderId: number): Promise<OrderInfoResponse> {
+    this.logger_.debug(`Apiship.getOrderInfo input: ${JSON.stringify(orderId, null, 2)}`)
+
+    try{
+      const response = await OrdersService.getOrderInfo(orderId)
+      return response
+    } catch (e: any){
+      this.logger_.error(`Apiship.getOrderInfo error: ${e?.message ?? e}`)
+      throw new Error(`Apiship.getOrderInfo failed: ${e?.message ?? e}`)
+    }
+  }
+
+  /**
+   * Retrieve a labels for orders.
    */
   async getShipmentDocuments(data: Record<string, unknown>): Promise<never[]> {
     this.logger_.debug(`Apiship.getShipmentDocuments input: ${JSON.stringify(data, null, 2)}`)
@@ -144,8 +164,8 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     const orderTracking = this.getOrderTracking(orderId)
     const trackingNumber = (await orderTracking).tracking_number
     const trackingUrl = (await orderTracking).tracking_url
-    const payload: LabelsRequest = { 
-      orderIds: [Number(orderId)],
+    const payload: LabelsRequest = {
+      orderIds: [orderId],
       format: "pdf"
     }
     try {
@@ -165,10 +185,57 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     }
   }
 
-  async createReturnFulfillment(fulfillment: Record<string, unknown>) { return {} as CreateFulfillmentResult }
-  async getFulfillmentDocuments(_data: any): Promise<never[]> { return [] as never[] }
-  async getReturnDocuments(_data: any): Promise<never[]> { return [] as never[] }
-  async retrieveDocuments(_f: any, _t: any): Promise<void> { return }
+  /**
+   * Create a return order.
+   */
+  async createReturnFulfillment(fulfillment: Record<string, unknown>): Promise<CreateFulfillmentResult> {
+    this.logger_.debug(`Apiship.createReturnFulfillment input: ${JSON.stringify(fulfillment, null, 2)}`)
+    // TODO: understand the input fulfillment data 
+    const fulfillmentData = fulfillment as any
+    const labels = fulfillment.data as any
+    try {
+      const labels = await this.getShipmentDocuments(fulfillmentData.orderId)
+      const response = await OrdersService.addReturnOrder(fulfillmentData.externalData)
+      this.logger_.debug(`Apiship.createReturnFulfillment response: ${JSON.stringify(response, null, 2)}`)
+      const result = {
+        data: {
+          labels
+        },
+        labels
+      }
+      this.logger_.debug(`Apiship.createReturnFulfillment output: ${JSON.stringify(result, null, 2)}`)
+      return result
+    } catch (e: any) {
+      this.logger_.error(`Apiship.createReturnFulfillment error: ${e?.message ?? e}`)
+      throw new Error(`Apiship.createReturnFulfillment failed: ${e?.message ?? e}`)
+    }
+  }
+
+  /**
+   * Retrieve waybills for orders.
+   */
+  async getFulfillmentDocuments(data: any): Promise<never[]> {
+    this.logger_.debug(`Apiship.getFulfillmentDocuments input: ${JSON.stringify(data, null, 2)}`)
+
+    const orderId = data.orderId as number
+    const documentsRequest = {
+      orderIds: [orderId],
+      format: "pdf"
+    }
+    try {
+      const response = await OrderDocsService.getWaybills(documentsRequest)
+      return response as unknown as never[]
+    } catch (e: any) {
+      this.logger_.error(`Apiship.getFulfillmentDocuments error: ${e?.message ?? e}`)
+      throw new Error(`Apiship.getFulfillmentDocuments failed: ${e?.message ?? e}`)
+    }
+  }
+
+  async getReturnDocuments(data: any): Promise<never[]> { return [] as never[] }
+  async retrieveDocuments(
+    fulfillmentData: any,
+    documentType: any
+  ): Promise<void> { return }
   async validateFulfillmentData(_o: any, _d: any, _c: any) { return {} }
   async validateOption(_data: any): Promise<boolean> { return true }
   async getFulfillmentOptions(): Promise<any[]> { return [] }
