@@ -1,5 +1,11 @@
 # @gorgo/medusa-payment-robokassa
 
+## 0.2.5
+
+### Patch Changes
+
+- Test on Medusa 2.11.1
+
 ## 0.2.4
 
 ### Patch Changes
