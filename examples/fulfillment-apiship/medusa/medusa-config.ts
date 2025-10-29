@@ -12,5 +12,23 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
-  }
+  },
+  modules: [
+    {
+      resolve: "@medusajs/medusa/fulfillment",
+      options: {
+        providers: [
+          {
+            resolve: "@gorgo/medusa-fulfillment-apiship/providers/fulfillment-apiship",
+            id: "apiship",
+            options: {
+              email: "test",
+              password: "test",
+              isTest: true,
+            },
+          },
+        ],
+      },
+    },
+  ]
 })
