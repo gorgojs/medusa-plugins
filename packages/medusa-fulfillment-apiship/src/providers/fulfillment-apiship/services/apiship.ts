@@ -1,5 +1,6 @@
 import ApishipBase from "../core/apiship-base"
 import { FulfillmentProviderKeys } from "../types"
+import { FulfillmentOption } from "@medusajs/framework/types"
 
 class ApishipService extends ApishipBase {
   static identifier = FulfillmentProviderKeys.APISHIP
@@ -8,8 +9,16 @@ class ApishipService extends ApishipBase {
     super(_, options)
   }
 
-  get paymentOptions(): PaymentOptions {
-    return {}
+  async getFulfillmentOptions(): Promise<FulfillmentOption[]> {
+
+    return [
+      {
+        id: "apiship",
+        name: "Apiship Fulfillment",
+        description: "Fulfillment via Apiship",
+      }
+    ]
+
   }
 }
 

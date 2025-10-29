@@ -11,7 +11,7 @@ import type {
 } from "../../../apiship-client"
 
 export interface ApishipOptions {
-  apiBase?: string
   email: string
   password: string
+  isTest?: boolean,
 }
