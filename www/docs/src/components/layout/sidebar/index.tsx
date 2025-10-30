@@ -6,6 +6,11 @@ import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { useSidebar } from "@/contexts/sidebar-context";
 import type { SidebarItemType, SidebarType } from "@/types";
 
+export const overviewTitle = {
+  en: "Overview",
+  ru: "Обзор",
+};
+
 const SidebarContent = ({
   items,
   basePath = "",
@@ -15,11 +20,6 @@ const SidebarContent = ({
   basePath?: string;
   section?: SidebarType;
 }) => {
-  const overviewTitle = {
-    en: "Overview",
-    ru: "Обзор",
-  };
-
   return (
     <nav className="flex flex-col gap-y-1 px-4">
       {section?.hasOverview && (

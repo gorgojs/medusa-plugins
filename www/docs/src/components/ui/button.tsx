@@ -4,18 +4,20 @@ import { Slot } from "radix-ui";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
+// TODO: Fix after appearance
 const buttonVariants = cva({
   base: cn(
+    // "relative",
     "transition-fg inline-flex w-fit items-center justify-center overflow-hidden rounded-md outline-none",
-    "disabled:bg-ui-bg-disabled disabled:border-ui-border-base disabled:text-ui-fg-disabled disabled:shadow-buttons-neutral disabled:after:hidden",
-    "after:transition-fg after:absolute after:inset-0 after:content-[''] [&_svg]:size-4"
+    "disabled:bg-ui-bg-disabled disabled:border-ui-border-base disabled:text-ui-fg-disabled disabled:shadow-buttons-neutral [&_svg]:size-4"
+    // "disabled:after:hidden after:transition-fg after: after:inset-0 after:content-[''] [&_svg]:size-4 after:-z-1"
   ),
   variants: {
     variant: {
       accent: cn(
         "shadow-buttons-accent text-white",
         "bg-linear-[163deg,#DEBA92_19.34%,#9F724E_47.13%,#7A482E_81.21%]",
-        "after:button-inverted-gradient",
+        // "after:button-inverted-gradient",
         "hover:bg-ui-button-inverted-hover hover:after:button-inverted-hover-gradient",
         "active:bg-ui-button-inverted-pressed active:after:button-inverted-pressed-gradient",
         "focus-visible:!shadow-buttons-inverted-focus"
@@ -33,7 +35,7 @@ const buttonVariants = cva({
         "focus-visible:shadow-buttons-neutral-focus"
       ),
       transparent: cn(
-        "after:hidden",
+        // "after:hidden",
         "text-ui-fg-base bg-ui-button-transparent",
         "hover:bg-ui-button-transparent-hover",
         "active:bg-ui-button-transparent-pressed",

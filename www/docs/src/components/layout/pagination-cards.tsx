@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useLocale } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 import { flattenSidebarItems } from "@/lib/sidebar";
-import type { LocalizedString, SidebarType } from "@/types";
 import { getLocalizedString } from "@/lib/utils";
+import type { LocalizedString, SidebarType } from "@/types";
+import { overviewTitle } from "./sidebar";
 
 function PaginationCard({
   href,
@@ -46,6 +47,14 @@ export default function PaginationCards({
     section?.children ?? [],
     baseSlugs
   );
+
+  if (section.hasOverview) {
+    flattenedItems.unshift({
+      path: baseSlugs,
+      title: overviewTitle,
+      slug: "",
+    });
+  }
 
   const currentPageIndex = flattenedItems.findIndex(
     (i) => `/${i.path.join("/")}` === pathname

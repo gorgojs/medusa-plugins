@@ -6,6 +6,7 @@ import {
 } from "@icons-pack/react-simple-icons";
 import { Globe } from "lucide-react";
 import type { PluginLinkService, PluginLink as PluginLinkType } from "@/types";
+import { Button } from "../ui/button";
 
 function getIcon(type: PluginLinkService) {
   switch (type) {
@@ -45,16 +46,12 @@ function PluginLink({
   url: string;
 }) {
   return (
-    <a
-      key={url}
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="bg-ui-bg-base border text-sm py-2.5 px-4 w-full flex justify-center items-center cursor-pointer group rounded-lg grow gap-1.5"
-    >
-      {getIcon(service)}
-      {getServiceName(service)}
-    </a>
+    <Button variant="secondary" size="large" className="w-full" asChild>
+      <a key={url} href={url} target="_blank" rel="noopener noreferrer">
+        {getIcon(service)}
+        {getServiceName(service)}
+      </a>
+    </Button>
   );
 }
 

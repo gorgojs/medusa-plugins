@@ -1,6 +1,7 @@
 import { TriangleDownMini } from "@medusajs/icons";
 import Link from "next/link";
 import { useLocale } from "next-intl";
+import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
@@ -29,7 +30,6 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
 }) => {
   const pathname = usePathname();
   const locale = useLocale();
-  // For overview item, the href is just the base path (e.g. /plugins rather than /plugins/section-slug)
   const href = isOverview ? `${basePath}` : `${basePath}/${slug}`;
   const isActive = pathname === href;
 
@@ -42,16 +42,16 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   if (isLink && hasChildren) {
     return (
       <>
-        <Link
-          href={href}
-          className={cn(
-            `text-sm py-2.5 px-4 w-full flex justify-start items-center cursor-pointer group rounded-lg grow border border-transparent`,
-            isActive && "bg-ui-bg-base border-ui-border-base"
-          )}
-          suppressHydrationWarning
+        <Button
+          className="flex justify-start text-start w-full text-sm"
+          variant={isActive ? "secondary" : "transparent"}
+          size="large"
+          asChild
         >
-          {displayTitle}
-        </Link>
+          <Link href={href} suppressHydrationWarning>
+            {displayTitle}
+          </Link>
+        </Button>
         <div
           style={{
             paddingLeft: `${level * 16}px`,
@@ -74,10 +74,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     return (
       <Collapsible defaultOpen={true}>
         <CollapsibleTrigger asChild>
-          <div
-            className={cn(
-              `text-sm py-2.5 px-4 w-full flex justify-between items-center cursor-pointer group rounded-lg grow border border-transparent`
-            )}
+          <Button
+            className="flex justify-start text-start w-full text-sm"
+            variant={isActive ? "secondary" : "transparent"}
+            size="large"
           >
             {displayTitle}
             {hasChildren && (
@@ -85,7 +85,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                 className={"group-data-[state=open]:rotate-180"}
               />
             )}
-          </div>
+          </Button>
         </CollapsibleTrigger>
         <CollapsibleContent
           style={{
@@ -107,23 +107,23 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   }
 
   return (
-    <Collapsible defaultOpen={true}>
+    <Collapsible defaultOpen={true} className="py-px">
       <CollapsibleTrigger asChild>
-        <Link
-          href={href}
-          className={cn(
-            `text-sm py-2.5 px-4 w-full flex justify-between items-center cursor-pointer group rounded-lg grow border border-transparent`,
-            isActive && "bg-ui-bg-base border-ui-border-base"
-          )}
-          suppressHydrationWarning
+        <Button
+          className="flex justify-start text-start w-full text-sm"
+          variant={isActive ? "secondary" : "transparent"}
+          size="large"
+          asChild
         >
-          {displayTitle}
-          {hasChildren && (
-            <TriangleDownMini
-              className={"group-data-[state=open]:rotate-180"}
-            />
-          )}
-        </Link>
+          <Link href={href} suppressHydrationWarning>
+            {displayTitle}
+            {hasChildren && (
+              <TriangleDownMini
+                className={"group-data-[state=open]:rotate-180"}
+              />
+            )}
+          </Link>
+        </Button>
       </CollapsibleTrigger>
       <CollapsibleContent
         style={{

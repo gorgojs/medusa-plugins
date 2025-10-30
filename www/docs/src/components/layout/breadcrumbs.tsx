@@ -4,7 +4,7 @@ import { TriangleRightMini } from "@medusajs/icons";
 import { useLocale } from "next-intl";
 import React from "react";
 import { Link, usePathname } from "@/i18n/navigation";
-import { flattenSidebarItems } from "@/lib/sidebar";
+import { flattenSidebarItems, getHeaderSections } from "@/lib/sidebar";
 import { cn, getLocalizedString } from "@/lib/utils";
 import type { SidebarType } from "@/types";
 
@@ -25,11 +25,17 @@ export default function Breadcrumbs({
     baseSlugs
   );
 
+  console.log(section, baseSlugs);
+
   const currentPage = flattenedItems.find(
     (i) => `/${i.path.join("/")}` === pathname
   );
 
   const breadcrumbs = currentPage?.path ?? [];
+
+  const parentSection = getHeaderSections().find(
+    (s) => s.slug === baseSlugs[0]
+  );
 
   return (
     <nav
@@ -38,6 +44,20 @@ export default function Breadcrumbs({
     >
       {section?.children && (
         <ol className="flex flex-row items-center gap-x-1">
+          {parentSection && (
+            <>
+              <li>
+                <div className="transition-colors hover:text-ui-fg-subtle">
+                  {typeof parentSection.title === "string"
+                    ? parentSection.title
+                    : getLocalizedString(parentSection.title, locale)}
+                </div>
+              </li>
+              <li>
+                <TriangleRightMini className="text-ui-fg-muted" />
+              </li>
+            </>
+          )}
           <li>
             <Link
               href={`/${baseSlugs.join("/")}`}
