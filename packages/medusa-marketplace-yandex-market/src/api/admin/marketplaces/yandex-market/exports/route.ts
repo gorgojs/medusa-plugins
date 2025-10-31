@@ -1,9 +1,9 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { exportYandexMarketWorkflow } from "../../../../workflows/export-yandex-market"
+import { runYmProductExportWorkflow } from "../../../../../workflows/product/workflows/run-ym-product-export"
 
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
-    const exec = await exportYandexMarketWorkflow.run({
+    const exec = await runYmProductExportWorkflow.run({
       container: req.scope,
       input: { medusaCategoryName: "Mobile Phones" },
     })
