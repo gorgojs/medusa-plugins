@@ -1,9 +1,7 @@
 "use client";
 
 import { ScrollText } from "@medusajs/icons";
-import { Button } from "@medusajs/ui";
 import type { Toc, TocEntry } from "@stefanprobst/rehype-extract-toc";
-import { ChevronUp } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -342,22 +340,13 @@ function TableOfContents({ toc }: { toc: Toc }) {
 
       <ScrollArea
         ref={scrollContainerRef}
-        className="min-[900px]:h-[calc(100vh-24rem)]"
+        className="min-[900px]:h-[calc(100vh-25rem)]"
         showShadows
         shadowSize="32px"
       >
         <ScrollBar />
         {toc.map((item) => renderTocItem(item))}
       </ScrollArea>
-
-      <Button
-        variant="secondary"
-        className="self-start flex items-center gap-1 mt-4 w-full"
-        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      >
-        <ChevronUp className="w-4 h-4" />
-        {t("backToTop")}
-      </Button>
     </div>
   );
 }

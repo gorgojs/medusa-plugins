@@ -66,8 +66,11 @@ const navigationMenuTriggerStyle = cva(
 function NavigationMenuTrigger({
   className,
   children,
+  hideDefaultTrigger = false,
   ...props
-}: ComponentProps<typeof NavigationMenuPrimitive.Trigger>) {
+}: ComponentProps<typeof NavigationMenuPrimitive.Trigger> & {
+  hideDefaultTrigger?: boolean;
+}) {
   return (
     <NavigationMenuPrimitive.Trigger
       data-slot="navigation-menu-trigger"
@@ -79,10 +82,12 @@ function NavigationMenuTrigger({
       {...props}
     >
       {children}{" "}
-      <TriangleDownMini
-        className="relative ml-1 transition duration-300 group-data-[state=open]:rotate-180"
-        aria-hidden="true"
-      />
+      {!hideDefaultTrigger && (
+        <TriangleDownMini
+          className="relative ml-1 transition duration-300 group-data-[state=open]:rotate-180"
+          aria-hidden="true"
+        />
+      )}
     </NavigationMenuPrimitive.Trigger>
   );
 }

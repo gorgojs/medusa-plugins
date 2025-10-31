@@ -14,7 +14,10 @@ export default async function Hero({ locale }: HeroProps) {
   const t = await getTranslations("homePage.hero");
 
   return (
-    <Section className="px-6 py-8 flex items-center border-transparent">
+    <Section
+      className="px-6 py-8 flex items-center border-transparent"
+      containerClassName="border-t-0"
+    >
       <div className="flex flex-col lg:flex-row min-h-[420px] items-center mx-auto w-full lg:py-8 xl:py-16 sm:px-18 gap-8">
         <div className="flex-1">
           <h1 className="text-4xl font-medium mb-3">{t("title")}</h1>

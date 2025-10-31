@@ -8,29 +8,31 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { usePathname } from "@/i18n/navigation";
-import { cn, getLocalizedString } from "@/lib/utils";
-import type { LocalizedString, SidebarItemType } from "@/types";
+import { getLocalizedString } from "@/lib/utils";
+import type { LocalizedString, SidebarItemType, SidebarType } from "@/types";
+import { overviewTitle } from ".";
 
 type SidebarItemProps = {
   level?: number;
   slug?: string;
   title: LocalizedString | string;
-  items?: SidebarItemType[];
+  items?: (SidebarItemType | SidebarType)[];
   basePath?: string;
   isOverview?: boolean;
+  hasOverview?: boolean;
 };
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
   level = 1,
   slug,
   title,
-  items: children,
+  items: children = [],
   basePath = "",
-  isOverview = false,
+  hasOverview = false,
 }) => {
   const pathname = usePathname();
   const locale = useLocale();
-  const href = isOverview ? `${basePath}` : `${basePath}/${slug}`;
+  const href = `${basePath}/${slug}`;
   const isActive = pathname === href;
 
   const displayTitle =
@@ -39,13 +41,65 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   const hasChildren = Array.isArray(children) && children.length > 0;
   const isLink = !!slug;
 
+  if (hasOverview) {
+    return (
+      <Collapsible
+        defaultOpen={pathname.startsWith(href)}
+        className="border-b border-dashed last:border-b-0"
+      >
+        <CollapsibleTrigger asChild>
+          <div className="flex justify-start text-start w-full txt-compact-small-plus text-ui-fg-subtle py-2">
+            {displayTitle}
+            {hasChildren && (
+              <TriangleDownMini
+                className={"ml-auto group-data-[state=open]:rotate-180"}
+              />
+            )}
+          </div>
+        </CollapsibleTrigger>
+        <CollapsibleContent
+          className="my-3 space-y-0.5"
+          style={{
+            paddingLeft: `${level * 16}px`,
+          }}
+        >
+          {hasOverview && (
+            <SidebarItem
+              key={`overview-${slug}`}
+              slug={slug}
+              title={overviewTitle}
+              basePath={basePath}
+            />
+          )}
+          {children.map((child) => {
+            return (
+              <SidebarItem
+                level={
+                  "isSection" in child
+                    ? child.isSection === true
+                      ? level
+                      : level + 1
+                    : level + 1
+                }
+                key={child.slug}
+                basePath={`${basePath}/${slug}`}
+                hasOverview={"hasOverview" in child && child.hasOverview}
+                {...child}
+              />
+            );
+          })}
+        </CollapsibleContent>
+      </Collapsible>
+    );
+  }
+
   if (isLink && hasChildren) {
     return (
       <>
         <Button
           className="flex justify-start text-start w-full text-sm"
           variant={isActive ? "secondary" : "transparent"}
-          size="large"
+          size="small"
           asChild
         >
           <Link href={href} suppressHydrationWarning>
@@ -57,14 +111,23 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             paddingLeft: `${level * 16}px`,
           }}
         >
-          {children.map((child) => (
-            <SidebarItem
-              level={level + 1}
-              key={child.slug}
-              {...child}
-              basePath={`${basePath}/${slug}`}
-            />
-          ))}
+          {children.map((child) => {
+            return (
+              <SidebarItem
+                level={
+                  "isSection" in child
+                    ? child.isSection === true
+                      ? level
+                      : level + 1
+                    : level + 1
+                }
+                key={child.slug}
+                basePath={`${basePath}/${slug}`}
+                hasOverview={"hasOverview" in child && child.hasOverview}
+                {...child}
+              />
+            );
+          })}
         </div>
       </>
     );
@@ -77,7 +140,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           <Button
             className="flex justify-start text-start w-full text-sm"
             variant={isActive ? "secondary" : "transparent"}
-            size="large"
+            size="small"
           >
             {displayTitle}
             {hasChildren && (
@@ -93,14 +156,22 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           }}
         >
           {hasChildren &&
-            children.map((child) => (
-              <SidebarItem
-                level={level + 1}
-                key={child.slug}
-                {...child}
-                basePath={`${basePath}/${slug}`}
-              />
-            ))}
+            children.map((child) => {
+              return (
+                <SidebarItem
+                  level={
+                    "isSection" in child
+                      ? child.isSection
+                        ? level
+                        : level + 1
+                      : level + 1
+                  }
+                  key={child.slug}
+                  {...child}
+                  basePath={`${basePath}/${slug}`}
+                />
+              );
+            })}
         </CollapsibleContent>
       </Collapsible>
     );
@@ -112,7 +183,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         <Button
           className="flex justify-start text-start w-full text-sm"
           variant={isActive ? "secondary" : "transparent"}
-          size="large"
+          size="small"
           asChild
         >
           <Link href={href} suppressHydrationWarning>
@@ -131,14 +202,22 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         }}
       >
         {hasChildren &&
-          children.map((child) => (
-            <SidebarItem
-              level={level + 1}
-              key={child.slug}
-              {...child}
-              basePath={`${basePath}/${slug}`}
-            />
-          ))}
+          children.map((child) => {
+            return (
+              <SidebarItem
+                level={
+                  "isSection" in child
+                    ? child.isSection
+                      ? level
+                      : level + 1
+                    : level + 1
+                }
+                key={child.slug}
+                {...child}
+                basePath={`${basePath}/${slug}`}
+              />
+            );
+          })}
       </CollapsibleContent>
     </Collapsible>
   );

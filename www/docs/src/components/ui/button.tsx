@@ -10,7 +10,7 @@ const buttonVariants = cva({
     // "relative",
     "transition-fg inline-flex w-fit items-center justify-center overflow-hidden rounded-md outline-none",
     "disabled:bg-ui-bg-disabled disabled:border-ui-border-base disabled:text-ui-fg-disabled disabled:shadow-buttons-neutral [&_svg]:size-4"
-    // "disabled:after:hidden after:transition-fg after: after:inset-0 after:content-[''] [&_svg]:size-4 after:-z-1"
+    // "disabled:after:hidden after:transition-fg after: after:inset-0 after:content-[''] after:-z-1"
   ),
   variants: {
     variant: {

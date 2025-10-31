@@ -1,9 +1,11 @@
 "use client";
 
+import { useLocale } from "next-intl";
 import { useMediaQuery } from "usehooks-ts";
 import SidebarItem from "@/components/layout/sidebar/sidebar-item";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { useSidebar } from "@/contexts/sidebar-context";
+import { getLocalizedString } from "@/lib/utils";
 import type { SidebarItemType, SidebarType } from "@/types";
 
 export const overviewTitle = {
@@ -12,20 +14,31 @@ export const overviewTitle = {
 };
 
 const SidebarContent = ({
+  section,
   items,
   basePath = "",
-  section,
 }: {
   items: (SidebarItemType | SidebarType)[];
+  section: SidebarType;
   basePath?: string;
-  section?: SidebarType;
 }) => {
+  const locale = useLocale();
+
+  const displayTitle =
+    typeof section.title === "string"
+      ? section.title
+      : getLocalizedString(section.title, locale);
+
   return (
-    <nav className="flex flex-col gap-y-1 px-4">
+    <nav className="flex flex-col px-4">
+      <div className="text-xs font-medium text-ui-fg-subtle/60 mb-3">
+        {displayTitle}
+      </div>
+      <div className="w-full h-1 border-dashed border-b" />
       {section?.hasOverview && (
         <SidebarItem
           key={`overview-${section.slug}`}
-          slug={section.slug}
+          slug={"/"}
           title={overviewTitle}
           items={[]}
           basePath={basePath}
@@ -34,11 +47,13 @@ const SidebarContent = ({
       )}
       {items.map((item) => (
         <SidebarItem
+          level={"isSection" in item ? 0 : 1}
           key={item.slug}
           slug={item.slug}
           title={item.title}
           items={item.children as SidebarItemType[]}
           basePath={basePath}
+          hasOverview={"hasOverview" in item && item?.hasOverview}
         />
       ))}
     </nav>

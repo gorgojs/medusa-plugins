@@ -26,6 +26,7 @@
 
   body {
     letter-spacing: -0.045em;
+    background-color: var(--color-ui-bg-base);
   }
 }
 
