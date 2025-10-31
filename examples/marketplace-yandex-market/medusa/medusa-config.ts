@@ -13,15 +13,26 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
   },
+  featureFlags: {
+    backend_hmr: true,
+  },
   plugins: [
-
     {
-
       resolve: "@gorgo/medusa-marketplace-yandex-market",
-
       options: {},
-
     },
-
+    {
+      resolve: "@gorgo/medusa-marketplace",
+      options: {
+        providers: [
+          {
+            resolve: "@gorgo/medusa-marketplace-yandex-market/providers/marketplace-yandex-market",
+            id: "test",
+            options: {
+            }
+          }
+        ]
+      }
+    }
   ],
 })
