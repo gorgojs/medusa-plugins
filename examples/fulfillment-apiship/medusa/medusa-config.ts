@@ -24,6 +24,7 @@ module.exports = defineConfig({
             options: {
               email: "test",
               password: "test",
+              token: "dfd63ff7f977a1b88d3fc8f176b818dc",
               isTest: true,
             },
           },
