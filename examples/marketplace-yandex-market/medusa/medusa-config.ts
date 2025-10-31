@@ -16,12 +16,20 @@ module.exports = defineConfig({
   plugins: [
 
     {
-
       resolve: "@gorgo/medusa-marketplace-yandex-market",
 
       options: {},
-
     },
 
+  ],
+  modules: [
+    {
+      resolve: "@gorgo/medusa-marketplace-yandex-market/modules/yandex_market_export",
+      options: {},
+    },
+    {
+      resolve: "@gorgo/medusa-marketplace-yandex-market/modules/marketplace",
+      options: {},
+    }
   ],
 })

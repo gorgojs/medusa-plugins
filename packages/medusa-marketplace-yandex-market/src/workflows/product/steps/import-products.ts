@@ -1,0 +1,16 @@
+import {
+  createStep,
+  StepResponse
+} from "@medusajs/workflows-sdk"
+import { importProducts } from "../../../providers/marketplace";
+
+export type ImportProductsStepInput = any
+
+export const importProductsStep = createStep(
+  "import-products",
+  async (input: ImportProductsStepInput, {container}) => {
+    const result = await importProducts(input, container)
+
+    return new StepResponse(result)
+  }
+)
