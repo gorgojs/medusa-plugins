@@ -1,30 +1,30 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
-import { CircleSolid } from "@medusajs/icons"
+import { CreditCardSolid } from "@medusajs/icons"
 import {
   Button,
   Container,
   Text
 } from "@medusajs/ui"
 import { useState } from "react"
-import { sdk } from "../../lib/sdk"
+import { sdk } from "../../../lib/sdk"
 
-const SyncWildberriesPage = () => {
+const AddMarketplacePage = () => {
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const syncWithWB = async () => {
+  const addMarketplace = async () => {
     setLoading(true)
     setError(null)
     setData(null)
 
     try {
-      const response = await sdk.client.fetch("/admin/marketplaces/wildberries/products/sync", {
+      const response = await sdk.client.fetch("/admin/marketplaces/add", {
         method: "POST",
       })
       setData(response)
     } catch (err: any) {
-      setError(err?.message ?? "Error during syncing")
+      setError(err?.message ?? "Error during creating")
     } finally {
       setLoading(false)
     }
@@ -32,8 +32,8 @@ const SyncWildberriesPage = () => {
 
   return (
     <Container className="divide-y p-0">
-      <Button onClick={syncWithWB} disabled={loading}>
-        {loading ? "Syncing..." : "Sync with Wildberries"}
+      <Button onClick={addMarketplace} disabled={loading}>
+        {loading ? "Adding..." : "add marketplace"}
       </Button>
 
       <div className="px-6 py-4 space-y-3">
@@ -46,8 +46,8 @@ const SyncWildberriesPage = () => {
 }
 
 export const config = defineRouteConfig({
-  label: "Sync with WB",
-  icon: CircleSolid
+  label: "Add marketplace",
+  icon: CreditCardSolid
 })
 
-export default SyncWildberriesPage
+export default AddMarketplacePage

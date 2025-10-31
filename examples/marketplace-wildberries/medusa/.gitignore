@@ -25,6 +25,7 @@ build
 
 .medusa
 
-yarn.lock
 .yalc
 yalc.lock
+yarn.lock
+package-lock.json

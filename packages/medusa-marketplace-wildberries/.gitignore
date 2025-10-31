@@ -24,6 +24,7 @@ build
 !.yarn/versions
 
 .medusa
+src/lib/wildberries-products-client
 
 .yalc
 yalc.lock
