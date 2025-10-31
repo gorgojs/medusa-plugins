@@ -9,8 +9,8 @@ import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 const YM_BASE = process.env.YM_BASE_URL ?? "https://api.partner.market.yandex.ru"
 const YM_API_KEY = process.env.YM_API_KEY
 const YM_BUSINESS_ID = process.env.YM_BUSINESS_ID
-const YM_PHONE_CATEGORY_ID = process.env.YM_PHONE_CATEGORY_ID
-const YM_DEFAULT_VENDOR = process.env.YM_DEFAULT_VENDOR
+const YM_PHONE_CATEGORY_ID = 91491
+const YM_DEFAULT_VENDOR = "Medusa"
 
 const MAX_OFFERS_PER_REQUEST = 100 as const
 
