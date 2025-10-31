@@ -16,7 +16,7 @@ function YandexExportPage() {
     setResult(null)
 
     try {
-      const r = await fetch("/admin/export/yandex", {
+      const r = await fetch("/admin/marketplaces/yandex-market/exports", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),

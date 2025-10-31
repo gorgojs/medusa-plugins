@@ -42,12 +42,12 @@ type ProductRow = {
   variants?: Variant[]
 }
 
-export type ExportInput = {
+export type RunYmProductExportWorkflowInput = {
   medusaCategoryName?: string
   categoryId?: number
 }
 
-export type ExportOutput = {
+export type RunYmProductExportWorkflowOutput = {
   ok: boolean
   status: number
   sentCount: number
@@ -168,7 +168,7 @@ function extractResults(resp: any): UpdateOfferMappingResultDTO[] {
 
 const resolveMarketCategoryIdStep = createStep(
   "resolve-market-category-id",
-  async (input: ExportInput | undefined) => {
+  async (input: RunYmProductExportWorkflowInput | undefined) => {
     const cat = Number(input?.categoryId || YM_PHONE_CATEGORY_ID || 0)
     if (!cat) {
       throw new Error("Set YM_PHONE_CATEGORY_ID or pass input.categoryId (leaf id for Mobile Phones)")
@@ -179,7 +179,7 @@ const resolveMarketCategoryIdStep = createStep(
 
 const loadPhonesStep = createStep(
   "load-phones-from-medusa",
-  async (input: ExportInput | undefined, { container }) => {
+  async (input: RunYmProductExportWorkflowInput | undefined, { container }) => {
     const query = container.resolve(ContainerRegistrationKeys.QUERY)
 
     const { data } = await query.graph({
@@ -239,7 +239,7 @@ const loadYmCategoryParamsStep = createStep(
 
 const pushToYandexStep = createStep<
   { products: ProductRow[]; params: YmParam[]; categoryId: number },
-  ExportOutput,
+  RunYmProductExportWorkflowOutput,
   string[]
 >(
   "push-phones-to-yandex",
@@ -381,7 +381,7 @@ const pushToYandexStep = createStep<
       await sleep(200)
     }
 
-    return new StepResponse<ExportOutput, string[]>(
+    return new StepResponse<RunYmProductExportWorkflowOutput, string[]>(
       {
         ok: true,
         status: 200,
@@ -398,8 +398,8 @@ const pushToYandexStep = createStep<
   async () => {}
 )
 
-export const exportYandexMarketWorkflow = createWorkflow<ExportInput, ExportOutput, []>(
-  "export-yandex-market",
+export const runYmProductExportWorkflow = createWorkflow<RunYmProductExportWorkflowInput, RunYmProductExportWorkflowOutput, []>(
+  "run-ym-product-export",
   (input) => {
     const catId = resolveMarketCategoryIdStep(input)
     const products = loadPhonesStep(input)

@@ -194,8 +194,8 @@ const listAllStep = createStep(
   }
 )
 
-export const yandexOfferCardsListAll = createWorkflow<ListAllInput, ListAllOutput, []>(
-  "yandex-offer-cards-list-all",
+export const checkYmProductExportStatusWorkflow = createWorkflow<ListAllInput, ListAllOutput, []>(
+  "check-ym-product-export-status",
   (input) => {
     const result = listAllStep(input)
     return new WorkflowResponse(result)
