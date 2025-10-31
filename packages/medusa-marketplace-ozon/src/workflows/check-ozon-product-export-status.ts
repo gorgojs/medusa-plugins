@@ -20,17 +20,17 @@ type OzonExportRecord = {
 
 type FetchResult =
   | {
-      id: string
-      task_id: string
-      ok: true
-      result: { items?: any[]; total?: number; status?: string }
-    }
+    id: string
+    task_id: string
+    ok: true
+    result: { items?: any[]; total?: number; status?: string }
+  }
   | {
-      id: string
-      task_id: string
-      ok: false
-      error: string
-    }
+    id: string
+    task_id: string
+    ok: false
+    error: string
+  }
 
 type Input = {
   batchSize?: number
@@ -38,7 +38,7 @@ type Input = {
   onlyWithoutStatus?: boolean
 }
 
-const BASE_URL = process.env.OZON_BASE_URL ?? "https://api-seller.ozon.ru"
+const OZON_BASE_URL = process.env.OZON_BASE_URL ?? "https://api-seller.ozon.ru"
 const HEADERS = {
   "Client-Id": process.env.OZON_CLIENT_ID!,
   "Api-Key": process.env.OZON_API_KEY!,
@@ -48,7 +48,7 @@ const HEADERS = {
 
 
 async function fetchTaskStatus(taskId: string) {
-  const res = await fetch(`${BASE_URL}/v1/product/import/info`, {
+  const res = await fetch(`${OZON_BASE_URL}/v1/product/import/info`, {
     method: "POST",
     headers: HEADERS,
     body: JSON.stringify({ task_id: Number(taskId) }),
@@ -197,9 +197,8 @@ export const applyStatusesToDbStep = createStep(
   }
 )
 
-
-export const checkExportStatusWorkflow = createWorkflow<Input, { count: number }, []>(
-  "check-export-status",
+export const checkOzonProductExportStatusWorkflow = createWorkflow<Input, { count: number }, []>(
+  "check-ozon-product-export-status",
   (input: Input = {}) => {
     const records = listAllOzonExportsStep({
       batchSize: input.batchSize ?? 200,
@@ -213,20 +212,20 @@ export const checkExportStatusWorkflow = createWorkflow<Input, { count: number }
 
     const { updates } = transform({ fetched }, ({ fetched }) => {
       const now = new Date()
-    
+
       return {
         updates: (fetched as FetchResult[]).map((fr) => {
           if (fr.ok) {
             const items = Array.isArray(fr.result.items) ? fr.result.items : []
             let status: string | null = null
-    
+
             if (items.length > 0) {
               const allImported = items.every((it) => it.status === "imported")
               status = allImported ? "success" : "error"
             } else {
               status = "error"
             }
-    
+
             return {
               id: fr.id,
               ozon_task_status: status,
@@ -247,7 +246,7 @@ export const checkExportStatusWorkflow = createWorkflow<Input, { count: number }
         }),
       }
     })
-    
+
 
     applyStatusesToDbStep({ updates, chunkSize: 200 })
 

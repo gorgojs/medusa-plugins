@@ -1,30 +1,19 @@
 import { MedusaContainer } from "@medusajs/framework/types"
-import { checkExportStatusWorkflow } from "../workflows/check-ozon-export-status"
+import { checkOzonProductExportStatusWorkflow } from "../workflows/check-ozon-product-export-status"
 
 export default async function (container: MedusaContainer) {
-  try {
-    const batchSize =
-      Number(process.env.OZON_STATUS_BATCH_SIZE || "") || 100
+  const logger = container.resolve("logger")
 
-    const { result } = await checkExportStatusWorkflow(container).run({
-      input: { batchSize },
-    })
+  const batchSize =
+    Number(process.env.OZON_STATUS_BATCH_SIZE || "") || 100
 
-    container
-      .resolve("logger")
-      .info(
-        `Ozon export status check done (batchSize=${batchSize}): ${JSON.stringify(
-          result
-        )}`
-      )
+  const { result } = await checkOzonProductExportStatusWorkflow(container).run({
+    input: { batchSize },
+  })
 
-    return result
-  } catch (error: any) {
-    container
-      .resolve("logger")
-      .error(`Ozon export status check failed: ${error?.message}`)
-    throw error
-  }
+  logger.info(`Ozon export status check (batchSize=${batchSize}): ${JSON.stringify(result)}`)
+
+  return result
 }
 
 export const config = {
