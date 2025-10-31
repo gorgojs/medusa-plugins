@@ -256,8 +256,8 @@ const mergeProductCardsStep = createStep(
   }
 )
 
-const syncProductsWildberriesWorkflow = createWorkflow(
-  "sync-products-from-wildberries",
+export const syncWbProductsWorkflow = createWorkflow(
+  "sync-wb-products",
   () => {
     const syncResult = syncCardsFromWildberriesStep()
 
@@ -279,5 +279,3 @@ const syncProductsWildberriesWorkflow = createWorkflow(
     return new WorkflowResponse(result)
   }
 )
-
-export default syncProductsWildberriesWorkflow

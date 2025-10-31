@@ -19,7 +19,7 @@ const SyncWildberriesPage = () => {
     setData(null)
 
     try {
-      const response = await sdk.client.fetch("/admin/marketplace/wildberries/products/sync", {
+      const response = await sdk.client.fetch("/admin/marketplaces/wildberries/products/sync", {
         method: "POST",
       })
       setData(response)
