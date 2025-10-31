@@ -1,4 +1,7 @@
-import { AbstractFulfillmentProviderService, isDefined } from "@medusajs/framework/utils"
+import { 
+  AbstractFulfillmentProviderService,
+  isDefined 
+} from "@medusajs/framework/utils"
 import {
   Logger,
   CalculateShippingOptionPriceDTO,
@@ -9,20 +12,14 @@ import {
   FulfillmentItemDTO,
   FulfillmentOrderDTO,
 } from "@medusajs/framework/types"
-
 import {
   OpenAPI,
   OrdersService,
   OrderDocsService,
   ListsService,
-  UsersService,
   type TariffObject,
   type OrderRequest,
-  type OrderResponse,
-  type OrderInfoResponse,
-  type LabelsRequest,
-  type LoginResponse,
-
+  type OrderReturnRequest,
 } from "../../../apiship-client"
 import { ApishipOptions } from "../types"
 
@@ -30,13 +27,12 @@ type InjectedDependencies = {
   logger: Logger
 }
 
-
 class ApishipBase extends AbstractFulfillmentProviderService {
   protected logger_: Logger
   protected options_: ApishipOptions
-  private accessToken_: string | null = "dfd63ff7f977a1b88d3fc8f176b818dc"
   protected serverUrl_: string
-  private authInProgress_ = false
+  // private accessToken_: string | null
+  // private authInProgress_ = false
 
   constructor({ logger }: InjectedDependencies, options: ApishipOptions) {
     super()
@@ -45,25 +41,26 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     this.serverUrl_ = options.isTest
       ? "http://api.dev.apiship.ru/v1"
       : "https://api.apiship.ru/v1"
-    OpenAPI.BASE = this.serverUrl_
-    OpenAPI.TOKEN = "dfd63ff7f977a1b88d3fc8f176b818dc"
+    OpenAPI.BASE = this.serverUrl_  
+    OpenAPI.TOKEN = this.options_.token
   }
 
-  private async ensureAuth(): Promise<void> {
-    if (this.accessToken_ || this.authInProgress_) return
-    this.authInProgress_ = true
-    try {
-      const res = await UsersService.loginUser({
-        login: this.options_.email,
-        password: this.options_.password,
-      })
-      const token = (res as any)?.token
-      if (!token) throw new Error("ApiShip: не получили token в /users/login")
-      this.accessToken_ = token
-    } finally {
-      this.authInProgress_ = false
-    }
-  }
+  // TODO: Test all situations with token
+  // private async ensureAuth(): Promise<void> {
+  //   if (this.accessToken_ || this.authInProgress_) return
+  //   this.authInProgress_ = true
+  //   try {
+  //     const res = await UsersService.loginUser({
+  //       login: this.options_.email,
+  //       password: this.options_.password,
+  //     })
+  //     const token = (res as any)?.token
+  //     if (!token) throw new Error("ApiShip: не получили token в /users/login")
+  //     this.accessToken_ = token
+  //   } finally {
+  //     this.authInProgress_ = false
+  //   }
+  // }
 
   async calculatePrice(
     optionData: CalculateShippingOptionPriceDTO["optionData"],
@@ -167,7 +164,6 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       ],
     }
     try {
-      await this.ensureAuth()
       const response = await OrdersService.addOrder(
         undefined,
         apishipOrder
@@ -193,7 +189,6 @@ class ApishipBase extends AbstractFulfillmentProviderService {
 
   async pickTariffId(providerKey: string): Promise<number> {
     this.logger_.debug(`Apiship.pickTariffId input: ${JSON.stringify(providerKey)}`)
-
     const fields = "id,tariffId,providerKey,name"
     const filter = `providerKey=${providerKey}`
     let rows: TariffObject[] | undefined
@@ -206,17 +201,14 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     } catch (e: any) {
       this.logger_.debug(`Apiship.getListTariffs failed with "${filter}": ${e?.message ?? e}`)
     }
-
     if (!rows?.length) {
       throw new Error(`No current tariffs found for ProviderKey=${providerKey}`)
     }
-
     const tarrif = rows[0]
     const id = tarrif.id
     if (!id) {
-      throw new Error(`Не удалось извлечь tariffId у первого тарифа (providerKey=${providerKey})`)
+      throw new Error(`Failed to retrieve tariffId from the first tariff (providerKey=${providerKey})`)
     }
-
     this.logger_.debug(`Apiship.pickTariffId output: ${id} (${tarrif.name})`)
     return Number(id)
   }
@@ -226,15 +218,13 @@ class ApishipBase extends AbstractFulfillmentProviderService {
    */
   async cancelFulfillment(data: Record<string, unknown>): Promise<any> {
     this.logger_.debug(`Apiship.cancelFulfillment input: ${JSON.stringify(data, null, 2)}`)
-
     const orderId = data?.orderId as number
     try {
-      await this.ensureAuth()
       const response = await OrdersService.cancelOrder(orderId)
       this.logger_.debug(`Apiship.cancelFulfillment output: ${JSON.stringify(response, null, 2)}`)
-      return { data: response }
+      return response 
     } catch (e: any) {
-      this.logger_.error(`[Apiship.cancelFulfillment error: ${e?.message ?? e}`)
+      this.logger_.error(`Apiship.cancelFulfillment error: ${e?.message ?? e}`)
       throw new Error(`Apiship.cancelFulfillment failed: ${e?.message ?? e}`)
     }
   }
@@ -301,7 +291,6 @@ class ApishipBase extends AbstractFulfillmentProviderService {
 
     const orderId = data?.orderId as number
     try {
-      await this.ensureAuth()
       const { trackingNumber, trackingUrl } = await this.waitForOrderInfo(orderId)
       const labelUrl = await this.waitForLabelUrl(orderId)
       const labels = [
@@ -324,17 +313,79 @@ class ApishipBase extends AbstractFulfillmentProviderService {
    */
   async createReturnFulfillment(fulfillment: Record<string, unknown>): Promise<CreateFulfillmentResult> {
     this.logger_.debug(`Apiship.createReturnFulfillment input: ${JSON.stringify(fulfillment, null, 2)}`)
-    // TODO: understand the input fulfillment data 
-    const fulfillmentData = fulfillment as any
-    const labels = fulfillment.data as any
+    
+    // TODO: map input fulfillment to make return order request
+    const tariffId = await this.pickTariffId("cdek")
+    const returnOrder: OrderReturnRequest = {
+      order: {
+        providerKey: "cdek",
+        providerConnectId: "1595",
+        tariffId: tariffId,
+        pickupType: 1,
+        deliveryType: 1,
+        clientNumber: `medusa-${Date.now()}`,
+      },
+      "cost": {
+        "assessedCost": 50,
+      },
+      sender: {
+        countryCode: "RU",
+        city: "Москва",
+        addressString: "г Москва, ул Машкова, д 21",
+        contactName: "Отправитель Тест",
+        phone: "79990000000",
+      },
+      recipient: {
+        countryCode: "RU",
+        city: "Москва",
+        addressString: "г Москва, ул Машкова, д 21",
+        contactName: "Получатель Тест",
+        phone: "79990000001",
+      },
+      "places": [
+        {
+          "height": 45,
+          "length": 30,
+          "width": 20,
+          "weight": 500,
+          "placeNumber": "123421931239",
+          "barcode": "800028197737",
+          "items": [
+            {
+              "height": 45,
+              "length": 30,
+              "width": 20,
+              "weight": 500,
+              "articul": "1189.0",
+              "markCode": "010290000046994521AK-rO?H!hC2(M\\u001D91003A\\u001D92cYTu3sTj82KJR3+6hVtQyAfa5Zf6Q2alfJEnwe2RIv4GAWVy2GUptk7P1NYxRsIgsTJi+Wgg+K3dncPELDJ9Ag==",
+              "description": "Товар 1",
+              "quantity": 1,
+              "quantityDelivered": 2,
+              "assessedCost": 50,
+              "cost": 30,
+              "costVat": -1,
+              "barcode": "1234567890123",
+              "companyName": "ООО \"Тест\"",
+              "companyInn": "1234567890",
+              "companyPhone": "79887776655",
+              "tnved": "6810190009",
+              "url": "https://mymarket.example.com/item/product-1/"
+            }
+          ]
+        }
+      ],
+    }
     try {
-      const labels = await this.getShipmentDocuments(fulfillmentData.orderId)
-      await this.ensureAuth()
-      const response = await OrdersService.addReturnOrder(fulfillmentData.externalData)
+      const response = await OrdersService.addReturnOrder(returnOrder)
       this.logger_.debug(`Apiship.createReturnFulfillment response: ${JSON.stringify(response, null, 2)}`)
-      const result = {
+      const orderId = response.orderId
+      const labels = await this.getShipmentDocuments({
+        orderId
+      })
+      const result: CreateFulfillmentResult = {
         data: {
-          labels
+          orderId: response.orderId,
+          order: returnOrder
         },
         labels
       }
@@ -354,11 +405,10 @@ class ApishipBase extends AbstractFulfillmentProviderService {
 
     const orderId = data.orderId as number
     const documentsRequest = {
-      orderIds: [66175],
+      orderIds: [orderId],
       format: "pdf"
     }
     try {
-      await this.ensureAuth()
       const response = await OrderDocsService.getWaybills(documentsRequest)
       const result = response?.waybillItems?.[0].file
       this.logger_.debug(`Apiship.getFulfillmentDocuments output: ${JSON.stringify(result, null, 2)}`)
@@ -374,9 +424,15 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     fulfillmentData: any,
     documentType: any
   ): Promise<void> { return }
-  async validateFulfillmentData(_o: any, _d: any, _c: any) { return {} }
-  async validateOption(_data: any): Promise<boolean> { return true }
-  async getFulfillmentOptions(): Promise<any[]> { return [] }
+  async validateFulfillmentData(
+    optionData: any,
+    data: any,
+    context: any
+  ): Promise<any> { return {} }
+  async validateOption(data: any): Promise<boolean> {
+    this.logger_.debug(`Apiship.validateOption input: ${JSON.stringify(data, null, 2)}`)
+    return true
+  }
 }
 
 export default ApishipBase
