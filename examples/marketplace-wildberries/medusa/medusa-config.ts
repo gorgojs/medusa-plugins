@@ -12,5 +12,19 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
-  }
+  },
+  plugins: [
+    {
+      resolve: "@gorgo/medusa-marketplace-wildberries",
+      options: {}
+    }
+  ],
+  modules: [
+    {
+      resolve: "@gorgo/medusa-marketplace-wildberries/modules/wildberries",
+      options: {
+        apiKey: process.env.WB_API_KEY,
+      }
+    }
+  ]
 })
