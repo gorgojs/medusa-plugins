@@ -23,6 +23,7 @@
     "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit"
   },
   "dependencies": {
+    "@gorgo/medusa-marketplace-wildberries": "file:.yalc/@gorgo/medusa-marketplace-wildberries",
     "@medusajs/admin-sdk": "2.11.2",
     "@medusajs/cli": "2.11.2",
     "@medusajs/framework": "2.11.2",
