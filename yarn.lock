@@ -1926,6 +1926,53 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@gorgo/medusa-marketplace-yandex-market@workspace:packages/medusa-marketplace-yandex-market":
+  version: 0.0.0-use.local
+  resolution: "@gorgo/medusa-marketplace-yandex-market@workspace:packages/medusa-marketplace-yandex-market"
+  dependencies:
+    "@medusajs/admin-sdk": "npm:2.4.0"
+    "@medusajs/cli": "npm:2.4.0"
+    "@medusajs/framework": "npm:2.4.0"
+    "@medusajs/icons": "npm:2.4.0"
+    "@medusajs/medusa": "npm:2.4.0"
+    "@medusajs/test-utils": "npm:2.4.0"
+    "@medusajs/ui": "npm:4.0.4"
+    "@mikro-orm/cli": "npm:6.4.3"
+    "@mikro-orm/core": "npm:6.4.3"
+    "@mikro-orm/knex": "npm:6.4.3"
+    "@mikro-orm/migrations": "npm:6.4.3"
+    "@mikro-orm/postgresql": "npm:6.4.3"
+    "@swc/core": "npm:1.5.7"
+    "@types/node": "npm:^20.0.0"
+    "@types/react": "npm:^18.3.2"
+    "@types/react-dom": "npm:^18.2.25"
+    awilix: "npm:^8.0.1"
+    pg: "npm:^8.13.0"
+    prop-types: "npm:^15.8.1"
+    react: "npm:^18.2.0"
+    react-dom: "npm:^18.2.0"
+    ts-node: "npm:^10.9.2"
+    typescript: "npm:^5.6.2"
+    vite: "npm:^5.2.11"
+    yalc: "npm:^1.0.0-pre.53"
+  peerDependencies:
+    "@medusajs/admin-sdk": 2.4.0
+    "@medusajs/cli": 2.4.0
+    "@medusajs/framework": 2.4.0
+    "@medusajs/icons": 2.4.0
+    "@medusajs/medusa": 2.4.0
+    "@medusajs/test-utils": 2.4.0
+    "@medusajs/ui": 4.0.3
+    "@mikro-orm/cli": 6.4.3
+    "@mikro-orm/core": 6.4.3
+    "@mikro-orm/knex": 6.4.3
+    "@mikro-orm/migrations": 6.4.3
+    "@mikro-orm/postgresql": 6.4.3
+    awilix: ^8.0.1
+    pg: ^8.13.0
+  languageName: unknown
+  linkType: soft
+
 "@gorgo/medusa-payment-robokassa@workspace:packages/medusa-payment-robokassa":
   version: 0.0.0-use.local
   resolution: "@gorgo/medusa-payment-robokassa@workspace:packages/medusa-payment-robokassa"

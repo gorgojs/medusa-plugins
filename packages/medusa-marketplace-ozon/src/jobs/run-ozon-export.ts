@@ -14,5 +14,5 @@ export default async function (container: MedusaContainer) {
 
 export const config = {
   name: "run-ozon-export",
-  schedule: "* * * * *"
+  schedule: "*/30 * * * *"
 }
