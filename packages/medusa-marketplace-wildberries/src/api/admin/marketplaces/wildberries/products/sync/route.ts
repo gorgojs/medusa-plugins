@@ -1,5 +1,5 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
-import { syncWbProductsWorkflow } from "../../../../../../workflows/sync-wb-products"
+import { syncWbProductsWorkflow } from "../../../../../../workflows/product"
 
 export const POST = async (
   req: MedusaRequest,
