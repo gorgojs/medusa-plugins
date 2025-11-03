@@ -24,7 +24,6 @@ const HEADERS = {
 
 const OZON_EXPORT_MODULE = "ozon_export"
 
-// ==================== Domain types ====================
 type Price = { amount: number; currency_code: string }
 type Variant = {
   id: string
@@ -52,7 +51,6 @@ type ProductRow = {
   variants?: Variant[]
 }
 
-// ==================== Utils ====================
 const RUB_FROM_MINOR = (amt: number) => Math.max(0, Math.round(amt)) / 100
 
 function bestRubPrice(variants?: Variant[]) {
@@ -101,7 +99,6 @@ const pushAttr = (
   attrs.push({ complex_id: 0, id: ozonAttrId, values: [{ value: String(value) }] })
 }
 
-// ==================== Mapping ====================
 export function mapProductsToOzon(products: unknown): OzonProductImport {
   const list: ProductRow[] = Array.isArray(products) ? (products as ProductRow[]) : []
   const items: OzonProduct[] = []
@@ -162,7 +159,6 @@ export function mapProductsToOzon(products: unknown): OzonProductImport {
   return { items }
 }
 
-// ==================== Workflow inputs ====================
 export type RunInput = {
   items?: OzonProduct[]
   medusaItems?: ProductRow[]
@@ -171,9 +167,7 @@ export type RunInput = {
 }
 export type runExportStepInput = RunInput
 
-// ==================== Steps: get → map → (enrich) → export → save ====================
 
-// 1) Получаем товары
 const getProductsStep = createStep<runExportStepInput, ProductRow[], void>(
   "get-products-from-medusa",
   async (input, { container }) => {
@@ -209,7 +203,6 @@ const getProductsStep = createStep<runExportStepInput, ProductRow[], void>(
   async () => {}
 )
 
-// 2) Маппим под Ozon
 const mapToOzonFormatStep = createStep<ProductRow[], { items: OzonProduct[] }, void>(
   "map-products-to-ozon-format",
   async (products) => {
@@ -219,7 +212,6 @@ const mapToOzonFormatStep = createStep<ProductRow[], { items: OzonProduct[] }, v
   async () => {}
 )
 
-// (опционально) — подкачиваем атрибуты/словари для description_category_id
 type OzonAttr = { id: number; name: string }
 type OzonAttrsResponse = { result?: { attributes?: OzonAttr[] } }
 
@@ -313,14 +305,11 @@ const applyAttributeDictionariesStep = createStep<
   async () => {}
 )
 
-// 3) Экспорт в Ozon — ТОЛЬКО v3
 type ExportInput = { items: any[] }
 
-// (оставляю детектор/конвертер v2, но больше не используются)
 function isLikelyV2Item(_it: any): boolean { return false }
 function toV2Item(it: any) { return it }
 
-// sanity-check окружения
 function assertOzonEnv() {
   const base = OZON_BASE_URL
   const cid = HEADERS["Client-Id"]
@@ -384,7 +373,6 @@ const runExportStep = createStep<ExportInput, Output, void>(
   async () => {}
 )
 
-// 4) Сохраняем task_id
 const saveOzonTaskStep = createStep<string, void, void>(
   "save-ozon-task",
   async (task_id, { container }) => {
