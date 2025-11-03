@@ -20,7 +20,7 @@ export const prepareDataForSyncStep = createStep(
       filters: { status: "published" },
     })
 
-    logger.debug(`Recived products: ${JSON.stringify(products)}`)
+    logger.debug(`Recived products: ${JSON.stringify(products, null, 2)}`)
 
     let productsToCreate: WildberriesProductCreate[] = []
     let productCardsToUpdate: WildberriesProductCardUpdate[] = []

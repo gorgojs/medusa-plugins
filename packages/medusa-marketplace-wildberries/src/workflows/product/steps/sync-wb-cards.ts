@@ -71,7 +71,7 @@ export const syncWbCardsStep = createStep(
         update: updateVariants
       }
     })
-    logger.debug(`Variants metadata update result: ${JSON.stringify(variantsUpdateResult)}`)
+    logger.debug(`Variants metadata update result: ${JSON.stringify(variantsUpdateResult, null, 2)}`)
 
     logger.info("Updating products metadata...")
     const { result: productUpdateResult } = await batchProductsWorkflow(container).run({
@@ -81,7 +81,7 @@ export const syncWbCardsStep = createStep(
         )
       }
     })
-    logger.debug(`Products metadata update result: ${JSON.stringify(productUpdateResult)}`)
+    logger.debug(`Products metadata update result: ${JSON.stringify(productUpdateResult, null, 2)}`)
 
 
     const result = {

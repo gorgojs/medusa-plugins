@@ -18,7 +18,7 @@ export const mergeProductCardsStep = createStep(
     }
 
     logger.info("Merge product cards...")
-    logger.debug(`Product cards to merge: ${JSON.stringify(productCards)}`)
+    logger.debug(`Product cards to merge: ${JSON.stringify(productCards, null, 2)}`)
 
     productCards.forEach(async item => {
       await wildberriesModuleService.createProductCardsWithMerge(item)

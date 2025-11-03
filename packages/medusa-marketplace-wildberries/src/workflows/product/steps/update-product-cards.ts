@@ -18,7 +18,7 @@ export const updateProductCardsStep = createStep(
     }
 
     logger.info("Update product cards...")
-    logger.debug(`Product cards to update: ${JSON.stringify(productCards)}`)
+    logger.debug(`Product cards to update: ${JSON.stringify(productCards, null, 2)}`)
 
     const response = await wildberriesModuleService.updateProductCards(productCards)
 

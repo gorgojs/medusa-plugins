@@ -18,7 +18,7 @@ export const createProductsStep = createStep(
     }
 
     logger.info("Create new products...")
-    logger.debug(`Products to create: ${JSON.stringify(products)}`)
+    logger.debug(`Products to create: ${JSON.stringify(products, null, 2)}`)
 
     const response = await wildberriesModuleService.createProductCards(products)
 
