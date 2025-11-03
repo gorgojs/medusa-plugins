@@ -24,7 +24,7 @@ build
 !.yarn/versions
 
 .medusa
-yandex-market-client
+src/lib/yandex-market-client
 yandex-market-partner-api
 
 .yalc
