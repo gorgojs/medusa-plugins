@@ -27,14 +27,14 @@
     "tunnel": "lt --port 9000 --subdomain medusa-tkassa"
   },
   "dependencies": {
-    "@gorgo/medusa-payment-tkassa": "latest",
-    "@medusajs/admin-sdk": "2.11.1",
-    "@medusajs/cli": "2.11.1",
-    "@medusajs/framework": "2.11.1",
-    "@medusajs/medusa": "2.11.1"
+    "@gorgo/medusa-payment-tkassa": "file:.yalc/@gorgo/medusa-payment-tkassa",
+    "@medusajs/admin-sdk": "2.11.2",
+    "@medusajs/cli": "2.11.2",
+    "@medusajs/framework": "2.11.2",
+    "@medusajs/medusa": "2.11.2"
   },
   "devDependencies": {
-    "@medusajs/test-utils": "2.11.1",
+    "@medusajs/test-utils": "2.11.2",
     "@swc/core": "1.5.7",
     "@swc/jest": "^0.2.36",
     "@types/jest": "^29.5.13",
