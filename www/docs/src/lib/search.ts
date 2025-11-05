@@ -119,7 +119,6 @@ const getCachedSearchIndexJsonForLocale = (locale: string) => {
   )();
 };
 
-// Define search options for MiniSearch constructor
 const miniSearchOptions = {
   fields: ["title", "content", "description", "section"],
   storeFields: ["id", "title", "description", "href", "section", "content"],

@@ -334,15 +334,9 @@ function TableOfContents({ toc }: { toc: Toc }) {
 
   return (
     <div className="flex flex-col gap-4 w-full transition-all">
-      <h3 className="font-medium text-sm text-ui-fg-subtle flex gap-2 items-center">
-        <ScrollText /> {t("onThisPage")}
-      </h3>
-
       <ScrollArea
         ref={scrollContainerRef}
-        className="min-[900px]:h-[calc(100vh-25rem)]"
-        showShadows
-        shadowSize="32px"
+        className="md:h-[calc(100vh-24rem)] xl:h-[calc(100vh-22rem)]"
       >
         <ScrollBar />
         {toc.map((item) => renderTocItem(item))}

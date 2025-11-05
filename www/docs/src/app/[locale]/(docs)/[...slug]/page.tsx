@@ -79,13 +79,17 @@ export async function generateMetadata({
   } as Metadata;
 }
 
+function getParentPath(path: string) {
+  if (path.startsWith("medusa-plugins")) return "/medusa-plugins";
+  else if (path.startsWith("tools")) return "/tools";
+  else return path;
+}
+
 export default async function DynamicDocsPage({ params }: PageProps) {
   const { locale, slug } = await params;
   const path = slug?.join("/") || "index";
   const { section: parentSection, baseSlugs: parentBaseSlugs } =
-    getCurrentSidebar(
-      path.startsWith("medusa-plugins") ? "/medusa-plugins" : path
-    );
+    getCurrentSidebar(getParentPath(path));
   const { section, baseSlugs } = getCurrentSidebar(path);
 
   let Post: React.ComponentType;
@@ -112,7 +116,7 @@ export default async function DynamicDocsPage({ params }: PageProps) {
           <Sidebar section={parentSection} baseSlugs={parentBaseSlugs} />
         )}
       </nav>
-      <div className="container bg-ui-bg-component py-24 lgish:rounded-lg lgish:border grow-0 mx-0 max-w-content">
+      <div className="container bg-ui-bg-base dark:bg-ui-bg-component py-24 lgish:rounded-lg lgish:border grow-0 mx-0 max-w-content">
         <div className="max-w-[600px] px-8 xl:px-0 xl:max-w-[700px] mx-auto grow-0">
           <Breadcrumbs
             section={section}
@@ -125,10 +129,9 @@ export default async function DynamicDocsPage({ params }: PageProps) {
           <PaginationCards section={section} baseSlugs={baseSlugs} />
         </div>
       </div>
-      <nav className="h-full realtive sticky top-14">
+      <nav className="h-full realtive sticky md:top-24 xl:top-14">
         <RightSidebar>
           <TableOfContents toc={toc as Toc} />
-          <ScrollToTop />
           <div className="space-y-3">
             {section?.npmPackage && (
               <PluginStats className="px-2" packageName={section.npmPackage} />
@@ -137,6 +140,7 @@ export default async function DynamicDocsPage({ params }: PageProps) {
               <PluginLinks links={section.links} />
             )}
           </div>
+          <ScrollToTop />
         </RightSidebar>
       </nav>
     </>

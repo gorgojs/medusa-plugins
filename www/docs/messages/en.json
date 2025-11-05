@@ -1,6 +1,6 @@
 {
   "search": {
-    "placeholder": "Search documentation...",
+    "placeholder": "Jump to or find something...",
     "loadingText": "Searching documentation...",
     "emptyResults": {
       "title": "No results found",

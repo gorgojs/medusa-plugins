@@ -35,9 +35,9 @@ export default function MobileNavigationMenu() {
         scrolled && "lgish:border-b"
       )}
     >
-      <SidebarToggle />
+      <SidebarToggle className="shrink-0" />
       <Breadcrumbs section={section} baseSlugs={baseSlugs} />
-      <TocToggle className="ml-auto lgish:hidden" />
+      <TocToggle className="ml-auto lgish:hidden shrink-0" />
     </div>
   );
 }

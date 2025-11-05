@@ -11,15 +11,15 @@ import { Button } from "../ui/button";
 function getIcon(type: PluginLinkService) {
   switch (type) {
     case "github":
-      return <SiGithub className="size-4 text-ui-fg-base" />;
+      return <SiGithub className="size-4 text-ui-fg-base shrink-0" />;
     case "npm":
-      return <SiNpm color="default" className="size-4" />;
+      return <SiNpm color="default" className="size-4 shrink-0" />;
     case "telegram":
-      return <SiTelegram color="default" className="size-4" />;
+      return <SiTelegram color="default" className="size-4 shrink-0" />;
     case "discord":
-      return <SiDiscord color="default" className="size-4" />;
+      return <SiDiscord color="default" className="size-4 shrink-0" />;
     case "other":
-      return <Globe className="size-4" />;
+      return <Globe className="size-4 shrink-0" />;
   }
 }
 
@@ -46,7 +46,12 @@ function PluginLink({
   url: string;
 }) {
   return (
-    <Button variant="secondary" size="large" className="w-full" asChild>
+    <Button
+      variant="secondary"
+      size="large"
+      className="w-full truncate"
+      asChild
+    >
       <a key={url} href={url} target="_blank" rel="noopener noreferrer">
         {getIcon(service)}
         {getServiceName(service)}

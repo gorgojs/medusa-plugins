@@ -15,8 +15,10 @@ const RightSidebar = ({ children }: { children?: React.ReactNode }) => {
 
   if (isDesktop) {
     return (
-      <aside className="w-[250px] px-4 flex flex-col gap-y-8 h-full pt-2">
-        {children}
+      <aside className="w-[250px]">
+        <div className="w-[200px] px-4 flex flex-col gap-y-4 h-full pt-2">
+          {children}
+        </div>
       </aside>
     );
   }

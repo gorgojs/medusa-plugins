@@ -47,7 +47,7 @@ export default function Breadcrumbs({
           {parentSection && (
             <>
               <li>
-                <div className="transition-colors hover:text-ui-fg-subtle">
+                <div className="transition-colors hover:text-ui-fg-subtle truncate">
                   {typeof parentSection.title === "string"
                     ? parentSection.title
                     : getLocalizedString(parentSection.title, locale)}
@@ -61,35 +61,34 @@ export default function Breadcrumbs({
           <li>
             <Link
               href={`/${baseSlugs.join("/")}`}
-              className="transition-colors hover:text-ui-fg-subtle"
+              className="transition-colors hover:text-ui-fg-subtle truncate"
             >
               {typeof section.title === "string"
                 ? section.title
                 : getLocalizedString(section.title, locale)}
             </Link>
           </li>
-          {breadcrumbs.length > 0 && (
-            <li>
-              <TriangleRightMini className="text-ui-fg-muted" />
-            </li>
-          )}
           {breadcrumbs.map((crumb, index) => {
             const page = flattenedItems.find((i) => i.slug === crumb);
             if (!page) {
               return null;
             }
 
-            const isLast = index === Math.max(breadcrumbs.length, 1) - 1;
+            const isFirst = index === 0;
+            const isLast = index === breadcrumbs.length - 1;
+
+            if (isLast) return;
 
             return (
               <React.Fragment key={crumb}>
+                {!isFirst && <TriangleRightMini className="text-ui-fg-muted" />}
                 <li
                   className={cn(isLast && "font-medium text-ui-fg-subtle")}
                   aria-current={isLast ? "page" : undefined}
                 >
                   <Link
                     href={`/${breadcrumbs.slice(0, index + 1).join("/")}`}
-                    className="transition-colors hover:text-ui-fg-subtle"
+                    className="transition-colors hover:text-ui-fg-subtle truncate"
                   >
                     {page?.title &&
                       (typeof page.title === "string"
@@ -97,7 +96,6 @@ export default function Breadcrumbs({
                         : getLocalizedString(page.title, locale))}
                   </Link>
                 </li>
-                {!isLast && <TriangleRightMini className="text-ui-fg-muted" />}
               </React.Fragment>
             );
           })}

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronUp } from "lucide-react";
+import { ArrowLongUp } from "@medusajs/icons";
 import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
 
@@ -9,12 +9,13 @@ export default function ScrollToTop() {
 
   return (
     <Button
-      variant="secondary"
-      className="self-start flex items-center gap-1 w-full"
+      variant="transparent"
+      size="large"
+      className="self-start flex items-center gap-1 w-full text-ui-fg-subtle hover:text-ui-fg-base"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
     >
-      <ChevronUp className="w-4 h-4" />
       {t("backToTop")}
+      <ArrowLongUp className="w-4 h-4" />
     </Button>
   );
 }

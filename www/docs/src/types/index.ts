@@ -6,6 +6,7 @@ export type SidebarItemType = {
 
 export type SidebarType = {
   title: LocalizedString;
+  icon?: string;
   description?: LocalizedString;
   slug: string;
   isSection?: boolean;

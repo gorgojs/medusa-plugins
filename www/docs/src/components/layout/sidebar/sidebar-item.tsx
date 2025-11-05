@@ -11,10 +11,12 @@ import { usePathname } from "@/i18n/navigation";
 import { getLocalizedString } from "@/lib/utils";
 import type { LocalizedString, SidebarItemType, SidebarType } from "@/types";
 import { overviewTitle } from ".";
+import SidebarIcon from "./sidebar-icon";
 
 type SidebarItemProps = {
   level?: number;
   slug?: string;
+  icon?: string;
   title: LocalizedString | string;
   items?: (SidebarItemType | SidebarType)[];
   basePath?: string;
@@ -25,6 +27,7 @@ type SidebarItemProps = {
 const SidebarItem: React.FC<SidebarItemProps> = ({
   level = 1,
   slug,
+  icon,
   title,
   items: children = [],
   basePath = "",
@@ -48,7 +51,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         className="border-b border-dashed last:border-b-0"
       >
         <CollapsibleTrigger asChild>
-          <div className="flex justify-start text-start w-full txt-compact-small-plus text-ui-fg-subtle py-2">
+          <div className="flex items-center justify-start text-start w-full txt-compact-small-plus text-ui-fg-subtle h-[28px] my-3 group">
+            <div className="h-full aspect-square flex items-center justify-center">
+              <SidebarIcon name={icon} className="mr-2" />
+            </div>
             {displayTitle}
             {hasChildren && (
               <TriangleDownMini

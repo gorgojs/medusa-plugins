@@ -1,7 +1,7 @@
 "use client";
 
 import { MagnifierAlert } from "@medusajs/icons";
-import { Button } from "@medusajs/ui";
+import { Button, Kbd } from "@medusajs/ui";
 import { SearchIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
@@ -176,7 +176,8 @@ const CmdK = () => {
               >
                 <div className="font-medium">{item.title}</div>
                 <div className="text-xs text-muted-foreground line-clamp-2">
-                  {item.description || item.content?.substring(0, 220)}
+                  {item.content}
+                  {/*{item.description || item.content?.substring(0, 220)}*/}
                 </div>
                 <div className="text-xs text-muted-foreground">
                   {item.section}
@@ -184,6 +185,15 @@ const CmdK = () => {
               </CommandItem>
             ))}
           </CommandGroup>
+          <div className="bg-ui-bg-component sticky bottom-0 flex items-center justify-end text-xs gap-3 py-3 pr-3 border-t">
+            <div>
+              Navigation <Kbd className="ml-2">↓</Kbd> <Kbd>↑</Kbd>
+            </div>
+            <div className="w-px h-[12px] bg-ui-border-base" />
+            <div>
+              Open result <Kbd className="w-[20px] ml-2">↵</Kbd>
+            </div>
+          </div>
         </CommandList>
       </CommandDialog>
     </>

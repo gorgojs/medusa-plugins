@@ -52,6 +52,7 @@ const SidebarContent = ({
           slug={item.slug}
           title={item.title}
           items={item.children as SidebarItemType[]}
+          icon={"icon" in item ? item.icon : undefined}
           basePath={basePath}
           hasOverview={"hasOverview" in item && item?.hasOverview}
         />

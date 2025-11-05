@@ -1,8 +1,9 @@
-import { Table } from "@medusajs/ui";
+import { Copy, Table } from "@medusajs/ui";
 import slugify from "@sindresorhus/slugify";
 import type { MDXComponents } from "mdx/types";
 import { CodeMdx } from "@/components/mdx/code-mdx";
 import { cn } from "./lib/utils";
+import HeadingLink from "./components/mdx/heading-link";
 
 const generateId = (text: string) => {
   return slugify(text);
@@ -12,73 +13,79 @@ const components: MDXComponents = {
   h1: ({ children, className, ...props }) => {
     const text = Array.isArray(children) ? children.join("") : String(children);
     return (
-      <h1
+      <HeadingLink
         id={generateId(text)}
-        className={cn("scroll-m-28 lg:scroll-m-24", className)}
+        Heading="h1"
+        className={className}
         {...props}
       >
         {children}
-      </h1>
+      </HeadingLink>
     );
   },
   h2: ({ children, className, ...props }) => {
     const text = Array.isArray(children) ? children.join("") : String(children);
     return (
-      <h2
+      <HeadingLink
         id={generateId(text)}
-        className={cn("scroll-m-28 lg:scroll-m-24", className)}
+        Heading="h2"
+        className={className}
         {...props}
       >
         {children}
-      </h2>
+      </HeadingLink>
     );
   },
   h3: ({ children, className, ...props }) => {
     const text = Array.isArray(children) ? children.join("") : String(children);
     return (
-      <h3
+      <HeadingLink
         id={generateId(text)}
-        className={cn("scroll-m-28 lg:scroll-m-24", className)}
+        Heading="h3"
+        className={className}
         {...props}
       >
         {children}
-      </h3>
+      </HeadingLink>
     );
   },
   h4: ({ children, className, ...props }) => {
     const text = Array.isArray(children) ? children.join("") : String(children);
     return (
-      <h4
+      <HeadingLink
         id={generateId(text)}
-        className={cn("scroll-m-28 lg:scroll-m-24", className)}
+        Heading="h4"
+        className={className}
         {...props}
       >
         {children}
-      </h4>
+      </HeadingLink>
     );
   },
   h5: ({ children, className, ...props }) => {
     const text = Array.isArray(children) ? children.join("") : String(children);
     return (
-      <h5
+      <HeadingLink
         id={generateId(text)}
-        className={cn("scroll-m-28 lg:scroll-m-24", className)}
+        Heading="h5"
+        className={className}
         {...props}
       >
         {children}
-      </h5>
+      </HeadingLink>
     );
   },
   h6: ({ children, className, ...props }) => {
     const text = Array.isArray(children) ? children.join("") : String(children);
     return (
-      <h6
+      <HeadingLink
         id={generateId(text)}
-        className={cn("scroll-m-28 lg:scroll-m-24", className)}
+        Heading="h6"
+        className={className}
         {...props}
       >
         {children}
-      </h6>
+      </HeadingLink>
     );
   },
 
