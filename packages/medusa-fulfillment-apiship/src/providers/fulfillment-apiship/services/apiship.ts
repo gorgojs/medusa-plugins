@@ -13,9 +13,13 @@ class ApishipService extends ApishipBase {
 
     return [
       {
-        id: "apiship",
+        id: "apiship_standard",
         name: "Apiship Fulfillment",
-        description: "Fulfillment via Apiship",
+      },
+      {
+        id: "apiship_return",
+        name: "Apiship Fulfillment (Return)",
+        is_return: true,
       }
     ]
 
