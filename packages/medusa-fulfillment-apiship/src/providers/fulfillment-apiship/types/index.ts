@@ -3,8 +3,6 @@ export const FulfillmentProviderKeys = {
 }
 
 export interface ApishipOptions {
-  email: string
-  password: string
   token: string
   isTest?: boolean
 }
