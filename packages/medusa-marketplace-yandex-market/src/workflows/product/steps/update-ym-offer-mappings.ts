@@ -2,6 +2,16 @@ import {
     createStep,
     StepResponse,
 } from "@medusajs/framework/workflows-sdk"
+import axios from "axios"
+import {
+  OfferMappingsApiAxiosParamCreator,
+  Configuration,
+  type UpdateOfferMappingEntryRequest,
+  type UpdateOfferMappingsRequest,
+  type CatalogLanguageType,
+  type ParameterValueDTO
+} from "../../../lib/yandex-market-client"
+
 import  { 
     ProductRow, 
     YmParam,
@@ -23,7 +33,14 @@ import  {
 } from "../types"
 
 
+const businessId = Number(YM_BUSINESS_ID)
 
+const configuration = new Configuration({
+  basePath: YM_BASE,                    
+  baseOptions: { headers: YmAuthHeaders() }, 
+})
+
+const offerMappingsParams = OfferMappingsApiAxiosParamCreator(configuration)
 
 export const UpdateYmOfferMappingsStep = createStep<
     { products: ProductRow[]; params: YmParam[]; categoryId: number },
@@ -63,15 +80,6 @@ export const UpdateYmOfferMappingsStep = createStep<
                 const offerId =
                     best.variant.sku ||
                     (p.handle && best.variant.id ? `${p.handle}-${best.variant.id}` : `prod-${p.id}`)
-
-                const barcodes = best.variant.barcode ? [best.variant.barcode] : undefined
-
-                const manufacturerCountries =
-                    Array.isArray(p.metadata?.manufacturerCountries) && p.metadata!.manufacturerCountries.length
-                        ? p.metadata!.manufacturerCountries
-                        : p.origin_country
-                            ? [p.origin_country]
-                            : undefined
 
                 const customsCommodityCode =
                     (p.hs_code as string) || (p.metadata?.hs_code as string) || undefined
@@ -122,51 +130,77 @@ export const UpdateYmOfferMappingsStep = createStep<
                 const year = Number(p.metadata?.release_year)
                 if (Number.isFinite(year)) PushYmParameterValue(parameterValues, params, ["Год выпуска"], year)
 
+                const barcodes = best.variant.barcode ? new Set<string>([best.variant.barcode]) : undefined
+
+                const manufacturerCountries =
+                Array.isArray(p.metadata?.manufacturerCountries) && p.metadata!.manufacturerCountries.length
+                    ? new Set<string>(p.metadata!.manufacturerCountries as string[])
+                    : p.origin_country
+                    ? new Set<string>([p.origin_country])
+                    : undefined
+
+
+                const parameterValuesDto: ParameterValueDTO[] | undefined =
+                parameterValues.length
+                    ? parameterValues.map((pv: any) => {
+                        const dto: ParameterValueDTO = { parameterId: pv.parameterId }
+                        if (pv.unitId != null) dto.unitId = pv.unitId
+                        if (pv.valueId != null) dto.valueId = pv.valueId
+                        if (pv.value != null) dto.value = String(pv.value)
+                        return dto
+                    })
+                    : undefined
+
                 return {
-                    offerId,
-                    name: `${p.title}${optStr}`,
-                    marketCategoryId: categoryId,
-                    pictures,
-                    vendor,
-                    description,
-                    vendorCode: best.variant.sku || undefined,
-                    barcodes,
-                    weightDimensions: MapPackageDimensions(p),
-                    manufacturerCountries,
-                    customsCommodityCode,
-                    basicPrice: { value: best.value, currencyId: "RUR" as const },
-                    parameterValues: parameterValues.length ? parameterValues : undefined,
+                offerId,
+                name: `${p.title}${optStr}`,
+                marketCategoryId: categoryId,
+                pictures,
+                vendor,
+                description,
+                vendorCode: best.variant.sku || undefined,
+                barcodes,                                
+                weightDimensions: MapPackageDimensions(p),
+                manufacturerCountries,         
+                customsCommodityCode,
+                basicPrice: { value: best.value, currencyId: "RUR" as const },
+                parameterValues: parameterValuesDto,
                 }
+
             })
 
-            const body = { offerMappings: offers.map((o) => ({ offer: o })) }
+            const body: UpdateOfferMappingEntryRequest = {
+            offerMappingEntries: offers.map((o) => ({ offer: o })), 
+            }
 
-            const r = await fetch(`${YM_BASE}/v2/businesses/${YM_BUSINESS_ID}/offer-mappings/update`, {
-                method: "POST",
-                headers: {
-                    ...YmAuthHeaders(),
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(body),
+            const { url, options } = await offerMappingsParams.updateOfferMappingEntries(
+                businessId,
+                body
+            )
+
+            const resp = await axios.request({
+            ...options,
+            url: configuration.basePath + url,
             })
 
-            const data = await (r.ok ? r.json().catch(() => ({})) : r.text().catch(() => ""))
-            if (!r.ok) {
-                throw new Error(typeof data === "string" ? data : `Yandex Market error ${r.status}`)
+            const data = resp.data
+            if (resp.status < 200 || resp.status >= 300) {
+            throw new Error(typeof data === "string" ? data : `Yandex Market error ${resp.status}`)
             }
 
             ymResponses.push(data)
-            statuses.push(r.status)
+            statuses.push(resp.status)
             totalSent += offers.length
             allOfferIds.push(...offers.map((o) => o.offerId))
 
             const batchResults = ExtractOfferMappingResults(data)
             if (batchResults.length) {
-                allResults.push(...batchResults)
+            allResults.push(...batchResults)
             }
 
             await Delay(200)
+
+
         }
 
         return new StepResponse<RunYmProductExportWorkflowOutput, string[]>(
