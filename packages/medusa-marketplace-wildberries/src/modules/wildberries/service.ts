@@ -1,6 +1,11 @@
 import { Logger, ConfigModule } from "@medusajs/framework/types"
+import axios, { AxiosError } from "axios"
+import rateLimit, { RateLimitedAxiosInstance } from "axios-rate-limit"
+import axiosRetry from "axios-retry"
 
-const BASE_URL = "https://content-api-sandbox.wildberries.ru/"
+const BASE_URL = "https://content-api-sandbox.wildberries.ru"
+const TIMEOUT = 30_000
+const MAX_RPS = 10
 
 export type WildberriesProductCard = {
   "vendorCode": string,
@@ -34,68 +39,91 @@ type InjectedDependencies = {
 class WildberriesModuleService {
   private options_: ModuleOptions
   private logger_: Logger
+  private client_: RateLimitedAxiosInstance
 
   constructor({ logger }: InjectedDependencies, options: ModuleOptions) {
     this.logger_ = logger
     this.options_ = options
+
+    const axiosInst = axios.create({
+      baseURL: BASE_URL,
+      headers: {
+        'Authorization': `Bearer ${this.options_.apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      timeout: TIMEOUT,
+    })
+
+    this.client_ = rateLimit(axiosInst, {
+      maxRPS: MAX_RPS
+    })
+
+    axiosRetry(this.client_, {
+      retries: 3,
+      retryCondition: (error: AxiosError) => {
+        const status = error.response?.status
+        return axiosRetry.isNetworkError(error) || status === 429 || status === 503
+      },
+      retryDelay: axiosRetry.exponentialDelay,
+      onRetry: (retryConunt, error, requestConfig) => {
+        this.logger_.info(`Retrying [${requestConfig.url}] after error: ${error.message}  (attempt ${retryConunt})`)
+      }
+    })
+
+    this.client_.interceptors.request.use(req => {
+      this.logger_.info(`Sending [${req.method?.toUpperCase()} ${req.baseURL}${req.url}].`)
+      if (req.data) this.logger_.info(`Request body: ${JSON.stringify(req.data, null, 2)}`)
+      return req
+    })
+
+    this.client_.interceptors.response.use(
+      res => {
+        this.logger_.info(`Response status: ${res.status} from [${res.config.url}]`)
+        this.logger_.info(`Response data: ${JSON.stringify(res.data)}`)
+        return res
+      },
+      (error: AxiosError) => {
+        if (error.response) {
+          this.logger_.error(`WB API error ${error.response.status} from [${error.config?.url}]`)
+          this.logger_.error(`WB API error: ${JSON.stringify(error.response.data, null, 2)}`)
+        } else {
+          this.logger_.error(`Error: ${error.message}`)
+        }
+        return Promise.reject(error)
+      }
+    )
   }
 
-  private async sendRequest(url: string, method: string, data?: any, retryAfter: number = 5000) {
-    const fullUrl = BASE_URL + url
-    this.logger_.info(`Sending a ${method} request to ${fullUrl}.`)
-    this.logger_.info(`Request Data: ${JSON.stringify(data, null, 2)}`)
-    this.logger_.info(`API Token: ${this.options_.apiKey}`)
-
-    const headers: Record<string, string> = {
-      'Authorization': `Bearer ${this.options_.apiKey}`,
-      'Content-Type': 'application/json',
-    }
-
+  private async sendRequest(url: string, method: string, data?: any) {
     try {
-      const response = await fetch(fullUrl, {
+      const response = await this.client_.request({
+        url,
         method: method,
-        headers: headers,
-        body: method !== 'GET' ? JSON.stringify(data) : undefined,
+        data: method.toUpperCase() !== "GET" ? data : undefined,
       })
-
-      this.logger_.info(`Response status: ${response.status}`)
-
-      if (response.status === 429) {
-        this.logger_.info(`Rate limit, waiting ${retryAfter} ms`)
-        await new Promise(r => setTimeout(r, retryAfter))
-        return this.sendRequest(url, method, data, retryAfter)
-      }
-
-      if (!response.ok) {
-        const error = await response.text()
-        this.logger_.error(`WB API error: ${error}`)
-      }
-
-      const result = await response.json()
-      this.logger_.info(`Response data: ${JSON.stringify(result)}`)
-      return result
+      return response.data
     } catch (error) {
-      throw error
+      return error
     }
   }
 
   async pingContent(): Promise<any> {
-    const res = await this.sendRequest("ping", "GET")
+    const res = await this.sendRequest("/ping", "GET")
     return res
   }
 
   async createProductCards(products: Array<WildberriesProductCreate>): Promise<any> {
-    const res = await this.sendRequest("content/v2/cards/upload", "POST", products)
+    const res = await this.sendRequest("/content/v2/cards/upload", "POST", products)
     return res
   }
 
   async updateProductCards(productCards: Array<WildberriesProductCardUpdate>): Promise<any> {
-    const res = await this.sendRequest("content/v2/cards/update", "POST", productCards, 1000)
+    const res = await this.sendRequest("/content/v2/cards/update", "POST", productCards)
     return res
   }
 
   async createProductCardsWithMerge(cardsToMerge: WildberriesProductCardsMerge): Promise<any> {
-    const res = await this.sendRequest("content/v2/cards/upload/add", "POST", cardsToMerge)
+    const res = await this.sendRequest("/content/v2/cards/upload/add", "POST", cardsToMerge)
     return res
   }
 
@@ -112,7 +140,7 @@ class WildberriesModuleService {
       }
     }
 
-    const res = await this.sendRequest("content/v2/get/cards/list", "POST", settings)
+    const res = await this.sendRequest("/content/v2/get/cards/list", "POST", settings)
     return res
   }
 }
