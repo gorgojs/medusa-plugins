@@ -22,6 +22,7 @@ import {
   type OrderReturnRequest,
 } from "../../../apiship-client"
 import { ApishipOptions } from "../types"
+import { mapToApishipOrderRequest } from "../utils"
 
 type InjectedDependencies = {
   logger: Logger
@@ -89,80 +90,17 @@ class ApishipBase extends AbstractFulfillmentProviderService {
   ): Promise<CreateFulfillmentResult> {
     this.logger_.debug(`Apiship.createFulfillment input: ${JSON.stringify({ data, items, order, fulfillment }, null, 2)}`)
 
-    // TODO: map Medusa order to Apiship order
-    //const apishipOrder = data?.apishipOrder as OrderRequest
+    // TODO: pick tariffId based on order data (inculing shipping address)
     const tariffId = await this.pickTariffId("cdek")
-    const apishipOrder: OrderRequest = {
-      order: {
-        providerKey: "cdek",
-        providerConnectId: "1595",
-        tariffId: tariffId,
-        pickupType: 1,
-        deliveryType: 1,
-        clientNumber: `medusa-${Date.now()}`,
-        weight: 500
-      },
-      "cost": {
-        "assessedCost": 50,
-        "deliveryCost": 200,
-        "deliveryCostVat": -1,
-        "codCost": 230,
-        "isDeliveryPayedByRecipient": false,
-        "paymentMethod": 1,
-        "deliveryCostThresholds": [
-          {
-            "deliveryCost": 100,
-            "threshold": 200
-          }
-        ]
-      },
-      sender: {
-        countryCode: "RU",
-        city: "Москва",
-        addressString: "г Москва, ул Машкова, д 21",
-        contactName: "Отправитель Тест",
-        phone: "79990000000",
-      },
-      recipient: {
-        countryCode: "RU",
-        city: "Москва",
-        addressString: "г Москва, ул Машкова, д 21",
-        contactName: "Получатель Тест",
-        phone: "79990000001",
-      },
-      "places": [
-        {
-          "height": 45,
-          "length": 30,
-          "width": 20,
-          "weight": 500,
-          "placeNumber": "123421931239",
-          "barcode": "800028197737",
-          "items": [
-            {
-              "height": 45,
-              "length": 30,
-              "width": 20,
-              "weight": 500,
-              "articul": "1189.0",
-              "markCode": "010290000046994521AK-rO?H!hC2(M\\u001D91003A\\u001D92cYTu3sTj82KJR3+6hVtQyAfa5Zf6Q2alfJEnwe2RIv4GAWVy2GUptk7P1NYxRsIgsTJi+Wgg+K3dncPELDJ9Ag==",
-              "description": "Товар 1",
-              "quantity": 1,
-              "quantityDelivered": 2,
-              "assessedCost": 50,
-              "cost": 30,
-              "costVat": -1,
-              "barcode": "1234567890123",
-              "companyName": "ООО \"Тест\"",
-              "companyInn": "1234567890",
-              "companyPhone": "79887776655",
-              "tnved": "6810190009",
-              "url": "https://mymarket.example.com/item/product-1/"
-            }
-          ]
-        }
-      ],
-    }
+    const apishipOrder = mapToApishipOrderRequest(
+      data,
+      items,
+      order!,
+      fulfillment,
+      "cdek",
+      "1595",
+      tariffId
+    )
     try {
       const response = await OrdersService.addOrder(
         undefined,
@@ -375,6 +313,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
         }
       ],
     }
+
     try {
       const response = await OrdersService.addReturnOrder(returnOrder)
       this.logger_.debug(`Apiship.createReturnFulfillment response: ${JSON.stringify(response, null, 2)}`)
