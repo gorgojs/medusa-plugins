@@ -38,7 +38,7 @@ export default async function Page({
   const { locale } = await params;
   return (
     <div className="p-4">
-      <div className="flex flex-col border rounded-xl shadow-md bg-ui-bg-base dark:bg-ui-bg-component">
+      <div className="flex flex-col border rounded-xl shadow-md bg-ui-bg-base">
         <Hero locale={locale} />
         {/*<ContactSection />*/}
         <PluginsSection locale={locale} categories={pluginCategories} />

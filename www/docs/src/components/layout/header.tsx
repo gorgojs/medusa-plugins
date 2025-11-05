@@ -20,7 +20,7 @@ export default async function Header() {
     <div className="sticky top-0 z-50">
       <header
         className={cn(
-          "flex items-center justify-center h-14 duration-300 w-full backdrop-blur-lg bg-ui-bg-base/60 px-4 xl:px-0 border-b xl:border-b-0"
+          "flex items-center justify-center h-14 duration-300 w-full backdrop-blur-lg bg-ui-bg-subtle/60 px-4 xl:px-0 border-b xl:border-b-0"
         )}
       >
         <HeaderLogoWrapper locale={locale as Locale}>

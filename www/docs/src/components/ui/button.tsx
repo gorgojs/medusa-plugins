@@ -29,9 +29,9 @@ const buttonVariants = cva({
         "focus-visible:!shadow-buttons-inverted-focus"
       ),
       secondary: cn(
-        "shadow-buttons-neutral text-ui-fg-base bg-ui-button-neutral after:button-neutral-gradient",
-        "hover:bg-ui-button-neutral-hover hover:after:button-neutral-hover-gradient",
-        "active:bg-ui-button-neutral-pressed active:after:button-neutral-pressed-gradient",
+        "shadow-buttons-neutral text-ui-fg-base bg-ui-bg-base after:button-neutral-gradient",
+        "hover:bg-ui-bg-base-hover hover:after:button-neutral-hover-gradient",
+        "active:bg-ui-bg-base-pressed active:after:button-neutral-pressed-gradient",
         "focus-visible:shadow-buttons-neutral-focus"
       ),
       transparent: cn(

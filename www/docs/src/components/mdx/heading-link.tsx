@@ -30,7 +30,7 @@ const HeadingLink = ({
       >
         {children}
         <Copy
-          className="opacity-0 group-hover:opacity-100 text-ui-fg-interactive ml-2 transition-opacity"
+          className="opacity-0 group-hover:opacity-100 ml-2 transition-opacity cursor-pointer bg-clip-text gorgo-text-gradient"
           content={`${origin}${pathname}#${id}`}
         >
           #

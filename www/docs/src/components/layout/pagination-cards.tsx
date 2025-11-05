@@ -25,7 +25,7 @@ function PaginationCard({
   return (
     <Link
       href={href}
-      className="flex justify-center items-center flex-1 border rounded-lg py-2.5 px-4 gap-1.5 text-ui-fg-subtle font-medium hover:bg-ui-bg-subtle transition-colors"
+      className="flex justify-center items-center flex-1 border rounded-lg py-2.5 px-4 gap-1.5 text-ui-fg font-medium bg-ui-bg-component hover:bg-ui-bg-component-hover transition-colors active:bg-ui-bg-component-pressed"
     >
       {type === "prev" && <TriangleLeftMini />}
       <span>{displayTitle}</span>

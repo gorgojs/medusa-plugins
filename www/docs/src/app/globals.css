@@ -10,6 +10,12 @@
 }
 
 :root {
+  --gorgo-text-gradient: linear-gradient(
+    127.93deg,
+    #deba92 35.7%,
+    #9f724e 61.98%,
+    #32150c 96.98%
+  );
   --buttons-accent: 0px 0.75px 0px 0px rgba(255, 255, 255, 0.2) inset,
     0px 1px 2px 0px rgba(158, 96, 68, 0.4), 0px 0px 0px 1px rgba(158, 96, 68, 1);
 }

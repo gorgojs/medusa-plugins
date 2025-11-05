@@ -29,6 +29,9 @@ module.exports = {
       colors: {
         dark: "#18181b",
       },
+      backgroundImage: {
+        "gorgo-text-gradient": "var(--gorgo-text-gradient)",
+      },
       typography: {
         DEFAULT: typographyShared,
         sm: typographyShared,

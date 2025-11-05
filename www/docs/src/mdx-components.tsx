@@ -95,7 +95,9 @@ const components: MDXComponents = {
       <Table className="table-auto min-w-xl">{children}</Table>
     </div>
   ),
-  tr: ({ children }) => <Table.Row>{children}</Table.Row>,
+  tr: ({ children }) => (
+    <Table.Row className="text-nowrap whitespace-nowrap">{children}</Table.Row>
+  ),
   td: ({ children }) => <Table.Cell>{children}</Table.Cell>,
   th: ({ children }) => <Table.HeaderCell>{children}</Table.HeaderCell>,
   tbody: ({ children }) => <Table.Body>{children}</Table.Body>,

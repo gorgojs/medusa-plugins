@@ -48,19 +48,19 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     return (
       <Collapsible
         defaultOpen={pathname.startsWith(href)}
-        className="border-b border-dashed last:border-b-0"
+        className="border-b border-dashed last:border-b-0 "
       >
         <CollapsibleTrigger asChild>
-          <div className="flex items-center justify-start text-start w-full txt-compact-small-plus text-ui-fg-subtle h-[28px] my-3 group">
-            <div className="h-full aspect-square flex items-center justify-center">
-              <SidebarIcon name={icon} className="mr-2" />
-            </div>
-            {displayTitle}
-            {hasChildren && (
-              <TriangleDownMini
-                className={"ml-auto group-data-[state=open]:rotate-180"}
-              />
+          <div className="flex items-center justify-start text-start w-full txt-compact-small-plus text-ui-fg-subtle h-[28px] my-3 group cursor-pointer">
+            {icon && (
+              <div className="h-full aspect-square flex items-center justify-center">
+                <SidebarIcon name={icon} className="mr-2" />
+              </div>
             )}
+            {displayTitle}
+            <TriangleDownMini
+              className={"ml-auto group-data-[state=open]:rotate-180"}
+            />
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent

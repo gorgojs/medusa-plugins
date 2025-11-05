@@ -46,7 +46,7 @@ export default async function RootLayout({
         className={cn(
           inter.className,
           geistMono.variable,
-          "antialiased dark:bg-ui-bg-base bg-ui-bg-component"
+          "antialiased bg-ui-bg-subtle"
         )}
       >
         <NextIntlClientProvider messages={messages} locale={locale}>

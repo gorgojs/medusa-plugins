@@ -31,7 +31,7 @@ export default function MobileNavigationMenu() {
   return (
     <div
       className={cn(
-        "bg-ui-bg-base flex items-center border-b xl:hidden px-2 lgish:border-b-0 transition-all",
+        "bg-ui-bg-subtle flex items-center border-b xl:hidden px-2 lgish:border-b-0 transition-all",
         scrolled && "lgish:border-b"
       )}
     >
