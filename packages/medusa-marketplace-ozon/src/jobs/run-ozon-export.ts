@@ -1,5 +1,5 @@
 import { MedusaContainer } from "@medusajs/framework/types"
-import { runOzonProductExport } from "../workflows/run-ozon-product-export"
+import { runOzonProductExport } from "../workflows/product/workflows/run-ozon-product-export"
 
 export default async function (container: MedusaContainer) {
   const logger = container.resolve("logger")

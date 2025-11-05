@@ -1,4 +1,3 @@
-// src/api/admin/ozon/products/route.ts
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 
 const BASE = process.env.OZON_BASE_URL ?? "https://api-seller.ozon.ru";

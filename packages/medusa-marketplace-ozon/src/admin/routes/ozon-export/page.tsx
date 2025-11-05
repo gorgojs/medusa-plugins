@@ -16,7 +16,7 @@ function OzonExportPage() {
     setResult(null)
 
     try {
-      const r = await fetch("/admin/ozon/product/import", {
+      const r = await fetch("/admin/ozon/product/export", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
@@ -64,6 +64,6 @@ function OzonExportPage() {
 export default OzonExportPage
 
 export const config = defineRouteConfig({
-  label: "Import",
+  label: "Export",
   icon: TagSolid,
 })

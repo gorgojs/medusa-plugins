@@ -1,5 +1,5 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
-import { runOzonProductExport } from "../../../../../workflows/run-ozon-product-export";
+import { runOzonProductExport } from "../../../../../workflows/product/workflows/run-ozon-product-export";
 
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
