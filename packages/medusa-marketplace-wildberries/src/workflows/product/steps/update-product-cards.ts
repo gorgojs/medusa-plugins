@@ -2,6 +2,8 @@ import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import WildberriesModuleService, { WildberriesProductCardUpdate } from "../../../modules/wildberries/service"
 import { WB_MODULE } from "../../../modules/wildberries"
 
+const BATCH_SIZE = 3000
+
 export type UpdateProductCardsStep = Array<WildberriesProductCardUpdate>
 
 export const updateProductCardsStepId = "update-product-cards"
@@ -14,14 +16,24 @@ export const updateProductCardsStep = createStep(
 
     if (productCards.length === 0) {
       logger.info("Nothing to update. Skipping...")
-      return new StepResponse("Nothing to update")
+      return new StepResponse(["Nothing to update"])
     }
 
     logger.info("Update product cards...")
     logger.debug(`Product cards to update: ${JSON.stringify(productCards, null, 2)}`)
 
-    const response = await wildberriesModuleService.updateProductCards(productCards)
+    const result: any[] = []
 
-    return new StepResponse(response)
+    for (let batch_number = 0; batch_number * BATCH_SIZE < productCards.length; ++batch_number) {
+      const response = await wildberriesModuleService.updateProductCards(productCards.slice(BATCH_SIZE * batch_number, BATCH_SIZE * (batch_number + 1) + 1))
+      const errorList = []
+
+      result.push({
+        response,
+        errorList,
+      })
+    }
+
+    return new StepResponse(result)
   }
 )

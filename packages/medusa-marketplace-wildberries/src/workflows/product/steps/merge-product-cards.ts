@@ -14,16 +14,24 @@ export const mergeProductCardsStep = createStep(
 
     if (productCards.length === 0) {
       logger.info("Nothing to merge. Skipping...")
-      return new StepResponse("Nothing to merge")
+      return new StepResponse(["Nothing to merge"])
     }
 
     logger.info("Merge product cards...")
     logger.debug(`Product cards to merge: ${JSON.stringify(productCards, null, 2)}`)
 
+    const result: any[] = []
+
     productCards.forEach(async item => {
-      await wildberriesModuleService.createProductCardsWithMerge(item)
+      const response = await wildberriesModuleService.createProductCardsWithMerge(item)
+      const errorList = []
+
+      result.push({
+        response,
+        errorList,
+      })
     })
 
-    return new StepResponse()
+    return new StepResponse(result)
   }
 )

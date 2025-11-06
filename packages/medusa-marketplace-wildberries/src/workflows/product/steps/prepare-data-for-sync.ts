@@ -52,13 +52,11 @@ export const prepareDataForSyncStep = createStep(
           variants: variants
         })
       } else {
-        let mergeProductCards = false
         let variantsToMerge: Array<WildberriesProductCard> = []
   
         product.variants.forEach(variant => {
           const nmID = variant.metadata?.wildberries_nmID ?? "none"
           if (nmID === "none") { // to merge
-            mergeProductCards = true
             variantsToMerge.push({
               vendorCode: variant.sku ?? "null_sku",
               title: product.title + variant.title,
