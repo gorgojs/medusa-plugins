@@ -6,6 +6,8 @@ export const POST = async (
   res: MedusaResponse
 ) => {
 
-  const response = await syncWbProductsWorkflow(req.scope).run()
+  const response = await syncWbProductsWorkflow(req.scope).run({
+    input: [],
+  })
   res.json(response.result)
 }

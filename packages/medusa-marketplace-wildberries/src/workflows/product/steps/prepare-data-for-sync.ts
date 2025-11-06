@@ -1,11 +1,13 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { WildberriesProductCard, WildberriesProductCardsMerge, WildberriesProductCardUpdate, WildberriesProductCreate } from "../../../modules/wildberries/service"
 
+export type PrepareDataForSyncStepInput = Array<string>
+
 export const prepareDataForSyncStepId = "prepare-data-for-sync"
 
 export const prepareDataForSyncStep = createStep(
   prepareDataForSyncStepId,
-  async (_, { container }) => {
+  async (productIds: PrepareDataForSyncStepInput, { container }) => {
     const logger = container.resolve("logger")
     const query = container.resolve("query")
 
@@ -17,7 +19,10 @@ export const prepareDataForSyncStep = createStep(
         "*",
         "variants.*"
       ],
-      filters: { status: "published" },
+      filters: {
+        id: productIds.length ? productIds : undefined,
+        status: "published"
+      },
     })
 
     logger.debug(`Recived products: ${JSON.stringify(products, null, 2)}`)

@@ -4,7 +4,9 @@ import { syncWbProductsWorkflow } from "../workflows/product"
 export default async function (container: MedusaContainer) {
   const logger = container.resolve("logger")
 
-  const { result } = await syncWbProductsWorkflow(container).run()
+  const { result } = await syncWbProductsWorkflow(container).run({
+    input: [],
+  })
   logger.info(`Exported products to Wildberries: ${JSON.stringify(result, null, 2)}`)
 }
 

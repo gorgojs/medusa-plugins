@@ -5,14 +5,16 @@ import { createProductsStep } from "../steps/create-products"
 import { updateProductCardsStep } from "../steps/update-product-cards"
 import { mergeProductCardsStep } from "../steps/merge-product-cards"
 
+export type SyncWbProductsWorkflowInput = Array<string>
+
 export const syncWbProductsWorkflowId = "sync-wb-products"
 
 export const syncWbProductsWorkflow = createWorkflow(
   syncWbProductsWorkflowId,
-  () => {
+  (input: SyncWbProductsWorkflowInput = []) => {
     const syncResult = syncWbCardsStep()
 
-    const { productsToCreate, productCardsToUpdate, productCardsToMerge } = prepareDataForSyncStep()
+    const { productsToCreate, productCardsToUpdate, productCardsToMerge } = prepareDataForSyncStep(input)
 
     const createResponse = createProductsStep(productsToCreate)
 
@@ -21,10 +23,10 @@ export const syncWbProductsWorkflow = createWorkflow(
     const mergeResponse = mergeProductCardsStep(productCardsToMerge)
 
     const result = {
-      syncResult,
       createResponse,
       updateResponse,
       mergeResponse,
+      syncResult,
     }
     
     return new WorkflowResponse(result)
