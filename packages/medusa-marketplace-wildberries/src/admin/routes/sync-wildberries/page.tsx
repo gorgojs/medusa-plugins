@@ -39,7 +39,7 @@ const SyncWildberriesPage = () => {
       <div className="px-6 py-4 space-y-3">
         {error && <Text className="text-ui-fg-error">Error: {error}</Text>}
 
-        {data && <Text>Sync result: {JSON.stringify(data, null, 2)}</Text>}
+        {data && <pre>Sync result: {JSON.stringify(data, null, 2)}</pre>}
       </div>
     </Container>
   )

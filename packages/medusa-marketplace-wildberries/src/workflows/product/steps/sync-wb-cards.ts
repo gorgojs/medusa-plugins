@@ -1,7 +1,6 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import WildberriesModuleService from "../../../modules/wildberries/service"
 import { WB_MODULE } from "../../../modules/wildberries"
-import { Modules } from "@medusajs/framework/utils"
 import { batchProductsWorkflow, batchProductVariantsWorkflow } from "@medusajs/medusa/core-flows"
 
 export const syncWbCardsStepId = "sync-wb-cards"
@@ -11,7 +10,7 @@ export const syncWbCardsStep = createStep(
   async (_, { container }) => {
     const logger = container.resolve("logger")
     const wildberriesModuleService: WildberriesModuleService = container.resolve(WB_MODULE)
-    const productModuleService = container.resolve(Modules.PRODUCT)
+    const query = container.resolve("query")
 
     const nmIDs: Record<string, number> = {}
     const imtIDs: Record<string, number> = {}
@@ -22,26 +21,18 @@ export const syncWbCardsStep = createStep(
 
     logger.info("Getting data from wildberries...")
 
-    const response = await wildberriesModuleService.getProductCards()
+    const cards = await wildberriesModuleService.getAllProductCards()
 
-    response["cards"].forEach(variant => {
-      nmIDs[variant.vendorCode] = variant.nmID
-      imtIDs[variant.vendorCode] = variant.imtID
-      sizeSkus[variant.vendorCode] = variant.sizes[0].skus
+    cards.forEach(card => {
+      nmIDs[card.vendorCode] = card.nmID
+      imtIDs[card.vendorCode] = card.imtID
+      sizeSkus[card.vendorCode] = card.sizes[0].skus
     })
 
-    const variants = await productModuleService.listProductVariants(
-      {
-        sku: Object.keys(nmIDs),
-      },
-      {
-        select: ["id", "sku", "metadata"],
-        relations: ["product"],
-        take: 100,
-        skip: 0,
-      }
-    )
-
+    const { data: variants } = await query.graph({
+      entity: "product_variant",
+      fields: ["id", "sku", "metadata", "product.id", "product.metadata"]
+    })
 
     variants.forEach(variant => {
       if (variant.sku !== null) {
