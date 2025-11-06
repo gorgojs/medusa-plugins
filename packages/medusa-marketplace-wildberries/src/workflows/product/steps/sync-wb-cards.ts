@@ -35,7 +35,7 @@ export const syncWbCardsStep = createStep(
     })
 
     variants.forEach(variant => {
-      if (variant.sku !== null) {
+      if (variant.sku !== null && nmIDs[variant.sku]) {
         let variantMetadata = variant.metadata ?? {}
         variantMetadata.wildberries_nmID = nmIDs[variant.sku]
         variantMetadata.wildberries_sizeSkus = sizeSkus[variant.sku]
