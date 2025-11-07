@@ -28,7 +28,6 @@ interface CommandItemType {
 const highlightSearchTerms = (text: string, searchTerm: string) => {
   if (!searchTerm.trim()) return text;
 
-  // Escape HTML characters to prevent XSS
   const escapeHtml = (str: string) => {
     const p = document.createElement("p");
     p.appendChild(document.createTextNode(str));
@@ -38,7 +37,6 @@ const highlightSearchTerms = (text: string, searchTerm: string) => {
   const escapedText = escapeHtml(text);
   const escapedSearchTerm = escapeHtml(searchTerm);
 
-  // Create regex for highlighting
   const regex = new RegExp(
     `(${escapedSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
     "gi"
@@ -52,7 +50,7 @@ const highlightSearchTerms = (text: string, searchTerm: string) => {
         regex.test(part) ? (
           <mark
             key={index}
-            className="bg-yellow-200 text-black dark:bg-yellow-700 dark:text-white px-0.5 rounded"
+            className="bg-ui-bg-highlight text-ui-fg-interactive  dark:text-white px-0.5 rounded"
             dangerouslySetInnerHTML={{ __html: part }}
           />
         ) : (
@@ -212,10 +210,10 @@ const CmdK = () => {
               <CommandItem
                 key={item.id}
                 onSelect={() => handleSelect(item.href)}
-                className="flex flex-col cursor-pointer items-start justify-between px-4 py-3 hover:bg-accent gap-1"
+                className="flex flex-col cursor-pointer items-start justify-between hover:bg-ui-bg-base-hover gap-1.5 !p-2"
               >
-                <div className="font-medium">{item.title}</div>
-                <div className="text-xs text-muted-foreground line-clamp-2">
+                <div className="txt-compact-small-plus">{item.title}</div>
+                <div className="txt-compact-small text-muted-foreground line-clamp-2">
                   {typeof item.content === "string"
                     ? highlightSearchTerms(item.content, searchTerm)
                     : item.content}
@@ -224,9 +222,11 @@ const CmdK = () => {
                   {item.sectionHierarchy
                     ? item.sectionHierarchy.map((segment, index) => (
                         <React.Fragment key={index}>
-                          <span className="flex items-center">{segment}</span>
+                          <span className="flex items-center text-ui-fg-muted">
+                            {segment}
+                          </span>
                           {index < item.sectionHierarchy!.length - 1 && (
-                            <TriangleRightMini />
+                            <TriangleRightMini className="text-ui-fg-muted" />
                           )}
                         </React.Fragment>
                       ))
@@ -235,16 +235,16 @@ const CmdK = () => {
               </CommandItem>
             ))}
           </CommandGroup>
-          <div className="bg-ui-bg-component sticky bottom-0 flex items-center justify-end text-xs gap-3 py-3 pr-3 border-t">
-            <div>
-              Navigation <Kbd className="ml-2">↓</Kbd> <Kbd>↑</Kbd>
-            </div>
-            <div className="w-px h-[12px] bg-ui-border-base" />
-            <div>
-              Open result <Kbd className="w-[20px] ml-2">↵</Kbd>
-            </div>
-          </div>
         </CommandList>
+        <div className="bg-ui-bg-component static bottom-0 flex items-center justify-end text-xs gap-3 py-3 pr-3 border-t">
+          <div>
+            Navigation <Kbd className="ml-2">↓</Kbd> <Kbd>↑</Kbd>
+          </div>
+          <div className="w-px h-[12px] bg-ui-border-base" />
+          <div>
+            Open result <Kbd className="w-[20px] ml-2">↵</Kbd>
+          </div>
+        </div>
       </CommandDialog>
     </>
   );
