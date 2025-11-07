@@ -29,10 +29,6 @@
   h6 {
     font-weight: 500;
   }
-
-  body {
-    letter-spacing: -0.045em;
-  }
 }
 
 @theme {
