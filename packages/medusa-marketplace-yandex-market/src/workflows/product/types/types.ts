@@ -1,3 +1,5 @@
+import { string } from "prop-types"
+
 export const YM_BASE = process.env.YM_BASE_URL ?? "https://api.partner.market.yandex.ru"
 export const YM_API_KEY = process.env.YM_API_KEY
 export const YM_BUSINESS_ID = process.env.YM_BUSINESS_ID
@@ -7,23 +9,23 @@ export const YM_FETCH_TIMEOUT_MS = Number(process.env.YM_FETCH_TIMEOUT_MS ?? 150
 
 export const MAX_OFFERS_PER_REQUEST = 100 as const
 
-export type FetchAllYmOfferCardsInput  = {
-  cardStatuses?: string[]
-  categoryIds?: number[]
-  limitPerPage?: number
-  sleepMsBetweenPages?: number
-  maxPages?: number
-  sessionId?: string
+export type FetchAllYmOfferCardsInput = {
+    cardStatuses?: string[]
+    categoryIds?: number[]
+    limitPerPage?: number
+    sleepMsBetweenPages?: number
+    maxPages?: number
+    sessionId?: string
 }
-export type FetchAllYmOfferCardsOutput  = {
-  ok: boolean
-  sessionId: string
-  logId: string
-  pages: number
-  totalCards: number
-  statuses: number[]
-  countsByStatus: Record<string, number>
-  offerCards: any[]
+export type FetchAllYmOfferCardsOutput = {
+    ok: boolean
+    sessionId: string
+    logId: string
+    pages: number
+    totalCards: number
+    statuses: number[]
+    countsByStatus: Record<string, number>
+    offerCards: any[]
 }
 
 export type Price = { amount: number; currency_code: string }
@@ -36,26 +38,31 @@ type Variant = {
 }
 export type Image = { url: string }
 
+type Tag = {
+  id: string
+  value: string
+}
+
 export type ProductRow = {
     id: string
     title: string
     description?: string | null
-    subtitle?: string | null
-    handle?: string | null
-    images?: Image[]
-    categories?: { id: string; name: string }[]
-    metadata?: Record<string, any> | null
     weight?: number | null
+    width?: number | null          
     length?: number | null
     height?: number | null
-    width?: number | null
-    origin_country?: string | null
-    hs_code?: string | null
-    variants?: Variant[]
+    origin_country: string | null
+    images?: Image[]
+    categories?:  {id: string}[]
+    hs_code?:    string
+    variants?:  Variant[]
+    tags?:  Tag[] 
+    metadata?: Record<string, any> | null
+    
 }
 
 export type RunYmProductExportWorkflowInput = {
-    medusaCategoryName?: string
+    medusaCategoryId?: string
     categoryId?: number
 }
 
@@ -100,8 +107,12 @@ export function GetMinimalRublePrice(variants?: Variant[]) {
 }
 
 export function YmAuthHeaders(): Record<string, string> {
-    if (!YM_API_KEY) throw new Error("Set YM_API_KEY")
-    return { "Api-Key": YM_API_KEY }
+  if (!YM_API_KEY) throw new Error("Set YM_API_KEY")
+  return {
+    "Api-Key": YM_API_KEY.trim(),
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+  }
 }
 
 export const RoundTo2 = (n: number) => Math.round(n * 100) / 100
@@ -172,7 +183,11 @@ export function ExtractOfferMappingResults(resp: any): UpdateOfferMappingResultD
 
 export function ChunkArray<T>(arr: T[], size: number): T[][] {
     const out: T[][] = []
-    for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size))
+    arr.forEach((item, i) => {
+        if (i % size === 0) out.push([])
+        out[out.length - 1].push(item)
+    })
+
     return out
 }
 export function Delay(ms: number) {
@@ -186,32 +201,32 @@ export function AssertHasPictures(title: string, pics: string[]) {
 }
 
 export function ymFetchWithTimeout(input: RequestInfo | URL, init?: RequestInit, timeoutMs = YM_FETCH_TIMEOUT_MS) {
-  const ctrl = new AbortController()
-  const t = setTimeout(() => ctrl.abort(), timeoutMs)
-  const headers = { "User-Agent": "medusa-yandex-market/1.0", ...(init?.headers || {}) } as any
-  return fetch(input, { ...init, headers, signal: ctrl.signal }).finally(() => clearTimeout(t))
+    const ctrl = new AbortController()
+    const t = setTimeout(() => ctrl.abort(), timeoutMs)
+    const headers = { "User-Agent": "medusa-yandex-market/1.0", ...(init?.headers || {}) } as any
+    return fetch(input, { ...init, headers, signal: ctrl.signal }).finally(() => clearTimeout(t))
 }
 export function parseJsonOrText(r: Response): Promise<any> {
-  const ct = r.headers.get("content-type") || ""
-  if (ct.includes("application/json")) return r.json().catch(() => ({}))
-  return r.text().catch(() => "")
+    const ct = r.headers.get("content-type") || ""
+    if (ct.includes("application/json")) return r.json().catch(() => ({}))
+    return r.text().catch(() => "")
 }
-export const delay  = (ms: number) => new Promise((r) => setTimeout(r, ms))
-export const ensureSessionId  = (maybe?: string) => maybe || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
-export const toSafeJson  = (o: any) => { try { return JSON.parse(JSON.stringify(o)) } catch { return String(o) } }
+export const delay = (ms: number) => new Promise((r) => setTimeout(r, ms))
+export const ensureSessionId = (maybe?: string) => maybe || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
+export const toSafeJson = (o: any) => { try { return JSON.parse(JSON.stringify(o)) } catch { return String(o) } }
 
-export const resolveYmExportLogService  = (scope: any) => {
-  const keys = ["yandex_market_export_log", "yandexMarketExportLogService", "yandexMarketExportLogModuleService"]
-  for (const k of keys) {
-    try {
-      const svc: any = scope.resolve(k)
-      const create = svc.createYmExportLogs?.bind(svc) ?? svc.createYMExportLogs?.bind(svc)
-      const update = svc.updateYmExportLogs?.bind(svc) ?? svc.updateYMExportLogs?.bind(svc)
-      return {
-        create: (rows: any[]) => (create ? create(rows) : Promise.resolve([])),
-        update: (rows: any[]) => (update ? update(rows) : Promise.resolve([])),
-      }
-    } catch { }
-  }
-  return null as any
+export const resolveYmExportLogService = (scope: any) => {
+    const keys = ["yandex_market_export_log", "yandexMarketExportLogService", "yandexMarketExportLogModuleService"]
+    for (const k of keys) {
+        try {
+            const svc: any = scope.resolve(k)
+            const create = svc.createYmExportLogs?.bind(svc) ?? svc.createYMExportLogs?.bind(svc)
+            const update = svc.updateYmExportLogs?.bind(svc) ?? svc.updateYMExportLogs?.bind(svc)
+            return {
+                create: (rows: any[]) => (create ? create(rows) : Promise.resolve([])),
+                update: (rows: any[]) => (update ? update(rows) : Promise.resolve([])),
+            }
+        } catch { }
+    }
+    return null as any
 }
