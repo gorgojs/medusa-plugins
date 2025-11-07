@@ -20,8 +20,8 @@ export default async function Hero({ locale }: HeroProps) {
     >
       <div className="flex flex-col lg:flex-row min-h-[420px] items-center mx-auto w-full lg:py-8 xl:py-16 sm:px-18 gap-8">
         <div className="flex-1">
-          <h1 className="text-4xl font-medium mb-3">{t("title")}</h1>
-          <p className="text-lg max-w-lg mb-8 text-ui-fg-subtle">
+          <h1 className="text-h1 mb-3">{t("title")}</h1>
+          <p className="txt-small-plus text-ui-fg-subtle max-w-lg mb-8">
             {t("subtitle")}
           </p>
           <Button variant="primary" size="large" asChild>
