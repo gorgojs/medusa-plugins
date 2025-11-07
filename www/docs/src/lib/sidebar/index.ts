@@ -7,8 +7,6 @@ import { locales } from "../../types/index";
 import { pluginsSidebar } from "./plugins";
 import { toolsSidebar } from "./tools";
 
-// import { tutorialsSidebar } from "./tutorials";
-
 const sidebars: SidebarType[] = [
   pluginsSidebar,
   toolsSidebar,

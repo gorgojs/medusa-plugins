@@ -23,6 +23,44 @@ interface CommandItemType {
   content: string;
 }
 
+const highlightSearchTerms = (text: string, searchTerm: string) => {
+  if (!searchTerm.trim()) return text;
+
+  // Escape HTML characters to prevent XSS
+  const escapeHtml = (str: string) => {
+    const p = document.createElement("p");
+    p.appendChild(document.createTextNode(str));
+    return p.innerHTML;
+  };
+
+  const escapedText = escapeHtml(text);
+  const escapedSearchTerm = escapeHtml(searchTerm);
+
+  // Create regex for highlighting
+  const regex = new RegExp(
+    `(${escapedSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+    "gi"
+  );
+
+  const parts = escapedText.split(regex);
+
+  return (
+    <span>
+      {parts.map((part, index) =>
+        regex.test(part) ? (
+          <mark
+            key={index}
+            className="bg-yellow-200 text-black dark:bg-yellow-700 dark:text-white px-0.5 rounded"
+            dangerouslySetInnerHTML={{ __html: part }}
+          />
+        ) : (
+          <span key={index} dangerouslySetInnerHTML={{ __html: part }} />
+        )
+      )}
+    </span>
+  );
+};
+
 const useIsMac = () => {
   const [isMac, setIsMac] = useState(true);
 
@@ -176,8 +214,9 @@ const CmdK = () => {
               >
                 <div className="font-medium">{item.title}</div>
                 <div className="text-xs text-muted-foreground line-clamp-2">
-                  {item.content}
-                  {/*{item.description || item.content?.substring(0, 220)}*/}
+                  {typeof item.content === "string"
+                    ? highlightSearchTerms(item.content, searchTerm)
+                    : item.content}
                 </div>
                 <div className="text-xs text-muted-foreground">
                   {item.section}
