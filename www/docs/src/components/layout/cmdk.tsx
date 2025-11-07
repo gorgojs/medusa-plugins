@@ -175,16 +175,25 @@ const CmdK = () => {
       <CommandDialog
         open={open}
         onOpenChange={setOpen}
-        className="fixed top-1/2 left-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-0 overflow-hidden rounded-xl border bg-ui-bg-base p-0 shadow-lg outline-none animate-in fade-in-90 slide-in-from-top-10 sm:zoom-in-90"
+        className="fixed top-1/2 left-1/2 z-50 grid max-w-[94%] w-full sm:max-w-lg -translate-x-1/2 -translate-y-1/2 gap-0 overflow-hidden rounded-xl border bg-ui-bg-base p-0 shadow-lg outline-none animate-in fade-in-90 slide-in-from-top-10 sm:zoom-in-90"
       >
-        <CommandInput
-          placeholder={t("search.placeholder")}
-          value={searchTerm}
-          onValueChange={setSearchTerm}
-        />
-        <CommandList className="min-h-[400px] max-h-[400px] overflow-y-auto overflow-x-hidden">
+        <div className="relative">
+          <CommandInput
+            placeholder={t("search.placeholder")}
+            value={searchTerm}
+            onValueChange={setSearchTerm}
+          />
+          <Button
+            className="absolute right-1 top-1/2 -translate-y-1/2 text-ui-fg-subtle"
+            variant="transparent"
+            onClick={() => setSearchTerm("")}
+          >
+            Clear
+          </Button>
+        </div>
+        <CommandList className="min-h-[440px] max-h-[440px] overflow-y-auto overflow-x-hidden">
           {loading && (
-            <div className="flex items-center justify-center h-[400px]">
+            <div className="flex items-center justify-center h-[440px]">
               <p className="text-sm text-muted-foreground">
                 {t("search.loadingText", {
                   defaultValue: "Searching documentation...",
@@ -194,7 +203,7 @@ const CmdK = () => {
           )}
 
           {!loading && searchTerm && searchResults.length === 0 && (
-            <CommandEmpty className="text-center text-sm h-[400px] flex flex-col items-center justify-center">
+            <CommandEmpty className="text-center text-sm h-[440px] flex flex-col items-center justify-center">
               <MagnifierAlert className="mb-3" />
               <h5 className="mb-1.5 font-medium">
                 {t("search.emptyResults.title")}
@@ -213,7 +222,7 @@ const CmdK = () => {
                 className="flex flex-col cursor-pointer items-start justify-between hover:bg-ui-bg-base-hover gap-1.5 !p-2"
               >
                 <div className="txt-compact-small-plus">{item.title}</div>
-                <div className="txt-compact-small text-muted-foreground line-clamp-2">
+                <div className="txt-compact-small text-ui-fg-subtle line-clamp-2">
                   {typeof item.content === "string"
                     ? highlightSearchTerms(item.content, searchTerm)
                     : item.content}
@@ -236,7 +245,7 @@ const CmdK = () => {
             ))}
           </CommandGroup>
         </CommandList>
-        <div className="bg-ui-bg-component static bottom-0 flex items-center justify-end text-xs gap-3 py-3 pr-3 border-t">
+        <div className="bg-ui-bg-component static bottom-0 hidden lg:flex items-center justify-end text-xs gap-3 py-3 pr-3 border-t">
           <div>
             Navigation <Kbd className="ml-2">↓</Kbd> <Kbd>↑</Kbd>
           </div>
