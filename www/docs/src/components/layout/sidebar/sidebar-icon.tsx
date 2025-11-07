@@ -1,10 +1,10 @@
 import type { FC, SVGProps } from "react";
 import { cn } from "@/lib/utils";
-import Onec from "@/svg/icons/1c.svg";
-import Robokassa from "@/svg/icons/robokassa.svg";
-import Tkassa from "@/svg/icons/tbank.svg";
-import Yandex from "@/svg/icons/yandex.svg";
-import Yookassa from "@/svg/icons/yookassa.svg";
+import Onec from "@/svg/icons/sidebar/1c.svg";
+import Robokassa from "@/svg/icons/sidebar/robokassa.svg";
+import Tkassa from "@/svg/icons/sidebar/tkassa.svg";
+import Yandex from "@/svg/icons/sidebar/yandex.svg";
+import Yookassa from "@/svg/icons/sidebar/yookassa.svg";
 
 const ICONS: Record<string, FC<SVGProps<SVGSVGElement>>> = {
   tkassa: Tkassa,
@@ -29,7 +29,7 @@ const SidebarIcon = ({ name, className }: SidebarIconProps) => {
   return (
     <IconComponent
       className={cn(
-        "size-4 grayscale opacity-60 group-hover:opacity-100 group-hover:grayscale-0 transition-all",
+        "size-4 grayscale group-hover:grayscale-0 transition-all",
         className
       )}
     />

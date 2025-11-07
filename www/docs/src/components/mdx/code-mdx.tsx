@@ -37,5 +37,7 @@ export const CodeMdx = ({ className, children, ...rest }: CodeMdxProps) => {
     );
   }
 
-  return <InlineCode>{code}</InlineCode>;
+  return (
+    <InlineCode className="text-nowrap whitespace-nowrap">{code}</InlineCode>
+  );
 };

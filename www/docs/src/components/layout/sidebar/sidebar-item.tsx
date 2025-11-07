@@ -51,7 +51,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         className="border-b border-dashed last:border-b-0 "
       >
         <CollapsibleTrigger asChild>
-          <div className="flex items-center justify-start text-start w-full txt-compact-small-plus text-ui-fg-subtle h-[28px] my-3 group cursor-pointer">
+          <div className="flex items-center justify-start text-start w-full txt-compact-small-plus text-ui-fg-subtle h-[28px] my-3 group cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
             {icon && (
               <div className="h-full aspect-square flex items-center justify-center">
                 <SidebarIcon name={icon} className="mr-2" />

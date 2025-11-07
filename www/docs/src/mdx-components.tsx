@@ -1,8 +1,7 @@
-import { Copy, Table } from "@medusajs/ui";
+import { Table } from "@medusajs/ui";
 import slugify from "@sindresorhus/slugify";
 import type { MDXComponents } from "mdx/types";
 import { CodeMdx } from "@/components/mdx/code-mdx";
-import { cn } from "./lib/utils";
 import HeadingLink from "./components/mdx/heading-link";
 
 const generateId = (text: string) => {
@@ -91,13 +90,11 @@ const components: MDXComponents = {
 
   // table
   table: ({ children }) => (
-    <div className="overflow-x-scroll border-x rounded-md not-prose ">
+    <div className="overflow-x-auto border-x rounded-md not-prose ">
       <Table className="table-auto min-w-xl">{children}</Table>
     </div>
   ),
-  tr: ({ children }) => (
-    <Table.Row className="text-nowrap whitespace-nowrap">{children}</Table.Row>
-  ),
+  tr: ({ children }) => <Table.Row>{children}</Table.Row>,
   td: ({ children }) => <Table.Cell>{children}</Table.Cell>,
   th: ({ children }) => <Table.HeaderCell>{children}</Table.HeaderCell>,
   tbody: ({ children }) => <Table.Body>{children}</Table.Body>,

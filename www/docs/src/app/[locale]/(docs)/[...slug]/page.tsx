@@ -20,7 +20,7 @@ type PageProps = {
   }>;
 };
 
-type MDXModule = {
+export type MDXModule = {
   default: React.ComponentType;
   toc: Toc;
   metadata?: {
