@@ -1,9 +1,9 @@
 import {
-    createStep,
-    StepResponse,
+  createStep,
+  StepResponse,
 } from "@medusajs/framework/workflows-sdk"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
-import  { 
+import {
   RunYmProductExportWorkflowInput,
   ProductRow
 } from "../types"
@@ -18,36 +18,46 @@ export const LoadMedusaProductsByCategoryStep = createStep(
       entity: "product",
       filters: { status: "published" },
       fields: [
-        "id",
-        "title",
-        "subtitle",
-        "description",
-        "handle",
-        "weight",
-        "length",
-        "height",
-        "width",
-        "origin_country",
-        "hs_code",
-        "metadata",
-        "images.url",
-        "categories.id",
-        "categories.name",
-        "variants.id",
-        "variants.sku",
-        "variants.barcode",
-        "variants.options.*",
-        "variants.prices.amount",
-        "variants.prices.currency_code",
+        // TODO: Add all fields. Now only basic.
+
+        // Medusa fields | YM fields
+
+        "id",                           //  offerId : string
+        "title",                        //  name : string
+        "description",                  //  description : string
+        "weight",                       //  OfferWeightDimensionsDTO.weight  : number
+        "length",                       //  OfferWeightDimensionsDTO.length  : number
+        "height",                       //  OfferWeightDimensionsDTO.height  : number
+        "width",                        //  OfferWeightDimensionsDTO.width   : number
+        "origin_country",               //  manufacturerCountries : Set<string> | null
+        "images.url",                   //  pictures : Array<string> | null
+        "categories.id",                //  category : string
+        "hs_code",                      //  customsCommodityCode : string
+        "variants.barcode",             //  barcodes  : Set<string> | null
+        "tags.value",                   //  tags      : Set<string> | null
+
+        // from metadata
+
+        'shelfLife',                    //  shelfLife : TimePeriodDTO
+        'lifeTime',                     //  lifeTime : TimePeriodDTO
+        'guaranteePeriod',              //  guaranteePeriod : TimePeriodDTO
+        "manuals",                      //  manuals : Array<OfferManualDTO> | null
+        "vendor",                       //  vendor  : string
+        "downloadable",                 //  downloadable : boolean
+        "commodityCodes",               //  commodityCodes : Array<CommodityCodeDTO> | null
+        "certificates",                 //  certificates : Set<string> | null
+
       ],
     })
 
     const all = (data ?? []) as ProductRow[]
+    const categoryId = input?.medusaCategoryId
 
-    const catName = (input?.medusaCategoryName || "Mobile Phones").toLowerCase()
-    const products = all.filter((p) =>
-      (p.categories || []).some((c) => c.name?.toLowerCase() === catName)
-    )
+    const products = categoryId
+      ? all.filter((p) =>
+          (p.categories || []).some((c) => c.id === categoryId)
+        )
+      : all
 
     return new StepResponse(products)
   }
