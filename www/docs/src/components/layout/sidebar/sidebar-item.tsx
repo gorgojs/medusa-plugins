@@ -8,7 +8,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { usePathname } from "@/i18n/navigation";
-import { getLocalizedString } from "@/lib/utils";
+import { cn, getLocalizedString } from "@/lib/utils";
 import type { LocalizedString, SidebarItemType, SidebarType } from "@/types";
 import { overviewTitle } from ".";
 import SidebarIcon from "./sidebar-icon";
@@ -51,7 +51,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         className="border-b border-dashed last:border-b-0 "
       >
         <CollapsibleTrigger asChild>
-          <div className="flex items-center justify-start text-start w-full txt-compact-small-plus text-ui-fg-subtle h-[28px] my-3 group cursor-pointer">
+          <div
+            className={cn(
+              "flex items-center justify-start text-start w-full txt-compact-small-plus text-ui-fg-subtle h-[28px] my-3 group cursor-pointer opacity-60 hover:opacity-100 transition-opacity",
+              pathname.startsWith(href) && "opacity-100"
+            )}
+          >
             {icon && (
               <div className="h-full aspect-square flex items-center justify-center">
                 <SidebarIcon name={icon} className="mr-2" />

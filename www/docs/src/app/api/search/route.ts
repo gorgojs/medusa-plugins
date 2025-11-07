@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { searchWithSnippets } from "@/lib/search";
+import type { Locale } from "@/types";
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const results = await searchWithSnippets(locale, query);
+    const results = await searchWithSnippets(locale as Locale, query);
     return NextResponse.json(results);
   } catch (error) {
     console.error("Error in search API:", error);

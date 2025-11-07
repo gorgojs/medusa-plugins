@@ -1,10 +1,10 @@
 "use client";
 
-import { MagnifierAlert } from "@medusajs/icons";
+import { MagnifierAlert, TriangleRightMini } from "@medusajs/icons";
 import { Button, Kbd } from "@medusajs/ui";
 import { SearchIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -20,8 +20,46 @@ interface CommandItemType {
   description?: string;
   href: string;
   section?: string;
+  sectionTitle?: string;
+  sectionHierarchy?: string[];
   content: string;
 }
+
+const highlightSearchTerms = (text: string, searchTerm: string) => {
+  if (!searchTerm.trim()) return text;
+
+  const escapeHtml = (str: string) => {
+    const p = document.createElement("p");
+    p.appendChild(document.createTextNode(str));
+    return p.innerHTML;
+  };
+
+  const escapedText = escapeHtml(text);
+  const escapedSearchTerm = escapeHtml(searchTerm);
+
+  const regex = new RegExp(
+    `(${escapedSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+    "gi"
+  );
+
+  const parts = escapedText.split(regex);
+
+  return (
+    <span>
+      {parts.map((part, index) =>
+        regex.test(part) ? (
+          <mark
+            key={index}
+            className="bg-ui-bg-highlight text-ui-fg-interactive  dark:text-white px-0.5 rounded"
+            dangerouslySetInnerHTML={{ __html: part }}
+          />
+        ) : (
+          <span key={index} dangerouslySetInnerHTML={{ __html: part }} />
+        )
+      )}
+    </span>
+  );
+};
 
 const useIsMac = () => {
   const [isMac, setIsMac] = useState(true);
@@ -137,16 +175,25 @@ const CmdK = () => {
       <CommandDialog
         open={open}
         onOpenChange={setOpen}
-        className="fixed top-1/2 left-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-0 overflow-hidden rounded-xl border bg-ui-bg-base p-0 shadow-lg outline-none animate-in fade-in-90 slide-in-from-top-10 sm:zoom-in-90"
+        className="fixed top-1/2 left-1/2 z-50 grid max-w-[94%] w-full sm:max-w-lg -translate-x-1/2 -translate-y-1/2 gap-0 overflow-hidden rounded-xl border bg-ui-bg-base p-0 shadow-lg outline-none animate-in fade-in-90 slide-in-from-top-10 sm:zoom-in-90"
       >
-        <CommandInput
-          placeholder={t("search.placeholder")}
-          value={searchTerm}
-          onValueChange={setSearchTerm}
-        />
-        <CommandList className="min-h-[400px] max-h-[400px] overflow-y-auto overflow-x-hidden">
+        <div className="relative">
+          <CommandInput
+            placeholder={t("search.placeholder")}
+            value={searchTerm}
+            onValueChange={setSearchTerm}
+          />
+          <Button
+            className="absolute right-1 top-1/2 -translate-y-1/2 text-ui-fg-subtle"
+            variant="transparent"
+            onClick={() => setSearchTerm("")}
+          >
+            Clear
+          </Button>
+        </div>
+        <CommandList className="min-h-[440px] max-h-[440px] overflow-y-auto overflow-x-hidden">
           {loading && (
-            <div className="flex items-center justify-center h-[400px]">
+            <div className="flex items-center justify-center h-[440px]">
               <p className="text-sm text-muted-foreground">
                 {t("search.loadingText", {
                   defaultValue: "Searching documentation...",
@@ -156,7 +203,7 @@ const CmdK = () => {
           )}
 
           {!loading && searchTerm && searchResults.length === 0 && (
-            <CommandEmpty className="text-center text-sm h-[400px] flex flex-col items-center justify-center">
+            <CommandEmpty className="text-center text-sm h-[440px] flex flex-col items-center justify-center">
               <MagnifierAlert className="mb-3" />
               <h5 className="mb-1.5 font-medium">
                 {t("search.emptyResults.title")}
@@ -172,29 +219,41 @@ const CmdK = () => {
               <CommandItem
                 key={item.id}
                 onSelect={() => handleSelect(item.href)}
-                className="flex flex-col cursor-pointer items-start justify-between px-4 py-3 hover:bg-accent gap-1"
+                className="flex flex-col cursor-pointer items-start justify-between hover:bg-ui-bg-base-hover gap-1.5 !p-2"
               >
-                <div className="font-medium">{item.title}</div>
-                <div className="text-xs text-muted-foreground line-clamp-2">
-                  {item.content}
-                  {/*{item.description || item.content?.substring(0, 220)}*/}
+                <div className="txt-compact-small-plus">{item.title}</div>
+                <div className="txt-compact-small text-ui-fg-subtle line-clamp-2">
+                  {typeof item.content === "string"
+                    ? highlightSearchTerms(item.content, searchTerm)
+                    : item.content}
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  {item.section}
+                <div className="text-xs text-muted-foreground flex flex-wrap items-center gap-x-1">
+                  {item.sectionHierarchy
+                    ? item.sectionHierarchy.map((segment, index) => (
+                        <React.Fragment key={index}>
+                          <span className="flex items-center text-ui-fg-muted">
+                            {segment}
+                          </span>
+                          {index < item.sectionHierarchy!.length - 1 && (
+                            <TriangleRightMini className="text-ui-fg-muted" />
+                          )}
+                        </React.Fragment>
+                      ))
+                    : item.sectionTitle || item.section}
                 </div>
               </CommandItem>
             ))}
           </CommandGroup>
-          <div className="bg-ui-bg-component sticky bottom-0 flex items-center justify-end text-xs gap-3 py-3 pr-3 border-t">
-            <div>
-              Navigation <Kbd className="ml-2">↓</Kbd> <Kbd>↑</Kbd>
-            </div>
-            <div className="w-px h-[12px] bg-ui-border-base" />
-            <div>
-              Open result <Kbd className="w-[20px] ml-2">↵</Kbd>
-            </div>
-          </div>
         </CommandList>
+        <div className="bg-ui-bg-component static bottom-0 hidden lg:flex items-center justify-end text-xs gap-3 py-3 pr-3 border-t">
+          <div>
+            Navigation <Kbd className="ml-2">↓</Kbd> <Kbd>↑</Kbd>
+          </div>
+          <div className="w-px h-[12px] bg-ui-border-base" />
+          <div>
+            Open result <Kbd className="w-[20px] ml-2">↵</Kbd>
+          </div>
+        </div>
       </CommandDialog>
     </>
   );

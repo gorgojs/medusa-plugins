@@ -38,12 +38,12 @@ export async function PluginsSection({
       <div className="w-full lg:py-8 xl:py-16 sm:px-18">
         <div className="mx-auto w-full">
           <div className="mb-12">
-            <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="mb-4 flex items-center gap-2 txt-small-plus text-ui-fg-base">
               <SquaresPlusSolid className="h-4 w-4" />
               <span>{t("sectionTitle")}</span>
             </div>
-            <h1 className="mb-4 text-4xl font-medium">{t("title")}</h1>
-            <p className="max-w-2xl text-lg text-ui-fg-subtle leading-relaxed">
+            <h1 className="mb-4 text-h1">{t("title")}</h1>
+            <p className="txt-small-plus text-ui-fg-subtle max-w-sm">
               {t("subtitle")}
             </p>
           </div>
@@ -55,10 +55,10 @@ export async function PluginsSection({
                 key={category.id}
               >
                 <div className="mb-6">
-                  <h2 className="mb-2 font-medium text-ui-fg-subtle text-sm ">
+                  <h2 className="mb-2 txt-small-plus">
                     {getLocalizedString(category.title, locale)}
                   </h2>
-                  <p className="text-lg font-medium">
+                  <p className="text-h2">
                     {getLocalizedString(category.description, locale)}
                   </p>
                 </div>
@@ -88,10 +88,10 @@ export async function PluginsSection({
                           </div>
 
                           <div>
-                            <h3 className="font-semibold text-foreground text-sm">
+                            <h3 className="txt-small-plus text-ui-fg-base">
                               {getLocalizedString(plugin.name, locale)}
                             </h3>
-                            <p className="text-[10px] text-ui-fg-subtle line-clamp-1">
+                            <p className="txt-small-plus text-ui-fg-subtle line-clamp-1">
                               {getLocalizedString(plugin.description, locale)}
                             </p>
                           </div>

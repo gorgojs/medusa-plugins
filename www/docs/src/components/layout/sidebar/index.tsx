@@ -84,7 +84,7 @@ const Sidebar = ({
         onOpenChange={setIsSidebarOpen}
       >
         <DrawerTitle className="sr-only">Sidebar</DrawerTitle>
-        <DrawerContent className="h-full bg-ui-bg-component">
+        <DrawerContent className="h-full bg-ui-bg-subtle">
           <div className="overflow-y-auto py-4">
             <SidebarContent
               items={section?.children ?? []}
