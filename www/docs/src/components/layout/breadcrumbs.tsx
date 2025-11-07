@@ -25,8 +25,6 @@ export default function Breadcrumbs({
     baseSlugs
   );
 
-  console.log(section, baseSlugs);
-
   const currentPage = flattenedItems.find(
     (i) => `/${i.path.join("/")}` === pathname
   );

@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { mdxToMd } from "mdx-to-md";
 import MiniSearch from "minisearch";
 import { unstable_cache } from "next/cache";
 import remarkMdx from "remark-mdx";
@@ -7,8 +8,6 @@ import remarkParse from "remark-parse";
 import remarkStringify from "remark-stringify";
 import stripMarkdown from "strip-markdown";
 import { unified } from "unified";
-import { remove } from "unist-util-remove";
-import { visit } from "unist-util-visit";
 
 interface ContentItem {
   id: string;
@@ -20,61 +19,6 @@ interface ContentItem {
 }
 
 type MiniSearchType = InstanceType<typeof MiniSearch>;
-
-const remarkStripMdx = () => {
-  return (tree) => {
-    remove(tree, (node) => {
-      return (
-        node.type === "mdxJsxFlowElement" ||
-        node.type === "mdxJsxTextElement" ||
-        node.type === "mdxjsEsm"
-      );
-    });
-  };
-};
-
-const get = (obj, path) => path.split(".").reduce((r, k) => r?.[k], obj);
-
-function remarkExtractMdxData() {
-  return (tree, file) => {
-    visit(tree, "mdxjsEsm", (node) => {
-      const match = node.value.match(
-        /export\s+const\s+(\w+)\s*=\s*({[\s\S]*?})/
-      );
-      if (match) {
-        const name = match[1];
-        const value = match[2];
-        try {
-          // Safely evaluate the object string into an actual object.
-          // new Function() is safer than eval() as it doesn't have access to the local scope.
-          const data = new Function(`return ${value};`)();
-          file.data[name] = data;
-        } catch (e) {
-          console.error("Failed to parse MDX export:", e);
-        }
-      }
-    });
-  };
-}
-
-/**
- * remark plugin to find `{...}` expressions and replace them with text.
- */
-function remarkInjectMdxData() {
-  return (tree, file) => {
-    visit(
-      tree,
-      ["mdxTextExpression", "mdxFlowExpression"],
-      (node, index, parent) => {
-        const value = get(file.data, node.value);
-        if (value !== undefined) {
-          // Replace the expression node with a simple text node.
-          parent.children[index] = { type: "text", value: String(value) };
-        }
-      }
-    );
-  };
-}
 
 function getAllMdxFiles(
   dirPath: string,
@@ -97,9 +41,6 @@ async function extractTextFromMdx(content: string): Promise<string> {
   const processor = unified()
     .use(remarkParse)
     .use(remarkMdx)
-    .use(remarkExtractMdxData)
-    .use(remarkInjectMdxData)
-    .use(remarkStripMdx)
     .use(stripMarkdown)
     .use(remarkStringify);
 
@@ -143,7 +84,7 @@ const fetchContentItemsForLocale = async (
         .replace(/\\/g, "/")
         .replace(new RegExp(`/${locale}\\.mdx$`), "");
 
-    const content = fs.readFileSync(filePath, "utf8");
+    const content = await mdxToMd(filePath);
 
     const h1Match = content.match(/^#\s+(.*)/m);
     const title = h1Match ? h1Match[1] : "Untitled";
