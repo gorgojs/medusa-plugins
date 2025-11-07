@@ -88,10 +88,10 @@ export async function PluginsSection({
                           </div>
 
                           <div>
-                            <h3 className="font-semibold text-foreground text-sm">
+                            <h3 className="txt-small-plus text-ui-fg-base">
                               {getLocalizedString(plugin.name, locale)}
                             </h3>
-                            <p className="text-[10px] text-ui-fg-subtle line-clamp-1">
+                            <p className="txt-small-plus text-ui-fg-subtle line-clamp-1">
                               {getLocalizedString(plugin.description, locale)}
                             </p>
                           </div>
