@@ -4,11 +4,11 @@ import { runYmProductExportWorkflow } from "../workflows/product/workflows/run-y
 export default async function job(container: MedusaContainer) {
 
   const { result } = await runYmProductExportWorkflow(container).run({
-    input: { medusaCategoryName: "Mobile Phones" },
+    input: { items: []},
   })
 
   const logger = container.resolve("logger")
-  logger.info(`YM export: sent=${result.sentCount}, http=${result.status}`)
+  logger.info(`YM export job result: ${JSON.stringify(result)}`)
 
 }
 

@@ -1,8 +1,8 @@
 import { MedusaService } from "@medusajs/framework/utils"
-import { YMExportLog } from "./models/yandex_market_export_log"
+import { YandexMarketExport } from "./models/yandex_market_export"
 
 class YandexMarketExportLogService extends MedusaService({
-  YMExportLog,
+  YandexMarketExport,
 }) {}
 
 export default YandexMarketExportLogService
