@@ -26,7 +26,6 @@
     "@types/mdx": "^2.0.13",
     "class-variance-authority": "^0.7.1",
     "cmdk": "^1.1.1",
-    "esbuild": "^0.25.12",
     "framer-motion": "^12.23.22",
     "glob": "^11.0.3",
     "lucide-react": "^0.544.0",
