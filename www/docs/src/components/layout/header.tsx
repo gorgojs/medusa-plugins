@@ -7,8 +7,6 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 import GorgoWordmark from "@/svg/icons/gorgo-wordmark.svg";
 import GorgoWordmarkDark from "@/svg/icons/gorgo-wordmark-dark.svg";
-import Triangle from "@/svg/icons/wordmark-triangle.svg";
-import TriangleDark from "@/svg/icons/wordmark-triangle-dark.svg";
 import type { Locale } from "@/types";
 import HeaderLogoWrapper from "./header-logo-wrapper";
 import MobileNavigationMenu from "./mobile-navigation-menu";
@@ -27,16 +25,6 @@ export default async function Header() {
           <Link href="/" className="flex items-center xl:pl-4">
             <GorgoWordmark className="h-5 dark:hidden block" />
             <GorgoWordmarkDark className="h-5 hidden dark:block" />
-            <div className="-mt-1">
-              <Triangle
-                className="dark:hidden block transition duration-300 group-data-[state=open]:rotate-180 size-[15px]"
-                aria-hidden="true"
-              />
-              <TriangleDark
-                className="hidden dark:block transition duration-300 group-data-[state=open]:rotate-180 size-[15px]"
-                aria-hidden="true"
-              />
-            </div>
           </Link>
         </HeaderLogoWrapper>
         <div

@@ -1,6 +1,6 @@
 "use client";
 
-import { Book, Check, House, TriangleDownMini } from "@medusajs/icons";
+import { Book, Check, House } from "@medusajs/icons";
 import type { PropsWithChildren } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import {
@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/navigation-menu";
 import { docsLinks, siteLinks } from "@/data/site-links";
 import { Link } from "@/i18n/navigation";
+import Triangle from "@/svg/icons/wordmark-triangle.svg";
+import TriangleDark from "@/svg/icons/wordmark-triangle-dark.svg";
 import type { Locale } from "@/types";
 
 export default function HeaderLogoWrapper({
@@ -34,6 +36,16 @@ export default function HeaderLogoWrapper({
               hideDefaultTrigger
             >
               {children}
+              <div className="-mt-1">
+                <Triangle
+                  className="dark:hidden block transition duration-300 group-data-[state=open]:rotate-180 size-[15px]"
+                  aria-hidden="true"
+                />
+                <TriangleDark
+                  className="hidden dark:block transition duration-300 group-data-[state=open]:rotate-180 size-[15px]"
+                  aria-hidden="true"
+                />
+              </div>
             </NavigationMenuTrigger>
             <NavigationMenuContent className="left-4 absolute w-auto z-[100]">
               <ul className="grid w-[200px] gap-0.5">
