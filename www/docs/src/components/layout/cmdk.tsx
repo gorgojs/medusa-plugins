@@ -4,7 +4,7 @@ import { MagnifierAlert, TriangleRightMini } from "@medusajs/icons";
 import { Button, Kbd } from "@medusajs/ui";
 import { SearchIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -223,14 +223,12 @@ const CmdK = () => {
                 <div className="text-xs text-muted-foreground flex flex-wrap items-center gap-x-1">
                   {item.sectionHierarchy
                     ? item.sectionHierarchy.map((segment, index) => (
-                        <>
-                          <span key={index} className="flex items-center">
-                            {segment}
-                          </span>
+                        <React.Fragment key={index}>
+                          <span className="flex items-center">{segment}</span>
                           {index < item.sectionHierarchy!.length - 1 && (
                             <TriangleRightMini />
                           )}
-                        </>
+                        </React.Fragment>
                       ))
                     : item.sectionTitle || item.section}
                 </div>
