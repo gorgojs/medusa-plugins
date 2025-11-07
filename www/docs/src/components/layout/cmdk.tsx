@@ -1,6 +1,6 @@
 "use client";
 
-import { MagnifierAlert } from "@medusajs/icons";
+import { MagnifierAlert, TriangleRightMini } from "@medusajs/icons";
 import { Button, Kbd } from "@medusajs/ui";
 import { SearchIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -20,6 +20,8 @@ interface CommandItemType {
   description?: string;
   href: string;
   section?: string;
+  sectionTitle?: string;
+  sectionHierarchy?: string[];
   content: string;
 }
 
@@ -218,8 +220,19 @@ const CmdK = () => {
                     ? highlightSearchTerms(item.content, searchTerm)
                     : item.content}
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  {item.section}
+                <div className="text-xs text-muted-foreground flex flex-wrap items-center gap-x-1">
+                  {item.sectionHierarchy
+                    ? item.sectionHierarchy.map((segment, index) => (
+                        <>
+                          <span key={index} className="flex items-center">
+                            {segment}
+                          </span>
+                          {index < item.sectionHierarchy!.length - 1 && (
+                            <TriangleRightMini />
+                          )}
+                        </>
+                      ))
+                    : item.sectionTitle || item.section}
                 </div>
               </CommandItem>
             ))}

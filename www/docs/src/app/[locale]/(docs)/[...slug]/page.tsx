@@ -112,9 +112,7 @@ export default async function DynamicDocsPage({ params }: PageProps) {
   return (
     <>
       <nav className="sticky top-14 h-full">
-        {parentSection && (
-          <Sidebar section={parentSection} baseSlugs={parentBaseSlugs} />
-        )}
+        <Sidebar section={parentSection!} baseSlugs={parentBaseSlugs} />
       </nav>
       <div className="container bg-ui-bg-base py-16 md:py-24 lgish:rounded-lg lgish:border grow-0 mx-0 max-w-content">
         <div className="max-w-[600px] px-4 lg:px-8 xl:px-0 xl:max-w-[700px] mx-auto grow-0">

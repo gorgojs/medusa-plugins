@@ -8,6 +8,9 @@ import remarkParse from "remark-parse";
 import remarkStringify from "remark-stringify";
 import stripMarkdown from "strip-markdown";
 import { unified } from "unified";
+import type { Locale, LocalizedString } from "../types";
+import { pluginsSidebar, toolsSidebar } from "./sidebar";
+import { getLocalizedString as getLocalizedStringUtil } from "./utils";
 
 interface ContentItem {
   id: string;
@@ -15,6 +18,8 @@ interface ContentItem {
   description?: string;
   href: string;
   section: string;
+  sectionTitle: string;
+  sectionHierarchy: string[];
   content: string;
 }
 
@@ -48,10 +53,64 @@ async function extractTextFromMdx(content: string): Promise<string> {
   return String(result);
 }
 
+const getSectionHierarchy = (pathParts: string[], locale: Locale): string[] => {
+  const allSidebars = [pluginsSidebar, toolsSidebar];
+
+  for (const sidebar of allSidebars) {
+    if (pathParts[0] === sidebar.slug) {
+      const hierarchy: string[] = [
+        getLocalizedStringByDefault(sidebar.title, locale),
+      ];
+
+      if (pathParts.length > 1 && sidebar.children) {
+        for (const child of sidebar.children) {
+          if (pathParts[1] === child.slug) {
+            hierarchy.push(getLocalizedStringByDefault(child.title, locale));
+            if (pathParts.length > 2 && child.children) {
+              for (const subChild of child.children) {
+                if (pathParts[2] === subChild.slug) {
+                  hierarchy.push(
+                    getLocalizedStringByDefault(subChild.title, locale)
+                  );
+                  break;
+                }
+              }
+            }
+            break;
+          }
+        }
+      }
+
+      return hierarchy;
+    }
+  }
+
+  return pathParts.map((part) => part.replace(/-/g, " "));
+};
+
+const getLocalizedStringByDefault = (
+  title: LocalizedString | string,
+  locale: Locale
+): string => {
+  if (typeof title === "object" && title) {
+    return getLocalizedStringUtil(title as LocalizedString, locale);
+  }
+  return (title as string) || "";
+};
+
 const createSearchIndex = (): MiniSearchType => {
   return new MiniSearch({
     fields: ["title", "content", "description", "section"],
-    storeFields: ["id", "title", "description", "href", "section", "content"],
+    storeFields: [
+      "id",
+      "title",
+      "description",
+      "href",
+      "section",
+      "sectionTitle",
+      "sectionHierarchy",
+      "content",
+    ],
     searchOptions: {
       prefix: true,
       fuzzy: 0.2,
@@ -61,7 +120,7 @@ const createSearchIndex = (): MiniSearchType => {
 };
 
 const fetchContentItemsForLocale = async (
-  locale: string
+  locale: Locale
 ): Promise<ContentItem[]> => {
   const docsPath = path.join(process.cwd(), "src", "app", "[locale]", "(docs)");
 
@@ -77,6 +136,18 @@ const fetchContentItemsForLocale = async (
     const relativePath = path.relative(docsPath, filePath);
     const pathParts = relativePath.split(path.sep);
     const section = pathParts[0] || "general";
+    const mainSectionTitle = pathParts[0]
+      ? getLocalizedStringByDefault(
+          pathParts[0] === pluginsSidebar.slug
+            ? pluginsSidebar.title
+            : pathParts[0] === toolsSidebar.slug
+            ? toolsSidebar.title
+            : { en: pathParts[0], ru: pathParts[0] },
+          locale
+        )
+      : "general";
+    const sectionTitle = mainSectionTitle; // This matches the original intention
+    const sectionHierarchy = getSectionHierarchy(pathParts, locale);
 
     const href =
       "/" +
@@ -96,6 +167,8 @@ const fetchContentItemsForLocale = async (
       title,
       href,
       section,
+      sectionTitle,
+      sectionHierarchy,
       content: textContent,
     });
   }
@@ -103,7 +176,7 @@ const fetchContentItemsForLocale = async (
   return contentItems;
 };
 
-const getCachedSearchIndexJsonForLocale = (locale: string) => {
+const getCachedSearchIndexJsonForLocale = (locale: Locale) => {
   return unstable_cache(
     async () => {
       "use server";
@@ -122,7 +195,16 @@ const getCachedSearchIndexJsonForLocale = (locale: string) => {
 
 const miniSearchOptions = {
   fields: ["title", "content", "description", "section"],
-  storeFields: ["id", "title", "description", "href", "section", "content"],
+  storeFields: [
+    "id",
+    "title",
+    "description",
+    "href",
+    "section",
+    "sectionTitle",
+    "sectionHierarchy",
+    "content",
+  ],
   searchOptions: {
     prefix: true,
     fuzzy: 0.2,
@@ -130,7 +212,7 @@ const miniSearchOptions = {
   },
 };
 
-export const getCachedSearchIndexForLocale = async (locale: string) => {
+export const getCachedSearchIndexForLocale = async (locale: Locale) => {
   "use server";
   const searchIndexJson = await getCachedSearchIndexJsonForLocale(locale);
   return MiniSearch.loadJSON(searchIndexJson, miniSearchOptions);
@@ -181,7 +263,7 @@ const getContentSnippet = (
   return snippet;
 };
 
-export const getCachedContentItemsForLocale = (locale: string) => {
+export const getCachedContentItemsForLocale = (locale: Locale) => {
   return unstable_cache(
     async () => {
       "use server";
@@ -196,7 +278,7 @@ export const getCachedContentItemsForLocale = (locale: string) => {
 };
 
 export const searchWithSnippets = async (
-  locale: string,
+  locale: Locale,
   query?: string | null
 ) => {
   "use server";
@@ -215,6 +297,8 @@ export const searchWithSnippets = async (
       description: result.description,
       href: result.href,
       section: result.section,
+      sectionTitle: result.sectionTitle,
+      sectionHierarchy: result.sectionHierarchy,
       content: snippet,
     };
   });
