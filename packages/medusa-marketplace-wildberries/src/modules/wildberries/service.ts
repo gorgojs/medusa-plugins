@@ -128,7 +128,7 @@ class WildberriesModuleService {
   }
 
   async getProductCards(textSearch?: string, withPhoto: number = -1, limit: number = 100): Promise<any> {
-    const settings = {
+    const body = {
       "settings": {
         "cursor": {
           "limit": limit
@@ -140,7 +140,7 @@ class WildberriesModuleService {
       }
     }
 
-    const res = await this.sendRequest("/content/v2/get/cards/list", "POST", settings)
+    const res = await this.sendRequest("/content/v2/get/cards/list", "POST", body)
     return res
   }
 
@@ -169,6 +169,22 @@ class WildberriesModuleService {
     } while (total === limit)
 
     return cards
+  }
+
+  async getCardsErrorList(cursor: any = null): Promise<any> {
+    let body = {
+      "cursor": {
+        "limit": 100,
+        "updatedAt": cursor?.updatedAt,
+        "batchUUID": cursor?.batchUUID
+      },
+      "order": {
+        "ascending": true
+      }
+    }
+
+    const res = await this.sendRequest("/content/v2/cards/error/list", "POST", body)
+    return res.data
   }
 }
 

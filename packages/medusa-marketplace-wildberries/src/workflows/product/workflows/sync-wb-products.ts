@@ -4,6 +4,7 @@ import { prepareDataForSyncStep } from "../steps/prepare-data-for-sync"
 import { createProductsStep } from "../steps/create-products"
 import { updateProductCardsStep } from "../steps/update-product-cards"
 import { mergeProductCardsStep } from "../steps/merge-product-cards"
+import { collectErrorsStep } from "../steps/collect-errors"
 
 export type SyncWbProductsWorkflowInput = Array<string>
 
@@ -22,10 +23,13 @@ export const syncWbProductsWorkflow = createWorkflow(
 
     const mergeResponse = mergeProductCardsStep(productCardsToMerge)
 
+    const cardsErrors = collectErrorsStep()
+
     const result = {
       createResponse,
       updateResponse,
       mergeResponse,
+      cardsErrors,
       syncResult,
     }
     

@@ -24,12 +24,7 @@ export const mergeProductCardsStep = createStep(
 
     productCards.forEach(async item => {
       const response = await wildberriesModuleService.createProductCardsWithMerge(item)
-      const errorList = []
-
-      result.push({
-        response,
-        errorList,
-      })
+      result.push(response)
     })
 
     return new StepResponse(result)

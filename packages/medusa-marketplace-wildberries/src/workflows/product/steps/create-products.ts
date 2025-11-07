@@ -26,12 +26,7 @@ export const createProductsStep = createStep(
 
     for (let batch_number = 0; batch_number * BATCH_SIZE < products.length; ++batch_number) {
       const response = await wildberriesModuleService.createProductCards(products.slice(BATCH_SIZE * batch_number, BATCH_SIZE * (batch_number + 1) + 1))
-      const errorList = []
-
-      result.push({
-        response,
-        errorList,
-      })
+      result.push(response)
     }
 
     return new StepResponse(result)
