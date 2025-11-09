@@ -39,7 +39,7 @@ export default function MobileNavigation() {
     initializeWithValue: false,
   });
 
-  const GorgoHomeLink = useGorgoHomeLink();
+  const gorgoHomeLink = useGorgoHomeLink();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -168,7 +168,7 @@ export default function MobileNavigation() {
               </Link>
             </Button>
             <Button variant="secondary" className="flex-1" asChild>
-              <Link href={GorgoHomeLink}>
+              <Link href={gorgoHomeLink}>
                 <House /> Homepage
               </Link>
             </Button>

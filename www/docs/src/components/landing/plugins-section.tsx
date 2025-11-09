@@ -1,5 +1,7 @@
+'use client';
+
 import { SquaresPlusSolid, TriangleRightMini } from "@medusajs/icons";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/card";
 import { getLocalizedString } from "@/lib/utils";
 import type { Locale, LocalizedString } from "@/types";
@@ -27,11 +29,11 @@ interface PluginsLandingSectionProps {
   categories: PluginCategory[];
 }
 
-export async function PluginsSection({
+export function PluginsSection({
   locale,
   categories,
 }: PluginsLandingSectionProps) {
-  const t = await getTranslations("pluginsSection");
+  const t = useTranslations("pluginsSection");
 
   return (
     <Section className="px-6 py-8 flex items-center flex-col lg:flex-row gap-4">

@@ -22,7 +22,7 @@ export default function HeaderLogoWrapper({
     defaultValue: true,
     initializeWithValue: false,
   });
-  const GorgoHomeLink = useGorgoHomeLink();
+  const gorgoHomeLink = useGorgoHomeLink();
 
   if (isDesktop)
     return (
@@ -63,7 +63,7 @@ export default function HeaderLogoWrapper({
                     className="flex flex-row items-center"
                     asChild
                   >
-                    <Link href={GorgoHomeLink}>
+                    <Link href={gorgoHomeLink}>
                       <House /> Homepage
                     </Link>
                   </NavigationMenuLink>

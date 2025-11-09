@@ -1,15 +1,17 @@
+'use client';
+
 import { ArrowRight } from "@medusajs/icons";
 import Image from "next/image";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from 'next-intl';
+
 import Section from "@/components/layout/section";
 import { Button } from "@/components/ui/button";
-import { getGorgoHomeLink } from "@/lib/utils";
-import { headers } from 'next/headers';
+import useGorgoHomeLink from "@/hooks/useGorgoHomeLink";
 
-export default async function Hero() {
-  const t = await getTranslations("homePage.hero");
-  const gorgoHomeLink = getGorgoHomeLink((await headers()).get('host') || 'localhost');
+export default function Hero() {
+  const t = useTranslations("homePage.hero");
+  const gorgoHomeLink = useGorgoHomeLink();
 
   return (
     <Section

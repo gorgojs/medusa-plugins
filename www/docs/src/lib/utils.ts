@@ -15,15 +15,3 @@ export function getLocalizedString(
     localizedString[locale as keyof LocalizedString] || localizedString.en || ""
   );
 }
-
-export function getGorgoHomeLink(hostname: string): string {
-  const parts = hostname.split('.') || []
-  let baseDomain
-  if (parts.length <= 2)
-    baseDomain = 'com' // localhost or similar
-  else
-    baseDomain = parts.slice(-1).join('.')
-
-  return `https://gorgojs.${baseDomain}`
-}
-
