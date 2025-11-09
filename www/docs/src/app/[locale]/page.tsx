@@ -39,7 +39,7 @@ export default async function Page({
   return (
     <div className="p-4">
       <div className="flex flex-col border rounded-xl shadow-md bg-ui-bg-base">
-        <Hero locale={locale} />
+        <Hero />
         {/*<ContactSection />*/}
         <PluginsSection locale={locale} categories={pluginCategories} />
       </div>

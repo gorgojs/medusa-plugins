@@ -18,13 +18,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { siteLinks } from "@/data/site-links";
+import useGorgoHomeLink from "@/hooks/useGorgoHomeLink";
 import { Link } from "@/i18n/navigation";
 import { getHeaderSections } from "@/lib/sidebar";
 import { cn, getLocalizedString } from "@/lib/utils";
 import { LocaleSwitcher } from "../locale-switcher";
 import { ThemeToggle } from "../theme-toggle";
-import { Locale } from "@/types";
 
 export default function MobileNavigation() {
   const t = useTranslations();
@@ -39,6 +38,8 @@ export default function MobileNavigation() {
     defaultValue: true,
     initializeWithValue: false,
   });
+
+  const GorgoHomeLink = useGorgoHomeLink();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -162,12 +163,12 @@ export default function MobileNavigation() {
           </div>
           <DialogFooter className="flex flex-row mb-12">
             <Button variant="secondary" className="flex-1" asChild>
-              <Link href={`#`}>
+              <Link href="/">
                 <Book /> Docs
               </Link>
             </Button>
             <Button variant="secondary" className="flex-1" asChild>
-              <Link href={siteLinks[locale as Locale]}>
+              <Link href={GorgoHomeLink}>
                 <House /> Homepage
               </Link>
             </Button>

@@ -4,14 +4,12 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import Section from "@/components/layout/section";
 import { Button } from "@/components/ui/button";
-import type { Locale } from "@/types";
+import { getGorgoHomeLink } from "@/lib/utils";
+import { headers } from 'next/headers';
 
-interface HeroProps {
-  locale: Locale;
-}
-
-export default async function Hero({ locale }: HeroProps) {
+export default async function Hero() {
   const t = await getTranslations("homePage.hero");
+  const gorgoHomeLink = getGorgoHomeLink((await headers()).get('host') || 'localhost');
 
   return (
     <Section
@@ -25,7 +23,7 @@ export default async function Hero({ locale }: HeroProps) {
             {t("subtitle")}
           </p>
           <Button variant="primary" size="large" asChild>
-            <Link href={`https://gorgojs.${locale === "en" ? "com" : locale}`}>
+            <Link href={gorgoHomeLink}>
               {t("button")} <ArrowRight />
             </Link>
           </Button>

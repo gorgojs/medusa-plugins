@@ -1,7 +1,6 @@
 "use client";
 
 import { Book, Check, House } from "@medusajs/icons";
-import type { PropsWithChildren } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import {
   NavigationMenu,
@@ -11,20 +10,19 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { docsLinks, siteLinks } from "@/data/site-links";
+import useGorgoHomeLink from "@/hooks/useGorgoHomeLink";
 import { Link } from "@/i18n/navigation";
 import Triangle from "@/svg/icons/wordmark-triangle.svg";
 import TriangleDark from "@/svg/icons/wordmark-triangle-dark.svg";
-import type { Locale } from "@/types";
 
 export default function HeaderLogoWrapper({
-  locale,
   children,
-}: PropsWithChildren<{ locale: Locale }>) {
+}: { children: React.ReactNode }) {
   const isDesktop = useMediaQuery("(min-width: 1024px)", {
     defaultValue: true,
     initializeWithValue: false,
   });
+  const GorgoHomeLink = useGorgoHomeLink();
 
   if (isDesktop)
     return (
@@ -54,7 +52,7 @@ export default function HeaderLogoWrapper({
                     className="flex flex-row items-center"
                     asChild
                   >
-                    <Link href={docsLinks[locale as Locale]}>
+                    <Link href="/">
                       <Book /> Docs
                       <Check className="ml-auto" />
                     </Link>
@@ -65,7 +63,7 @@ export default function HeaderLogoWrapper({
                     className="flex flex-row items-center"
                     asChild
                   >
-                    <Link href={siteLinks[locale as Locale]}>
+                    <Link href={GorgoHomeLink}>
                       <House /> Homepage
                     </Link>
                   </NavigationMenuLink>

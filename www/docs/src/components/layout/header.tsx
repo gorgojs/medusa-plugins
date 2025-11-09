@@ -1,5 +1,6 @@
+"use client";
+
 import Link from "next/link";
-import { getLocale } from "next-intl/server";
 import CmdK from "@/components/layout/cmdk";
 import { MainNavigationMenu } from "@/components/layout/main-navigation-menu";
 import { LocaleSwitcher } from "@/components/locale-switcher";
@@ -7,12 +8,10 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 import GorgoWordmark from "@/svg/icons/gorgo-wordmark.svg";
 import GorgoWordmarkDark from "@/svg/icons/gorgo-wordmark-dark.svg";
-import type { Locale } from "@/types";
 import HeaderLogoWrapper from "./header-logo-wrapper";
 import MobileNavigationMenu from "./mobile-navigation-menu";
 
-export default async function Header() {
-  const locale = await getLocale();
+export default function Header() {
 
   return (
     <div className="sticky top-0 z-50">
@@ -21,7 +20,7 @@ export default async function Header() {
           "flex items-center justify-center h-14 duration-300 w-full backdrop-blur-lg bg-ui-bg-subtle/60 px-4 xl:px-0 border-b xl:border-b-0"
         )}
       >
-        <HeaderLogoWrapper locale={locale as Locale}>
+        <HeaderLogoWrapper>
           <Link href="/" className="flex items-center xl:pl-4">
             <GorgoWordmark className="h-5 dark:hidden block" />
             <GorgoWordmarkDark className="h-5 hidden dark:block" />
