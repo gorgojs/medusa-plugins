@@ -6,11 +6,10 @@ import {
   OZON_BASE_URL,
   HEADERS,
   ExportInput,
-  Output,
-  OzonProduct,
+  Output
 } from "../types"
+import { OzonProduct } from "../../../types/ozon"
 import {assertOzonEnv} from "../../../lib"
-
 
 export const runExportStep = createStep<ExportInput, Output, void>(
   "admin-ozon-post-export",
@@ -27,17 +26,16 @@ export const runExportStep = createStep<ExportInput, Output, void>(
     const url = `${OZON_BASE_URL}/v3/product/import`
     const body: any = { items }
 
-    const res = await fetch(url, {
+    const ozonResponse = await fetch(url, {
       method: "POST",
       headers: HEADERS,
       body: JSON.stringify(body),
     })
 
-    const raw = await res.text().catch(() => "")
-    if (!res.ok) {
+    const raw = await ozonResponse.text().catch(() => "")
+    if (!ozonResponse.ok) {
       throw new Error(
-        `Ozon import failed: ${res.status}. URL=${url}. ` +
-        `First 500 bytes of body: ${raw.slice(0, 500)}`
+        `Ozon import failed: ${ozonResponse.status}. URL=${url}.`
       )
     }
 
@@ -47,12 +45,11 @@ export const runExportStep = createStep<ExportInput, Output, void>(
     const task_id = String(data?.result?.task_id ?? "")
     if (!task_id) {
       throw new Error(
-        `Ozon import response has no task_id. URL=${url}. ` +
-        `First 500 bytes of body: ${raw.slice(0, 500)}`
+        `Ozon import response has no task_id. URL=${url}.`
       )
     }
 
-    return new StepResponse<Output, void>({ ok: true, status: res.status, data, task_id })
+    return new StepResponse<Output, void>({ ok: true, status: ozonResponse.status, data, task_id })
   },
   async () => { }
 )

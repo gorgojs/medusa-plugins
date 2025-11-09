@@ -1,7 +1,7 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 
 const BASE = process.env.OZON_BASE_URL ?? "https://api-seller.ozon.ru";
-const H = {
+const HEADERS = {
   "Client-Id": process.env.OZON_CLIENT_ID!,
   "Api-Key": process.env.OZON_API_KEY!,
   "Accept": "application/json",
@@ -35,17 +35,17 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
 
     const body: any = { filter, limit, last_id };
 
-    const r = await fetch(`${BASE}/v3/product/list`, {
+    const ozonResponse = await fetch(`${BASE}/v3/product/list`, {
       method: "POST",
-      headers: H,
+      headers: HEADERS,
       body: JSON.stringify(body),
     });
 
-    if (!r.ok) {
-      const text = await r.text().catch(() => "");
-      return res.status(r.status).json({ error: text || `Ozon error ${r.status}` });
+    if (!ozonResponse.ok) {
+      const text = await ozonResponse.text().catch(() => "");
+      return res.status(ozonResponse.status).json({ error: text || `Ozon error ${ozonResponse.status}` });
     }
-    res.json(await r.json());
+    res.json(await ozonResponse.json());
   } catch (e: any) {
     res.status(500).json({ error: e?.message ?? "Internal error" });
   }

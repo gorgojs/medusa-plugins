@@ -2,10 +2,8 @@ import {
   createStep,
   StepResponse
 } from "@medusajs/workflows-sdk"
-import { 
-  OzonProduct, 
-  ProductRow
-}from "../types"
+import { ProductRow } from "../types"
+import { OzonProduct } from "../../../types/ozon"
 
 import { mapProductsToOzon } from "../../../lib"
 

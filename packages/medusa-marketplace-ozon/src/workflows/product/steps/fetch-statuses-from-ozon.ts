@@ -2,56 +2,63 @@ import {
   createStep,
   StepResponse,
 } from "@medusajs/framework/workflows-sdk"
-import { OzonExportRecord, FetchResult } from "../types/types"
-
+import { FetchResult } from "../types/types"
+import { OzonExportRecord } from "../../../types/ozon"
 import { fetchTaskStatus } from "../../../lib"
 
+export type FetchStatusesFromOzonInput = {
+  records: OzonExportRecord[]
+  concurrency?: number
+}
 
-export const fetchStatusesFromOzonStep = createStep(
+export const fetchStatusesFromOzonStep = createStep<
+  FetchStatusesFromOzonInput,
+  FetchResult[],
+  unknown
+>(
   "fetch-statuses-from-ozon",
-  async (
-    {
-      records,
-      concurrency = 10,
-    }: { records: OzonExportRecord[]; concurrency?: number },
-    { container }
-  ) => {
+  async ({ records, concurrency = 10 }, { container }) => {
     const logger = container.resolve("logger") as any
-    const list = Array.isArray(records) ? records : []
-    const results: FetchResult[] = new Array(list.length)
-    let i = 0
-    async function worker() {
-      while (i < list.length) {
-        const idx = i++
-        const r = list[idx]
+
+    const exportRecords = Array.isArray(records) ? records : []
+    const results: FetchResult[] = new Array(exportRecords.length)
+
+    let nextIndex = 0
+    const worker = async () => {
+      while (true) {
+        const idx = nextIndex++
+        if (idx >= exportRecords.length) break
+
+        const record = exportRecords[idx]
         try {
-          const resp = await fetchTaskStatus(r.task_id)
-          const result = resp?.result ?? {}
+          const response = await fetchTaskStatus(record.task_id)
+          const taskResult = response?.result ?? {}
+
           results[idx] = {
-            id: r.id,
-            task_id: r.task_id,
+            id: record.id,
+            task_id: record.task_id,
             ok: true,
             result: {
-              items: Array.isArray(result.items) ? result.items : undefined,
-              total: typeof result.total === "number" ? result.total : undefined,
-              status: typeof result.status === "string" ? result.status : undefined,
+              items: Array.isArray(taskResult.items) ? taskResult.items : undefined,
+              total: typeof taskResult.total === "number" ? taskResult.total : undefined,
+              status: typeof taskResult.status === "string" ? taskResult.status : undefined,
             },
           }
-        } catch (e: any) {
-          logger?.warn?.(`OZON status check failed (task ${r.task_id}): ${e?.message}`)
+        } catch (err: any) {
+          logger?.warn?.(`OZON status check failed (task ${record.task_id}): ${err?.message}`)
           results[idx] = {
-            id: r.id,
-            task_id: r.task_id,
+            id: record.id,
+            task_id: record.task_id,
             ok: false,
-            error: e?.message ?? "unknown",
+            error: err?.message ?? "unknown",
           }
         }
       }
     }
 
-    const workers = Math.max(1, Math.min(concurrency, list.length || 1))
-    await Promise.all(Array.from({ length: workers }, () => worker()))
+    const workerCount = Math.max(1, Math.min(concurrency, exportRecords.length || 1))
+    await Promise.all(Array.from({ length: workerCount }, () => worker()))
 
-    return new StepResponse(results)
+    return new StepResponse<FetchResult[]>(results)
   }
 )

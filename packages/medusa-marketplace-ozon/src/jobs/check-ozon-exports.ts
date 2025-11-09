@@ -3,15 +3,11 @@ import { checkOzonProductExportStatusWorkflow } from "../workflows/product/workf
 
 export default async function (container: MedusaContainer) {
   const logger = container.resolve("logger")
-
-  const batchSize =
-    Number(process.env.OZON_STATUS_BATCH_SIZE || "") || 100
-
   const { result } = await checkOzonProductExportStatusWorkflow(container).run({
-    input: { batchSize },
+    input: {},
   })
 
-  logger.info(`Ozon export status check (batchSize=${batchSize}): ${JSON.stringify(result)}`)
+  logger.info(`Ozon export status check (${JSON.stringify(result)}`)
 
   return result
 }

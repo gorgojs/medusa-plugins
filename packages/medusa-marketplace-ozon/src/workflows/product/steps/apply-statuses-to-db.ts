@@ -3,62 +3,60 @@ import {
   StepResponse,
 } from "@medusajs/framework/workflows-sdk"
 import { OZON_EXPORT_MODULE } from "../../../modules/ozon-export"
-import { OzonExportRecord } from "../types/types"
+import { OzonExportRecord } from "../../../types/ozon"
 
+export type ApplyStatusesToDbInput = {
+  updates: Array<{
+    id: string
+    ozon_task_status?: string | null
+    total?: number | null
+    items?: any[] | null
+    raw_result?: any | null
+    error_message?: string | null
+    last_checked_at?: Date | null
+  }>
+}
 
-export const applyStatusesToDbStep = createStep(
+export const applyStatusesToDbStep = createStep<ApplyStatusesToDbInput, unknown, unknown>(
   "apply-statuses-to-db",
-  async (
-    input: {
-      updates: Array<{
-        id: string
-        ozon_task_status?: string | null
-        total?: number | null
-        items?: any[] | null
-        raw_result?: any | null
-        error_message?: string | null
-        last_checked_at?: Date | null
-      }>
-      chunkSize?: number
-    },
-    { container }
-  ) => {
-    const svc = container.resolve(OZON_EXPORT_MODULE) as any
+  async (input, { container }) => {
+    const ozonExportService = container.resolve(OZON_EXPORT_MODULE) as any
 
-    const ids = input.updates.map((u) => u.id)
-    const prev = await svc.listOzonExports({ id: ids }, { take: ids.length })
+    const ids = input.updates.map((update) => update.id)
+    const previousRecords = await ozonExportService.listOzonExports(
+      { id: ids },
+      { take: ids.length }
+    )
 
-    const chunkSize = input.chunkSize ?? 200
-    for (let i = 0; i < input.updates.length; i += chunkSize) {
-      const chunk = input.updates.slice(i, i + chunkSize).map((u) => ({
-        id: u.id,
-        ozon_task_status: u.ozon_task_status ?? null,
-        total: u.total ?? null,
-        items: Array.isArray(u.items) ? u.items : u.items ?? null,
-        raw_result: u.raw_result ?? null,
-        error_message: u.error_message ?? null,
-        last_checked_at: u.last_checked_at ?? null,
+    await ozonExportService.updateOzonExports(
+      input.updates.map((update) => ({
+        id: update.id,
+        ozon_task_status: update.ozon_task_status ?? null,
+        total: update.total ?? null,
+        items: Array.isArray(update.items) ? update.items : update.items ?? null,
+        raw_result: update.raw_result ?? null,
+        error_message: update.error_message ?? null,
+        last_checked_at: update.last_checked_at ?? null,
       }))
-      await svc.updateOzonExports(chunk)
-    }
+    )
 
-    return new StepResponse(input.updates, prev?.rows ?? [])
+    return new StepResponse(input.updates, previousRecords?.rows ?? [])
   },
-  async (prevRows: OzonExportRecord[], { container }) => {
-    if (!prevRows?.length) return
-    const svc = container.resolve(OZON_EXPORT_MODULE) as any
-    const chunkSize = 200
-    for (let i = 0; i < prevRows.length; i += chunkSize) {
-      const chunk = prevRows.slice(i, i + chunkSize).map((r) => ({
-        id: r.id,
-        ozon_task_status: r.ozon_task_status ?? null,
-        total: r.total ?? null,
-        items: r.items ?? null,
-        raw_result: r.raw_result ?? null,
-        error_message: r.error_message ?? null,
-        last_checked_at: r.last_checked_at ?? null,
+  async (previousRecords: OzonExportRecord[], { container }) => {
+    if (!previousRecords?.length) return
+
+    const ozonExportService = container.resolve(OZON_EXPORT_MODULE) as any
+
+    await ozonExportService.updateOzonExports(
+      previousRecords.map((record) => ({
+        id: record.id,
+        ozon_task_status: record.ozon_task_status ?? null,
+        total: record.total ?? null,
+        items: record.items ?? null,
+        raw_result: record.raw_result ?? null,
+        error_message: record.error_message ?? null,
+        last_checked_at: record.last_checked_at ?? null,
       }))
-      await svc.updateOzonExports(chunk)
-    }
+    )
   }
 )

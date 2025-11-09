@@ -1,47 +1,60 @@
 import {
   createStep,
-  StepResponse
+  StepResponse,
 } from "@medusajs/workflows-sdk"
-import {
-  OzonProductImport,
-  OzonAttr
-} from "../types"
-
+import { OzonProductImport, OzonAttr } from "../../../types/ozon"
 import { resolveDictValueId } from "../../../lib"
 
+export type ApplyAttributeDictionariesInput = {
+  payload: OzonProductImport
+  attrsByCat: Map<number, OzonAttr[]>
+}
+
 export const applyAttributeDictionariesStep = createStep<
-  { payload: OzonProductImport; attrsByCat: Map<number, OzonAttr[]> },
+  ApplyAttributeDictionariesInput,
   OzonProductImport,
   void
 >(
   "ozon-apply-attribute-dictionaries",
-  async ({ payload, attrsByCat }) => {
-    const items = Array.isArray(payload?.items) ? payload.items : []
+  async ({ payload }) => {
+    const productItems = Array.isArray(payload?.items) ? payload.items : []
 
-    const enriched = await Promise.all(
-      items.map(async (it: any) => {
-        const catId = Number(it?.description_category_id || 0)
-        if (!catId || !Array.isArray(it.attributes)) return it
+    const enrichedItems = await Promise.all(
+      productItems.map(async (item: any) => {
+        const categoryId = Number(item?.description_category_id || 0)
+        if (!categoryId || !Array.isArray(item.attributes)) return item
 
-        const newAttrs = await Promise.all(
-          it.attributes.map(async (a: any) => {
-            if (!Array.isArray(a?.values)) return a
-            const newValues = await Promise.all(
-              a.values.map(async (v: any) => {
-                if (v?.dictionary_value_id || typeof v?.value !== "string") return v
-                const dictId = await resolveDictValueId(catId, Number(a.id), v.value)
-                return dictId !== undefined ? { ...v, dictionary_value_id: dictId } : v
+        const enrichedAttributes = await Promise.all(
+          item.attributes.map(async (attribute: any) => {
+            if (!Array.isArray(attribute?.values)) return attribute
+
+            const enrichedValues = await Promise.all(
+              attribute.values.map(async (valueItem: any) => {
+                if (valueItem?.dictionary_value_id || typeof valueItem?.value !== "string") {
+                  return valueItem
+                }
+
+                const dictionaryValueId = await resolveDictValueId(
+                  categoryId,
+                  Number(attribute.id),
+                  valueItem.value
+                )
+
+                return dictionaryValueId !== undefined
+                  ? { ...valueItem, dictionary_value_id: dictionaryValueId }
+                  : valueItem
               })
             )
-            return { ...a, values: newValues }
+
+            return { ...attribute, values: enrichedValues }
           })
         )
 
-        return { ...it, attributes: newAttrs }
+        return { ...item, attributes: enrichedAttributes }
       })
     )
 
-    return new StepResponse<OzonProductImport, void>({ items: enriched })
+    return new StepResponse<OzonProductImport, void>({ items: enrichedItems })
   },
-  async () => { }
+  async () => {}
 )

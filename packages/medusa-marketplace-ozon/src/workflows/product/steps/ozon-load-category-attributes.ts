@@ -1,28 +1,31 @@
-import {
-  createStep,
-  StepResponse
-} from "@medusajs/workflows-sdk"
-import {
-  OZON_BASE_URL,
-  HEADERS,
-  OzonProductImport,
-  OzonAttr,
-  OzonAttrsResponse
-} from "../types"
+import { createStep, StepResponse } from "@medusajs/workflows-sdk"
+import { OZON_BASE_URL, HEADERS } from "../types"
+import { OzonProductImport, OzonAttr, OzonAttrsResponse } from "../../../types/ozon"
 
+export type LoadCategoryAttributesInput = OzonProductImport
 
-export const loadCategoryAttributesStep = createStep<OzonProductImport, Map<number, OzonAttr[]>, void>(
+export const loadCategoryAttributesStep = createStep<
+  LoadCategoryAttributesInput,
+  Map<number, OzonAttr[]>,
+  void
+>(
   "ozon-load-category-attributes",
   async (payload) => {
-    const items = Array.isArray(payload?.items) ? payload.items : []
-    const catIds = Array.from(new Set(items
-      .map((it: any) => it?.description_category_id)
-      .filter((v: any) => Number.isFinite(v))))
-    const byCat = new Map<number, OzonAttr[]>()
+    const productItems = Array.isArray(payload?.items) ? payload.items : []
 
-    for (const categoryId of catIds as number[]) {
+    const categoryIds = Array.from(
+      new Set(
+        productItems
+          .map((item) => item?.description_category_id)
+          .filter((id): id is number => Number.isFinite(id))
+      )
+    )
+
+    const attributesByCategory = new Map<number, OzonAttr[]>()
+
+    for (const categoryId of categoryIds) {
       try {
-        const r = await fetch(`${OZON_BASE_URL}/v1/description-category/attribute`, {
+        const ozonResponse = await fetch(`${OZON_BASE_URL}/v1/description-category/attribute`, {
           method: "POST",
           headers: HEADERS,
           body: JSON.stringify({
@@ -31,15 +34,26 @@ export const loadCategoryAttributesStep = createStep<OzonProductImport, Map<numb
             language: "RU",
           }),
         })
-        const data = await (r.ok ? r.json().catch(() => ({})) : r.text().catch(() => ""))
-        if (!r.ok) throw new Error(typeof data === "string" ? data : `Ozon attributes error ${r.status}`)
-        const attrs = ((data as OzonAttrsResponse).result?.attributes ?? []) as OzonAttr[]
-        byCat.set(categoryId, attrs)
-      } catch (_e) {
-        byCat.set(categoryId, [])
+
+        let data: OzonAttrsResponse | string = {}
+
+        if (ozonResponse.ok) {
+          data = await ozonResponse.json().catch(() => ({} as OzonAttrsResponse))
+        } else {
+          data = await ozonResponse.text().catch(() => "")
+          throw new Error(
+            typeof data === "string" ? data : `Ozon attributes error ${ozonResponse.status}`
+          )
+        }
+
+        const attributes = (data as OzonAttrsResponse)?.result?.attributes ?? []
+        attributesByCategory.set(categoryId, attributes)
+      } catch (error) {
+        attributesByCategory.set(categoryId, [])
       }
     }
-    return new StepResponse(byCat)
+
+    return new StepResponse(attributesByCategory)
   },
-  async () => { }
+  async () => {}
 )
