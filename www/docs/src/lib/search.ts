@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import path from "node:path";
-import { mdxToMd } from "mdx-to-md";
 import MiniSearch from "minisearch";
 import { unstable_cache } from "next/cache";
 import remarkMdx from "remark-mdx";
@@ -8,6 +7,7 @@ import remarkParse from "remark-parse";
 import remarkStringify from "remark-stringify";
 import stripMarkdown from "strip-markdown";
 import { unified } from "unified";
+import type { Parent } from "unist";
 import type { Locale, LocalizedString } from "../types";
 import { pluginsSidebar, toolsSidebar } from "./sidebar";
 import { getLocalizedString as getLocalizedStringUtil } from "./utils";
@@ -42,7 +42,7 @@ function getAllMdxFiles(
   return arrayOfFiles;
 }
 
-async function extractTextFromMdx(content: string): Promise<string> {
+async function extractTextFromMd(content: string): Promise<string> {
   const processor = unified()
     .use(remarkParse)
     .use(remarkMdx)
@@ -50,6 +50,29 @@ async function extractTextFromMdx(content: string): Promise<string> {
     .use(remarkStringify);
 
   const result = await processor.process(content);
+  return String(result);
+}
+
+export async function mdxToMd(mdxContent: string) {
+  const processor = unified()
+    .use(remarkParse)
+    .use(remarkMdx)
+    // remove MDX-specific nodes
+    .use(() => (tree: Parent) => {
+      // filter out imports/exports and jsx nodes
+      if (tree && Array.isArray((tree as Parent).children)) {
+        (tree as Parent).children = (tree as Parent).children.filter(
+          (node) =>
+            !['mdxjsEsm', 'mdxJsxFlowElement', 'mdxJsxTextElement'].includes(
+              // node.type may not be typed, cast to any for safety
+              (node as any).type
+            )
+        );
+      }
+    })
+    .use(remarkStringify)
+
+  const result = await processor.process(mdxContent);
   return String(result);
 }
 
@@ -155,12 +178,13 @@ const fetchContentItemsForLocale = async (
         .replace(/\\/g, "/")
         .replace(new RegExp(`/${locale}\\.mdx$`), "");
 
-    const content = await mdxToMd(filePath);
+    const mdxContent = fs.readFileSync(filePath, "utf8");
+    const mdContent = await mdxToMd(mdxContent);
 
-    const h1Match = content.match(/^#\s+(.*)/m);
+    const h1Match = mdContent.match(/^#\s+(.*)/m);
     const title = h1Match ? h1Match[1] : "Untitled";
 
-    const textContent = await extractTextFromMdx(content);
+    const textContent = await extractTextFromMd(mdContent);
 
     contentItems.push({
       id: href,
