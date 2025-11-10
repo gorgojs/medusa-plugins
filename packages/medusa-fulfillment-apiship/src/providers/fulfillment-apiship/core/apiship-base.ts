@@ -1,6 +1,6 @@
-import { 
+import {
   AbstractFulfillmentProviderService,
-  isDefined 
+  isDefined
 } from "@medusajs/framework/utils"
 import {
   Logger,
@@ -18,7 +18,6 @@ import {
   OrderDocsService,
   ListsService,
   type TariffObject,
-  type OrderRequest,
   type OrderReturnRequest,
 } from "../../../apiship-client"
 import { ApishipOptions } from "../types"
@@ -42,7 +41,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     this.serverUrl_ = options.isTest
       ? "http://api.dev.apiship.ru/v1"
       : "https://api.apiship.ru/v1"
-    OpenAPI.BASE = this.serverUrl_  
+    OpenAPI.BASE = this.serverUrl_
     OpenAPI.TOKEN = this.options_.token
   }
 
@@ -160,7 +159,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     try {
       const response = await OrdersService.cancelOrder(orderId)
       this.logger_.debug(`Apiship.cancelFulfillment output: ${JSON.stringify(response, null, 2)}`)
-      return response 
+      return response
     } catch (e: any) {
       this.logger_.error(`Apiship.cancelFulfillment error: ${e?.message ?? e}`)
       throw new Error(`Apiship.cancelFulfillment failed: ${e?.message ?? e}`)
@@ -172,53 +171,67 @@ class ApishipBase extends AbstractFulfillmentProviderService {
   }
 
   /**
-   * Retrieve an order information.
+   * Execute API call with retries.
    */
-  private async waitForOrderInfo(
-    orderId: number,
-    tries = 8,
-    baseDelayMs = 400
-  ): Promise<{ trackingNumber: string; trackingUrl: string }> {
-    for (let i = 0; i < tries; i++) {
-      const orderInfo = await OrdersService.getOrderInfo(orderId)
-      const order = orderInfo?.order as any
-      const trackingNumber = order?.providerNumber || ""
-      const trackingUrl = order.trackingUrl || ""
-      if (trackingNumber) {
-        return {
-          trackingNumber: String(trackingNumber),
-          trackingUrl: String(trackingUrl || ""),
-        }
+  private async executeWithRetry<T>({
+    apiCall,
+    isReady,
+    maxAttempts = 10,
+    baseDelay = 500,
+    label,
+  }: {
+    apiCall: () => Promise<T>
+    isReady: (res: T) => boolean
+    maxAttempts?: number
+    baseDelay?: number
+    label?: string
+  }): Promise<T> {
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        const response = await apiCall()
+        if (isReady(response)) return response
+        this.logger_.debug(`${label}: not ready (attempt ${attempt}/${maxAttempts})`)
+      } catch (err: any) {
+        this.logger_.debug(`${label}: error on attempt ${attempt}: ${err?.message ?? err}`)
       }
-      const delay = baseDelayMs * Math.pow(1.5, i) + Math.floor(Math.random() * 120)
-      await this.sleep(delay)
+      if (attempt < maxAttempts) {
+        const delay =
+          baseDelay *
+          Math.pow(2, attempt - 1) *
+          (0.5 + Math.random() * 0.5)
+        await this.sleep(delay)
+      }
     }
 
-    return { trackingNumber: String(orderId), trackingUrl: "" }
+    throw new Error(`${label}: data not ready after ${maxAttempts} attempts`)
+  }
+
+  /**
+   * Retrieve an order information.
+   */
+  private async waitForOrderInfo(orderId: number): Promise<{ trackingNumber: string; trackingUrl: string }> {
+    const response = await this.executeWithRetry({
+      apiCall: () => OrdersService.getOrderInfo(orderId),
+      isReady: (response: any) => Boolean(response?.order?.providerNumber),
+      label: `orderInfo:${orderId}`,
+    })
+    const order = (response as any).order
+    return {
+      trackingNumber: String(order.providerNumber),
+      trackingUrl: String(order.trackingUrl ?? ""),
+    }
   }
 
   /**
    * Retrieve a labels for orders.
    */
-  private async waitForLabelUrl(
-    orderId: number,
-    tries = 6,
-    baseDelayMs = 600
-  ): Promise<string> {
-    for (let i = 0; i < tries; i++) {
-      const response = await OrderDocsService.getLabels({ orderIds: [orderId], format: "pdf" })
-      const url = response?.url
-      if (url) {
-        return String(url)
-      }
-      const failed = response?.failedOrders
-      if (Array.isArray(failed) && failed.length) {
-        this.logger_.debug(`Labels not ready yet for ${orderId}: ${failed[0]?.message || "unknown"}`)
-      }
-      const delay = baseDelayMs * Math.pow(1.6, i) + Math.floor(Math.random() * 150)
-      await this.sleep(delay)
-    }
-    return ""
+  private async waitForLabelUrl(orderId: number): Promise<string> {
+    const response = await this.executeWithRetry({
+      apiCall: () => OrderDocsService.getLabels({ orderIds: [orderId], format: "pdf" }),
+      isReady: (response: any) => Boolean(response?.url),
+      label: `labels:${orderId}`,
+    })
+    return String((response as any).url)
   }
 
   /**
@@ -251,7 +264,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
    */
   async createReturnFulfillment(fulfillment: Record<string, unknown>): Promise<CreateFulfillmentResult> {
     this.logger_.debug(`Apiship.createReturnFulfillment input: ${JSON.stringify(fulfillment, null, 2)}`)
-    
+
     // TODO: map input fulfillment to make return order request
     const tariffId = await this.pickTariffId("cdek")
     const returnOrder: OrderReturnRequest = {

@@ -72,9 +72,9 @@ export function mapToApishipOrderRequest(
     const cost = item.unit_price
 
     return {
-      height: height || fallbackItemSide,
-      length: length || fallbackItemSide,
-      width: width || fallbackItemSide,
+      //height: height || fallbackItemSide,
+      //length: length || fallbackItemSide,
+      //width: width || fallbackItemSide,
       weight: weight || fallbackItemWeight,
       articul: articul,
       description: description,
@@ -82,14 +82,15 @@ export function mapToApishipOrderRequest(
       assessedCost: cost,
       cost: cost,
       costVat: -1,
+      ...((width && height && length) ? {width, height, length} : {}),
       ...((item as any).variant.barcode ? {barcode: (item as any).variant.barcode} : {}),
     }
   })
 
   const place = {
-    height: placeDimensions.height,
-    length: placeDimensions.length,
-    width: placeDimensions.width,
+    //height: placeDimensions.height,
+    //length: placeDimensions.length,
+    //width: placeDimensions.width,
     weight: totalWeight,
     items: placeItems,
   }
