@@ -1,13 +1,12 @@
 import {
   createWorkflow,
-  WorkflowResponse
+  WorkflowResponse,
+  when
 } from "@medusajs/workflows-sdk"
 import {
   getProductsStep,
   mapToOzonFormatStep,
-  loadCategoryAttributesStep,
-  applyAttributeDictionariesStep,
-  runExportStep,
+  importProductsToOzonStep,
   saveOzonTaskStep }
 from "../steps"
 
@@ -17,13 +16,18 @@ export const runOzonProductExport = createWorkflow<runExportStepInput, Output, [
   "admin-ozon-product-import",
   (input) => {
     const products = getProductsStep(input)
-    const payload = mapToOzonFormatStep(products)
-    const attrsByCat = loadCategoryAttributesStep(payload)
-    const enrichedPayload = applyAttributeDictionariesStep({ payload, attrsByCat })
-    const result = runExportStep(enrichedPayload)
-    if (result.task_id) {
-      saveOzonTaskStep(result.task_id)
-    }
+    const ozonProducts = mapToOzonFormatStep(products)
+    const result = importProductsToOzonStep(ozonProducts)
+
+    when(
+      result, 
+      (result) => {
+        return !!result.task_id
+      }
+    ).then(() => {
+      saveOzonTaskStep(result.task_id!)
+    })
+
     return new WorkflowResponse<Output>(result)
   }
 )

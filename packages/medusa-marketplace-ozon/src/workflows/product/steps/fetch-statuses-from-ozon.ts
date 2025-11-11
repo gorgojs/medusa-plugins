@@ -4,12 +4,33 @@ import {
 } from "@medusajs/framework/workflows-sdk"
 import { FetchResult } from "../types/types"
 import { OzonExportRecord } from "../../../types/ozon"
-import { fetchTaskStatus } from "../../../lib"
 
 export type FetchStatusesFromOzonInput = {
   records: OzonExportRecord[]
   concurrency?: number
 }
+
+// TODO: move to ozon-client lib
+async function fetchTaskStatus(taskId: string) {
+  const ozonResponse = await fetch(`/v1/product/import/info`, {
+    method: "POST",
+    headers: {
+      "Clinet-Id": process.env.OZON_CLIENT_ID || "",
+      "Api-Key": process.env.OZON_API_KEY || "",
+    },
+    body: JSON.stringify({ task_id: Number(taskId) }),
+  })
+
+  if (!ozonResponse.ok) {
+    const text = await ozonResponse.text().catch(() => "")
+    throw new Error(`Ozon ${ozonResponse.status}: ${text}`)
+  }
+
+  return (await ozonResponse.json()) as {
+    result?: { items?: any[]; total?: number; status?: string }
+  }
+}
+
 
 export const fetchStatusesFromOzonStep = createStep<
   FetchStatusesFromOzonInput,

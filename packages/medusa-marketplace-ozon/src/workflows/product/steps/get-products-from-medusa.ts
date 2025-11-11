@@ -28,6 +28,8 @@ export const getProductsStep = createStep<runExportStepInput, ProductRow[], void
       ],
     })
 
+    console.log(`data`, data)
+
     const all = (Array.isArray(data) ? (data as ProductRow[]) : [])
 
     const catName = (input?.medusaCategoryName || "").trim().toLowerCase()

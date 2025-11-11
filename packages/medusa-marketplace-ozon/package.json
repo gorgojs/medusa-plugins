@@ -29,8 +29,12 @@
   "scripts": {
     "build": "medusa plugin:build",
     "dev": "yarn predev && medusa plugin:develop",
-    "predev": "medusa plugin:publish",
-    "prepublishOnly": "medusa plugin:build"
+    "openapi:fix": "node scripts/fix-openapi.js",
+    "openapi:gen": "yarn openapi:fix && OAC_PATH=src/lib/ozon-seller-api && rm -rf $OAC_PATH && openapi-generator-cli generate -i /local/openapi/vendor/swagger.json -g typescript-axios -o /local/$OAC_PATH --skip-validate-spec --additional-properties=useSingleRequestParameter=true",
+    "openapi:version": "date -u '+%Y-%m-%dT%H:%M:%SZ' > openapi/SPEC_VERSION.txt && shasum -a 256 openapi/vendor/swagger.json | awk '{print $1}' >> openapi/SPEC_VERSION.txt && echo '✅ Ozon spec updated:\n' && cat openapi/SPEC_VERSION.txt",
+    "openapi:pull": "echo 'Fetching latest Ozon Seller OpenAPI spec is not automated.\nPlease download the latest spec from https://docs.ozon.ru/api/seller/swagger.json and place it in openapi/vendor/swagger.json'",
+    "prepublishOnly": "medusa plugin:build",
+    "predev": "medusa plugin:publish"
   },
   "devDependencies": {
     "@medusajs/admin-sdk": "2.4.0",
@@ -77,5 +81,9 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "@openapitools/openapi-generator-cli": "^2.25.0",
+    "axios": "^1.13.2"
   }
 }
