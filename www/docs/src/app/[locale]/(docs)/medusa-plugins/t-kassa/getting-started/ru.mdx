@@ -1,7 +1,7 @@
-export const metadata = {
-  title: "Быстрый старт с подключением Т-Касса",
-  description: "В этом документе вы узнаете, как установить и настроить платежный провайдер Т-Касса для Medusa"
-}
+---
+title: "Быстрый старт с подключением Т-Касса"
+description: "В этом документе вы узнаете, как установить и настроить платежный провайдер Т-Касса для Medusa"
+---
 
 # Быстрый старт с подключением Т-Касса
 
@@ -9,8 +9,8 @@ export const metadata = {
 
 ## Требования
 
-- Medusa v2.7.0 или новее  
-- Node.js v20 или новее  
+- Medusa v2.7.0 или новее
+- Node.js v20 или новее
 - Аккаунт Т-Бизнес с подключённым интернет-эквайрингом Т-Касса – [зарегистрируйтесь или войдите](https://www.tbank.ru/kassa/?utm_source=partners_sme&utm_medium=prt.utl&utm_campaign=business.int_acquiring.7-3S975SBSY&partnerId=7-3S975SBSY&agentId=5-B6HGU9OD&agentSsoId=1316b7dd-3a90-4167-9d35-37910431a19c)
 
 ## Установка
@@ -47,7 +47,7 @@ module.exports = defineConfig({
               taxItemDefault: "none",
               taxShippingDefault: "none"
             },
-          }   
+          }
         ]
       }
     }

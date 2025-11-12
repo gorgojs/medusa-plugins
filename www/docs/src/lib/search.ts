@@ -3,7 +3,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import MiniSearch from "minisearch";
-import { unstable_cache } from "next/cache";
 
 import type { ContentItem, Locale } from "../types";
 
@@ -26,31 +25,19 @@ const miniSearchOptions = {
   },
 };
 
-const getCachedSearchIndexForLocale = (locale: Locale) => {
-  return unstable_cache(
-    async () => {
-      const filePath = path.join(
-        process.cwd(),
-        "public",
-        `search-index-${locale}.json`,
-      );
-      try {
-        const json = await fs.readFile(filePath, "utf-8");
-        return MiniSearch.loadJSON<ContentItem>(json, miniSearchOptions);
-      } catch (error) {
-        console.error(
-          `Error reading search index for locale ${locale}:`,
-          error,
-        );
-        return new MiniSearch<ContentItem>(miniSearchOptions);
-      }
-    },
-    [`search_index_${locale}`],
-    {
-      revalidate: 3600,
-      tags: ["search", `search-${locale}`],
-    },
-  )();
+const getCachedSearchIndexForLocale = async (locale: Locale) => {
+  const filePath = path.join(
+    process.cwd(),
+    "public",
+    `search-index-${locale}.json`,
+  );
+  try {
+    const json = await fs.readFile(filePath, "utf-8");
+    return MiniSearch.loadJSON<ContentItem>(json, miniSearchOptions);
+  } catch (error) {
+    console.error(`Error reading search index for locale ${locale}:`, error);
+    return new MiniSearch<ContentItem>(miniSearchOptions);
+  }
 };
 
 const getContentSnippet = (

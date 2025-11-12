@@ -1,9 +1,9 @@
-export const metadata = {
-  title: "Integrate T-Kassa Payment to Storefront",
-  description: "Learn how to integrate the T-Kassa payment provider into a Next.js storefront for Medusa."
-}
+---
+title: "Integrate T-Kassa Payment to Storefront"
+description: "Learn how to integrate the T-Kassa payment provider into a Next.js storefront for Medusa."
+---
 
-# Integrate T-Kassa Payment to Storefront
+# {frontmatter.title}
 
 To integrate the T-Kassa payment provider in a Next.js storefront, start by adding the required UI components. So, the provider is displayed on the checkout page alongside other available payment methods.
 
@@ -64,7 +64,7 @@ This helper function stores the cart ID in a cookie named `_medusa_cart_id`.
 
 The `sameSite` option is set to `lax` instead of `strict`. This change ensures the cookie is sent with cross-site requests during the T-Kassa redirect flow, preventing the payment session from being lost.
 
-### 3. Payment Session Initialization 
+### 3. Payment Session Initialization
 
 To redirect a customer to T-Kassa, the payment session must be properly initialized with the required parameters, including the return URLs for both success and failure outcomes.
 
@@ -87,7 +87,7 @@ When initiating the payment session for T-Kassa, the `SuccessURL` and `FailURL` 
 
 The `cart` object is included in the initialization data to build a receipt in accordance with Federal Law No. 54.
 
-## 4. Payment Button Component 
+## 4. Payment Button Component
 
 Medusa storefront requires a dedicated payment button component for each payment provider to handle the checkout flow after the customer confirms his order. This component leverages the payment session data and navigates the customer to the T-Kassa payment page.
 

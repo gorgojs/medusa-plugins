@@ -63,7 +63,7 @@ export async function generateMetadata({
 
   let mdxModule: MDXModule;
   try {
-    mdxModule = (await import(`../${path}/${locale}.mdx`)) as MDXModule;
+    mdxModule = await import(`../${path}/${locale}.mdx`);
   } catch (e) {
     console.error(e);
     return {};

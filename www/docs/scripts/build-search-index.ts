@@ -2,12 +2,14 @@ import fs from "node:fs";
 import path from "node:path";
 import { convert } from "html-to-text";
 import MiniSearch from "minisearch";
-import { renderToStaticMarkup, renderToString } from "react-dom/server";
+import { renderToString } from "react-dom/server";
 import { pluginsSidebar, toolsSidebar } from "../src/lib/sidebar";
-import type { ContentItem, Locale, LocalizedString } from "../src/types";
-
-// Add all your supported locales to this array
-const locales: Locale[] = ["en"];
+import {
+  type ContentItem,
+  type Locale,
+  type LocalizedString,
+  locales,
+} from "../src/types";
 
 const miniSearchOptions = {
   fields: ["title", "content", "section", "sectionHierarchy"],
@@ -57,10 +59,15 @@ function getAllMdxFiles(
   return arrayOfFiles;
 }
 
-async function mdxToPlainText(mdxContent: string): Promise<string> {
-  const MDXRemote = (await import("next-mdx-remote/rsc")).MDXRemote;
+async function mdxToPlainText(
+  mdxContent: string,
+): Promise<{ title: string; description: string; content: string }> {
+  const { compileMDX } = await import("next-mdx-remote/rsc");
 
-  const content = await MDXRemote({
+  const { content, frontmatter } = await compileMDX<{
+    title: string;
+    description: string;
+  }>({
     source: mdxContent,
     options: {
       parseFrontmatter: true,
@@ -69,9 +76,16 @@ async function mdxToPlainText(mdxContent: string): Promise<string> {
 
   const html = renderToString(content);
 
-  const text = convert(html);
+  const text = convert(html, {
+    preserveNewlines: true,
+    selectors: [{ selector: "h1", format: "skip" }],
+  });
 
-  return text.trim().replace(/\n+/g, " "); // Clean up newlines
+  return {
+    title: frontmatter.title,
+    description: frontmatter.description,
+    content: text.trim(),
+  };
 }
 
 const getSectionHierarchy = (pathParts: string[], locale: Locale): string[] => {
@@ -122,20 +136,18 @@ async function fetchContentItemsForLocale(
         .replace(/\\/g, "/")
         .replace(new RegExp(`/${locale}\\.mdx$`), "");
     const mdxContent = fs.readFileSync(filePath, "utf8");
-    const textContent = await mdxToPlainText(mdxContent);
+    const { title, content } = await mdxToPlainText(mdxContent);
 
-    const h1Match = mdxContent.match(/^#\s+(.*)/m);
-    const title = h1Match ? h1Match[1] : "Untitled";
     const sectionHierarchy = getSectionHierarchy(pathParts, locale);
 
     contentItems.push({
       id: href,
       title,
+      content,
       href,
       section: pathParts[0] || "general",
       sectionTitle: sectionHierarchy[0] || "General",
       sectionHierarchy,
-      content: textContent,
     });
   }
   return contentItems;
