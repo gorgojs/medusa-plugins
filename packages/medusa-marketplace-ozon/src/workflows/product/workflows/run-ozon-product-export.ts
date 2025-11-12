@@ -5,7 +5,7 @@ import {
 } from "@medusajs/workflows-sdk"
 import {
   getProductsStep,
-  mapToOzonFormatStep,
+  mapProductsToOzonStep,
   importProductsToOzonStep,
   saveOzonTaskStep }
 from "../steps"
@@ -16,7 +16,7 @@ export const runOzonProductExport = createWorkflow<runExportStepInput, Output, [
   "admin-ozon-product-import",
   (input) => {
     const products = getProductsStep(input)
-    const ozonProducts = mapToOzonFormatStep(products)
+    const ozonProducts = mapProductsToOzonStep(products)
     const result = importProductsToOzonStep(ozonProducts)
 
     when(

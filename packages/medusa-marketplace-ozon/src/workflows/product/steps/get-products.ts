@@ -6,7 +6,7 @@ import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import { runExportStepInput, ProductRow } from "../types"
 
 export const getProductsStep = createStep<runExportStepInput, ProductRow[], void>(
-  "get-products-from-medusa",
+  "get-products",
   async (input, { container }) => {
     if (Array.isArray(input?.medusaItems) && input!.medusaItems!.length) {
       return new StepResponse<ProductRow[], void>(input!.medusaItems!)
