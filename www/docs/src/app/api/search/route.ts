@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { searchWithSnippets } from "@/lib/search";
+import { search } from "@/lib/search";
 import type { Locale } from "@/types";
 
 export async function GET(request: NextRequest) {
@@ -11,17 +11,17 @@ export async function GET(request: NextRequest) {
     if (!locale) {
       return NextResponse.json(
         { message: "Locale parameter is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const results = await searchWithSnippets(locale as Locale, query);
+    const results = await search(locale as Locale, query);
     return NextResponse.json(results);
   } catch (error) {
     console.error("Error in search API:", error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

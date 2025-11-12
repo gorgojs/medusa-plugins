@@ -7,7 +7,8 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "prebuild": "tsx scripts/build-search-index.ts"
   },
   "dependencies": {
     "@icons-pack/react-simple-icons": "^13.7.0",
@@ -29,6 +30,7 @@
     "cmdk": "^1.1.1",
     "framer-motion": "^12.23.22",
     "glob": "^11.0.3",
+    "html-to-text": "^9.0.5",
     "lucide-react": "^0.544.0",
     "minisearch": "^7.2.0",
     "next": "15.5.3",
@@ -59,11 +61,13 @@
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.16",
+    "@types/html-to-text": "^9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "tailwindcss": "^4",
     "tailwindcss-radix": "^4.0.2",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }

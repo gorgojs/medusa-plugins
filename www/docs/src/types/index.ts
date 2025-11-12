@@ -44,3 +44,14 @@ export const locales = ["en", "ru"] as const;
 export type Locale = (typeof locales)[number];
 
 export type LocalizedString = Record<Locale, string>;
+
+export interface ContentItem {
+  id: string;
+  title: string;
+  description?: string;
+  href: string;
+  section: string;
+  sectionTitle: string;
+  sectionHierarchy: string[];
+  content: string;
+}

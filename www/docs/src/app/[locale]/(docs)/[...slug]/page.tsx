@@ -49,7 +49,7 @@ export async function generateStaticParams() {
         }
 
         return { locale, slug };
-      })
+      }),
   );
 
   return params;
