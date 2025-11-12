@@ -23,7 +23,7 @@ import {
 import { ApishipOptions } from "../types"
 import { mapToApishipOrderRequest } from "../utils"
 import { getStockLocationWorkflow } from "../../../workflows/get-stock-location"
-
+import { getShippingOptionWorkflow } from "../../../workflows/get-shipping-option"
 type InjectedDependencies = {
   logger: Logger
 }
@@ -91,12 +91,23 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     this.logger_.debug(`Apiship.createFulfillment input: ${JSON.stringify({ data, items, order, fulfillment }, null, 2)}`)
     
     const locationId = fulfillment.location_id as string
-    const { result: stockLocation }  = await getStockLocationWorkflow()
+    const { result: stockLocation } = await getStockLocationWorkflow()
       .run({
         input: {
           id: locationId
         }
       })
+    const { result: shippingOption } = await getShippingOptionWorkflow()
+      .run({
+        input: {
+          id: fulfillment.shipping_option_id!
+        }
+      })
+    const providerKey = shippingOption.data?.providerKey as string
+    const isCod = shippingOption.data?.isCod as boolean
+    console.log("providerKey --------", providerKey)
+    console.log("isCod --------", isCod)
+      
 
     // TODO: pick tariffId based on order data (inculing shipping address)
     const tariffId = await this.pickTariffId("cdek")
@@ -106,10 +117,10 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       order!,
       fulfillment,
       stockLocation,
-      "cdek",
+      providerKey,
       "1595",
       tariffId,
-      true
+      isCod
     )
     try {
       const response = await OrdersService.addOrder(
@@ -382,18 +393,31 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     }
   }
 
-  async getReturnDocuments(data: any): Promise<never[]> { return [] as never[] }
+  async getReturnDocuments(data: any): Promise<never[]> {
+    this.logger_.debug(`Apiship.getReturnDocuments input: ${JSON.stringify(data, null, 2)}`)
+
+    return [] as never[] 
+  }
   async retrieveDocuments(
     fulfillmentData: any,
     documentType: any
-  ): Promise<void> { return }
+  ): Promise<void> {
+    this.logger_.debug(`Apiship.retrieveDocuments input: ${JSON.stringify({fulfillmentData, documentType}, null, 2)}`)
+
+    return 
+  }
   async validateFulfillmentData(
     optionData: any,
     data: any,
     context: any
-  ): Promise<any> { return {} }
+  ): Promise<any> { 
+    this.logger_.debug(`Apiship.validateFulfillmentData input: ${JSON.stringify({optionData, data, context}, null, 2)}`)
+
+    return {} 
+  }
   async validateOption(data: any): Promise<boolean> {
     this.logger_.debug(`Apiship.validateOption input: ${JSON.stringify(data, null, 2)}`)
+    
     return true
   }
 }

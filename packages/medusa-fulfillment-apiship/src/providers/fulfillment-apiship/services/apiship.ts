@@ -10,11 +10,13 @@ class ApishipService extends ApishipBase {
   }
 
   async getFulfillmentOptions(): Promise<FulfillmentOption[]> {
-
+    // TODO: fetch real options from Apiship API and Medusa Admin
     return [
       {
         id: "apiship_standard",
-        name: "Apiship Fulfillment",
+        name: "Apiship Fulfillment (CDEK Standard)",
+        providerKey: "cdek",
+        isCod: false
       },
       {
         id: "apiship_return",
