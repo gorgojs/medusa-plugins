@@ -2,6 +2,8 @@
   "search": {
     "placeholder": "Find something...",
     "loadingText": "Searching documentation...",
+    "navigation": "Navigation",
+    "open": "Open result",
     "emptyResults": {
       "title": "No results found",
       "description": "We couldn't find any matches for your search. Please try changing the filters or using different keywords."

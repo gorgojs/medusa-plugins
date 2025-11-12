@@ -2,7 +2,8 @@
 
 import { MagnifierAlert, TriangleRightMini } from "@medusajs/icons";
 import { Button, Kbd } from "@medusajs/ui";
-import { SearchIcon } from "lucide-react";
+import { Search as SearchIcon } from "lucide-react";
+import MiniSearch, { type AsPlainObject, type SearchResult } from "minisearch";
 import { useLocale, useTranslations } from "next-intl";
 import React, { useCallback, useEffect, useState } from "react";
 import {
@@ -13,61 +14,135 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { miniSearchOptions } from "@/lib/minisearch-options";
+import type { ContentItem } from "@/types";
 
-interface CommandItemType {
-  id: string;
-  title: string;
-  description?: string;
-  href: string;
-  section?: string;
-  sectionTitle?: string;
-  sectionHierarchy?: string[];
-  content: string;
+interface SearchResultItem extends ContentItem {
+  score: number;
+  snippet: string;
+  terms: string[];
 }
 
-const highlightSearchTerms = (text: string, searchTerm: string) => {
-  if (!searchTerm.trim()) return text;
+const getContentSnippet = (
+  content: string,
+  terms: string[],
+  snippetLength: number = 60,
+): string => {
+  if (!content) return "";
+  if (!terms || terms.length === 0) {
+    return content.length > snippetLength
+      ? content.substring(0, snippetLength).trim() + "..."
+      : content;
+  }
 
-  const escapeHtml = (str: string) => {
-    const p = document.createElement("p");
-    p.appendChild(document.createTextNode(str));
-    return p.innerHTML;
-  };
+  const lowerContent = content.toLowerCase();
+  const uniqueTerms = [...new Set(terms.map((t) => t.toLowerCase()))];
 
-  const escapedText = escapeHtml(text);
-  const escapedSearchTerm = escapeHtml(searchTerm);
+  const matchPositions: number[] = [];
+  uniqueTerms.forEach((term) => {
+    const regex = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g");
+    [...lowerContent.matchAll(regex)].forEach((match) => {
+      if (match.index !== undefined) {
+        matchPositions.push(match.index);
+      }
+    });
+  });
 
-  const regex = new RegExp(
-    `(${escapedSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
-    "gi"
-  );
+  if (matchPositions.length === 0) {
+    return content.length > snippetLength
+      ? content.substring(0, snippetLength).trim() + "..."
+      : content;
+  }
 
-  const parts = escapedText.split(regex);
+  matchPositions.sort((a, b) => a - b);
+
+  let bestWindow = { start: 0, score: -1 };
+
+  matchPositions.forEach((pos) => {
+    const windowStart = Math.max(0, pos - snippetLength / 2);
+    const windowEnd = Math.min(content.length, windowStart + snippetLength);
+    const windowText = lowerContent.substring(windowStart, windowEnd);
+
+    let score = 0;
+    uniqueTerms.forEach((term) => {
+      if (windowText.includes(term)) {
+        score++;
+      }
+    });
+
+    if (score > bestWindow.score) {
+      bestWindow = { start: windowStart, score };
+    }
+  });
+
+  let startIndex = bestWindow.start;
+
+  if (startIndex > 0) {
+    const spaceIndex = content.lastIndexOf(" ", startIndex);
+    if (spaceIndex !== -1) {
+      startIndex = spaceIndex + 1;
+    }
+  }
+
+  const endIndex = Math.min(content.length, startIndex + snippetLength);
+  let snippet = content.substring(startIndex, endIndex).trim();
+
+  if (startIndex > 0) {
+    snippet = "..." + snippet;
+  }
+  if (endIndex < content.length) {
+    snippet = snippet + "...";
+  }
+
+  return snippet;
+};
+
+const highlightSearchTerms = (
+  text: string,
+  terms: string[],
+): React.ReactNode => {
+  if (!terms || terms.length === 0 || !text) {
+    return text;
+  }
+
+  const pattern = terms
+    .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+    .join("|");
+
+  if (!pattern) {
+    return text;
+  }
+
+  const regex = new RegExp(`(?<!\\p{L})(${pattern})(?!\\p{L})`, "gui");
+
+  const parts = text.split(regex);
+  const termsSet = new Set(terms.map((t) => t.toLowerCase()));
 
   return (
     <span>
       {parts.map((part, index) =>
-        regex.test(part) ? (
+        part && termsSet.has(part.toLowerCase()) ? (
           <mark
+            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
             key={index}
-            className="bg-ui-bg-highlight text-ui-fg-interactive  dark:text-white px-0.5 rounded"
-            dangerouslySetInnerHTML={{ __html: part }}
-          />
+            className="bg-ui-bg-highlight text-ui-fg-interactive dark:text-white px-0.5 rounded"
+          >
+            {part}
+          </mark>
         ) : (
-          <span key={index} dangerouslySetInnerHTML={{ __html: part }} />
-        )
+          // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+          <span key={index}>{part}</span>
+        ),
       )}
     </span>
   );
 };
 
 const useIsMac = () => {
-  const [isMac, setIsMac] = useState(true);
-
+  const [isMac, setIsMac] = useState(false);
   useEffect(() => {
-    setIsMac(navigator.userAgent.toLowerCase().includes("mac"));
+    setIsMac(window.navigator.userAgent.toLowerCase().includes("mac"));
   }, []);
-
   return isMac;
 };
 
@@ -75,11 +150,13 @@ const CmdK = () => {
   const t = useTranslations();
   const locale = useLocale();
   const isMac = useIsMac();
+
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<CommandItemType[]>([]);
   const [loading, setLoading] = useState(false);
-  const [allContent, setAllContent] = useState<CommandItemType[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
+  const [searchIndex, setSearchIndex] =
+    useState<MiniSearch<ContentItem> | null>(null);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -88,61 +165,57 @@ const CmdK = () => {
         setOpen((open) => !open);
       }
     };
-
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
   }, []);
 
   useEffect(() => {
-    if (open && allContent.length === 0) {
-      const fetchAllContent = async () => {
+    if (open && !searchIndex) {
+      const initializeIndex = async () => {
+        setLoading(true);
         try {
-          setLoading(true);
-          const response = await fetch(`/api/search?locale=${locale}`);
-          if (!response.ok) throw new Error("Failed to fetch initial content");
-          const data = await response.json();
-          const contentArray = Array.isArray(data) ? data : [];
-          setAllContent(contentArray);
-          setSearchResults(contentArray);
+          const cacheKey = `search-index-${locale}`;
+          let indexJSON: AsPlainObject;
+          const cachedIndex = localStorage.getItem(cacheKey);
+          if (cachedIndex) {
+            indexJSON = JSON.parse(cachedIndex);
+          } else {
+            const response = await fetch(`/search-index-${locale}.json`);
+            if (!response.ok) throw new Error("Failed to fetch search index.");
+            indexJSON = await response.json();
+            localStorage.setItem(cacheKey, JSON.stringify(indexJSON));
+          }
+          const miniSearch = MiniSearch.loadJS<ContentItem>(
+            indexJSON,
+            miniSearchOptions,
+          );
+          setSearchIndex(miniSearch);
         } catch (error) {
-          console.error("Error loading search content:", error);
-          setAllContent([]);
-          setSearchResults([]);
+          console.error("Error initializing client-side search:", error);
         } finally {
           setLoading(false);
         }
       };
-      fetchAllContent();
+      initializeIndex();
     }
-  }, [open, allContent.length, locale]);
+  }, [open, locale, searchIndex]);
 
   useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setSearchResults(allContent);
-      return;
-    }
+    if (!searchIndex) return;
 
-    const timer = setTimeout(async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `/api/search?q=${encodeURIComponent(searchTerm)}&locale=${locale}`
-        );
-        if (!response.ok) throw new Error("Failed to fetch search results");
-        const data = await response.json();
-        setSearchResults(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error("Error searching content:", error);
-        setSearchResults([]);
-      } finally {
-        setLoading(false);
-      }
-    }, 300);
+    const rawResults = searchTerm.trim()
+      ? (searchIndex.search(searchTerm) as (SearchResult & ContentItem)[])
+      : (searchIndex.search(MiniSearch.wildcard) as (SearchResult &
+          ContentItem)[]);
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [searchTerm, allContent, locale]);
+    const processedResults = rawResults.map((result) => ({
+      ...result,
+      snippet: getContentSnippet(result.content, result.terms),
+      terms: result.terms,
+    }));
+
+    setSearchResults(processedResults as SearchResultItem[]);
+  }, [searchTerm, searchIndex]);
 
   const handleSelect = useCallback((href: string) => {
     window.location.href = href;
@@ -164,11 +237,8 @@ const CmdK = () => {
         <span className="inline-flex lg:hidden">
           {t("header.search.shortLabel")}
         </span>
-        <kbd className="pointer-events-none ml-8 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-          <span className="text-xs">
-            {isMac ? t("keyboard.command") : t("keyboard.control")}
-          </span>
-          K
+        <kbd className="pointer-events-none ml-auto hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+          <span className="text-xs">{isMac ? "⌘" : "Ctrl"}</span>K
         </kbd>
       </Button>
 
@@ -193,22 +263,18 @@ const CmdK = () => {
         </div>
         <CommandList className="min-h-[440px] max-h-[440px] overflow-y-auto overflow-x-hidden">
           {loading && (
-            <div className="flex items-center justify-center h-[440px]">
-              <p className="text-sm text-muted-foreground">
-                {t("search.loadingText", {
-                  defaultValue: "Searching documentation...",
-                })}
-              </p>
+            <div className="flex items-center justify-center h-full">
+              <p>{t("search.loadingText")}</p>
             </div>
           )}
 
           {!loading && searchTerm && searchResults.length === 0 && (
             <CommandEmpty className="text-center text-sm h-[440px] flex flex-col items-center justify-center">
               <MagnifierAlert className="mb-3" />
-              <h5 className="mb-1.5 font-medium">
+              <h5 className="txt-compact-small-plus mb-1.5">
                 {t("search.emptyResults.title")}
               </h5>
-              <p className="text-center max-w-xs text-ui-fg-subtle leading-tight">
+              <p className="txt-small max-w-sm">
                 {t("search.emptyResults.description")}
               </p>
             </CommandEmpty>
@@ -221,37 +287,34 @@ const CmdK = () => {
                 onSelect={() => handleSelect(item.href)}
                 className="flex flex-col cursor-pointer items-start justify-between hover:bg-ui-bg-base-hover gap-1.5 !p-2"
               >
-                <div className="txt-compact-small-plus">{item.title}</div>
-                <div className="txt-compact-small text-ui-fg-subtle line-clamp-2">
-                  {typeof item.content === "string"
-                    ? highlightSearchTerms(item.content, searchTerm)
-                    : item.content}
+                <div className="txt-compact-small-plus">
+                  {highlightSearchTerms(item.title, item.terms)}
+                </div>
+                <div className="txt-compact-small text-ui-fg-subtle line-clamp-1 w-full">
+                  {highlightSearchTerms(item.snippet, item.terms)}
                 </div>
                 <div className="text-xs text-muted-foreground flex flex-wrap items-center gap-x-1">
-                  {item.sectionHierarchy
-                    ? item.sectionHierarchy.map((segment, index) => (
-                        <React.Fragment key={index}>
-                          <span className="flex items-center text-ui-fg-muted">
-                            {segment}
-                          </span>
-                          {index < item.sectionHierarchy!.length - 1 && (
-                            <TriangleRightMini className="text-ui-fg-muted" />
-                          )}
-                        </React.Fragment>
-                      ))
-                    : item.sectionTitle || item.section}
+                  {item.sectionHierarchy?.map((segment, index) => (
+                    <React.Fragment key={index}>
+                      <span>{segment}</span>
+                      {index < item.sectionHierarchy.length - 1 && (
+                        <TriangleRightMini />
+                      )}
+                    </React.Fragment>
+                  ))}
                 </div>
               </CommandItem>
             ))}
           </CommandGroup>
         </CommandList>
+
         <div className="bg-ui-bg-component static bottom-0 hidden lg:flex items-center justify-end text-xs gap-3 py-3 pr-3 border-t">
           <div>
-            Navigation <Kbd className="ml-2">↓</Kbd> <Kbd>↑</Kbd>
+            {t("search.navigation")} <Kbd className="ml-2">↓</Kbd> <Kbd>↑</Kbd>
           </div>
-          <div className="w-px h-[12px] bg-ui-border-base" />
+          <div className="w-px h-3 bg-ui-border-base" />
           <div>
-            Open result <Kbd className="w-[20px] ml-2">↵</Kbd>
+            {t("search.open")} <Kbd className="w-5 ml-2">↵</Kbd>
           </div>
         </div>
       </CommandDialog>
