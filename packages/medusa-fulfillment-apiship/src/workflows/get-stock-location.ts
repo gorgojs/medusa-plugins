@@ -10,7 +10,7 @@ export type GetStockLocationStepInput = {
   id: string
 }
 
-export const getStockLocationsStep = createStep(
+export const getStockLocationStep = createStep(
   "get-stock-locations-step",
   async (input: GetStockLocationStepInput, { container }) => {
     const stockLocationModuleService = container.resolve(Modules.STOCK_LOCATION)
@@ -29,7 +29,7 @@ type GetStockLocationWorkflowInput = {
 export const getStockLocationWorkflow = createWorkflow(
   "get-stock-locations",
   (input: GetStockLocationWorkflowInput) => {
-    const stockLocations = getStockLocationsStep(input)
-    return new WorkflowResponse(stockLocations)
+    const stockLocation = getStockLocationStep(input)
+    return new WorkflowResponse(stockLocation)
   }
 )

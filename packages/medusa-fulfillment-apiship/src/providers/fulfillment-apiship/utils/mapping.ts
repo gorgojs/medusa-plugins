@@ -112,7 +112,7 @@ export function mapToApishipOrderRequest(
       const quantity = item.quantity
       return sum + assessedCost * quantity
     }, 0)
-  const deliveryCost = order.shipping_methods![0].amount as number
+  const deliveryCost = order.shipping_total as number
   const itemsCost =
     placeItems.reduce((sum, item) => {
       const cost = item.cost
