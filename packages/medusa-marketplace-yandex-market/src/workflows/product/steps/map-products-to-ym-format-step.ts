@@ -8,7 +8,7 @@ import {
 } from "../../../lib/yandex-market-client/api"
 
 
-type itemsYm = {
+export type itemsYm = {
     offerId: string,
     name: string,
     description: string,
@@ -40,7 +40,7 @@ function mapProductsToYmFormat(products) {
             length: Number((product.length / 10).toFixed(2)),
             width: Number((product.width / 10).toFixed(2)),
             height: Number((product.height / 10).toFixed(2)),
-            weight: Number((product.weight / 100).toFixed(2))
+            weight: Number((product.weight / 1000).toFixed(2))
         }
 
         ymItems.push({
