@@ -2,19 +2,21 @@ import {
   createStep,
   StepResponse
 } from "@medusajs/workflows-sdk"
-import {
-  ExportInput,
-  Output
-} from "../types"
 import { productApi, withAuth } from "../../../lib/ozon-client"
-import { V3ImportProductsRequest } from "../../../lib/ozon-seller-api";
+import { V3ImportProductsRequestItem } from "../../../lib/ozon-seller-api";
 
-export const importProductsToOzonStep = createStep<ExportInput, Output, void>(
-  "import-products-to-ozon",
-  async (input: V3ImportProductsRequest) => {
+export type exportProductsStepInput = V3ImportProductsRequestItem[]
+
+export const exportProductsStep = createStep(
+  "export-products",
+  async (input: exportProductsStepInput ) => {
 
     const { status, data } = await productApi.productAPIImportProductsV3(
-      withAuth({ v3ImportProductsRequest: input })
+      withAuth({
+        v3ImportProductsRequest: {
+          items: input
+        }
+      })
     )
 
     const task_id = data.result?.task_id as string | undefined;
@@ -25,7 +27,7 @@ export const importProductsToOzonStep = createStep<ExportInput, Output, void>(
       )
     }
 
-    return new StepResponse<Output, void>({ ok: true, status: status, data, task_id })
+    return new StepResponse({ ok: true, status: status, data, task_id })
   },
   async () => { }
 )

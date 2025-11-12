@@ -1,7 +1,7 @@
 import { Configuration, ProductAPIApi } from './ozon-seller-api';
 
 const config = new Configuration({
-  basePath: process.env.OZON_BASE_URL || 'https://api-seller.ozon.ru',
+  basePath: process.env.OZON_BASE_URL,
 })
 
 // TODO: find better way to pass auth
@@ -11,4 +11,4 @@ export const withAuth = <T extends object>(body: T) => ({
   ...body,
 });
 
-export const productApi = new ProductAPIApi(config);
+export const productApi = new ProductAPIApi(config)

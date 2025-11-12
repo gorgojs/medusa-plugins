@@ -1,1 +1,1 @@
-export * from "./run-ozon-product-export"
+export * from "./export-products"
