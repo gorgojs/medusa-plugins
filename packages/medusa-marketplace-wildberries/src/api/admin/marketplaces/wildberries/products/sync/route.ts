@@ -1,12 +1,12 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
-import { syncWbProductsWorkflow } from "../../../../../../workflows/product"
+import { syncProductsMarketplaceWorkflow } from "../../../../../../workflows/product"
 
 export const POST = async (
   req: MedusaRequest,
   res: MedusaResponse
 ) => {
 
-  const response = await syncWbProductsWorkflow(req.scope).run({
+  const response = await syncProductsMarketplaceWorkflow(req.scope).run({
     input: [],
   })
   res.json(response.result)

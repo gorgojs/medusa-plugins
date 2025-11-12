@@ -3,10 +3,10 @@ import WildberriesModuleService from "../../../modules/wildberries/service"
 import { WB_MODULE } from "../../../modules/wildberries"
 import { batchProductsWorkflow, batchProductVariantsWorkflow } from "@medusajs/medusa/core-flows"
 
-export const syncWbCardsStepId = "sync-wb-cards"
+export const importProductsStepId = "import-products"
 
-export const syncWbCardsStep = createStep(
-  syncWbCardsStepId,
+export const importProductsStep = createStep(
+  importProductsStepId,
   async (_, { container }) => {
     const logger = container.resolve("logger")
     const wildberriesModuleService: WildberriesModuleService = container.resolve(WB_MODULE)
