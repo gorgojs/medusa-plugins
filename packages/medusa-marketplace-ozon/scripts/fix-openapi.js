@@ -1,15 +1,32 @@
 const fs = require("fs");
 
-const path = "openapi/vendor/swagger.json";
-const spec = JSON.parse(fs.readFileSync(path, "utf8"));
+const path = process.env.OAS_PATH;
+if(!path) {
+  console.error("❌ OAS_PATH environment variable is not set.");
+  process.exit(1);
+} 
+
+// check oas exists
+const oasExists = fs.existsSync(path);
+if (!oasExists) {
+  console.error(`❌ OpenAPI oas not found at ${path}. Please download it from https://docs.ozon.ru/api/seller/swagger.json and place it there.`);
+  process.exit(1);
+}
+
+// get oas
+const oas = JSON.parse(fs.readFileSync(path, "utf8"));
 
 // ensure securitySchemes + global security
-spec.components = spec.components || {};
-spec.components.securitySchemes = spec.components.securitySchemes || {};
-spec.components.securitySchemes.ClientId ||= { type: "apiKey", in: "header", name: "Client-Id" };
-spec.components.securitySchemes.ApiKey   ||= { type: "apiKey", in: "header", name: "Api-Key" };
-spec.security ||= [ { ClientId: [] }, { ApiKey: [] } ];
+oas.components = oas.components || {};
+oas.components.securitySchemes = oas.components.securitySchemes || {};
+oas.components.securitySchemes.ClientId ||= { type: "apiKey", in: "header", name: "Client-Id" };
+oas.components.securitySchemes.ApiKey ||= { type: "apiKey", in: "header", name: "Api-Key" };
+oas.security ||= [
+  { ClientId: [] },
+  { ApiKey: [] }
+];
 
+// walk the oas issues
 function walk(obj) {
   if (Array.isArray(obj)) {
     return obj.map(walk);
@@ -25,19 +42,19 @@ function walk(obj) {
     if (Object.prototype.hasOwnProperty.call(obj, "description") && obj.description === null) {
       obj.description = "";
     }
-    if (obj.type === "int"){
+    if (obj.type === "int") {
       obj.type = "integer";
     }
-    if (obj.type === "bool"){
+    if (obj.type === "bool") {
       obj.type = "boolean";
     }
-    if (obj.type === "file"){
+    if (obj.type === "file") {
       obj.type = "string";
     }
-    if (obj.type === null){
+    if (obj.type === null) {
       obj.type = "string";
     }
-    if (obj.type === "enum"){
+    if (obj.type === "enum") {
       obj.type = "string";
     }
     if (obj.type === "int64") {
@@ -48,12 +65,13 @@ function walk(obj) {
       obj.type = "string";
       if (!obj.format) obj.format = "date-time";
     }
-    
+
     for (const k of Object.keys(obj)) obj[k] = walk(obj[k]);
   }
   return obj;
 }
+walk(oas);
 
-walk(spec);
-fs.writeFileSync(path, JSON.stringify(spec, null, 2));
+// write back
+fs.writeFileSync(path, JSON.stringify(oas, null, 2));
 console.log("✅ Fixed 'array of strings' types in", path);
