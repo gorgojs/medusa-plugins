@@ -13,11 +13,9 @@ import {
 import { YM_API_KEY, YM_BUSINESS_ID } from "../../../lib/constants"
 import type { itemsYm } from "./map-products-to-ym-format-step"
 
-type ExportResult = { status: ApiResponseStatusType }
-
-export const runYmExportStep = createStep<itemsYm[], ExportResult, void>(
+export const runYmExportStep = createStep(
     "run-ym-export-step",
-    async (items) => {
+    async (items: itemsYm[] ) => {
         const config = new Configuration({
             apiKey: YM_API_KEY as string,
         })
@@ -48,6 +46,6 @@ export const runYmExportStep = createStep<itemsYm[], ExportResult, void>(
         const { status } = result.data
 
 
-        return new StepResponse<ExportResult, void>({ status })
+        return new StepResponse({ status : ApiResponseStatusType })
     }
 )

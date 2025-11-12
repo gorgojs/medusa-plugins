@@ -57,9 +57,9 @@ function mapProductsToYmFormat(products) {
 }
 
 
-export const mapProductsToYmFormatStep = createStep<unknown[], itemsYm[], void>(
+export const mapProductsToYmFormatStep = createStep(
     "map-products-to-ym-format-step",
-    async (products) => {
+    async (products : unknown[]) => {
         const items = mapProductsToYmFormat(products)
         return new StepResponse(items)
     }

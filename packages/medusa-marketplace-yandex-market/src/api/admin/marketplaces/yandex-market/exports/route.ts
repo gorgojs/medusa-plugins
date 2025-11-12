@@ -1,5 +1,5 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { runYmProductExportWorkflow } from "../../../../../workflows/product/workflows/run-ym-product-export"
+import { runYmProductExportWorkflow } from "../../../../../workflows/product/workflows/export-products"
 
 export const POST = async (request: MedusaRequest, result: MedusaResponse) => {
   try {

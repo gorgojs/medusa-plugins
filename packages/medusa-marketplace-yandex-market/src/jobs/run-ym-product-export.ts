@@ -1,5 +1,5 @@
 import { MedusaContainer } from "@medusajs/framework/types"
-import { runYmProductExportWorkflow } from "../workflows/product/workflows/run-ym-product-export"
+import { runYmProductExportWorkflow } from "../workflows/product/workflows/export-products"
 
 export default async function job(container: MedusaContainer) {
 
