@@ -22,6 +22,7 @@ import {
 } from "../../../apiship-client"
 import { ApishipOptions } from "../types"
 import { mapToApishipOrderRequest } from "../utils"
+import { getStockLocationWorkflow } from "../../../workflows/get-stock-location"
 
 type InjectedDependencies = {
   logger: Logger
@@ -88,6 +89,14 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     fulfillment: Partial<Omit<FulfillmentDTO, "provider_id" | "data" | "items">>
   ): Promise<CreateFulfillmentResult> {
     this.logger_.debug(`Apiship.createFulfillment input: ${JSON.stringify({ data, items, order, fulfillment }, null, 2)}`)
+    
+    const locationId = fulfillment.location_id as string
+    const { result: stockLocation }  = await getStockLocationWorkflow()
+      .run({
+        input: {
+          id: locationId
+        }
+      })
 
     // TODO: pick tariffId based on order data (inculing shipping address)
     const tariffId = await this.pickTariffId("cdek")
@@ -96,9 +105,11 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       items,
       order!,
       fulfillment,
+      stockLocation,
       "cdek",
       "1595",
-      tariffId
+      tariffId,
+      true
     )
     try {
       const response = await OrdersService.addOrder(
