@@ -1,6 +1,6 @@
 import { createWorkflow, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
-import { importProductsMarketplaceWorkflow } from "./import-products"
-import { exportProductsMarketplaceWorkflow } from "./export-products"
+import { importProductsMarketplaceWorkflow } from "./import-products-marketplace"
+import { exportProductsMarketplaceWorkflow } from "./export-products-marketplace"
 
 export type SyncProductsMarketplaceWorkflowInput = Array<string>
 
