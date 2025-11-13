@@ -1,7 +1,7 @@
 "use client";
 
 import { MagnifierAlert, TriangleRightMini } from "@medusajs/icons";
-import { Button, Kbd } from "@medusajs/ui";
+import { Kbd } from "@medusajs/ui";
 import { Search as SearchIcon } from "lucide-react";
 import MiniSearch, { type AsPlainObject, type SearchResult } from "minisearch";
 import { useLocale, useTranslations } from "next-intl";
@@ -15,7 +15,9 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { miniSearchOptions } from "@/lib/minisearch-options";
+import { cn } from "@/lib/utils";
 import type { ContentItem } from "@/types";
+import { Button } from "../ui/button";
 
 interface SearchResultItem extends ContentItem {
   score: number;
@@ -174,13 +176,13 @@ const CmdK = () => {
       const initializeIndex = async () => {
         setLoading(true);
         try {
-          const cacheKey = `search-index-${locale}`;
+          const cacheKey = `search-index`;
           let indexJSON: AsPlainObject;
           const cachedIndex = localStorage.getItem(cacheKey);
           if (cachedIndex) {
             indexJSON = JSON.parse(cachedIndex);
           } else {
-            const response = await fetch(`/search-index-${locale}.json`);
+            const response = await fetch(`/search-index.json`);
             if (!response.ok) throw new Error("Failed to fetch search index.");
             indexJSON = await response.json();
             localStorage.setItem(cacheKey, JSON.stringify(indexJSON));
@@ -198,7 +200,7 @@ const CmdK = () => {
       };
       initializeIndex();
     }
-  }, [open, locale, searchIndex]);
+  }, [open, searchIndex]);
 
   useEffect(() => {
     if (!searchIndex) return;
@@ -245,7 +247,10 @@ const CmdK = () => {
       <CommandDialog
         open={open}
         onOpenChange={setOpen}
-        className="fixed top-1/2 left-1/2 z-50 grid max-w-[94%] w-full sm:max-w-lg -translate-x-1/2 -translate-y-1/2 gap-0 overflow-hidden rounded-xl border bg-ui-bg-base p-0 shadow-lg outline-none animate-in fade-in-90 slide-in-from-top-10 sm:zoom-in-90"
+        className={cn(
+          "fixed top-1/2 left-1/2 z-100 grid h-[calc(100%-2rem)] md:h-fit w-full -translate-x-1/2 -translate-y-1/2 gap-0 overflow-hidden rounded-xl border bg-ui-bg-base shadow-lg outline-none animate-in fade-in-90 slide-in-from-top-10 sm:zoom-in-90",
+          "max-w-[calc(100%-1rem)] sm:max-w-[624px] md:max-w-[752px] lg:max-w-[640px]",
+        )}
       >
         <div className="relative">
           <CommandInput
@@ -254,14 +259,17 @@ const CmdK = () => {
             onValueChange={setSearchTerm}
           />
           <Button
-            className="absolute right-1 top-1/2 -translate-y-1/2 text-ui-fg-subtle"
+            className={cn(
+              searchTerm.length > 0 ? "flex" : "hidden",
+              "absolute right-1 top-1/2 -translate-y-1/2 text-ui-fg-muted hover:text-ui-fg-subtle hover:bg-transparent active:bg-transparent",
+            )}
             variant="transparent"
             onClick={() => setSearchTerm("")}
           >
             Clear
           </Button>
         </div>
-        <CommandList className="min-h-[440px] max-h-[440px] overflow-y-auto overflow-x-hidden">
+        <CommandList className="min-h-[calc(100%-3.5rem)] max-h-[calc(100%-3.5rem)] md:min-h-[400px] md:max-h-[400px] overflow-y-auto overflow-x-hidden">
           {loading && (
             <div className="flex items-center justify-center h-full">
               <p>{t("search.loadingText")}</p>
@@ -269,7 +277,7 @@ const CmdK = () => {
           )}
 
           {!loading && searchTerm && searchResults.length === 0 && (
-            <CommandEmpty className="text-center text-sm h-[440px] flex flex-col items-center justify-center">
+            <CommandEmpty className="text-center text-sm h-[calc(80vh)] md:h-[400px] grow flex flex-col items-center justify-center px-8">
               <MagnifierAlert className="mb-3" />
               <h5 className="txt-compact-small-plus mb-1.5">
                 {t("search.emptyResults.title")}

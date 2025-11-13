@@ -30,8 +30,6 @@ const miniSearchOptions = {
   },
 };
 
-// --- Logic moved from src/lib/pages.ts ---
-
 const getLocalizedString = (
   title: LocalizedString | string,
   locale: Locale,
@@ -141,7 +139,7 @@ async function fetchContentItemsForLocale(
     const sectionHierarchy = getSectionHierarchy(pathParts, locale);
 
     contentItems.push({
-      id: href,
+      id: href + `-${locale}`,
       title,
       content,
       href,
@@ -161,18 +159,15 @@ async function buildSearchIndex() {
     fs.mkdirSync(publicDir, { recursive: true });
   }
 
+  console.log(`Building search index...`);
+  const searchIndex = new MiniSearch<ContentItem>(miniSearchOptions);
   for (const locale of locales) {
-    console.log(`Building search index for locale: ${locale}...`);
     const contentItems = await fetchContentItemsForLocale(locale);
-    const searchIndex = new MiniSearch<ContentItem>(miniSearchOptions);
     searchIndex.addAll(contentItems);
-    const json = JSON.stringify(searchIndex.toJSON()); // Use .toJSON() for portability
-
-    fs.writeFileSync(path.join(publicDir, `search-index-${locale}.json`), json);
-    console.log(`Search index for locale: ${locale} built successfully.`);
   }
-
-  console.log("All search indexes have been built.");
+  const json = JSON.stringify(searchIndex.toJSON());
+  fs.writeFileSync(path.join(publicDir, `search-index.json`), json);
+  console.log(`Search index for locale built successfully.`);
 }
 
 buildSearchIndex().catch((err) => {

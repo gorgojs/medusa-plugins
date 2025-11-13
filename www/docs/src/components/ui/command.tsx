@@ -10,7 +10,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { Button } from "./button";
 
 function Command({
   className,
@@ -69,12 +68,12 @@ function CommandInput({
   return (
     <div
       data-slot="command-input-wrapper"
-      className="flex h-12 items-center gap-2 border-b px-3"
+      className="flex h-14! items-center gap-2 border-b px-3"
     >
       <CommandPrimitive.Input
         data-slot="command-input"
         className={cn(
-          "placeholder:text-muted-foreground flex h-12 w-full rounded-md bg-transparent py-3 txt-compact-large outline-hidden disabled:cursor-not-allowed disabled:opacity-50",
+          "placeholder:text-muted-foreground flex h-14! w-full rounded-md bg-transparent py-3 txt-compact-large outline-hidden disabled:cursor-not-allowed disabled:opacity-50",
           className,
         )}
         {...props}
@@ -90,10 +89,7 @@ function CommandList({
   return (
     <CommandPrimitive.List
       data-slot="command-list"
-      className={cn(
-        "max-h-[300px] scroll-py-1 overflow-x-hidden overflow-y-auto",
-        className,
-      )}
+      className={cn("max-h-[300px] scroll-py-1 overflow-x-hidden ", className)}
       {...props}
     />
   );

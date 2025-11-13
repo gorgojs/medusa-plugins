@@ -8,8 +8,9 @@ import { cn } from "@/lib/utils";
 const buttonVariants = cva({
   base: cn(
     // "relative",
+    "cursor-pointer",
     "transition-fg inline-flex w-fit items-center justify-center overflow-hidden rounded-md outline-none",
-    "disabled:bg-ui-bg-disabled disabled:border-ui-border-base disabled:text-ui-fg-disabled disabled:shadow-buttons-neutral [&_svg]:size-4"
+    "disabled:bg-ui-bg-disabled disabled:border-ui-border-base disabled:text-ui-fg-disabled disabled:shadow-buttons-neutral [&_svg]:size-4",
     // "disabled:after:hidden after:transition-fg after: after:inset-0 after:content-[''] after:-z-1"
   ),
   variants: {
@@ -20,19 +21,19 @@ const buttonVariants = cva({
         // "after:button-inverted-gradient",
         "hover:bg-ui-button-inverted-hover hover:after:button-inverted-hover-gradient",
         "active:bg-ui-button-inverted-pressed active:after:button-inverted-pressed-gradient",
-        "focus-visible:!shadow-buttons-inverted-focus"
+        "focus-visible:!shadow-buttons-inverted-focus",
       ),
       primary: cn(
         "shadow-buttons-inverted text-ui-contrast-fg-primary bg-ui-button-inverted after:button-inverted-gradient",
         "hover:bg-ui-button-inverted-hover hover:after:button-inverted-hover-gradient",
         "active:bg-ui-button-inverted-pressed active:after:button-inverted-pressed-gradient",
-        "focus-visible:!shadow-buttons-inverted-focus"
+        "focus-visible:!shadow-buttons-inverted-focus",
       ),
       secondary: cn(
         "shadow-buttons-neutral text-ui-fg-base bg-ui-bg-base after:button-neutral-gradient",
         "hover:bg-ui-bg-base-hover hover:after:button-neutral-hover-gradient",
         "active:bg-ui-bg-base-pressed active:after:button-neutral-pressed-gradient",
-        "focus-visible:shadow-buttons-neutral-focus"
+        "focus-visible:shadow-buttons-neutral-focus",
       ),
       transparent: cn(
         // "after:hidden",
@@ -40,13 +41,13 @@ const buttonVariants = cva({
         "hover:bg-ui-button-transparent-hover",
         "active:bg-ui-button-transparent-pressed",
         "focus-visible:shadow-buttons-neutral-focus focus-visible:bg-ui-bg-base",
-        "disabled:!bg-transparent disabled:!shadow-none"
+        "disabled:!bg-transparent disabled:!shadow-none",
       ),
       danger: cn(
         "shadow-buttons-colored shadow-buttons-danger text-ui-fg-on-color bg-ui-button-danger after:button-danger-gradient",
         "hover:bg-ui-button-danger-hover hover:after:button-danger-hover-gradient",
         "active:bg-ui-button-danger-pressed active:after:button-danger-pressed-gradient",
-        "focus-visible:shadow-buttons-danger-focus"
+        "focus-visible:shadow-buttons-danger-focus",
       ),
     },
     size: {
@@ -98,7 +99,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       ...props
     }: ButtonProps,
-    ref
+    ref,
   ) => {
     const Component = asChild ? Slot.Root : "button";
 
@@ -113,7 +114,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           <span className="pointer-events-none">
             <div
               className={cn(
-                "bg-ui-bg-disabled absolute inset-0 flex items-center justify-center rounded-md"
+                "bg-ui-bg-disabled absolute inset-0 flex items-center justify-center rounded-md",
               )}
             >
               <Spinner className="animate-spin" />
@@ -136,7 +137,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {renderInner()}
       </Component>
     );
-  }
+  },
 );
 Button.displayName = "Button";
 
