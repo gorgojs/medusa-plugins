@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack -p 4321",
-    "build": "yarn prebuild; next build --turbopack",
+    "build": "yarn prebuild && next build --turbopack",
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write",
