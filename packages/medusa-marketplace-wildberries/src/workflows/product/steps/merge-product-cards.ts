@@ -1,8 +1,8 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
-import WildberriesModuleService, { WildberriesProductCardsMerge } from "../../../modules/wildberries/service"
-import { WB_MODULE } from "../../../modules/wildberries"
+import { creatingProductsApi } from "../../../lib/wildberries-client"
+import { ContentV2CardsUploadAddPostRequest } from "../../../lib/wildberries-products-client"
 
-export type MergeProductCardsStepInput = Array<WildberriesProductCardsMerge>
+export type MergeProductCardsStepInput = Array<ContentV2CardsUploadAddPostRequest>
 
 export const mergeProductCardsStepId = "merge-product-cards"
 
@@ -10,7 +10,6 @@ export const mergeProductCardsStep = createStep(
   mergeProductCardsStepId,
   async (productCards: MergeProductCardsStepInput, { container }) => {
     const logger = container.resolve("logger")
-    const wildberriesModuleService: WildberriesModuleService = container.resolve(WB_MODULE)
 
     if (productCards.length === 0) {
       logger.info("Nothing to merge. Skipping...")
@@ -23,7 +22,7 @@ export const mergeProductCardsStep = createStep(
     const result: any[] = []
 
     productCards.forEach(async item => {
-      const response = await wildberriesModuleService.createProductCardsWithMerge(item)
+      const { status, data: response } = await creatingProductsApi.contentV2CardsUploadAddPost(item)
       result.push(response)
     })
 

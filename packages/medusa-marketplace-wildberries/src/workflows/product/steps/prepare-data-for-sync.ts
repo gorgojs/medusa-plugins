@@ -1,5 +1,10 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
-import { WildberriesProductCard, WildberriesProductCardsMerge, WildberriesProductCardUpdate, WildberriesProductCreate } from "../../../modules/wildberries/service"
+import {
+  ContentV2CardsUpdatePostRequestInner,
+  ContentV2CardsUploadAddPostRequest,
+  ContentV2CardsUploadAddPostRequestCardsToAddInner,
+  ContentV2CardsUploadPostRequestInner,
+} from "../../../lib/wildberries-products-client"
 
 export type PrepareDataForSyncStepInput = Array<string>
 
@@ -27,9 +32,9 @@ export const prepareDataForSyncStep = createStep(
 
     logger.debug(`Recived products: ${JSON.stringify(products, null, 2)}`)
 
-    let productsToCreate: WildberriesProductCreate[] = []
-    let productCardsToUpdate: WildberriesProductCardUpdate[] = []
-    let productCardsToMerge: WildberriesProductCardsMerge[] = []
+    let productsToCreate: ContentV2CardsUploadPostRequestInner[] = []
+    let productCardsToUpdate: ContentV2CardsUpdatePostRequestInner[] = []
+    let productCardsToMerge: ContentV2CardsUploadAddPostRequest[] = []
 
     products.forEach(product => {
       const imtID = product.metadata?.wildberries_imtID ?? "none"
@@ -52,8 +57,8 @@ export const prepareDataForSyncStep = createStep(
           variants: variants
         })
       } else {
-        let variantsToMerge: Array<WildberriesProductCard> = []
-  
+        let variantsToMerge: Array<ContentV2CardsUploadAddPostRequestCardsToAddInner> = []
+
         product.variants.forEach(variant => {
           const nmID = variant.metadata?.wildberries_nmID ?? "none"
           if (nmID === "none") { // to merge

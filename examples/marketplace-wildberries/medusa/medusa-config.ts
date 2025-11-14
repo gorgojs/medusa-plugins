@@ -19,12 +19,4 @@ module.exports = defineConfig({
       options: {}
     }
   ],
-  modules: [
-    {
-      resolve: "@gorgo/medusa-marketplace-wildberries/modules/wildberries",
-      options: {
-        apiKey: process.env.WB_API_KEY,
-      }
-    }
-  ]
 })
