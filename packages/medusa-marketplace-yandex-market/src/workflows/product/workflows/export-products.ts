@@ -6,7 +6,7 @@ import {
 import {
   getMedusaProductsStep,
   mapProductsToYmFormatStep,
-  runYmExportStep
+  exportProductsStep
 } from "../steps"
 
 export const runYmProductExportWorkflow = createWorkflow(
@@ -14,7 +14,7 @@ export const runYmProductExportWorkflow = createWorkflow(
   (input) => {
     const products = getMedusaProductsStep()
     const productsMap = mapProductsToYmFormatStep(products)
-    const result = runYmExportStep(productsMap)
+    const result = exportProductsStep(productsMap)
     return new WorkflowResponse(result)
   }
 )

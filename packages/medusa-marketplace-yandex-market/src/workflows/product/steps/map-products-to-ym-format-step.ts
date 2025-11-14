@@ -6,7 +6,9 @@ import {
     OfferWeightDimensionsDTO,
 
 } from "../../../lib/yandex-market-client/api"
-
+import {
+    UpdateOfferMappingDTO
+} from "../../../lib/yandex-market-client/api"
 
 export type itemsYm = {
     offerId: string,
@@ -59,13 +61,19 @@ function mapProductsToYmFormat(products) {
 
 export const mapProductsToYmFormatStep = createStep(
     "map-products-to-ym-format-step",
-    async (products : unknown[]) => {
-        const items = mapProductsToYmFormat(products)
-        return new StepResponse(items)
+    async (products: unknown[]) => {
+        const mappedProducts = mapProductsToYmFormat(products)
+        const convertedProducts: UpdateOfferMappingDTO[] = mappedProducts.map((item) => ({
+            offer: {
+                offerId: item.offerId,
+                name: item.name,
+                description: item.description,
+                vendor: item.vendor,
+                marketCategoryId: item.marketCategoryId,
+                pictures: item.pictures,
+                weightDimensions: item.dimensions,
+            },
+        }))
+        return new StepResponse(convertedProducts)
     }
 )
-
-
-
-
-

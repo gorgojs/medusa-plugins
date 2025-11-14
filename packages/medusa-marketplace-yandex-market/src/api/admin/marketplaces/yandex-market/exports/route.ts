@@ -3,11 +3,11 @@ import { runYmProductExportWorkflow } from "../../../../../workflows/product/wor
 
 export const POST = async (request: MedusaRequest, result: MedusaResponse) => {
   try {
-    const exec = await runYmProductExportWorkflow.run({
-      container: request.scope,
+    const exec = await runYmProductExportWorkflow.run({ container: request.scope })
+    return result.status(200).json({
+      status: exec.result.status,
+      results: exec.result.results,
     })
-
-    return result.status(200).json(exec.result)
   } catch (e: any) {
     return result.status(500).json({ error: e?.message ?? "Internal error" })
   }
