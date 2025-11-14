@@ -1,5 +1,5 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { checkYmProductExportStatusWorkflow } from "../../../../../../workflows/product/workflows/check-ym-product-export-status"
+import { importProductsMarketplaceWorkflow } from "../../../../../../workflows"
 
 type BodySelective = {
   sessionId?: string
@@ -20,7 +20,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     const body = (req.body ?? {}) as Partial<BodySelective & BodyListAll>
 
-    const exec = await checkYmProductExportStatusWorkflow.run({
+    const exec = await importProductsMarketplaceWorkflow.run({
       container: req.scope,
       input: {
         cardStatuses: body.cardStatuses,

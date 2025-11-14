@@ -1,14 +1,14 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { runYmProductExportWorkflow } from "../../../../../workflows/product/workflows/export-products"
+import { exportProductsMarketplaceWorkflow } from "../../../../../workflows"
 
-export const POST = async (request: MedusaRequest, result: MedusaResponse) => {
+export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
-    const exec = await runYmProductExportWorkflow.run({ container: request.scope })
-    return result.status(200).json({
-      status: exec.result.status,
-      results: exec.result.results,
+    const { result } = await exportProductsMarketplaceWorkflow.run({ container: req.scope })
+    return res.status(200).json({
+      status: result.status,
+      results: result.results,
     })
   } catch (e: any) {
-    return result.status(500).json({ error: e?.message ?? "Internal error" })
+    return res.status(500).json({ error: e?.message ?? "Internal error" })
   }
 }
