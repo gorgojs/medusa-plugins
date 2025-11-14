@@ -19,7 +19,7 @@ const SyncWildberriesPage = () => {
     setData(null)
 
     try {
-      const response = await sdk.client.fetch("/admin/marketplace/wildberries/products/sync", {
+      const response = await sdk.client.fetch("/admin/marketplaces/wildberries/products/sync", {
         method: "POST",
       })
       setData(response)
@@ -39,7 +39,7 @@ const SyncWildberriesPage = () => {
       <div className="px-6 py-4 space-y-3">
         {error && <Text className="text-ui-fg-error">Error: {error}</Text>}
 
-        {data && <Text>Sync result: {JSON.stringify(data)}</Text>}
+        {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
       </div>
     </Container>
   )
