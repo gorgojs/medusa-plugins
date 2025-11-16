@@ -1,5 +1,5 @@
 import { MedusaContainer } from "@medusajs/framework/types"
-import { exportProductsMarketplaceWorkflow } from "../workflows/product/workflows/export-products"
+import { exportProductsMarketplaceWorkflow } from "../workflows"
 
 export default async function (container: MedusaContainer) {
   const logger = container.resolve("logger")

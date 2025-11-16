@@ -1,5 +1,5 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
-import { exportProductsMarketplaceWorkflow } from "../../../../../workflows/product/workflows/export-products";
+import { exportProductsMarketplaceWorkflow } from "../../../../../workflows/product/workflows/export-products-marketplace";
 
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
