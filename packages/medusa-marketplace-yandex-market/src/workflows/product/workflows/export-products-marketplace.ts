@@ -16,7 +16,7 @@ export type ExportProductsWorkflowInput = {
 export const exportProductsMarketplaceWorkflow = createWorkflow(
   "export-products-marketplace",
   (input: ExportProductsWorkflowInput) => {
-    const products = getProductsStep(input.ids)
+    const products = getProductsStep({ ids: input.ids })
     const marketplaceProducts = mapProductsStep(products)
     const exportResult = exportProductsStep(marketplaceProducts)
 

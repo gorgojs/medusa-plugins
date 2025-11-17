@@ -2,7 +2,7 @@ import { Configuration, BusinessOfferMappingsApi } from './yandex-market-client'
 
 // TODO validate that YM_API_KEY and YM_BUSINESS_ID are set
 
-const config = new Configuration({
+export const config = new Configuration({
     apiKey: process.env.YM_API_KEY as string,
 })
 

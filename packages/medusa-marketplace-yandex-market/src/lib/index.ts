@@ -8,97 +8,56 @@ export const mapProductsToMarketplace = (products: ProductDTO[]): UpdateOfferMap
   const marketplaceProducts: UpdateOfferMappingDTO[] = [
     {
       "offer": {
-        "offerId": "string",
-        "name": "Ударная дрель Makita HP1630, 710 Вт",
-        "marketCategoryId": 0,
-        "category": "string",
+        "offerId": "medusaphone-x-1762907975659",
+        "name": "MedusaPhone X",
+        "description": "Flagship 6.7\" OLED, triple camera, 5G.",
+        "vendor": "Medusa",
+        "marketCategoryId": 91491,
         "pictures": [
-          "string"
+          "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80"
         ],
-        "videos": [
-          "string"
-        ],
-        "manuals": [
-          {
-            "url": "string",
-            "title": "string"
-          }
-        ],
-        "vendor": "LEVENHUK",
-        "description": "string",
         "weightDimensions": {
-          "length": 65.55,
-          "width": 50.7,
-          "height": 20,
-          "weight": 1.001
-        },
-        "vendorCode": "VNDR-0005A",
-        "shelfLife": {
-          "timePeriod": 0,
-          "timeUnit": "HOUR",
-          "comment": "string"
-        },
-        "lifeTime": {
-          "timePeriod": 0,
-          "timeUnit": "HOUR",
-          "comment": "string"
-        },
-        "guaranteePeriod": {
-          "timePeriod": 0,
-          "timeUnit": "HOUR",
-          "comment": "string"
-        },
-        "customsCommodityCode": "8517610008",
-        "commodityCodes": [
-          {
-            "code": "string",
-            "type": "CUSTOMS_COMMODITY_CODE"
-          }
+          "length": 16.1,
+          "width": 7.6,
+          "height": 0.82,
+          "weight": 0.19
+        }
+      }
+    },
+    {
+      "offer": {
+        "offerId": "medusaphone-lite-1762907975659",
+        "name": "MedusaPhone Lite",
+        "description": "Budget 6.5\" IPS, single camera, 4G.",
+        "vendor": "Medusa",
+        "marketCategoryId": 91491,
+        "pictures": [
+          "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80"
         ],
-        "boxCount": 0,
-        "condition": {
-          "type": "PREOWNED",
-          "quality": "PERFECT",
-          "reason": "string"
-        },
-        "type": "DEFAULT",
-        "downloadable": false,
-        "adult": false,
-        "age": {
-          "value": 0,
-          "ageUnit": "YEAR"
-        },
-        "params": [
-          {
-            "name": "Wi-Fi",
-            "value": "есть"
-          }
+        "weightDimensions": {
+          "length": 16.4,
+          "width": 7.6,
+          "height": 0.86,
+          "weight": 0.2
+        }
+      }
+    },
+    {
+      "offer": {
+        "offerId": "medusaphone-s-1762907975659",
+        "name": "MedusaPhone S",
+        "description": "Balanced 6.1\" AMOLED, dual camera, 5G.",
+        "vendor": "Medusa",
+        "marketCategoryId": 91491,
+        "pictures": [
+          "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80"
         ],
-        "parameterValues": [
-          {
-            "parameterId": 0,
-            "unitId": 0,
-            "valueId": 0,
-            "value": "string"
-          }
-        ],
-        "basicPrice": {
-          "value": 0,
-          "currencyId": "RUR",
-          "discountBase": 0
-        },
-        "purchasePrice": {
-          "value": 0,
-          "currencyId": "RUR"
-        },
-        "additionalExpenses": {
-          "value": 0,
-          "currencyId": "RUR"
-        },
-        "firstVideoAsCover": false,
-      },
-      "mapping": {
-        "marketSku": 0
+        "weightDimensions": {
+          "length": 14.7,
+          "width": 7.1,
+          "height": 0.79,
+          "weight": 0.18
+        }
       }
     }
   ]

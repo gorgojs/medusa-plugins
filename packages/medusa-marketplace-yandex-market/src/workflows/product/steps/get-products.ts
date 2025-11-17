@@ -3,21 +3,24 @@ import {
   StepResponse
 } from "@medusajs/workflows-sdk"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import type { IProductModuleService } from "@medusajs/framework/types"
+import { Modules } from "@medusajs/framework/utils"
 
-export type GetProductsStepInput = string[]
+export type GetProductsStepInput = { ids?: string[] }
 
 export const getProductsStep = createStep(
   "get-products",
   async (input: GetProductsStepInput, { container }) => {
+    const service = container.resolve<IProductModuleService>(Modules.PRODUCT)
 
-    const query = container.resolve(ContainerRegistrationKeys.QUERY)
+    if (!input.ids?.length) {
+      return new StepResponse([], [])
+    }
 
-    const { data: products } = await query.graph({
-      entity: "product",
-      fields: ["*"],
-      filters: { status: "published" },
-    })
-
-    return new StepResponse(products)
+    const products = await service.listProducts(
+      { id: input.ids },
+      { relations: ["variants"] }
+    )
+    return new StepResponse(products, products)
   }
 )
