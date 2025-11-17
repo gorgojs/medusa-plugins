@@ -6,7 +6,7 @@ import {
   getProductsStep,
   mapProductsStep,
   exportProductsStep,
-  // createExportStep
+  createExportStep
 } from "../steps"
 
 export type ExportProductsWorkflowInput = {
@@ -20,7 +20,7 @@ export const exportProductsMarketplaceWorkflow = createWorkflow(
     const marketplaceProducts = mapProductsStep(products)
     const exportResult = exportProductsStep(marketplaceProducts)
 
-    // const result = createExportStep(exportResult)
+    const result = createExportStep(exportResult)
 
     // TODO: define proper output
     return new WorkflowResponse(exportResult)
