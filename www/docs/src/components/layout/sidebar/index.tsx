@@ -108,6 +108,9 @@ const Sidebar = ({
     <aside className="sticky top-12 w-[250px]">
       <div className="overflow-y-auto">
         <SidebarContent
+          onNavigate={() => {
+            setIsSidebarOpen(false);
+          }}
           items={section?.children ?? []}
           basePath={basePath}
           section={section}
