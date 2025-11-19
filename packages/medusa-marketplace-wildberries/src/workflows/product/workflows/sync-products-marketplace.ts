@@ -2,15 +2,17 @@ import { createWorkflow, WorkflowResponse } from "@medusajs/framework/workflows-
 import { importProductsMarketplaceWorkflow } from "./import-products-marketplace"
 import { exportProductsMarketplaceWorkflow } from "./export-products-marketplace"
 
-export type SyncProductsMarketplaceWorkflowInput = Array<string>
+export type SyncProductsMarketplaceWorkflowInput = {
+  ids?: string[]
+}
 
 export const syncProductsMarketplaceWorkflowId = "sync-products-marketplace"
 
 export const syncProductsMarketplaceWorkflow = createWorkflow(
   syncProductsMarketplaceWorkflowId,
-  (input: SyncProductsMarketplaceWorkflowInput = []) => {
-    const importWorkflowResult = importProductsMarketplaceWorkflow.runAsStep({ input: {} })
-    const exportWorkflowResult = exportProductsMarketplaceWorkflow.runAsStep({ input: input })
+  (input: SyncProductsMarketplaceWorkflowInput) => {
+    const importWorkflowResult = importProductsMarketplaceWorkflow.runAsStep({ input })
+    const exportWorkflowResult = exportProductsMarketplaceWorkflow.runAsStep({ input })
 
     const result = {
       exportWorkflowResult,

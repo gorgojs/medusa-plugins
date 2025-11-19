@@ -1,27 +1,31 @@
-import { createWorkflow, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
-import { createProductsStep, mergeProductCardsStep, prepareDataForSyncStep, updateProductCardsStep } from "../steps"
-import { collectErrorsStep } from "../steps/collect-errors"
+import {
+  createWorkflow,
+  WorkflowResponse
+} from "@medusajs/framework/workflows-sdk"
+import {
+  getProductsStep,
+  mapProductsStep,
+  exportProductsStep,
+  logMarketplaceEventStep
+} from "../steps"
 
-export type ExportProductsMarketplaceWorkflowInput = Array<string>
+export type ExportProductsMarketplaceWorkflowInput = {
+  ids?: string[]
+}
 
 export const exportProductsMarketplaceWorkflowId = "export-products-marketplace"
 
 export const exportProductsMarketplaceWorkflow = createWorkflow(
   exportProductsMarketplaceWorkflowId,
-  (input: ExportProductsMarketplaceWorkflowInput = []) => {
-    const { productsToCreate, productCardsToUpdate, productCardsToMerge } = prepareDataForSyncStep(input)
-    const createResponse = createProductsStep(productsToCreate)
-    const updateResponse = updateProductCardsStep(productCardsToUpdate)
-    const mergeResponse = mergeProductCardsStep(productCardsToMerge)
-    const cardsErrors = collectErrorsStep()
+  (input: ExportProductsMarketplaceWorkflowInput) => {
 
-    const result = {
-      createResponse,
-      updateResponse,
-      mergeResponse,
-      cardsErrors
-    }
-    
+    const products = getProductsStep(input)
+    const marketplaceProducts = mapProductsStep(products)
+    const exportResult = exportProductsStep(marketplaceProducts)
+
+    const result = logMarketplaceEventStep(exportResult)
+
+    // TODO: define proper output
     return new WorkflowResponse(result)
   }
 )

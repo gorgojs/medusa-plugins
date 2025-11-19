@@ -1,17 +1,21 @@
-import { createWorkflow, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
-import { importProductsStep } from "../steps"
+import {
+  createWorkflow,
+  WorkflowResponse
+} from "@medusajs/framework/workflows-sdk"
+import {
+  logMarketplaceEventStep
+} from "../steps"
 
-export const importProductsMarketplaceWorkflowId = "import-products-marketplace"
+export type ImportProductsMarketplaceWorkflowInput = {
+  ids?: String[]
+}
 
 export const importProductsMarketplaceWorkflow = createWorkflow(
-  importProductsMarketplaceWorkflowId,
-  () => {
-    const importResult = importProductsStep()
+  "import-products-marketplace",
+  (input: ImportProductsMarketplaceWorkflowInput) => {
+    // ... steps
+    const result = logMarketplaceEventStep({})
 
-    const result = {
-      importResult
-    }
-    
     return new WorkflowResponse(result)
   }
 )

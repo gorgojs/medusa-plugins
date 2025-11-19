@@ -6,13 +6,16 @@ import {
   ContentV2CardsUploadPostRequestInner,
 } from "../../../lib/wildberries-products-client"
 
-export type PrepareDataForSyncStepInput = Array<string>
+
+export type PrepareDataForSyncStepInput = {
+  ids?: string[]
+}
 
 export const prepareDataForSyncStepId = "prepare-data-for-sync"
 
 export const prepareDataForSyncStep = createStep(
   prepareDataForSyncStepId,
-  async (productIds: PrepareDataForSyncStepInput, { container }) => {
+  async (input: PrepareDataForSyncStepInput, { container }) => {
     const logger = container.resolve("logger")
     const query = container.resolve("query")
 
@@ -25,7 +28,7 @@ export const prepareDataForSyncStep = createStep(
         "variants.*"
       ],
       filters: {
-        id: productIds.length ? productIds : undefined,
+        id: input.ids?.length ? input.ids : undefined,
         status: "published"
       },
     })
@@ -102,7 +105,11 @@ export const prepareDataForSyncStep = createStep(
       }
     })
 
-    const result = { productsToCreate, productCardsToUpdate, productCardsToMerge }
+    const result = { 
+      create: productsToCreate,
+      update: productCardsToUpdate,
+      merge: productCardsToMerge
+    }
 
     return new StepResponse(result)
   }
