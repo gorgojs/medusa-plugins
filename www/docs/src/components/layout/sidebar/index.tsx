@@ -16,10 +16,12 @@ export const overviewTitle = {
 const SidebarContent = ({
   section,
   items,
+  onNavigate,
   basePath = "",
 }: {
   items: (SidebarItemType | SidebarType)[];
   section: SidebarType;
+  onNavigate: () => void;
   basePath?: string;
 }) => {
   const locale = useLocale();
@@ -42,6 +44,7 @@ const SidebarContent = ({
           title={overviewTitle}
           items={[]}
           basePath={basePath}
+          onNavigate={onNavigate}
           isOverview={true}
         />
       )}
@@ -54,6 +57,7 @@ const SidebarContent = ({
           items={item.children as SidebarItemType[]}
           icon={"icon" in item ? item.icon : undefined}
           basePath={basePath}
+          onNavigate={onNavigate}
           hasOverview={"hasOverview" in item && item?.hasOverview}
         />
       ))}
@@ -87,6 +91,9 @@ const Sidebar = ({
         <DrawerContent className="h-full bg-ui-bg-subtle">
           <div className="overflow-y-auto py-4">
             <SidebarContent
+              onNavigate={() => {
+                setIsSidebarOpen(false);
+              }}
               items={section?.children ?? []}
               basePath={basePath}
               section={section}

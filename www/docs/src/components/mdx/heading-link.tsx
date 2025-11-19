@@ -29,12 +29,14 @@ const HeadingLink = ({
         {...props}
       >
         {children}
-        <Copy
-          className="opacity-0 group-hover:opacity-100 ml-2 transition-opacity cursor-pointer bg-clip-text gorgo-text-gradient"
-          content={`${origin}${pathname}#${id}`}
-        >
-          #
-        </Copy>
+        {Heading !== "h1" && (
+          <Copy
+            className="opacity-0 group-hover:opacity-100 ml-2 transition-opacity cursor-pointer bg-clip-text gorgo-text-gradient"
+            content={`${origin}${pathname}#${id}`}
+          >
+            #
+          </Copy>
+        )}
       </Heading>
     </div>
   );

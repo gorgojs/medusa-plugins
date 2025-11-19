@@ -23,7 +23,7 @@ type PageProps = {
 export type MDXModule = {
   default: React.ComponentType;
   toc: Toc;
-  metadata?: {
+  frontmatter?: {
     title?: string;
     description?: string;
   };
@@ -73,8 +73,8 @@ export async function generateMetadata({
   const seoMetadata = await getSeoMetadata(pathname, locale);
 
   return {
-    title: mdxModule.metadata?.title,
-    description: mdxModule.metadata?.description,
+    title: mdxModule.frontmatter?.title,
+    description: mdxModule.frontmatter?.description,
     ...seoMetadata,
   } as Metadata;
 }

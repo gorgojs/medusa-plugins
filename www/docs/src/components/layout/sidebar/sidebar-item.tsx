@@ -20,6 +20,7 @@ type SidebarItemProps = {
   title: LocalizedString | string;
   items?: (SidebarItemType | SidebarType)[];
   basePath?: string;
+  onNavigate: () => void;
   isOverview?: boolean;
   hasOverview?: boolean;
 };
@@ -29,6 +30,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   slug,
   icon,
   title,
+  onNavigate,
   items: children = [],
   basePath = "",
   hasOverview = false,
@@ -54,7 +56,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           <div
             className={cn(
               "flex items-center justify-start text-start w-full txt-compact-small-plus text-ui-fg-subtle h-[28px] my-3 group cursor-pointer opacity-60 hover:opacity-100 transition-opacity",
-              pathname.startsWith(href) && "opacity-100"
+              pathname.startsWith(href) && "opacity-100",
             )}
           >
             {icon && (
@@ -78,6 +80,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             <SidebarItem
               key={`overview-${slug}`}
               slug={slug}
+              onNavigate={onNavigate}
               title={overviewTitle}
               basePath={basePath}
             />
@@ -85,6 +88,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           {children.map((child) => {
             return (
               <SidebarItem
+                onNavigate={onNavigate}
                 level={
                   "isSection" in child
                     ? child.isSection === true
@@ -113,7 +117,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           size="small"
           asChild
         >
-          <Link href={href} suppressHydrationWarning>
+          <Link href={href} onNavigate={onNavigate} suppressHydrationWarning>
             {displayTitle}
           </Link>
         </Button>
@@ -132,6 +136,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                       : level + 1
                     : level + 1
                 }
+                onNavigate={onNavigate}
                 key={child.slug}
                 basePath={`${basePath}/${slug}`}
                 hasOverview={"hasOverview" in child && child.hasOverview}
@@ -177,6 +182,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                         : level + 1
                       : level + 1
                   }
+                  onNavigate={onNavigate}
                   key={child.slug}
                   {...child}
                   basePath={`${basePath}/${slug}`}
@@ -197,7 +203,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           size="small"
           asChild
         >
-          <Link href={href} suppressHydrationWarning>
+          <Link href={href} onNavigate={onNavigate} suppressHydrationWarning>
             {displayTitle}
             {hasChildren && (
               <TriangleDownMini
@@ -223,6 +229,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                       : level + 1
                     : level + 1
                 }
+                onNavigate={onNavigate}
                 key={child.slug}
                 {...child}
                 basePath={`${basePath}/${slug}`}

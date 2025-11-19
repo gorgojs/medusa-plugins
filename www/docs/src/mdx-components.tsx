@@ -1,88 +1,47 @@
 import { Table } from "@medusajs/ui";
-import slugify from "@sindresorhus/slugify";
 import type { MDXComponents } from "mdx/types";
 import { CodeMdx } from "@/components/mdx/code-mdx";
 import HeadingLink from "./components/mdx/heading-link";
 
-const generateId = (text: string) => {
-  return slugify(text);
-};
-
 const components: MDXComponents = {
   h1: ({ children, className, ...props }) => {
-    const text = Array.isArray(children) ? children.join("") : String(children);
     return (
-      <HeadingLink
-        id={generateId(text)}
-        Heading="h1"
-        className={className}
-        {...props}
-      >
+      <HeadingLink Heading="h1" className={className} {...props}>
         {children}
       </HeadingLink>
     );
   },
   h2: ({ children, className, ...props }) => {
-    const text = Array.isArray(children) ? children.join("") : String(children);
     return (
-      <HeadingLink
-        id={generateId(text)}
-        Heading="h2"
-        className={className}
-        {...props}
-      >
+      <HeadingLink Heading="h2" className={className} {...props}>
         {children}
       </HeadingLink>
     );
   },
   h3: ({ children, className, ...props }) => {
-    const text = Array.isArray(children) ? children.join("") : String(children);
     return (
-      <HeadingLink
-        id={generateId(text)}
-        Heading="h3"
-        className={className}
-        {...props}
-      >
+      <HeadingLink Heading="h3" className={className} {...props}>
         {children}
       </HeadingLink>
     );
   },
   h4: ({ children, className, ...props }) => {
-    const text = Array.isArray(children) ? children.join("") : String(children);
     return (
-      <HeadingLink
-        id={generateId(text)}
-        Heading="h4"
-        className={className}
-        {...props}
-      >
+      <HeadingLink Heading="h4" className={className} {...props}>
         {children}
       </HeadingLink>
     );
   },
   h5: ({ children, className, ...props }) => {
-    const text = Array.isArray(children) ? children.join("") : String(children);
     return (
-      <HeadingLink
-        id={generateId(text)}
-        Heading="h5"
-        className={className}
-        {...props}
-      >
+      <HeadingLink Heading="h5" className={className} {...props}>
         {children}
       </HeadingLink>
     );
   },
   h6: ({ children, className, ...props }) => {
-    const text = Array.isArray(children) ? children.join("") : String(children);
     return (
-      <HeadingLink
-        id={generateId(text)}
-        Heading="h6"
-        className={className}
-        {...props}
-      >
+      <HeadingLink Heading="h6" className={className} {...props}>
         {children}
       </HeadingLink>
     );
@@ -90,7 +49,7 @@ const components: MDXComponents = {
 
   // table
   table: ({ children }) => (
-    <div className="overflow-x-auto border-x rounded-md not-prose ">
+    <div className="overflow-x-auto border-x rounded-md not-prose">
       <Table className="table-auto min-w-xl">{children}</Table>
     </div>
   ),
