@@ -7,7 +7,7 @@ export const POST = async (
 ) => {
 
   const response = await syncProductsMarketplaceWorkflow(req.scope).run({
-    input: [],
+    input: {},
   })
   res.json(response.result)
 }

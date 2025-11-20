@@ -3,6 +3,7 @@ import {
   WorkflowResponse
 } from "@medusajs/framework/workflows-sdk"
 import {
+  importProductsStep,
   logMarketplaceEventStep
 } from "../steps"
 
@@ -13,8 +14,10 @@ export type ImportProductsMarketplaceWorkflowInput = {
 export const importProductsMarketplaceWorkflow = createWorkflow(
   "import-products-marketplace",
   (input: ImportProductsMarketplaceWorkflowInput) => {
-    // ... steps
-    const result = logMarketplaceEventStep({})
+    
+    const importResult = importProductsStep()
+    
+    const result = logMarketplaceEventStep(importResult)
 
     return new WorkflowResponse(result)
   }

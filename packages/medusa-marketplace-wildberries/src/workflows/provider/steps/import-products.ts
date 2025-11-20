@@ -1,6 +1,5 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { batchProductsWorkflow, batchProductVariantsWorkflow } from "@medusajs/medusa/core-flows"
-import { ContentV2GetCardsListPost200ResponseCardsInner } from "../../../lib/wildberries-products-client"
 import { productApi } from "../../../lib/wildberries-client"
 
 export const importProductsStepId = "import-products"
@@ -8,8 +7,10 @@ export const importProductsStepId = "import-products"
 export const importProductsStep = createStep(
   importProductsStepId,
   async (_, { container }) => {
-    const logger = container.resolve("logger")
     const query = container.resolve("query")
+
+    const updatedVariantsIds: string[] = []
+    const updatedProductsIds: string[] = []
 
     const limit = 100
     let body = {
@@ -85,8 +86,16 @@ export const importProductsStep = createStep(
           )
         }
       })
+
+      updatedVariantsIds.push(...variantsUpdateResult.map(variant => variant.id))
+      updatedProductsIds.push(...productUpdateResult.map(product => product.id))
     } while (total === limit)
 
-    return new StepResponse()
+    const result = {
+      updatedProductsIds,
+      updatedVariantsIds,
+    }
+    
+    return new StepResponse(result)
   }
 )

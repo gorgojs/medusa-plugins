@@ -5,7 +5,7 @@ export default async function (container: MedusaContainer) {
   const logger = container.resolve("logger")
 
   const { result } = await syncProductsMarketplaceWorkflow(container).run({
-    input: [],
+    input: {},
   })
   logger.info(`Exported products to Wildberries: ${JSON.stringify(result, null, 2)}`)
 }

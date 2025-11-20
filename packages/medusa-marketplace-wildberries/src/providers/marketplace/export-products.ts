@@ -1,9 +1,10 @@
-import { getProductsMarketplaceWorkflow } from "../../workflows/provider"
+import { MedusaContainer } from "@medusajs/framework"
+import { exportProductsMarketplaceWorkflow } from "../../workflows/provider"
 
 type ExportProductsInput = any
 
-export const exportProducts = async (input: ExportProductsInput) => {
-  const products = await getProductsMarketplaceWorkflow().run({ input })
+export const exportProducts = async (input: ExportProductsInput, container?: MedusaContainer) => {
+  const { result } = await exportProductsMarketplaceWorkflow(container).run({ input })
   
-  return products
+  return result
 }
