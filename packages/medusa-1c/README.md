@@ -34,7 +34,6 @@
 ## Status
 
 🚧 Work in progress, see the [Roadmap](#roadmap).  
-A stable release is expected around September.
 
 ## 💬 1C:Enterprise Plugin Support Chat
 
