@@ -1,5 +1,11 @@
 # @gorgo/medusa-1c
 
+## 0.0.12
+
+### Patch Changes
+
+- Update readme
+
 ## 0.0.11
 
 ### Patch Changes
