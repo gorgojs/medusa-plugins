@@ -2,13 +2,10 @@ import {
   createStep,
   StepResponse
 } from "@medusajs/workflows-sdk"
-import {
-  ProductDTO,
-} from "@medusajs/framework/types"
 
-import { mapProductsToMarketplace } from "../../../lib"
+import { mapProductsToMarketplace } from "../../../providers/marketplace"
 
-export type MapProductsStepInput = ProductDTO[]
+export type MapProductsStepInput = any
 
 export const mapProductsStep = createStep(
   "map-products",

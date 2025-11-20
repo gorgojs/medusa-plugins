@@ -6,8 +6,7 @@ import {
 import {
   getProductsStep,
   mapProductsStep,
-  exportProductsStep,
-  createExportStep
+  exportProductsStep
 } from "../steps"
 
 export type exportProductsWorkflowInput = {
@@ -22,16 +21,6 @@ export const exportProductsMarketplaceWorkflow = createWorkflow(
     const marketplaceProducts = mapProductsStep(products)
     const exportResult = exportProductsStep(marketplaceProducts)
 
-    const result = when(
-      exportResult, 
-      (input) => {
-        return !!input.task_id
-      }
-    ).then(() => {
-      return createExportStep(exportResult)
-    })
-
-    // TODO: define proper output
-    return new WorkflowResponse(result && {})
+    return new WorkflowResponse(exportResult)
   }
 )
