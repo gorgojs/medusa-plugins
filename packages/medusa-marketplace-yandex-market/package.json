@@ -35,29 +35,23 @@
     "predev": "medusa plugin:publish"
   },
   "dependencies": {
-    "axios": "^1.13.1"
+    "axios": "^1.13.2",
+    "axios-rate-limit": "^1.4.0",
+    "axios-retry": "^4.5.0"
   },
   "devDependencies": {
-    "@medusajs/admin-sdk": "2.4.0",
-    "@medusajs/cli": "2.4.0",
-    "@medusajs/framework": "2.4.0",
-    "@medusajs/icons": "2.4.0",
-    "@medusajs/medusa": "2.4.0",
-    "@medusajs/test-utils": "2.4.0",
-    "@medusajs/ui": "4.0.4",
-    "@mikro-orm/cli": "6.4.3",
-    "@mikro-orm/core": "6.4.3",
-    "@mikro-orm/knex": "6.4.3",
-    "@mikro-orm/migrations": "6.4.3",
-    "@mikro-orm/postgresql": "6.4.3",
+    "@medusajs/admin-sdk": "^2.11.2",
+    "@medusajs/cli": "^2.11.2",
+    "@medusajs/framework": "^2.11.2",
+    "@medusajs/icons": "^2.11.2",
+    "@medusajs/medusa": "^2.11.2",
+    "@medusajs/test-utils": "^2.11.2",
+    "@medusajs/ui": "^4.0.25",
     "@openapitools/openapi-generator-cli": "^2.25.0",
-    "@redocly/cli": "^2.11.1",
-    "@swc/core": "1.5.7",
+    "@swc/core": "^1.5.7",
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.2.25",
-    "awilix": "^8.0.1",
-    "pg": "^8.13.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -67,20 +61,13 @@
     "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
-    "@medusajs/admin-sdk": "2.4.0",
-    "@medusajs/cli": "2.4.0",
-    "@medusajs/framework": "2.4.0",
-    "@medusajs/icons": "2.4.0",
-    "@medusajs/medusa": "2.4.0",
-    "@medusajs/test-utils": "2.4.0",
-    "@medusajs/ui": "4.0.3",
-    "@mikro-orm/cli": "6.4.3",
-    "@mikro-orm/core": "6.4.3",
-    "@mikro-orm/knex": "6.4.3",
-    "@mikro-orm/migrations": "6.4.3",
-    "@mikro-orm/postgresql": "6.4.3",
-    "awilix": "^8.0.1",
-    "pg": "^8.13.0"
+    "@medusajs/admin-sdk": "^2.11.2",
+    "@medusajs/cli": "^2.11.2",
+    "@medusajs/framework": "^2.11.2",
+    "@medusajs/icons": "^2.11.2",
+    "@medusajs/medusa": "^2.11.2",
+    "@medusajs/test-utils": "^2.11.2",
+    "@medusajs/ui": "^4.0.25"
   },
   "engines": {
     "node": ">=20"
