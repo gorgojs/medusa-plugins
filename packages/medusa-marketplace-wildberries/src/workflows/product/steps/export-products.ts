@@ -10,8 +10,8 @@ export type ExportProductsStepInput = any
 export const exportProductsStep = createStep(
   "export-products",
   async (input: ExportProductsStepInput, { container }) => {
-    const result = exportProducts(input, container)
-    
+    const result = await exportProducts(input, container)
+
     return new StepResponse(result)
   }, 
   // 
