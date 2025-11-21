@@ -4,19 +4,19 @@ import type {
 } from "@medusajs/framework/types"
 import { Modules } from "@medusajs/framework/utils"
 
-export type GetProductsStepInput = {
+export type GetProductsInput = {
   ids?: string[]
 }
 
-export const getProducts = async (data: GetProductsStepInput, container: MedusaContainer) => {
+export const getProducts = async (input: GetProductsInput, container: MedusaContainer) => {
   const service = container.resolve<IProductModuleService>(Modules.PRODUCT)
 
-  if (!data.ids?.length) {
+  if (!input.ids?.length) {
     console.log("empty array")
   }
 
   const products = await service.listProducts(
-    { id: data.ids },
+    { id: input.ids },
     { relations: ["variants"] }
   )
   return products

@@ -1,10 +1,10 @@
 import { MedusaContainer } from "@medusajs/framework/types"
-import { checkProductsStatusesWorkflow } from "../workflows"
+import { updateMarketplaceProductsStatusWorkflow } from "../workflows"
 
 export default async function (container: MedusaContainer) {
   const logger = container.resolve("logger")
 
-  const { result } = await checkProductsStatusesWorkflow(container).run({
+  const { result } = await updateMarketplaceProductsStatusWorkflow(container).run({
     input: { ids: [] },
   })
   logger.info(`Ozon import: result=${JSON.stringify(result)}`)
