@@ -4,7 +4,7 @@ import { importProducts } from "../../../providers/marketplace";
 export const importProductsStep = createStep(
   "import-products",
   async (_, { container }) => {
-    const result = importProducts(container)
+    const result = await importProducts(container)
 
     return new StepResponse(result)
   }

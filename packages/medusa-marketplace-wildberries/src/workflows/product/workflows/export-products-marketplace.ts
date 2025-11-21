@@ -7,6 +7,7 @@ import {
   mapProductsStep,
   exportProductsStep,
 } from "../steps"
+import { logMarketplaceEventWorkflow } from "../../marketplace-event"
 
 export type ExportProductsMarketplaceWorkflowInput = {
   ids?: string[]
@@ -19,11 +20,21 @@ export const exportProductsMarketplaceWorkflow = createWorkflow(
   (input: ExportProductsMarketplaceWorkflowInput) => {
     const products = getProductsStep(input)
     const marketplaceProducts = mapProductsStep(products)
-    // const startedAt = Date.now()
-    const result = exportProductsStep(marketplaceProducts)
-    // run logMarketplaceEventWorkflow as step with startedAt and transformed result
+    const startedAt = new Date()
+    const exportResult = exportProductsStep(marketplaceProducts)
+    const logResult = logMarketplaceEventWorkflow.runAsStep({
+      input: {
+        startedAt,
+        finishedAt: new Date(),
+        action: "UPDATE",
+        direction: "MEDUSA_TO_MARKETPLACE",
+        entityType: "PRODUCT",
+        requestData: input,
+        responseData: exportResult
+      }
+    })
 
     // TODO: define proper output
-    return new WorkflowResponse(result)
+    return new WorkflowResponse(exportResult)
   }
 )
