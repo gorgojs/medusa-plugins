@@ -1,13 +1,13 @@
 import {
   createWorkflow,
-  WorkflowResponse,
-  when
+  WorkflowResponse
 } from "@medusajs/workflows-sdk"
 import {
   getProductsStep,
   mapProductsStep,
   exportProductsStep
 } from "../steps"
+import { logMarketplaceEventWorkflow } from "../../marketplace-event"
 
 export type exportProductsWorkflowInput = {
   ids: string[]
@@ -16,10 +16,21 @@ export type exportProductsWorkflowInput = {
 export const exportProductsMarketplaceWorkflow = createWorkflow(
   "export-products-marketplace",
   (input: exportProductsWorkflowInput) => {
-    const productIds =["prod_01K9PTDX802H71HFPK6MN7JVAF", "prod_01K9PTDX80EN7WAYR8HMH0QGR2"]
-    const products = getProductsStep({ids: productIds})
+    const products = getProductsStep(input)
     const marketplaceProducts = mapProductsStep(products)
+    const startedAt = new Date()
     const exportResult = exportProductsStep(marketplaceProducts)
+    const logResult = logMarketplaceEventWorkflow.runAsStep({
+      input: {
+        startedAt,
+        finishedAt: new Date(),
+        action: "UPDATE",
+        direction: "MEDUSA_TO_MARKETPLACE",
+        entityType: "PRODUCT",
+        requestData: input,
+        responseData: exportResult as unknown as Record<string, unknown>,
+      }
+    })
 
     return new WorkflowResponse(exportResult)
   }
