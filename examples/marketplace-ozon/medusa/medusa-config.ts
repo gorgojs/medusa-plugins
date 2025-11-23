@@ -21,6 +21,10 @@ module.exports = defineConfig({
     {
       resolve: "@gorgo/medusa-marketplace-ozon/modules/ozon-export",
       options: {},
+    },
+    {
+      resolve: "@gorgo/medusa-marketplace-ozon/modules/marketplace",
+      options: {},
     }
   ],
   plugins: [
