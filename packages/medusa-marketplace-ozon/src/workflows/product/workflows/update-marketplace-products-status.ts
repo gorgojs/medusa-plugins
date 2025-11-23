@@ -19,6 +19,6 @@ export const updateMarketplaceProductsStatusWorkflow = createWorkflow(
     const marketplaceProductsStatus = getMarketplaceProductsStatusStep(products)
     const result = updateMarketplaceProductsStatusStep(marketplaceProductsStatus)
 
-    return new WorkflowResponse(result)
+    return new WorkflowResponse(marketplaceProductsStatus)
   }
 )

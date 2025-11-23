@@ -122,7 +122,7 @@
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_ozon_export_task_id_unique\" ON \"ozon_export\" (task_id) WHERE deleted_at IS NULL"
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_ozon_export_task_id_unique\" ON \"ozon_export\" (\"task_id\") WHERE deleted_at IS NULL"
         },
         {
           "keyName": "IDX_ozon_export_task_id",
@@ -131,7 +131,7 @@
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_ozon_export_task_id\" ON \"ozon_export\" (task_id) WHERE deleted_at IS NULL"
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_ozon_export_task_id\" ON \"ozon_export\" (\"task_id\") WHERE deleted_at IS NULL"
         },
         {
           "keyName": "IDX_ozon_export_deleted_at",
@@ -140,7 +140,7 @@
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_ozon_export_deleted_at\" ON \"ozon_export\" (deleted_at) WHERE deleted_at IS NULL"
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_ozon_export_deleted_at\" ON \"ozon_export\" (\"deleted_at\") WHERE deleted_at IS NULL"
         },
         {
           "keyName": "ozon_export_pkey",

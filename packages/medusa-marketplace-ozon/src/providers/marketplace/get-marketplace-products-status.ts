@@ -1,23 +1,39 @@
-
 import { productApi, withAuth } from "../../lib/ozon-client"
-import { V3GetProductInfoListRequest } from "../../lib/ozon-seller-api";
+import {
+  V3GetProductInfoListRequest,
+  Productv3GetProductListRequest,
+} from "../../lib/ozon-seller-api"
 
 export type GetMarketplaceProductsStatusInput = any
 
 export const getMarketplaceProductsStatus = async (input: GetMarketplaceProductsStatusInput) => {
-  // TODO: use input to map data necessary for request, ex:
-  /*
+  const productsFromMarketplace = await productApi.productAPIGetProductList(
+    withAuth({
+      productv3GetProductListRequest: {
+        filter: {
+          visibility: "ALL",
+        },
+        limit: 100,
+      } as Productv3GetProductListRequest,
+    })
+  )
+
+  const items = productsFromMarketplace.data.result!.items
   const offerIds: string[] = []
-  input.items.forEach((element) => {
-    offerIds.push(element.offer_id)
+
+  items!.forEach((item: any) => {
+    if (item.offer_id) {
+      offerIds.push(item.offer_id)
+    }
   })
-  */
-  const offerIds = input as V3GetProductInfoListRequest['offer_id']
 
-  const products = await productApi.productAPIGetProductInfoList(withAuth({
-    v3GetProductInfoListRequest: { "offer_id": offerIds }
-  }))
+  const products = await productApi.productAPIGetProductInfoList(
+    withAuth({
+      v3GetProductInfoListRequest: {
+        offer_id: offerIds,
+      } as V3GetProductInfoListRequest,
+    })
+  )
 
-  return products
+  return products.data
 }
-
