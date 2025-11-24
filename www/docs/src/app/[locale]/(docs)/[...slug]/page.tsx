@@ -10,7 +10,6 @@ import ScrollToTop from "@/components/layout/scroll-to-top";
 import Sidebar from "@/components/layout/sidebar";
 import TableOfContents from "@/components/layout/toc";
 import { routing } from "@/i18n/routing";
-import { getSeoMetadata } from "@/lib/seo";
 import { getAllSidebarPaths, getCurrentSidebar } from "@/lib/sidebar";
 
 type PageProps = {
@@ -69,13 +68,9 @@ export async function generateMetadata({
     return {};
   }
 
-  const pathname = `/${locale}${slug ? `/${slug.join("/")}` : ""}`;
-  const seoMetadata = await getSeoMetadata(pathname, locale);
-
   return {
     title: mdxModule.frontmatter?.title,
     description: mdxModule.frontmatter?.description,
-    ...seoMetadata,
   } as Metadata;
 }
 

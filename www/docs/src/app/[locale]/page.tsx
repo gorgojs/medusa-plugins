@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Hero from "@/components/landing/hero";
 import { PluginsSection } from "@/components/landing/plugins-section";
 import { pluginCategories } from "@/data/landing";
-import { getSeoMetadata } from "@/lib/seo";
 import type { Locale } from "@/types";
 
 type Props = {
@@ -19,14 +18,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     keywords: ["medusa", "plugins", "ecommerce", "documentation", locale],
   };
 
-  const pathname = "/";
-  const seoMetadata = await getSeoMetadata(pathname, locale);
-
   return {
     title: defaultMetadata.title,
     description: defaultMetadata.description,
     keywords: defaultMetadata.keywords,
-    ...seoMetadata,
   } as Metadata;
 }
 
