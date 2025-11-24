@@ -1,1 +1,4 @@
-export { mapToApishipOrderRequest } from "./mapping"
+export { 
+    mapToApishipOrderRequest,
+    mapToApishipCalculatorRequest 
+} from "./mapping"

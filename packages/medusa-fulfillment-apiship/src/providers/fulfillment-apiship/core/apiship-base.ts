@@ -17,11 +17,12 @@ import {
   OrdersService,
   OrderDocsService,
   ListsService,
+  CalculatorService,
   type TariffObject,
   type OrderReturnRequest,
 } from "../../../apiship-client"
 import { ApishipOptions } from "../types"
-import { mapToApishipOrderRequest } from "../utils"
+import { mapToApishipOrderRequest, mapToApishipCalculatorRequest } from "../utils"
 import { getStockLocationWorkflow } from "../../../workflows/get-stock-location"
 import { getShippingOptionWorkflow } from "../../../workflows/get-shipping-option"
 type InjectedDependencies = {
@@ -68,7 +69,18 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     data: CalculateShippingOptionPriceDTO["data"],
     context: CalculateShippingOptionPriceDTO["context"]
   ): Promise<CalculatedShippingOptionPrice> {
-    const price = 100
+    this.logger_.debug(`Apiship.calculatePrice input: ${JSON.stringify({ optionData, data, context }, null, 2)}`)
+    const calculatorRequest = mapToApishipCalculatorRequest(
+      optionData,
+      data,
+      context
+    )
+    this.logger_.debug(`calculatorRequest: ${JSON.stringify(calculatorRequest, null, 2)}`)
+    const response = await CalculatorService.getCalculator(
+      calculatorRequest
+    )
+    this.logger_.debug(`calculatorResponse: ${JSON.stringify(response, null, 2)}`)
+    const price = 193
     return {
       calculated_amount: price,
       is_calculated_price_tax_inclusive: true,
@@ -105,9 +117,6 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       })
     const providerKey = shippingOption.data?.providerKey as string
     const isCod = shippingOption.data?.isCod as boolean
-    console.log("providerKey --------", providerKey)
-    console.log("isCod --------", isCod)
-      
 
     // TODO: pick tariffId based on order data (inculing shipping address)
     const tariffId = await this.pickTariffId("cdek")
