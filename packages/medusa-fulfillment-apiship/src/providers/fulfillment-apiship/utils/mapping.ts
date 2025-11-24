@@ -2,10 +2,13 @@ import {
   FulfillmentDTO,
   FulfillmentItemDTO,
   FulfillmentOrderDTO,
-  StockLocationDTO
+  StockLocationDTO,
+  CalculateShippingOptionPriceDTO
 } from "@medusajs/framework/types"
 import {
   type OrderRequest,
+  type OrderReturnRequest,
+  type CalculatorRequest
 } from "../../../apiship-client"
 
 const ITEM_LENGTH = 10
@@ -124,11 +127,11 @@ export function mapToApishipOrderRequest(
     deliveryCostVat: -1,
     codCost,
     assessedCost,
-    // TODO: in example DeliveryPayedByRecipient always
+    // TODO: in example DeliveryPayedByRecipient always false
     isDeliveryPayedByRecipient: isCod ? true : false,
     // TODO: in example there is no paymentMethod at all
-    ...(isCod ? {paymentMethod: 3} : {}),
-    ...(isCod ? {deliveryCost} : {}),
+    ...(isCod ? { paymentMethod: 3 } : {}),
+    ...(isCod ? { deliveryCost } : {}),
   }
 
   const apishipOrder: OrderRequest = {
@@ -148,3 +151,91 @@ export function mapToApishipOrderRequest(
   }
   return apishipOrder
 }
+
+export function mapToApishipCalculatorRequest(
+  optionData: CalculateShippingOptionPriceDTO["optionData"],
+  data: CalculateShippingOptionPriceDTO["data"],
+  context: CalculateShippingOptionPriceDTO["context"]
+): CalculatorRequest {
+  const shippingAddress = context.shipping_address!
+  const toAddress = {
+    countryCode: shippingAddress.country_code!.toUpperCase(),
+    index: shippingAddress?.postal_code,
+    cityGuid: "0c5b2444-70a0-4932-980c-b4dc0d3f02b5",
+    addressString: [
+      shippingAddress.city,
+      shippingAddress.address_1,
+      shippingAddress.address_2,
+    ].filter(Boolean).join(", "),
+    region: shippingAddress.province!,
+    city: shippingAddress.city!,
+  }
+
+  const stockLocationAddress = context.from_location!.address!
+  const fromAddress = {
+    countryCode: stockLocationAddress.country_code.toUpperCase(),
+    index: stockLocationAddress.postal_code!,
+    cityGuid: "0c5b2444-70a0-4932-980c-b4dc0d3f02b5",
+    addressString: [
+      stockLocationAddress.city,
+      stockLocationAddress.address_1,
+      stockLocationAddress.address_2,
+    ].filter(Boolean).join(", "),
+    region: stockLocationAddress.province!,
+    city: stockLocationAddress.city!,
+  }
+
+  const places = context.items.flatMap((item) => {
+    const weight = (item as any).variant.weight as number || ITEM_WEIGHT
+    const height = (item as any).variant.height as number || ITEM_HEIGHT
+    const length = (item as any).variant.length as number || ITEM_LENGTH
+    const width = (item as any).variant.width as number || ITEM_WIDTH
+    const quantity = item.quantity as number
+    return Array.from({ length: quantity }, () => ({
+      height,
+      length,
+      width,
+      weight,
+    }))
+  })
+
+  const pickupTypes = [optionData.pickupType as number]
+  const deliveryTypes = [optionData.deliveryType as number]
+
+  const assessedCost = context.items.reduce((sum, item) => {
+    const unitPrice = item.unit_price as number
+    const quantity = item.quantity as number
+    return sum + unitPrice * quantity 
+  }, 0)
+  const codCost = assessedCost
+  const includeFees = false
+
+  const calculatorRequest: CalculatorRequest = {
+    to: toAddress,
+    from: fromAddress,
+    places,
+    pickupTypes,
+    deliveryTypes,
+    assessedCost,
+    codCost,
+    includeFees,
+  }
+  return calculatorRequest
+}
+
+
+
+// export function mapToApishipOrderRequest(
+//   fulfillment: Record<string, unknown>
+// ): OrderReturnRequest {
+//   const order = {
+//     clientNumber: 
+
+//   }
+
+
+
+//   const apishipReturnOrder: OrderReturnRequest = {
+
+//   }
+// }

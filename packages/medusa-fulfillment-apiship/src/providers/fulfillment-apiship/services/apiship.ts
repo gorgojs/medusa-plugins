@@ -13,8 +13,20 @@ class ApishipService extends ApishipBase {
     // TODO: fetch real options from Apiship API and Medusa Admin
     return [
       {
-        id: "apiship_standard",
-        name: "Apiship Fulfillment (CDEK Standard)",
+        id: "apiship_1",
+        deliveryType: 1,
+        pickupType: 1,
+        name: "До двери (ApiShip)",
+        description: "Доставка груза до двери клиента",
+        providerKey: "cdek",
+        isCod: false
+      },
+      {
+        id: "apiship_2",
+        deliveryType: 2,
+        pickupType: 1,
+        name: "До ПВЗ (ApiShip)",
+        description: "Доставка груза до пункта выдачи",
         providerKey: "cdek",
         isCod: false
       },
@@ -24,7 +36,6 @@ class ApishipService extends ApishipBase {
         is_return: true,
       }
     ]
-
   }
 }
 
