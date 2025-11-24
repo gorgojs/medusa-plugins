@@ -4,6 +4,7 @@ import { locales } from "@/types";
 export const routing = defineRouting({
   locales: locales,
   defaultLocale: "en",
+  alternateLinks: false,
   domains: [
     {
       domain: "docs.gorgojs.com",
