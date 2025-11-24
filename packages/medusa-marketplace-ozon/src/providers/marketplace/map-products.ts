@@ -70,3 +70,11 @@ export const mapProductsToMarketplace = (products: ProductDTO[]): V3ImportProduc
 
   return marketplaceProducts
 }
+
+
+export const mapProductsToMedusa = (marketplaceProducts: V3ImportProductsRequestItem[]): ProductDTO[] => {
+  // This is a mock implementation. Replace with actual mapping logic.
+  const products = [] as ProductDTO[]
+  // Save Ozon ids to product/product.variant metadata
+  return products
+}

@@ -2,8 +2,6 @@ import { MedusaService } from "@medusajs/framework/utils"
 import Marketplace from "./models/marketplace"
 import MarketplaceEvent from "./models/marketplace-event"
 
-export const DEFAULT_MARKETPLACE_ID = process.env.DEFAULT_MARKETPLACE_ID as string
-
 export type LogEventInput = {
   correlationId?: string,
   direction: "MEDUSA_TO_MARKETPLACE" | "MARKETPLACE_TO_MEDUSA",
@@ -21,7 +19,7 @@ class MarketplaceModuleService extends MedusaService({
 
   async logEvent(input: LogEventInput) {
     const result = await this.createMarketplaceEvents({
-      marketplace_id: DEFAULT_MARKETPLACE_ID,
+      marketplace_id: "ozon",
       correlation_id: input.correlationId,
       direction: input.direction,
       entity_type: input.entityType,
@@ -31,7 +29,6 @@ class MarketplaceModuleService extends MedusaService({
       request_data: input.requestData,
       response_data: input.responseData
     })
-    console.log("DEFAULT_MARKETPLACE_ID =", DEFAULT_MARKETPLACE_ID)
     return result.id
   }
 }
