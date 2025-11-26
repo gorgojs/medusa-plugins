@@ -9,15 +9,15 @@ import {
 } from "../steps"
 import { logMarketplaceEventWorkflow } from "../../marketplace-event"
 
-export type ExportProductsMarketplaceWorkflowInput = {
+export type ExportMarketplaceProductsWorkflowInput = {
   ids?: string[]
 }
 
-export const exportProductsMarketplaceWorkflowId = "export-products-marketplace"
+export const exportMarketplaceProductsWorkflowId = "export-marketplace-products"
 
-export const exportProductsMarketplaceWorkflow = createWorkflow(
-  exportProductsMarketplaceWorkflowId,
-  (input: ExportProductsMarketplaceWorkflowInput) => {
+export const exportMarketplaceProductsWorkflow = createWorkflow(
+  exportMarketplaceProductsWorkflowId,
+  (input: ExportMarketplaceProductsWorkflowInput) => {
     const products = getProductsStep(input)
     const marketplaceProducts = mapProductsStep(products)
     const startedAt = new Date()

@@ -7,13 +7,13 @@ import {
 } from "../steps"
 import { logMarketplaceEventWorkflow } from "../../marketplace-event"
 
-export type ImportProductsMarketplaceWorkflowInput = {
+export type ImportMarketplaceProductsWorkflowInput = {
   ids?: String[]
 }
 
-export const importProductsMarketplaceWorkflow = createWorkflow(
-  "import-products-marketplace",
-  (input: ImportProductsMarketplaceWorkflowInput) => {
+export const importMarketplaceProductsWorkflow = createWorkflow(
+  "import-marketplace-products",
+  (input: ImportMarketplaceProductsWorkflowInput) => {
     
     const startedAt = new Date()
     const importResult = importProductsStep()

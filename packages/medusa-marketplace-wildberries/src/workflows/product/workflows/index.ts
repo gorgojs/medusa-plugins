@@ -1,3 +1,3 @@
-export * from "./sync-products-marketplace"
-export * from "./import-products-marketplace"
-export * from "./export-products-marketplace"
+export * from "./sync-marketplace-products"
+export * from "./import-marketplace-products"
+export * from "./export-marketplace-products"
