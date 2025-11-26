@@ -12,7 +12,7 @@ export type GetProductsStepInput = {
 export const getProductsStep = createStep(
   "get-products",
   async (input: GetProductsStepInput, { container }) => {
-    const products = getProducts(input, container)
+    const products = await getProducts(input, container)
     
     return new StepResponse(products)
   }

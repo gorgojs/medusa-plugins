@@ -1,12 +1,23 @@
 import { MedusaContainer } from "@medusajs/framework"
-import { getProductsMarketplaceWorkflow } from "../../workflows/provider"
 
 type GetProductsInput = {
   ids?: string[]
 }
 
-export const getProducts = async (input: GetProductsInput, container?: MedusaContainer) => {
-  const { result } = await getProductsMarketplaceWorkflow(container).run({ input })
+export const getProducts = async (input: GetProductsInput, container: MedusaContainer) => {
+    const query = await container.resolve("query")
+
+    const { data: products } = await query.graph({
+      entity: "product",
+      fields: [
+        "*",
+        "variants.*"
+      ],
+      filters: {
+        id: input.ids?.length ? input.ids : undefined,
+        status: "published"
+      },
+    })
   
-  return result
+  return products
 }

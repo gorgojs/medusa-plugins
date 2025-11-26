@@ -13,6 +13,5 @@ export const exportProductsStep = createStep(
     const result = await exportProducts(input, container)
 
     return new StepResponse(result)
-  }, 
-  // 
+  }
 )
