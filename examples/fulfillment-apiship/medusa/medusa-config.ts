@@ -25,7 +25,7 @@ module.exports = defineConfig({
               email: "test",
               password: "test",
               token: process.env.APISHIP_TOKEN,
-              isTest: true,
+              isTest: false,
             },
           },
         ],
