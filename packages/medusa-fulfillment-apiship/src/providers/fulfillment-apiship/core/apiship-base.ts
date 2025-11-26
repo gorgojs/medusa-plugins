@@ -22,9 +22,15 @@ import {
   type OrderReturnRequest,
 } from "../../../apiship-client"
 import { ApishipOptions } from "../types"
-import { mapToApishipOrderRequest, mapToApishipCalculatorRequest } from "../utils"
-import { getStockLocationWorkflow } from "../../../workflows/get-stock-location"
-import { getShippingOptionWorkflow } from "../../../workflows/get-shipping-option"
+import { 
+  getCheapestTariff,
+  mapToApishipOrderRequest,
+  mapToApishipCalculatorRequest } from "../utils"
+import { 
+  getShippingOptionWorkflow,
+  getStockLocationWorkflow,
+  saveCalculationRequestWorkflow 
+} from "../../../workflows"
 type InjectedDependencies = {
   logger: Logger
 }
@@ -75,16 +81,28 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       data,
       context
     )
-    this.logger_.debug(`calculatorRequest: ${JSON.stringify(calculatorRequest, null, 2)}`)
+    const cartId = context.cartId! as string
     const response = await CalculatorService.getCalculator(
       calculatorRequest
     )
-    this.logger_.debug(`calculatorResponse: ${JSON.stringify(response, null, 2)}`)
-    const price = 193
-    return {
+    await saveCalculationRequestWorkflow().run({
+      input: {
+        cartId: cartId,
+        data: response,
+      }
+    })
+    const cheapestTariff = getCheapestTariff(
+      response,
+      optionData.deliveryType! as number
+    )
+    const price = cheapestTariff.deliveryCost as number
+    const result = {
       calculated_amount: price,
       is_calculated_price_tax_inclusive: true,
     }
+    this.logger_.debug(`ApiShip calculatorResponse: ${JSON.stringify(response, null, 2)}`)
+    this.logger_.debug(`Apiship.calculatePrice output: ${JSON.stringify(result, null, 2)}`)
+    return result
   }
 
   async canCalculate(data: CreateShippingOptionDTO): Promise<boolean> {

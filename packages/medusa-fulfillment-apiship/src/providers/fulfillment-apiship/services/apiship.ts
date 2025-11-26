@@ -13,19 +13,37 @@ class ApishipService extends ApishipBase {
     // TODO: fetch real options from Apiship API and Medusa Admin
     return [
       {
-        id: "apiship_1",
+        id: "apiship_doortodoor",
         deliveryType: 1,
         pickupType: 1,
-        name: "До двери (ApiShip)",
+        name: "От двери до двери",
         description: "Доставка груза до двери клиента",
         providerKey: "cdek",
         isCod: false
       },
       {
-        id: "apiship_2",
+        id: "apiship_doortopoint",
         deliveryType: 2,
         pickupType: 1,
-        name: "До ПВЗ (ApiShip)",
+        name: "От двери до ПВЗ",
+        description: "Доставка груза до пункта выдачи",
+        providerKey: "cdek",
+        isCod: false
+      },
+      {
+        id: "apiship_pointtodoor",
+        deliveryType: 1,
+        pickupType: 2,
+        name: "От ПВЗ до двери",
+        description: "Доставка груза до пункта выдачи",
+        providerKey: "cdek",
+        isCod: false
+      },
+      {
+        id: "apiship_pointtopoint",
+        deliveryType: 2,
+        pickupType: 2,
+        name: "От ПВЗ до ПВЗ",
         description: "Доставка груза до пункта выдачи",
         providerKey: "cdek",
         isCod: false
