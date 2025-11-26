@@ -1,5 +1,4 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
-import ApiKeyModule from '@medusajs/medusa/api-key'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -20,12 +19,4 @@ module.exports = defineConfig({
       options: {}
     }
   ],
-  modules: [
-    {
-      resolve: "@gorgo/medusa-marketplace-wildberries/modules/wildberries",
-      options: {
-        apiKey: process.env.WB_API_KEY,
-      }
-    }
-  ]
 })
