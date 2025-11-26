@@ -13,7 +13,7 @@ export type exportProductsWorkflowInput = {
   ids: string[]
 }
 
-export const exportProductsMarketplaceWorkflow = createWorkflow(
+export const exportMarketplaceProductsWorkflow = createWorkflow(
   "export-products-marketplace",
   (input: exportProductsWorkflowInput) => {
     const products = getProductsStep(input)

@@ -5,11 +5,11 @@ import {
 
 import { mapProductsToMedusa } from "../../../providers/marketplace"
 
-export type MapProductsStepInput = any
+export type MapProductsToMedusaStepInput = any
 
 export const mapMarketplaceProductsStep = createStep(
   "map-marketplace-products",
-  async (input: MapProductsStepInput) => {
+  async (input: MapProductsToMedusaStepInput) => {
     const marketplaceProducts = mapProductsToMedusa(input)
     
     return new StepResponse(marketplaceProducts)

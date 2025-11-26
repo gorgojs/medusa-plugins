@@ -6,7 +6,8 @@ import {
 
 export type GetMarketplaceProductsStatusInput = any
 
-export const getMarketplaceProductsStatus = async (input: GetMarketplaceProductsStatusInput) => {
+
+export const getMarketplaceProducts = async (input?: GetMarketplaceProductsStatusInput) => {
   const productsFromMarketplace = await productApi.productAPIGetProductList(
     withAuth({
       productv3GetProductListRequest: {
@@ -17,17 +18,22 @@ export const getMarketplaceProductsStatus = async (input: GetMarketplaceProducts
       } as Productv3GetProductListRequest,
     })
   )
+  return productsFromMarketplace.data
+}
 
-  const items = productsFromMarketplace.data.result!.items
+export const getMarketplaceProductsStatus = async (input: GetMarketplaceProductsStatusInput) => {
+  const productsFromMarketplace = getMarketplaceProducts()
+
+  const products = (await productsFromMarketplace)
   const offerIds: string[] = []
 
-  items!.forEach((item: any) => {
+  products.result?.items!.forEach((item: any) => {
     if (item.offer_id) {
       offerIds.push(item.offer_id)
     }
   })
 
-  const products = await productApi.productAPIGetProductInfoList(
+  const productsStatuses = await productApi.productAPIGetProductInfoList(
     withAuth({
       v3GetProductInfoListRequest: {
         offer_id: offerIds,
@@ -35,5 +41,5 @@ export const getMarketplaceProductsStatus = async (input: GetMarketplaceProducts
     })
   )
 
-  return products.data
+  return productsStatuses.data
 }

@@ -16,7 +16,7 @@ export type ImportProductsMarketplaceWorkflowInput = {
   ids?: string[]
 }
 
-export const importProductsMarketplaceWorkflow = createWorkflow(
+export const importMarketplaceProductsWorkflow = createWorkflow(
   "import-products-marketplace",
   (input: ImportProductsMarketplaceWorkflowInput) => {
     const products = getProductsStep(input)
@@ -24,6 +24,7 @@ export const importProductsMarketplaceWorkflow = createWorkflow(
     const medusaProducts = mapMarketplaceProductsStep(marketplaceProducts)
     const startedAt = new Date()
     const importResult = importProductsStep(medusaProducts)
+    console.log(importResult)
     logMarketplaceEventWorkflow.runAsStep({
       input: {
         startedAt,
@@ -40,6 +41,6 @@ export const importProductsMarketplaceWorkflow = createWorkflow(
     // const products = mapProductsStep(marketplaceProducts)
     // const result = saveProductsStep(products)
     // return new WorkflowResponse(result)
-    return new WorkflowResponse(true)
+    return new WorkflowResponse(importResult)
   }
 )

@@ -7,12 +7,12 @@ export default async function (container: MedusaContainer) {
   const { result } = await updateMarketplaceProductsStatusWorkflow(container).run({
     input: { ids: [] },
   })
-  logger.info(`Ozon import: result=${JSON.stringify(result)}`)
+  logger.info(`Ozon products statuses: result=${JSON.stringify(result)}`)
 
   return result
 }
 
 export const config = {
-  name: "import-products",
-  schedule: "* * * * *"
+  name: "update-products-statuses",
+  schedule: "*/30 * * * *"
 }

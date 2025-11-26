@@ -4,11 +4,11 @@ import {
 } from "@medusajs/workflows-sdk"
 import { getMarketplaceProductsStatus } from "../../../providers/marketplace"
 
-export type GetMarketplaceProductsStepInput = any
+export type GetMarketplaceProductsStatusStepInput = any
 
 export const getMarketplaceProductsStatusStep = createStep(
   "get-marketplace-products-status",
-  async (input: GetMarketplaceProductsStepInput) => {
+  async (input: GetMarketplaceProductsStatusStepInput) => {
     const marketplaceProducts = getMarketplaceProductsStatus(input)
 
     return new StepResponse(marketplaceProducts)

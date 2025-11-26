@@ -5,6 +5,5 @@ export * from "./map-products"
 export * from "./map-marketplace-products"
 export * from "./create-export"
 export * from "./get-marketplace-products-status"
+export * from "./get-marketplace-products"
 export * from "./update-marketplace-products-status"
-
-

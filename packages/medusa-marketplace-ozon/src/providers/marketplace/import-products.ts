@@ -1,9 +1,8 @@
 import { MedusaContainer } from "@medusajs/framework"
-// import { importProductsMarketplaceWorkflow } from "../../workflows/provider"
+import { importOzonMarketplaceProductsWorkflow } from "../../workflows/provider"
 
-export const importProducts = async (container?: MedusaContainer) => {
-  // Save products to Medusa
-  // const { result } = await importProductsMarketplaceWorkflow(container).run()
-  const result = {}
+export const importProducts = async (input, container?: MedusaContainer) => {
+  const { result } = await importOzonMarketplaceProductsWorkflow(container).run()
+
   return result
 }
