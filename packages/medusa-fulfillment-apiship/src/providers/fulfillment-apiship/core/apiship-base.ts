@@ -22,14 +22,16 @@ import {
   type OrderReturnRequest,
 } from "../../../apiship-client"
 import { ApishipOptions } from "../types"
-import { 
+import {
   getCheapestTariff,
   mapToApishipOrderRequest,
-  mapToApishipCalculatorRequest } from "../utils"
-import { 
+  mapToApishipCalculatorRequest
+} from "../utils"
+import {
   getShippingOptionWorkflow,
   getStockLocationWorkflow,
-  saveCalculationRequestWorkflow 
+  getCalculationWorkflow,
+  saveCalculationWorkflow
 } from "../../../workflows"
 type InjectedDependencies = {
   logger: Logger
@@ -81,13 +83,26 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       data,
       context
     )
-    const cartId = context.cartId! as string
-    const response = await CalculatorService.getCalculator(
-      calculatorRequest
-    )
-    await saveCalculationRequestWorkflow().run({
+    const shippingOptionId = optionData.id! as string
+    const cartId = context.id! as string
+    const key = `apiship:calc:${cartId}:${shippingOptionId}`
+    const { result: calculation } = await getCalculationWorkflow().run({
       input: {
-        cartId: cartId,
+        key
+      }
+    })
+    let response = {}
+    if (calculation) {
+      this.logger_.debug(`There is a record with a key: ${key} in cache`)
+      response = calculation
+    } else {
+      response = await CalculatorService.getCalculator(
+        calculatorRequest
+      )
+    }
+    await saveCalculationWorkflow().run({
+      input: {
+        key,
         data: response,
       }
     })
@@ -119,7 +134,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     fulfillment: Partial<Omit<FulfillmentDTO, "provider_id" | "data" | "items">>
   ): Promise<CreateFulfillmentResult> {
     this.logger_.debug(`Apiship.createFulfillment input: ${JSON.stringify({ data, items, order, fulfillment }, null, 2)}`)
-    
+
     const locationId = fulfillment.location_id as string
     const { result: stockLocation } = await getStockLocationWorkflow()
       .run({
@@ -423,28 +438,28 @@ class ApishipBase extends AbstractFulfillmentProviderService {
   async getReturnDocuments(data: any): Promise<never[]> {
     this.logger_.debug(`Apiship.getReturnDocuments input: ${JSON.stringify(data, null, 2)}`)
 
-    return [] as never[] 
+    return [] as never[]
   }
   async retrieveDocuments(
     fulfillmentData: any,
     documentType: any
   ): Promise<void> {
-    this.logger_.debug(`Apiship.retrieveDocuments input: ${JSON.stringify({fulfillmentData, documentType}, null, 2)}`)
+    this.logger_.debug(`Apiship.retrieveDocuments input: ${JSON.stringify({ fulfillmentData, documentType }, null, 2)}`)
 
-    return 
+    return
   }
   async validateFulfillmentData(
     optionData: any,
     data: any,
     context: any
-  ): Promise<any> { 
-    this.logger_.debug(`Apiship.validateFulfillmentData input: ${JSON.stringify({optionData, data, context}, null, 2)}`)
+  ): Promise<any> {
+    this.logger_.debug(`Apiship.validateFulfillmentData input: ${JSON.stringify({ optionData, data, context }, null, 2)}`)
 
-    return {} 
+    return {}
   }
   async validateOption(data: any): Promise<boolean> {
     this.logger_.debug(`Apiship.validateOption input: ${JSON.stringify(data, null, 2)}`)
-    
+
     return true
   }
 }
