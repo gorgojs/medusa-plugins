@@ -1,3 +1,4 @@
-export { saveCalculationRequestWorkflow } from "./save-calculation-request"
+export { saveCalculationWorkflow } from "./save-calculation"
+export { getCalculationWorkflow } from "./get-calculation"
 export { getStockLocationWorkflow } from "./get-stock-location"
 export { getShippingOptionWorkflow } from "./get-shipping-option" 
