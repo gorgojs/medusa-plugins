@@ -114,6 +114,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     const result = {
       calculated_amount: price,
       is_calculated_price_tax_inclusive: true,
+      data: response
     }
     this.logger_.debug(`ApiShip calculatorResponse: ${JSON.stringify(response, null, 2)}`)
     this.logger_.debug(`Apiship.calculatePrice output: ${JSON.stringify(result, null, 2)}`)

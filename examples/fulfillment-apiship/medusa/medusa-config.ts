@@ -31,5 +31,11 @@ module.exports = defineConfig({
         ],
       },
     },
-  ]
+  ],
+  plugins: [
+    {
+      resolve: "@gorgo/medusa-fulfillment-apiship",
+      options: {},
+    },
+  ],
 })
