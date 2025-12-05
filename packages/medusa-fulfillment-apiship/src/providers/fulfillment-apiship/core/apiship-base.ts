@@ -13,14 +13,14 @@ import {
   FulfillmentOrderDTO,
 } from "@medusajs/framework/types"
 import {
-  OpenAPI,
-  OrdersService,
-  OrderDocsService,
-  ListsService,
-  CalculatorService,
+  Configuration,
+  OrdersApi,
+  OrderDocsApi,
+  ListsApi,
+  CalculatorApi,
   type TariffObject,
   type OrderReturnRequest,
-} from "../../../apiship-client"
+} from "../../../lib/apiship-client"
 import { ApishipOptions } from "../types"
 import {
   getCheapestTariff,
@@ -36,41 +36,37 @@ import {
 type InjectedDependencies = {
   logger: Logger
 }
+import axios, { AxiosError } from "axios"
 
 class ApishipBase extends AbstractFulfillmentProviderService {
   protected logger_: Logger
   protected options_: ApishipOptions
   protected serverUrl_: string
-  // private accessToken_: string | null
-  // private authInProgress_ = false
+
+  private ordersApi_: OrdersApi
+  private orderDocsApi_: OrderDocsApi
+  private listsApi_: ListsApi
+  private calculatorApi_: CalculatorApi
 
   constructor({ logger }: InjectedDependencies, options: ApishipOptions) {
     super()
     this.options_ = options
     this.logger_ = logger
+
     this.serverUrl_ = options.isTest
       ? "http://api.dev.apiship.ru/v1"
       : "https://api.apiship.ru/v1"
-    OpenAPI.BASE = this.serverUrl_
-    OpenAPI.TOKEN = this.options_.token
-  }
 
-  // TODO: Test all situations with token
-  // private async ensureAuth(): Promise<void> {
-  //   if (this.accessToken_ || this.authInProgress_) return
-  //   this.authInProgress_ = true
-  //   try {
-  //     const res = await UsersService.loginUser({
-  //       login: this.options_.email,
-  //       password: this.options_.password,
-  //     })
-  //     const token = (res as any)?.token
-  //     if (!token) throw new Error("ApiShip: не получили token в /users/login")
-  //     this.accessToken_ = token
-  //   } finally {
-  //     this.authInProgress_ = false
-  //   }
-  // }
+    const config = new Configuration({
+      basePath: this.serverUrl_,
+      apiKey: this.options_.token,
+    })
+
+    this.ordersApi_ = new OrdersApi(config)
+    this.orderDocsApi_ = new OrderDocsApi(config)
+    this.listsApi_ = new ListsApi(config)
+    this.calculatorApi_ = new CalculatorApi(config)
+  }
 
   async calculatePrice(
     optionData: CalculateShippingOptionPriceDTO["optionData"],
@@ -86,37 +82,43 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     const shippingOptionId = optionData.id! as string
     const cartId = context.id! as string
     const key = `apiship:calc:${cartId}:${shippingOptionId}`
-    const { result: calculation } = await getCalculationWorkflow().run({
+    const { result: cache } = await getCalculationWorkflow().run({
       input: {
         key
       }
     })
-    let response = {}
-    if (calculation) {
+    let tarrifs = {}
+    if (cache) {
       this.logger_.debug(`There is a record with a key: ${key} in cache`)
-      response = calculation
+      tarrifs = cache
     } else {
-      response = await CalculatorService.getCalculator(
-        calculatorRequest
-      )
-    }
-    await saveCalculationWorkflow().run({
-      input: {
-        key,
-        data: response,
+      try {
+        const { data: response } = await this.calculatorApi_.getCalculator(
+          { calculatorRequest }
+        )
+        tarrifs = response
+      } catch (e) {
+        throw this.buildError("An error occurred in calculatePrice", e)
       }
-    })
+
+      await saveCalculationWorkflow().run({
+        input: {
+          key,
+          data: tarrifs,
+        }
+      })
+    }
     const cheapestTariff = getCheapestTariff(
-      response,
+      tarrifs,
       optionData.deliveryType! as number
     )
     const price = cheapestTariff.deliveryCost as number
     const result = {
       calculated_amount: price,
       is_calculated_price_tax_inclusive: true,
-      data: response
+      data: tarrifs
     }
-    this.logger_.debug(`ApiShip calculatorResponse: ${JSON.stringify(response, null, 2)}`)
+    this.logger_.debug(`ApiShip calculatorResponse: ${JSON.stringify(tarrifs, null, 2)}`)
     this.logger_.debug(`Apiship.calculatePrice output: ${JSON.stringify(result, null, 2)}`)
     return result
   }
@@ -166,26 +168,24 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       isCod
     )
     try {
-      const response = await OrdersService.addOrder(
-        undefined,
-        apishipOrder
-      )
-      const orderId = response.orderId
-      const labels = await this.getShipmentDocuments({
-        orderId
+      const response = await this.ordersApi_.addOrder({
+        orderRequest: apishipOrder,
       })
+      const orderId = response.data.orderId // или просто response.orderId, см. тип
+      const labels = await this.getShipmentDocuments({ orderId })
       const result: CreateFulfillmentResult = {
         data: {
-          orderId: response.orderId,
-          order: apishipOrder
+          orderId,
+          order: apishipOrder,
         },
-        labels
+        labels,
       }
-      this.logger_.debug(`Apiship.createFulfillment output: ${JSON.stringify(result, null, 2)}`)
+      this.logger_.debug(
+        `Apiship.createFulfillment output: ${JSON.stringify(result, null, 2)}`
+      )
       return result
     } catch (e: any) {
-      this.logger_.error(`Apiship.createFulfillment error: ${e?.message ?? e}`)
-      throw new Error(`Apiship.createFulfillment failed: ${e?.message ?? e}`)
+      throw this.buildError("An error occurred in createFulfillment", e)
     }
   }
 
@@ -196,7 +196,13 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     let rows: TariffObject[] | undefined
     try {
       this.logger_.debug(`Apiship.getListTariffs try filter: ${filter}`)
-      const { rows: r = [] } = await ListsService.getListTariffs(100, 0, filter, fields)
+      const { data: response } = await this.listsApi_.getListTariffs({
+        limit: 100,
+        offset: 0,
+        filter,
+        fields
+      })
+      const r = response.rows || []
       if (r.length) {
         rows = r as TariffObject[]
       }
@@ -222,12 +228,11 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     this.logger_.debug(`Apiship.cancelFulfillment input: ${JSON.stringify(data, null, 2)}`)
     const orderId = data?.orderId as number
     try {
-      const response = await OrdersService.cancelOrder(orderId)
+      const response = await this.ordersApi_.cancelOrder({ orderId })
       this.logger_.debug(`Apiship.cancelFulfillment output: ${JSON.stringify(response, null, 2)}`)
       return response
     } catch (e: any) {
-      this.logger_.error(`Apiship.cancelFulfillment error: ${e?.message ?? e}`)
-      throw new Error(`Apiship.cancelFulfillment failed: ${e?.message ?? e}`)
+      throw this.buildError("An error occurred in cancelFulfillment", e)
     }
   }
 
@@ -276,7 +281,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
    */
   private async waitForOrderInfo(orderId: number): Promise<{ trackingNumber: string; trackingUrl: string }> {
     const response = await this.executeWithRetry({
-      apiCall: () => OrdersService.getOrderInfo(orderId),
+      apiCall: () => this.ordersApi_.getOrderInfo({ orderId }),
       isReady: (response: any) => Boolean(response?.order?.providerNumber),
       label: `orderInfo:${orderId}`,
     })
@@ -292,7 +297,12 @@ class ApishipBase extends AbstractFulfillmentProviderService {
    */
   private async waitForLabelUrl(orderId: number): Promise<string> {
     const response = await this.executeWithRetry({
-      apiCall: () => OrderDocsService.getLabels({ orderIds: [orderId], format: "pdf" }),
+      apiCall: () => this.orderDocsApi_.getLabels({
+        labelsRequest: {
+          orderIds: [orderId],
+          format: "pdf"
+        }
+      }),
       isReady: (response: any) => Boolean(response?.url),
       label: `labels:${orderId}`,
     })
@@ -332,7 +342,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
 
     // TODO: map input fulfillment to make return order request
     const tariffId = await this.pickTariffId("cdek")
-    const returnOrder: OrderReturnRequest = {
+    const orderReturnRequest: OrderReturnRequest = {
       order: {
         providerKey: "cdek",
         providerConnectId: "1595",
@@ -393,7 +403,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     }
 
     try {
-      const response = await OrdersService.addReturnOrder(returnOrder)
+      const { data: response } = await this.ordersApi_.addReturnOrder({ orderReturnRequest })
       this.logger_.debug(`Apiship.createReturnFulfillment response: ${JSON.stringify(response, null, 2)}`)
       const orderId = response.orderId
       const labels = await this.getShipmentDocuments({
@@ -402,15 +412,14 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       const result: CreateFulfillmentResult = {
         data: {
           orderId: response.orderId,
-          order: returnOrder
+          order: orderReturnRequest
         },
         labels
       }
       this.logger_.debug(`Apiship.createReturnFulfillment output: ${JSON.stringify(result, null, 2)}`)
       return result
     } catch (e: any) {
-      this.logger_.error(`Apiship.createReturnFulfillment error: ${e?.message ?? e}`)
-      throw new Error(`Apiship.createReturnFulfillment failed: ${e?.message ?? e}`)
+      throw this.buildError("An error occurred in createReturnFulfillment", e)
     }
   }
 
@@ -426,13 +435,12 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       format: "pdf"
     }
     try {
-      const response = await OrderDocsService.getWaybills(documentsRequest)
+      const { data: response } = await this.orderDocsApi_.getWaybills({ documentsRequest })
       const result = response?.waybillItems?.[0].file
       this.logger_.debug(`Apiship.getFulfillmentDocuments output: ${JSON.stringify(result, null, 2)}`)
       return result as unknown as never[]
     } catch (e: any) {
-      this.logger_.error(`Apiship.getFulfillmentDocuments error: ${e?.message ?? e}`)
-      throw new Error(`Apiship.getFulfillmentDocuments failed: ${e?.message ?? e}`)
+      throw this.buildError("An error occurred in getFulfillmentDocuments", e)
     }
   }
 
@@ -462,6 +470,20 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     this.logger_.debug(`Apiship.validateOption input: ${JSON.stringify(data, null, 2)}`)
 
     return true
+  }
+
+  /**
+   * Helper to build errors with additional context.
+   */
+  protected buildError(message: string, error: Error | AxiosError): Error {
+    if (axios.isAxiosError(error)) {
+      return new Error(
+        `${message}: ${error.response?.status} ${error.response?.data?.code} - ${error.response?.data?.description}`.trim()
+      )
+    }
+    return new Error(
+      `${message}: ${error.message}`.trim()
+    )
   }
 }
 

@@ -40,7 +40,14 @@
     "build": "medusa plugin:build",
     "dev": "yarn predev && medusa plugin:develop",
     "predev": "medusa plugin:publish",
-    "prepublishOnly": "medusa plugin:build"
+    "openapi:pull": "OAS_PATH=openapi/apiship && rm -rf $OAS_PATH && mkdir -p $OAS_PATH && curl -L https://api.apiship.ru/doc/openapi.yaml -o $OAS_PATH/upstream.yaml",
+    "openapi:gen": "OAC_PATH=src/lib/apiship-client && rm -rf $OAC_PATH && openapi-generator-cli generate -i ./openapi/apiship/upstream.yaml -g typescript-axios -o $OAC_PATH --skip-validate-spec --additional-properties=useSingleRequestParameter=true",
+    "prepublishOnly": "yarn openapi:pull && yarn openapi:gen && medusa plugin:build"
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "axios-rate-limit": "^1.4.0",
+    "axios-retry": "^4.5.0"
   },
   "devDependencies": {
     "@medusajs/admin-sdk": "^2.7.0",

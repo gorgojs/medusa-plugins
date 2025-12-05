@@ -8,8 +8,11 @@ import {
 import {
   type OrderRequest,
   type OrderReturnRequest,
-  type CalculatorRequest
-} from "../../../apiship-client"
+  type CalculatorRequest,
+  type CostDeliveryCostVatEnum,
+  type CostPaymentMethodEnum,
+  type ItemCostVatEnum,
+} from "../../../lib/apiship-client"
 
 const ITEM_LENGTH = 10
 const ITEM_WIDTH = 10
@@ -76,7 +79,7 @@ export function mapToApishipOrderRequest(
       quantity: quantity,
       assessedCost: cost,
       cost: cost,
-      costVat: -1,
+      costVat: -1 as ItemCostVatEnum,
       ...((item as any).variant.barcode ? { barcode: (item as any).variant.barcode } : {}),
     }
   })
@@ -124,13 +127,13 @@ export function mapToApishipOrderRequest(
     }, 0)
   const codCost = isCod ? itemsCost + deliveryCost : 0
   const cost = {
-    deliveryCostVat: -1,
+    deliveryCostVat: -1 as CostDeliveryCostVatEnum,
     codCost,
     assessedCost,
     // TODO: in example DeliveryPayedByRecipient always false
     isDeliveryPayedByRecipient: isCod ? true : false,
     // TODO: in example there is no paymentMethod at all
-    ...(isCod ? { paymentMethod: 3 } : {}),
+    ...(isCod ? { paymentMethod: 3 as CostPaymentMethodEnum } : {}),
     ...(isCod ? { deliveryCost } : {}),
   }
 
