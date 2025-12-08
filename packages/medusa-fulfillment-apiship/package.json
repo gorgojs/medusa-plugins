@@ -40,9 +40,10 @@
     "build": "medusa plugin:build",
     "dev": "yarn predev && medusa plugin:develop",
     "predev": "medusa plugin:publish",
-    "openapi:pull": "OAS_PATH=openapi/apiship && rm -rf $OAS_PATH && mkdir -p $OAS_PATH && curl -L https://api.apiship.ru/doc/openapi.yaml -o $OAS_PATH/upstream.yaml",
-    "openapi:gen": "OAC_PATH=src/lib/apiship-client && rm -rf $OAC_PATH && openapi-generator-cli generate -i ./openapi/apiship/upstream.yaml -g typescript-axios -o $OAC_PATH --skip-validate-spec --additional-properties=useSingleRequestParameter=true",
-    "prepublishOnly": "yarn openapi:pull && yarn openapi:gen && medusa plugin:build"
+    "openapi:pull": "rm -rf openapi && mkdir -p openapi && curl -L https://api.apiship.ru/doc/openapi.yaml -o openapi/apiship.yaml",
+    "openapi:version": "shasum -a 256 openapi/apiship.yaml | awk '{print $1}' > openapi/SPEC_VERSION.txt && echo 'Apiship spec updated:' && cat openapi/SPEC_VERSION.txt",
+    "openapi:gen": "OAC_PATH=src/lib/apiship-client && rm -rf $OAC_PATH && openapi-generator-cli generate -i ./openapi/apiship.yaml -g typescript-axios -o $OAC_PATH --skip-validate-spec --additional-properties=useSingleRequestParameter=true",
+    "prepublishOnly": "yarn openapi:pull && yarn openapi:version && yarn openapi:gen && medusa plugin:build"
   },
   "dependencies": {
     "axios": "^1.13.2",

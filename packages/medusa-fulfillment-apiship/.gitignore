@@ -30,6 +30,4 @@ yalc.lock
 yarn.lock
 package-lock.json
 
-/src/lib
-/openapi
-openapitools.json
+src/lib/apiship-client

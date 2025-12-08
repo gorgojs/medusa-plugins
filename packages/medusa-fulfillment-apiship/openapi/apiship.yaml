@@ -5318,20 +5318,36 @@ components:
       properties:
         fiasGuid:
           type: string
+          description: Код адресного объекта в ФИАС
+          example: "a81442b0-635d-4159-ba23-8eddb0e8aabb"
         fullName:
           type: string
+          description: Полное название города с регионом
+          example: "Залезино, Тверская область"
         cityUuid:
           type: string
+          description: UUID записи
+          example: "00001b09-9bef-57ce-b46e-ff1393613978"
         cdekId:
           type: integer
+          description: Код города по базе СДЭК
+          example: 1889090
         cityName:
           type: string
+          description: Название города из системы СДЭК
+          example: "Залезино"
         oblName:
           type: string
+          description: Название региона
+          example: "Тверская область"
         countryCode:
           type: string
+          description: Код страны
+          example: "RU"
         codCostLimit:
           type: string
+          description: Ограничение на сумму наложенного платежа
+          example: "0"
     StatusCommon:
       type: object
       properties:
@@ -5601,7 +5617,6 @@ components:
     CalculatorRequest:
       required:
         - places
-        - assessedCost
         - from
         - to
       allOf:
