@@ -21,16 +21,36 @@ export const mapProductsToMarketplace = async (products: ProductDTO[], container
 
       product.variants.forEach(variant => {
         const { variants: _ignored, ...productWithoutVariants } = product
+        const images = (variant.images && variant.images.length ? variant.images : product.images || []).map((img) => img.url)
         const mergedProductVariant = {
           product: productWithoutVariants,
           ...variant,
+          images,
         }
 
-        marketplaceProducts.push(mapObject(mergedProductVariant, schema))
+        const combinedName = `${mergedProductVariant.product?.title ?? ""} ${variant.title ?? ""} ${mergedProductVariant.product?.description ?? ""}`.trim()
+
+        const mergedForMapping = {
+          ...mergedProductVariant,
+          combined_name: combinedName,
+        }
+        const ozonItem = mapObject(
+          mergedForMapping,
+          schema
+        ) as V3ImportProductsRequestItem
+
+        ozonItem.price = String(ozonItem.price ?? 0)
+        ozonItem.old_price = String(ozonItem.old_price ?? ozonItem.price)
+
+        if (schema.ozon_category) {
+          ozonItem.type_id = schema.ozon_category.type_id
+          ozonItem.description_category_id = schema.ozon_category.description_category_id
+        }
+
+        marketplaceProducts.push(ozonItem)
       })
     })
   })
-  console.log("marketplaceProducts", marketplaceProducts)
   return marketplaceProducts
 
   /*[

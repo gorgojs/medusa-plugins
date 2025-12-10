@@ -4,7 +4,8 @@ import { V3ImportProductsRequestItem } from "../../../lib/ozon-seller-api"
 export type exportProductsStepInput = V3ImportProductsRequestItem[]
 
 export const exportProducts = async (input: exportProductsStepInput) => {
-  const batchSize = 1
+  console.log(JSON.stringify(input))
+  const batchSize = 100
   const batches: V3ImportProductsRequestItem[][] = []
 
   for (let i = 0; i < input.length; i += batchSize) {
