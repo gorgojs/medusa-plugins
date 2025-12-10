@@ -25,17 +25,17 @@ export const importMarketplaceProductsWorkflow = createWorkflow(
     const startedAt = new Date()
     const importResult = importProductsStep(medusaProducts)
     console.log(importResult)
-    logMarketplaceEventWorkflow.runAsStep({
-      input: {
-        startedAt,
-        finishedAt: new Date(),
-        action: "UPDATE",
-        direction: "MARKETPLACE_TO_MEDUSA",
-        entityType: "PRODUCT",
-        requestData: input,
-        responseData: importResult,
-      }
-    })
+    // logMarketplaceEventWorkflow.runAsStep({
+    //   input: {
+    //     startedAt,
+    //     finishedAt: new Date(),
+    //     action: "UPDATE",
+    //     direction: "MARKETPLACE_TO_MEDUSA",
+    //     entityType: "PRODUCT",
+    //     requestData: input,
+    //     responseData: importResult,
+    //   }
+    // })
     // const offerIds = getOfferIdsStep(input.ids)
     // const marketplaceProducts = getProductsMarketpaceStep(offerIds)
     // const products = mapProductsStep(marketplaceProducts)
