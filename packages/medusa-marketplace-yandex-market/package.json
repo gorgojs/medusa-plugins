@@ -67,11 +67,7 @@
     "@medusajs/icons": "^2.11.2",
     "@medusajs/medusa": "^2.11.2",
     "@medusajs/test-utils": "^2.11.2",
-    "@medusajs/ui": "^4.0.25",
-    "i18next": "^23.7.11",
-    "i18next-browser-languagedetector": "^7.2.0",
-    "i18next-http-backend": "^2.4.2",
-    "react-i18next": "^13.5.0"
+    "@medusajs/ui": "^4.0.25"
   },
   "engines": {
     "node": ">=20"
