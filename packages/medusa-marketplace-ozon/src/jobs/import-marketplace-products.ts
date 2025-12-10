@@ -7,7 +7,6 @@ export default async function (container: MedusaContainer) {
   const { result } = await importMarketplaceProductsWorkflow(container).run({
     input: { ids: [] },
   })
-  logger.info(`Ozon import: result=${JSON.stringify(result)}`)
 
   return result
 }

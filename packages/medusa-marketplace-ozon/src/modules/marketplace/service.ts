@@ -37,11 +37,11 @@ class MarketplaceModuleService extends MedusaService({
     const schema = [
       {
         "ozon_category": {
-          "description_category_id": 88979652,
-          "type_id": 970861191
+          "description_category_id": 200001517,
+          "type_id": 93228
         },
         "medusa_categories": [
-          "pcat_01KC3R4AGX68TKF5Q4JQZ7KWRZ"
+          "pcat_01KBHXW40P2WV8P2GRK1FA96EH"
         ],
         "fields": [
           {
@@ -49,38 +49,81 @@ class MarketplaceModuleService extends MedusaService({
             "to": "offer_id"
           },
           {
-            "from": "product.description",
-            "to": "product_description"
-          },
-          {
-            "from": "title",
-            "to": "name"
+            from: "combined_name",
+            to: "name",
           },
           {
             "from": "description",
             "to": "description"
           },
           {
-            "from": "price_cents",
+            "from": "prices.0.amount",
             "to": "price"
           },
           {
-            "from": "currency",
-            "to": "currency_code"
+            "from": "prices.1.amount",
+            "to": "old_price"
+          },
+          {
+            "from": "prices.currency_code",
+            "to": "currency_code",
+            default: "RUB"
           },
           {
             "from": "sku",
             "to": "barcode"
           },
           {
-            "from": "weight_g",
+            "from": "dimension_unit",
+            "to": "dimension_unit",
+            default: "mm"
+          },
+          {
+            "from": "weight_unit",
+            "to": "weight_unit",
+            default: "g"
+          },
+          {
+            "from": "weight",
             "to": "weight",
-            "default": 0
+            "default": 100
+          },
+          {
+            "from": "length",
+            "to": "depth",
+            "default": 10
+          },
+          {
+            "from": "height",
+            "to": "height",
+            "default": 10
+          },
+          {
+            "from": "width",
+            "to": "width",
+            "default": 10
+          },
+          {
+            "from": "images",
+            "to": "images",
+            "default": []
+          },
+          {
+            "from": "vat",
+            "to": "vat",
+            "default": "0"
           },
           {
             "from": "attributes",
-            "to": "attrs",
-            "default": {}
+            "to": "attributes",
+            "default":[
+          { "id": 8229, "values": [{ "value": "Термофутболка" }] },
+          { "id": 4295, "values": [{ "value": "48" }, { "value": "50" }] },
+          { "id": 9163, "values": [{ "value": "Мужской" }] },
+          { "id": 10096, "values": [{ "value": "черный" }] },
+          { "id": 31, "values": [{ "value": "Нет бренда" }] },
+          { "id": 8292, "values": [{ "value": "prod_01KBHXW41JG2DVDQXQESNFRT85" }] }
+        ]
           }
         ]
       }

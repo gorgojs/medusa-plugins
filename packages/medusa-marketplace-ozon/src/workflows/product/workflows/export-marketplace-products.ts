@@ -18,8 +18,8 @@ export const exportMarketplaceProductsWorkflow = createWorkflow(
   (input: exportProductsWorkflowInput) => {
     const products = getProductsStep(input)
     const marketplaceProducts = mapProductsStep(products)
-    const startedAt = new Date()
-    // const exportResult = exportProductsStep(marketplaceProducts)
+    // const startedAt = new Date()
+    const exportResult = exportProductsStep(marketplaceProducts)
     // const logResult = logMarketplaceEventWorkflow.runAsStep({
     //   input: {
     //     startedAt,
@@ -32,6 +32,6 @@ export const exportMarketplaceProductsWorkflow = createWorkflow(
     //   }
     // })
 
-    return new WorkflowResponse(products)
+    return new WorkflowResponse(exportResult)
   }
 )
