@@ -1,6 +1,7 @@
 import { MedusaService } from "@medusajs/framework/utils"
 import Marketplace from "./models/marketplace"
 import MarketplaceEvent from "./models/marketplace-event"
+import { MappingSchema } from "../../types"
 
 export type LogEventInput = {
   correlationId?: string,
@@ -32,7 +33,7 @@ class MarketplaceModuleService extends MedusaService({
     return result.id
   }
 
-  async getMarketplaceMappingSchema() {
+  async getMarketplaceMappingSchema(): Promise<MappingSchema[]>  {
     const schema = [
       {
         "ozon_category": {
@@ -40,12 +41,16 @@ class MarketplaceModuleService extends MedusaService({
           "type_id": 970861191
         },
         "medusa_categories": [
-          "dsf34gewrsfvdsdfvsd"
+          "pcat_01KC3R4AGX68TKF5Q4JQZ7KWRZ"
         ],
         "fields": [
           {
             "from": "id",
             "to": "offer_id"
+          },
+          {
+            "from": "product.description",
+            "to": "product_description"
           },
           {
             "from": "title",
@@ -79,7 +84,7 @@ class MarketplaceModuleService extends MedusaService({
           }
         ]
       }
-    ]
+    ] as MappingSchema[]
     
     return schema
   }
