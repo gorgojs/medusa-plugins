@@ -11,7 +11,16 @@ export const getProducts = async (input: GetProductsInput, container: MedusaCont
     entity: "product",
     fields: [
       "*",
-      "variants.*"
+      "categories.id",
+      "images.*",
+      "options.*",
+      "options.values.*",
+      "metadata.*",
+      "variants.*",
+      "variants.images.*",
+      "variants.options.*",
+      "variants.inventory_items.*",
+      "variants.prices.*",
     ],
     filters: {
       id: input.ids?.length ? input.ids : undefined,

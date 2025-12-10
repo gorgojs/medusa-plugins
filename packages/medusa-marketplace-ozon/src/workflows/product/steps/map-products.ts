@@ -10,7 +10,7 @@ export type MapProductsStepInput = any
 export const mapProductsStep = createStep(
   "map-products",
   async (input: MapProductsStepInput, {container}) => {
-    const marketplaceProducts = mapProductsToMarketplace(input, container)
+    const marketplaceProducts = await mapProductsToMarketplace(input, container)
     
     return new StepResponse(marketplaceProducts)
   }
