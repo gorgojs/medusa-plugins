@@ -19,10 +19,18 @@ export const exportMarketplaceProductsWorkflowId = "export-marketplace-products"
 export const exportMarketplaceProductsWorkflow = createWorkflow(
   exportMarketplaceProductsWorkflowId,
   (input: ExportMarketplaceProductsWorkflowInput) => {
+    const providerId = input.providerId
+
     const products = getProductsStep(input)
-    const marketplaceProducts = mapProductsStep(products)
+    const marketplaceProducts = mapProductsStep({
+      providerId,
+      ...products
+    })
     const startedAt = new Date()
-    const exportResult = exportProductsStep(marketplaceProducts)
+    const exportResult = exportProductsStep({
+      providerId,
+      marketplaceProducts
+    })
     const logResult = logMarketplaceEventWorkflow.runAsStep({
       input: {
         startedAt,

@@ -5,14 +5,21 @@ import {
 import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
 import { MarketplaceModuleService } from "../../../modules/marketplace/services"
 
-export type ExportProductsStepInput = any
+export type ExportProductsStepInput = {
+  providerId: string,
+  [key: string]: any
+}
 
 export const exportProductsStep = createStep(
   "export-products",
   async (input: ExportProductsStepInput, { container }) => {
     const marketplaceService: MarketplaceModuleService = container.resolve(MARKETPLACE_MODULE)
-    // const result = await marketplaceService.exportProducts()
-    const result = exportProducts(input, container)
+    const { providerId, ...data } = input
+
+    const result = await marketplaceService.exportProducts(providerId, {
+      container,
+      ...data
+    })
 
     return new StepResponse(result)
   }

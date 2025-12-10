@@ -12,7 +12,7 @@ export default class MarketplaceProviderService {
   #logger: Logger
 
   constructor(container: InjectedDependencies) {
-    
+    this.dependencies = container    
     this.#logger = container["logger"]
       ? container.logger
       : (console as unknown as Logger)
@@ -30,11 +30,16 @@ Please make sure that the provider is registered in the container and it is conf
         throw new Error(errMessage)
       }
 
-      const errMessage = `Unable to retrieve the payment provider with id: ${providerId}, the following error occurred: ${err.message}`
+      const errMessage = `Unable to retrieve the marketplace provider with id: ${providerId}, the following error occurred: ${err.message}`
       this.#logger.error(errMessage)
 
       throw new Error(errMessage)
     }
+  }
+
+  getProvidersList(): string[] {
+    const prefix = MarketplaceProviderRegistrationPrefix
+    return Object.keys(this.dependencies).filter(key => key.startsWith(prefix))
   }
 
   async exportProducts(
