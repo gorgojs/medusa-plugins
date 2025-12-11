@@ -22,6 +22,7 @@ SKIP_MIGRATIONS_DIRS=(
 # Mapping of example directories to package directories
 declare -A EXAMPLE_PACKAGE_MAP
 EXAMPLE_PACKAGE_MAP["./examples/1c"]=./packages/medusa-1c
+EXAMPLE_PACKAGE_MAP["./examples/auth-yandex"]=./packages/medusa-auth-yandex
 EXAMPLE_PACKAGE_MAP["./examples/feed-yandex"]=./packages/medusa-feed-yandex
 EXAMPLE_PACKAGE_MAP["./examples/payment-robokassa"]=./packages/medusa-payment-robokassa
 EXAMPLE_PACKAGE_MAP["./examples/payment-tkassa"]=./packages/medusa-payment-tkassa

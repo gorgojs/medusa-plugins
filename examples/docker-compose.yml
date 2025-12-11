@@ -62,6 +62,7 @@ configs:
     # It creates the necessary databases for all the examples
     content: |
       CREATE DATABASE medusa_1c;
+      CREATE DATABASE medusa_auth_yandex;
       CREATE DATABASE medusa_feed;
       CREATE DATABASE medusa_feed_yandex;
       CREATE DATABASE medusa_payment_tkassa;
