@@ -2,7 +2,11 @@
 
 import { Radio, RadioGroup } from "@headlessui/react"
 import { setShippingMethod } from "@lib/data/cart"
-import { calculatePriceForShippingOption, retrieveCalculation } from "@lib/data/fulfillment"
+import {
+  calculatePriceForShippingOption,
+  retrieveCalculation,
+  getPointAddresses
+} from "@lib/data/fulfillment"
 import { convertToLocale } from "@lib/util/money"
 import { CheckCircleSolid, Loader } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
@@ -19,6 +23,27 @@ const PICKUP_OPTION_OFF = "__PICKUP_OFF"
 type ShippingProps = {
   cart: HttpTypes.StoreCart
   availableShippingMethods: HttpTypes.StoreCartShippingOption[] | null
+}
+
+type ApishipCalculation = {
+  deliveryToPoint?: Array<{
+    providerKey: string
+    tariffs?: Array<{
+      pointIds?: number[]
+    }>
+  }>
+}
+
+const extractPointIdsFromCalculation = (calculation?: ApishipCalculation | null): number[] => {
+  const ids = new Set<number>()
+
+  calculation?.deliveryToPoint?.forEach((block) => {
+    block.tariffs?.forEach((tariff) => {
+      tariff.pointIds?.forEach((id) => ids.add(id))
+    })
+  })
+
+  return Array.from(ids)
 }
 
 function formatAddress(address: HttpTypes.StoreCartAddress) {
@@ -84,13 +109,25 @@ const Shipping: React.FC<ShippingProps> = ({
     setIsLoadingPrices(true)
 
     if (_shippingMethods?.length) {
+      const allPointIds = new Set<number>()
+
       const promises = _shippingMethods
         .filter((sm) => sm.price_type === "calculated")
         .map(async (sm) => {
-          const calculation = await retrieveCalculation(cart.id, sm.id)
+          const calculation = await retrieveCalculation(cart.id, sm.id) as any
           console.log(`Calculation to ${sm.name}`, calculation)
+
+          calculation?.deliveryToPoint?.forEach((block: any) => {
+            block.tariffs?.forEach((tariff: any) => {
+              tariff.pointIds?.forEach((id: number) => {
+                allPointIds.add(id)
+              })
+            })
+          })
+
           return calculatePriceForShippingOption(sm.id, cart.id)
         })
+
       if (promises.length) {
         Promise.allSettled(promises).then((res) => {
           const pricesMap: Record<string, number> = {}
@@ -100,6 +137,13 @@ const Shipping: React.FC<ShippingProps> = ({
 
           setCalculatedPricesMap(pricesMap)
           setIsLoadingPrices(false)
+
+          const idsArray = Array.from(allPointIds)
+          if (idsArray.length) {
+            getPointAddresses(idsArray).then((points) => {
+              console.log("Apiship pickup addresses:", points)
+            })
+          }
         })
       }
     }

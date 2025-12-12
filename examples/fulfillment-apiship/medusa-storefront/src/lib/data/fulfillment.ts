@@ -97,3 +97,30 @@ export const retrieveCalculation = async (
       return null
     })
 }
+
+export const getPointAddresses = async (pointIds: Array<number>) => {
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  const next = {
+    ...(await getCacheOptions("fulfillment")),
+  }
+
+  const body = { pointIds }
+
+  return sdk.client
+    .fetch<{
+      points: any[]
+      meta: any
+    }>(`/store/apiship/points`, {
+      method: "POST",
+      headers,
+      body,
+      next,
+    })
+    .catch((e) => {
+      console.error("getPointsAddresses error", e)
+      return null
+    })
+}
