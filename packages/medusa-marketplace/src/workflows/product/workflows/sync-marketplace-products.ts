@@ -9,7 +9,7 @@ export type SyncMarketplaceProductsWorkflowInput = {
 
 export const syncMarketplaceProductsWorkflowId = "sync-marketplace-products"
 
-export const syncProductsMarketplaceWorkflow = createWorkflow(
+export const syncMarketplaceProductsWorkflow = createWorkflow(
   syncMarketplaceProductsWorkflowId,
   (input: SyncMarketplaceProductsWorkflowInput) => {
     const importWorkflowResult = importMarketplaceProductsWorkflow.runAsStep({ input })
