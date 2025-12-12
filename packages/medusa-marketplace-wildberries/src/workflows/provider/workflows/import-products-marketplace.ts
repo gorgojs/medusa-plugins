@@ -1,10 +1,10 @@
 import { createWorkflow, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
 import { importProductsStep } from "../steps"
 
-export const importProductsMarketplaceWorkflowId = "import-products-marketplace-wb"
+export const importMarketplaceProductsWbWorkflowId = "import-marketplace-products-wb"
 
-export const importProductsMarketplaceWorkflow = createWorkflow(
-  importProductsMarketplaceWorkflowId,
+export const importMarketplaceProductsWbWorkflow = createWorkflow(
+  importMarketplaceProductsWbWorkflowId,
   () => {
     const importResult = importProductsStep()
 

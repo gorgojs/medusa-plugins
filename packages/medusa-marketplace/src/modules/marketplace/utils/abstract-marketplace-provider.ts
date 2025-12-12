@@ -6,8 +6,10 @@ import {
   IMarketplaceProvider,
   ImportProductsInput,
   ImportProductsOutput,
-  MapProductsInput,
-  MapProductsOutput
+  MapToMarketplaceProductsInput,
+  MapToMarketplaceProductsOutput,
+  MapToMedusaProductsInput,
+  MapToMedusaProductsOutput
 } from "../types"
 
 export class AbstractMarketplaceProvider implements IMarketplaceProvider {
@@ -30,7 +32,11 @@ export class AbstractMarketplaceProvider implements IMarketplaceProvider {
     throw Error("importProducts must be overridden by the child class")
   }
 
-  async mapProducts(data: MapProductsInput): Promise<MapProductsOutput> {
-    throw Error("mapProducts must be overridden by the child class")
+  async mapToMarketplaceProducts(data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput> {
+    throw Error("mapToMarketplaceProducts must be overridden by the child class")
+  }
+
+  async mapToMedusaProducts(data: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput> {
+    throw Error("mapToMedusaProducts must be overridden by the child class")
   }
 }

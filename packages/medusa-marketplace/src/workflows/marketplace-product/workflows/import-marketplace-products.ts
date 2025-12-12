@@ -12,8 +12,10 @@ export type ImportMarketplaceProductsWorkflowInput = {
   ids?: String[]
 }
 
+export const importMarketplaceProductsWorkflowId = "import-marketplace-products"
+
 export const importMarketplaceProductsWorkflow = createWorkflow(
-  "import-marketplace-products",
+  importMarketplaceProductsWorkflowId,
   (input: ImportMarketplaceProductsWorkflowInput) => {
     const providerId = input.providerId
     

@@ -1,5 +1,4 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
-import { resolve } from 'path'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -14,7 +13,16 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
   },
+  featureFlags: {
+    backend_hmr: true,
+  },
   plugins: [
+    {
+      resolve: "@gorgo/medusa-marketplace-wildberries",
+      options: {
+        
+      }
+    },
     {
       resolve: "@gorgo/medusa-marketplace",
       options: {

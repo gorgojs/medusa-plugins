@@ -16,17 +16,17 @@ import {
 } from "../../../lib/wildberries-products-client"
 
 
-export type GetProductsMarketplaceWbWorkflowInput = {
+export type GetMarketplaceProductsWbWorkflowInput = {
   create: ContentV2CardsUploadPostRequestInner[]
   update: ContentV2CardsUpdatePostRequestInner[]
   merge: ContentV2CardsUploadAddPostRequest[]
 }
 
-export const exportProductsMarketplaceWbWorkflowId = "export-products-marketplace-wb"
+export const exportMarketplaceProductsWbWorkflowId = "export-marketplace-products-wb"
 
-export const exportProductsMarketplaceWorkflow = createWorkflow(
-  exportProductsMarketplaceWbWorkflowId,
-  (input: GetProductsMarketplaceWbWorkflowInput) => {
+export const exportMarketplaceProductsWbWorkflow = createWorkflow(
+  exportMarketplaceProductsWbWorkflowId,
+  (input: GetMarketplaceProductsWbWorkflowInput) => {
 
     const createResponse = createProductsStep(input.create)
     const updateResponse = updateProductCardsStep(input.update)

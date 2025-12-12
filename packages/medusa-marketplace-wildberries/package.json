@@ -11,7 +11,12 @@
     "./.medusa/server/src/modules/*": "./.medusa/server/src/modules/*/index.js",
     "./modules/*": "./.medusa/server/src/modules/*/index.js",
     "./providers/*": "./.medusa/server/src/providers/*/index.js",
-    "./*": "./.medusa/server/src/*.js"
+    "./*": "./.medusa/server/src/*.js",
+    "./admin": {
+      "import": "./.medusa/server/src/admin/index.mjs",
+      "require": "./.medusa/server/src/admin/index.js",
+      "default": "./.medusa/server/src/admin/index.js"
+    }
   },
   "keywords": [
     "medusa",
@@ -60,6 +65,7 @@
     "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
+    "@gorgo/medusa-marketplace": "*",
     "@medusajs/admin-sdk": "^2.11.2",
     "@medusajs/cli": "^2.11.2",
     "@medusajs/framework": "^2.11.2",

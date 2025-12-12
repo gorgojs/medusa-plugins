@@ -1,4 +1,4 @@
-import { AbstractMarketplaceProvider } from "../utils"
+import { AbstractMarketplaceProvider } from "@gorgo/medusa-marketplace/modules/marketplace/utils"
 import {
   ExportProductsInput,
   ExportProductsOutput,
@@ -6,14 +6,15 @@ import {
   GetProductsOutput,
   ImportProductsInput,
   ImportProductsOutput,
-  MapProductsInput,
-  MapProductsOutput,
+  MapToMarketplaceProductsInput,
+  MapToMarketplaceProductsOutput,
+  MapToMedusaProductsInput,
+  MapToMedusaProductsOutput,
   MAX_VARIANTS_TO_CREATE,
-  WildberriesMarketplaceProviderIdentifier
-} from "../types"
+} from "@gorgo/medusa-marketplace/modules/marketplace/types"
 import {
-  exportProductsMarketplaceWorkflow,
-  importProductsMarketplaceWorkflow
+  exportMarketplaceProductsWbWorkflow,
+  importMarketplaceProductsWbWorkflow
 } from "../../../workflows/provider"
 import {
   ContentV2CardsUpdatePostRequestInner,
@@ -23,11 +24,11 @@ import {
 } from "../../../lib/wildberries-products-client"
 
 export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider {
-  static identifier = WildberriesMarketplaceProviderIdentifier
+  static identifier = "wildberries"
 
   async exportProducts(data: ExportProductsInput): Promise<ExportProductsOutput> {
-    const { container, ...input } = data
-    const { result } = await exportProductsMarketplaceWorkflow(container).run({ input })
+    const { container, marketplaceProducts } = data
+    const { result } = await exportMarketplaceProductsWbWorkflow(container).run({ input: marketplaceProducts })
 
     return result
   }
@@ -55,12 +56,12 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
   async importProducts(data: ImportProductsInput): Promise<ImportProductsOutput> {
     const { container, ...input } = data
 
-    const { result } = await importProductsMarketplaceWorkflow(container).run({ input })
+    const { result } = await importMarketplaceProductsWbWorkflow(container).run({ input })
 
     return result
   }
 
-  async mapProducts(data: MapProductsInput): Promise<MapProductsOutput> {
+  async mapToMarketplaceProducts(data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput> {
     const { container, products } = data
 
     const logger = await container!.resolve("logger")
@@ -136,5 +137,11 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
     }
 
     return result
+  }
+
+  async mapToMedusaProducts(data: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput> {
+    const { container, ...input } = data
+
+    return input
   }
 }

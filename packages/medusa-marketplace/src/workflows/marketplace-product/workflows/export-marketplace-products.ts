@@ -4,7 +4,7 @@ import {
 } from "@medusajs/framework/workflows-sdk"
 import {
   getProductsStep,
-  mapProductsStep,
+  mapToMarketplaceProductsStep,
   exportProductsStep,
 } from "../steps"
 import { logMarketplaceEventWorkflow } from "../../marketplace-event"
@@ -22,16 +22,14 @@ export const exportMarketplaceProductsWorkflow = createWorkflow(
     const providerId = input.providerId
 
     const products = getProductsStep(input)
-    const marketplaceProducts = mapProductsStep({
+    const marketplaceProducts = mapToMarketplaceProductsStep({
       providerId,
       products
     })
     const startedAt = new Date()
     const exportResult = exportProductsStep({
       providerId,
-      create: marketplaceProducts.create,
-      update: marketplaceProducts.update,
-      merge: marketplaceProducts.merge
+      marketplaceProducts
     })
     const logResult = logMarketplaceEventWorkflow.runAsStep({
       input: {

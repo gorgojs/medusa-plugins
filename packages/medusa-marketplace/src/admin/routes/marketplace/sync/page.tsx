@@ -21,6 +21,10 @@ const SyncMarketplacePage = () => {
     try {
       const response = await sdk.client.fetch("/admin/marketplaces/products/sync", {
         method: "POST",
+        body: {
+          provider_id: "mp_wildberries_test",
+          ids: []
+        }
       })
       setData(response)
     } catch (err: any) {

@@ -19,8 +19,16 @@ const AddMarketplacePage = () => {
     setData(null)
 
     try {
-      const response = await sdk.client.fetch("/admin/marketplaces/add", {
+      const response = await sdk.client.fetch("/admin/marketplaces/", {
         method: "POST",
+        body: {
+          data: {
+            provider_id: "wildberries",
+            credentials: {},
+            settings: {},
+            is_active: true
+          }
+        }
       })
       setData(response)
     } catch (err: any) {

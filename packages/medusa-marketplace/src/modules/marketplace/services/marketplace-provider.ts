@@ -7,8 +7,10 @@ import {
   IMarketplaceProvider,
   ImportProductsInput,
   ImportProductsOutput,
-  MapProductsInput,
-  MapProductsOutput,
+  MapToMarketplaceProductsInput,
+  MapToMarketplaceProductsOutput,
+  MapToMedusaProductsInput,
+  MapToMedusaProductsOutput,
   MarketplaceProviderRegistrationPrefix
 } from "../types"
 
@@ -79,12 +81,21 @@ Please make sure that the provider is registered in the container and it is conf
     return provider.importProducts(input)
   }
 
-  async mapProducts(
+  async mapToMarketplaceProducts(
     providerId: string,
-    input: MapProductsInput
-  ): Promise<MapProductsOutput> {
+    input: MapToMarketplaceProductsInput
+  ): Promise<MapToMarketplaceProductsOutput> {
     const provider = this.retrieveProvider(providerId)
 
-    return provider.mapProducts(input)
+    return provider.mapToMarketplaceProducts(input)
+  }
+
+  async mapToMedusaProducts(
+    providerId: string,
+    input: MapToMedusaProductsInput
+  ): Promise<MapToMedusaProductsOutput> {
+    const provider = this.retrieveProvider(providerId)
+
+    return provider.mapToMedusaProducts(input)
   }
 }

@@ -22,7 +22,9 @@ export interface IMarketplaceProvider {
 
   importProducts(data: ImportProductsInput): Promise<ImportProductsOutput>
 
-  mapProducts(data: MapProductsInput): Promise<MapProductsOutput>
+  mapToMarketplaceProducts(data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput>
+
+  mapToMedusaProducts(data: MapToMedusaProductsInput): Promise<MapToMarketplaceProductsOutput>
 
 }
 
@@ -54,10 +56,18 @@ export interface ImportProductsOutput {
   [key: string]: any
 }
 
-export interface MapProductsInput extends MarketplaceProviderInput {
+export interface MapToMarketplaceProductsInput extends MarketplaceProviderInput {
   [key: string]: any
 }
 
-export interface MapProductsOutput {
+export interface MapToMarketplaceProductsOutput {
+  [key: string]: any
+}
+
+export interface MapToMedusaProductsInput extends MarketplaceProviderInput {
+  [key: string]: any
+}
+
+export interface MapToMedusaProductsOutput {
   [key: string]: any
 }
