@@ -1,6 +1,5 @@
 import {
-  AbstractFulfillmentProviderService,
-  isDefined
+  AbstractFulfillmentProviderService
 } from "@medusajs/framework/utils"
 import {
   Logger,
@@ -25,7 +24,8 @@ import { ApishipOptions } from "../types"
 import {
   getCheapestTariff,
   mapToApishipOrderRequest,
-  mapToApishipCalculatorRequest
+  mapToApishipCalculatorRequest,
+  registerApishipClient
 } from "../utils"
 import {
   getShippingOptionWorkflow,
@@ -66,6 +66,13 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     this.orderDocsApi_ = new OrderDocsApi(config)
     this.listsApi_ = new ListsApi(config)
     this.calculatorApi_ = new CalculatorApi(config)
+
+    registerApishipClient("apiship_apiship", {
+      ordersApi: this.ordersApi_,
+      orderDocsApi: this.orderDocsApi_,
+      listsApi: this.listsApi_,
+      calculatorApi: this.calculatorApi_,
+    })
   }
 
   async calculatePrice(
