@@ -7,7 +7,7 @@ export const POST = async (
 ) => {
 
   const response = await syncProductsMarketplaceWorkflow(req.scope).run({
-    input: { providerId: "mp_system_default" },
+    input: { providerId: "mp_wildberries_test" },
   })
 
   res.json(response.result)

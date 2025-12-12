@@ -1,4 +1,5 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import { resolve } from 'path'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -15,8 +16,18 @@ module.exports = defineConfig({
   },
   plugins: [
     {
-      resolve: "@gorgo/medusa-marketplace-wildberries",
-      options: {}
+      resolve: "@gorgo/medusa-marketplace",
+      options: {
+        providers: [
+          {
+            resolve: "@gorgo/medusa-marketplace-wildberries/providers/marketplace-wildberries",
+            id: "test",
+            options: {
+
+            }
+          }
+        ]
+      }
     }
   ],
 })
