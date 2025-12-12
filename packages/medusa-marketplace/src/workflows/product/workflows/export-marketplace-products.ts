@@ -24,12 +24,14 @@ export const exportMarketplaceProductsWorkflow = createWorkflow(
     const products = getProductsStep(input)
     const marketplaceProducts = mapProductsStep({
       providerId,
-      ...products
+      products
     })
     const startedAt = new Date()
     const exportResult = exportProductsStep({
       providerId,
-      marketplaceProducts
+      create: marketplaceProducts.create,
+      update: marketplaceProducts.update,
+      merge: marketplaceProducts.merge
     })
     const logResult = logMarketplaceEventWorkflow.runAsStep({
       input: {

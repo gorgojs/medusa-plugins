@@ -1,6 +1,16 @@
-import { MedusaService } from "@medusajs/framework/utils"
 import { Logger } from "@medusajs/medusa"
-import { ExportProductsInput, ExportProductsOutput, GetProductsInput, GetProductsOutput, IMarketplaceProvider, ImportProductsInput, ImportProductsOutput, MapProductsInput, MapProductsOutput, MarketplaceProviderRegistrationPrefix } from "../types"
+import {
+  ExportProductsInput,
+  ExportProductsOutput,
+  GetProductsInput,
+  GetProductsOutput,
+  IMarketplaceProvider,
+  ImportProductsInput,
+  ImportProductsOutput,
+  MapProductsInput,
+  MapProductsOutput,
+  MarketplaceProviderRegistrationPrefix
+} from "../types"
 
 type InjectedDependencies = {
   logger?: Logger
@@ -12,7 +22,7 @@ export default class MarketplaceProviderService {
   #logger: Logger
 
   constructor(container: InjectedDependencies) {
-    this.dependencies = container    
+    this.dependencies = container
     this.#logger = container["logger"]
       ? container.logger
       : (console as unknown as Logger)
