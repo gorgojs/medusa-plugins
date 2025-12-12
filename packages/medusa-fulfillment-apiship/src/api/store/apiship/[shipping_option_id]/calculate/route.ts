@@ -1,9 +1,10 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { calculateShippingOptionsPricesWorkflow } from "@medusajs/core-flows"
 
-export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
-  const { shipping_option_id, cart_id } = req.params
-
+export const POST = async (req: MedusaRequest<{ cart_id: string }>, res: MedusaResponse) => {
+  const { shipping_option_id } = req.params 
+  const { cart_id }  = req.body
+  // TODO: refactor middleware validate
   const { result } = await calculateShippingOptionsPricesWorkflow(
     req.scope
   ).run({

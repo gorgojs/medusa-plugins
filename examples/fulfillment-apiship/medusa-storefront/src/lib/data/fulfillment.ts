@@ -66,3 +66,34 @@ export const calculatePriceForShippingOption = async (
       return null
     })
 }
+
+export const retrieveCalculation = async (
+  cartId: string,
+  shippingOptionId: string
+) => {
+  const headers = {
+    ...(await getAuthHeaders()),
+
+  }
+
+  const next = {
+    ...(await getCacheOptions("fulfillment")),
+  }
+
+  const body = { cart_id: cartId }
+
+  return sdk.client
+    .fetch<Record<string, unknown>>(
+      `/store/apiship/${shippingOptionId}/calculate`,
+      {
+        method: "POST",
+        headers,
+        body,
+        next,
+      }
+    )
+    .then(({ data }) => data)
+    .catch((e) => {
+      return null
+    })
+}

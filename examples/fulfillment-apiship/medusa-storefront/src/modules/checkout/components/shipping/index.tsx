@@ -2,7 +2,7 @@
 
 import { Radio, RadioGroup } from "@headlessui/react"
 import { setShippingMethod } from "@lib/data/cart"
-import { calculatePriceForShippingOption } from "@lib/data/fulfillment"
+import { calculatePriceForShippingOption, retrieveCalculation } from "@lib/data/fulfillment"
 import { convertToLocale } from "@lib/util/money"
 import { CheckCircleSolid, Loader } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
@@ -86,8 +86,11 @@ const Shipping: React.FC<ShippingProps> = ({
     if (_shippingMethods?.length) {
       const promises = _shippingMethods
         .filter((sm) => sm.price_type === "calculated")
-        .map((sm) => calculatePriceForShippingOption(sm.id, cart.id))
-
+        .map(async (sm) => {
+          const calculation = await retrieveCalculation(cart.id, sm.id)
+          console.log(`Calculation to ${sm.name}`, calculation)
+          return calculatePriceForShippingOption(sm.id, cart.id)
+        })
       if (promises.length) {
         Promise.allSettled(promises).then((res) => {
           const pricesMap: Record<string, number> = {}
