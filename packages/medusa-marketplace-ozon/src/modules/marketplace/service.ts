@@ -33,7 +33,7 @@ class MarketplaceModuleService extends MedusaService({
     return result.id
   }
 
-  async getMarketplaceMappingSchema(): Promise<MappingSchema[]>  {
+  async getMarketplaceMappingSchema(): Promise<MappingSchema[]> {
     const schema = [
       {
         "ozon_category": {
@@ -116,19 +116,29 @@ class MarketplaceModuleService extends MedusaService({
           {
             "from": "attributes",
             "to": "attributes",
-            "default":[
-          { "id": 8229, "values": [{ "value": "Термофутболка" }] },
-          { "id": 4295, "values": [{ "value": "48" }, { "value": "50" }] },
-          { "id": 9163, "values": [{ "value": "Мужской" }] },
-          { "id": 10096, "values": [{ "value": "черный" }] },
-          { "id": 31, "values": [{ "value": "Нет бренда" }] },
-          { "id": 8292, "values": [{ "value": "prod_01KBHXW41JG2DVDQXQESNFRT85" }] }
-        ]
+            "default": [
+              { "id": 8229, "values": [{ "value": "Термофутболка" }] },
+              { "id": 9163, "values": [{ "value": "Мужской" }] },
+              { "id": 31, "values": [{ "value": "Нет бренда" }] },
+              { "id": 8292, "values": [{ "value": "prod_01KBHXW41JG2DVDQXQESNFRT85" }] }
+            ],
+            "children": [
+              {
+                "from": "options.option_id.opt_01KC3R4AH6EYX1SKZ1MK074875",
+                "to": "4295",
+                "default": ["48", "54", "58"]
+              },
+              {
+                "from": "options.option_id.opt_01KC3R4AH64XYH46RRWQ49S1VB",
+                "to": "10096",
+                "default": ["белый"]
+              },
+            ],
           }
         ]
       }
     ] as MappingSchema[]
-    
+
     return schema
   }
 }

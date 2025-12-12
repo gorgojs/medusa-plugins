@@ -22,28 +22,28 @@ export function setByPath(obj: any, path: string, value: unknown) {
   cur[parts[parts.length - 1]] = value
 }
 
-export function applyField<S>(
-  src: S,
-  dst: any,
-  rule: FieldMap,
-  ctx: MapCtx
-) {
-  if (rule.when) {
-    const condVal = getByPath(src as any, rule.when.path)
 
-    if ('exists' in rule.when && rule.when.exists) {
-      if (condVal === undefined || condVal === null) return
-    }
+export function normalizeToValuesArray(v: any): { value: string }[] {
+  if (v === undefined || v === null) return []
+  const arr = Array.isArray(v) ? v : [v]
+  return arr.filter((x) => x !== undefined && x !== null).map((x) => ({ value: String(x) }))
+}
 
-    if ('equals' in rule.when) {
-      if (condVal !== rule.when.equals) return
-    }
+export function ensureAttribute(attributes: any[], id: number) {
+  let attr = attributes.find((a) => Number(a?.id) === id)
+  if (!attr) {
+    attr = { id, values: [] }
+    attributes.push(attr)
   }
+  if (!Array.isArray(attr.values)) attr.values = []
+  return attr
+}
 
+export function evalRuleValue<S>(src: S, rule: FieldMap, ctx: MapCtx): any {
   let value = getByPath(src as any, rule.from)
 
-  if ((value === undefined || value === null) && 'default' in rule) {
-    value = rule.default
+  if ((value === undefined || value === null) && "default" in rule) {
+    value = (rule as any).default
   }
 
   if (rule.transform && value !== undefined) {
@@ -54,9 +54,62 @@ export function applyField<S>(
     value = fn(value, rule.transform.args, ctx)
   }
 
+  return value
+}
+
+
+export function applyField<S>(src: S, dst: any, rule: FieldMap, ctx: MapCtx) {
+  if (rule.when) {
+    const condVal = getByPath(src as any, rule.when.path)
+
+    if ("exists" in rule.when && rule.when.exists) {
+      if (condVal === undefined || condVal === null) return
+    }
+
+    if ("equals" in rule.when) {
+      if (condVal !== rule.when.equals) return
+    }
+  }
+
+  const value = evalRuleValue(src, rule, ctx)
   if (value === undefined) return
 
   setByPath(dst, rule.to, value)
+
+  if (!rule.children?.length) return
+
+  const parentOut = getByPath(dst, rule.to)
+
+  if (rule.to === "attributes" && Array.isArray(parentOut)) {
+    for (const child of rule.children) {
+      if (child.when) {
+        const condVal = getByPath(src as any, child.when.path)
+
+        if ("exists" in child.when && child.when.exists) {
+          if (condVal === undefined || condVal === null) continue
+        }
+
+        if ("equals" in child.when) {
+          if (condVal !== child.when.equals) continue
+        }
+      }
+
+      const childVal = evalRuleValue(src, child, ctx)
+      if (childVal === undefined) continue
+
+      const attrId = Number(child.to)
+      const attr = ensureAttribute(parentOut, attrId)
+      attr.values = normalizeToValuesArray(childVal)
+    }
+
+    return
+  }
+
+  if (parentOut && typeof parentOut === "object") {
+    for (const child of rule.children) {
+      applyField(src, parentOut, child, ctx)
+    }
+  }
 }
 
 export function mapObject<S, T>(source: S, config: MappingSchema): T {

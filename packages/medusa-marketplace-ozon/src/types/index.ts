@@ -42,6 +42,7 @@ export type FieldMap = {
   transform?: TransformCall
   default?: unknown
   when?: WhenClause
+  children?: FieldMap[]
 }
 
 export type MappingSchema = {
