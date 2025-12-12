@@ -4,10 +4,7 @@ import {
   DataTablePaginationState,
   useDataTable,
 } from "@medusajs/ui"
-// import { useQuery } from "@tanstack/react-query"
-import { useState } from "react"
-// import { useNavigate } from "react-router-dom"
-
+import { useMemo, useState } from "react"
 import { Header } from "../../../common/header"
 import type { Marketplace } from "../../../../types"
 
@@ -16,49 +13,44 @@ const PAGE_SIZE = 20
 export const MarketplaceListTable = ({
   stateModal,
   openModal,
-  marketplaces
+  marketplaces,
+  isLoading = false,
 }: {
-  marketplaces: any[],
-  stateModal: boolean,
+  marketplaces: Marketplace[]
+  stateModal: boolean
   openModal: () => void
+  isLoading?: boolean
 }) => {
   const columnHelper = createDataTableColumnHelper<Marketplace>()
 
-  // const navigate = useNavigate()
-  const limit = PAGE_SIZE
   const [pagination, setPagination] = useState<DataTablePaginationState>({
-    pageSize: limit,
+    pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
 
-  // const offset = useMemo(() => pagination.pageIndex * limit, [pagination])
 
-  // const { data, isLoading } = useQuery<FeedsResponse>({
-  //   queryFn: () =>
-  //     sdk.client.fetch(`/admin/feeds`, {
-  //       query: { limit, offset },
-  //     }),
-  //   queryKey: [["feeds"]],
-  // })
+  const pagedData = useMemo(() => {
+    const start = pagination.pageIndex * pagination.pageSize
+    const end = start + pagination.pageSize
+    return (marketplaces ?? []).slice(start, end)
+  }, [marketplaces, pagination.pageIndex, pagination.pageSize])
 
   const columns = [
-    columnHelper.accessor("title", { header: "Marketplace Title" }),
-    
+    columnHelper.accessor("title", { header: "Title" }),
+    columnHelper.accessor("provider" as any, { header: "Provider" }),
   ]
 
   const table = useDataTable({
     columns,
-    data: marketplaces || [],
-    getRowId: (row) => row.title,
+    data: pagedData,
+    getRowId: (row) => (row as any).id ?? row.title,
     rowCount: marketplaces?.length || 0,
-    isLoading: false,
+    isLoading,
     pagination: {
       state: pagination,
       onPaginationChange: setPagination,
     },
-    // onRowClick(_, row) {
-    //    navigate(`${row.id}`)
-    // },
+    
   })
 
   return (

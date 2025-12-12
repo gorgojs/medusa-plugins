@@ -4,10 +4,17 @@ import {
   Heading,
   Input,
   Label,
+  Select,
 } from "@medusajs/ui"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 import type { Marketplace } from "../../../../types"
+
+const PROVIDERS = [
+  { value: "Wildberries", label: "Wildberies" },
+  { value: "Ozon", label: "Ozon" },
+  { value: "Yandex Market", label: "Yandex Market" },
+]
 
 export const MarketplaceAddModal = ({
   stateModal,
@@ -15,77 +22,102 @@ export const MarketplaceAddModal = ({
   marketplaces,
   setMarketplaces,
 }: {
-  marketplaces: Marketplace[],
-  setMarketplaces: React.Dispatch<React.SetStateAction<Marketplace[]>>,
-  stateModal: boolean,
+  marketplaces: Marketplace[]
+  setMarketplaces: React.Dispatch<React.SetStateAction<Marketplace[]>>
+  stateModal: boolean
   closeModal: () => void
 }) => {
-  const [title, setTitle] = useState("")
+  const [title, setTitle] = useState<string>("")
+  const [provider, setProvider] = useState<string>("")
 
-  // const queryClient = useQueryClient()
-
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (newMarketplace: { marketplaces: Marketplace[] }) => {
-      // return sdk.client.fetch(`/admin/feeds`, {
-      //   method: "POST",
-      //   body: newFeed,
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // })
       setMarketplaces(newMarketplace.marketplaces)
       console.log("marketplaces", marketplaces)
-    },
-    onSuccess: () => {
-      // queryClient.invalidateQueries({
-      //   queryKey: [["marketplaces"]],
-      // })
-      // setTitle("")
     },
     onError: (error) => {
       console.error("Error creating feed:", error)
     },
   })
 
+  const canSubmit = title.trim().length > 0 && provider.length > 0
+
   const addMarketplace = () => {
-    const newMarketplaces: Marketplace[] = [{
-      title: title,
-    }]
+    if (!canSubmit) return
+
+    const newMarketplaces: Marketplace[] = [
+      {
+        title: title.trim(),
+        provider: provider
+      } as Marketplace,
+    ]
+
     mutate({ marketplaces: newMarketplaces })
   }
 
-
   return (
-    <FocusModal open={stateModal} onOpenChange={(open) => { if (!open) closeModal() }}>
+    <FocusModal
+      open={stateModal}
+      onOpenChange={(open) => {
+        if (!open) closeModal()
+      }}
+    >
       <FocusModal.Content>
-        <form className="flex h-full flex-col overflow-hidden">
-          <FocusModal.Header>
-            <div className="flex w-full items-center justify-between">
-              <Heading level="h1">Add marketplace connection</Heading>
+        <form
+          className="flex h-full flex-col overflow-hidden"
+          onSubmit={(e) => e.preventDefault()}
+        >
 
-              <div className="flex items-center gap-x-2">
-                <FocusModal.Close asChild>
-                  <Button size="small" variant="secondary">
-                    Cancel
-                  </Button>
-                </FocusModal.Close>
-                <Button onClick={addMarketplace} size="small" variant="primary">
-                  Save
-                </Button>
-              </div>
-            </div>
+          <FocusModal.Header>
           </FocusModal.Header>
 
-          <FocusModal.Body className="flex flex-1 flex-col items-center overflow-y-auto">
-            <div className="flex w-full max-w-lg flex-col gap-y-6 px-2 py-8">
-              <div className="flex flex-col gap-y-1">
-                <Label htmlFor="title" size="small">
-                  Marketplace title
-                </Label>
-                <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+
+          <FocusModal.Body className="flex size-full flex-col overflow-auto">
+            <div className="mx-auto flex w-full max-w-lg flex-col gap-y-6 px-2 py-8">
+              <div className="flex flex-col gap-y-4">
+                <div className="flex w-full items-center justify-between">
+                  <Heading level="h1">Add marketplace connection</Heading>
+                </div>
+
+                <div className="flex flex-col gap-y-2">
+                  <Label htmlFor="title" size="small">
+                    Title
+                  </Label>
+                  <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. My marketplace" />
+                </div>
+
+                <div className="flex flex-col gap-y-2">
+                  <Label size="small">Marketplace provider</Label>
+                  <Select value={provider} onValueChange={setProvider}>
+                    <Select.Trigger>
+                      <Select.Value placeholder="Select provider" />
+                    </Select.Trigger>
+
+                    <Select.Content>
+                      {PROVIDERS.map((p) => (
+                        <Select.Item key={p.value} value={p.value}>
+                          {p.label}
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select>
+                </div>
               </div>
             </div>
           </FocusModal.Body>
+
+          <FocusModal.Footer>
+            <div className="flex items-center gap-x-2">
+              <FocusModal.Close asChild>
+                <Button size="small" variant="secondary">
+                  Cancel
+                </Button>
+              </FocusModal.Close>
+              <Button type="button" onClick={addMarketplace} size="small">
+                Add
+              </Button>
+            </div>
+          </FocusModal.Footer>
         </form>
       </FocusModal.Content>
     </FocusModal>

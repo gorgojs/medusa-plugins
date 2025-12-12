@@ -32,4 +32,8 @@ export const config = defineRouteConfig({
   icon: Shopping,
 })
 
+export const handle = {
+  breadcrumb: () => "Marketplaces"
+}
+
 export default MarketplaceList
