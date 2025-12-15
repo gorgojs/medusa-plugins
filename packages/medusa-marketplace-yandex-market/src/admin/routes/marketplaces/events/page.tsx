@@ -10,7 +10,7 @@ import {
 import { defineRouteConfig } from "@medusajs/admin-sdk"
 import { useLoaderData } from "react-router-dom"
 import { useMemo, useState } from "react"
-import { marketplaceEventsStore, MarketplaceEvent } from "../../../lib/marketplace-events-store"
+import { marketplaceEventsStore, MarketplaceEvent } from "../../../lib/marketplace-events"
 
 const PAGE_SIZE = 1
 
