@@ -1,106 +1,126 @@
 import {
   Button,
   FocusModal,
-  Heading,
   Input,
   Label,
   Select,
+  Text,
 } from "@medusajs/ui"
-import { useMutation } from "@tanstack/react-query"
-import { useState } from "react"
-import type { Marketplace } from "../../../../types"
+import { marketplacesData } from "../../../../lib/marketplaces"
+import { useForm, Controller } from "react-hook-form"
+import * as zod from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 const PROVIDERS = [
   { value: "Wildberries", label: "Wildberies" },
   { value: "Ozon", label: "Ozon" },
   { value: "Yandex Market", label: "Yandex Market" },
-]
+] as const
+
+const allowedProviders = new Set<string>(PROVIDERS.map((p) => p.value))
+
+const MarketplaceAddSchema = zod.object({
+  title: zod.string().min(1, "Title is required"),
+  provider: zod
+    .string()
+    .min(1, "Select provider")
+    .refine((v) => allowedProviders.has(v), "Invalid provider"),
+})
+
+
+type MarketplaceAddValues = zod.infer<typeof MarketplaceAddSchema>
 
 export const MarketplaceAddModal = ({
   stateModal,
   closeModal,
-  marketplaces,
-  setMarketplaces,
+  onCreated,
 }: {
-  marketplaces: Marketplace[]
-  setMarketplaces: React.Dispatch<React.SetStateAction<Marketplace[]>>
   stateModal: boolean
   closeModal: () => void
+  onCreated: () => void
 }) => {
-  const [title, setTitle] = useState<string>("")
-  const [provider, setProvider] = useState<string>("")
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (newMarketplace: { marketplaces: Marketplace[] }) => {
-      setMarketplaces(newMarketplace.marketplaces)
-      console.log("marketplaces", marketplaces)
-    },
-    onError: (error) => {
-      console.error("Error creating feed:", error)
-    },
+  const form = useForm<MarketplaceAddValues>({
+    defaultValues: { title: "", provider: "" },
+    resolver: zodResolver(MarketplaceAddSchema),
+    mode: "onSubmit",
   })
 
-  const canSubmit = title.trim().length > 0 && provider.length > 0
+  const onSubmit = form.handleSubmit((data) => {
+    marketplacesData.create({
+      title: data.title.trim(),
+      provider: data.provider,
+    })
 
-  const addMarketplace = () => {
-    if (!canSubmit) return
-
-    const newMarketplaces: Marketplace[] = [
-      {
-        title: title.trim(),
-        provider: provider
-      } as Marketplace,
-    ]
-
-    mutate({ marketplaces: newMarketplaces })
-  }
+    form.reset({ title: "", provider: "" })
+    closeModal()
+    onCreated()
+  })
 
   return (
     <FocusModal
       open={stateModal}
       onOpenChange={(open) => {
-        if (!open) closeModal()
+        if (!open) {
+          form.reset({ title: "", provider: "" })
+          closeModal()
+        }
       }}
     >
       <FocusModal.Content>
-        <form
-          className="flex h-full flex-col overflow-hidden"
-          onSubmit={(e) => e.preventDefault()}
-        >
-
-          <FocusModal.Header>
-          </FocusModal.Header>
-
+        <form className="flex h-full flex-col overflow-hidden" onSubmit={onSubmit}>
+          <FocusModal.Header />
 
           <FocusModal.Body className="flex size-full flex-col overflow-auto">
             <div className="mx-auto flex w-full max-w-lg flex-col gap-y-6 px-2 py-8">
               <div className="flex flex-col gap-y-4">
                 <div className="flex w-full items-center justify-between">
-                  <Heading level="h1">Add marketplace connection</Heading>
+                  <Text className="flex w-full items-center justify-between">
+                    Add marketplace connection
+                  </Text>
                 </div>
 
                 <div className="flex flex-col gap-y-2">
-                  <Label htmlFor="title" size="small">
-                    Title
-                  </Label>
-                  <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. My marketplace" />
+                  <Label htmlFor="title" size="small">Title</Label>
+                  <Input
+                    id="title"
+                    placeholder="e.g. My marketplace"
+                    autoComplete="off"
+                    {...form.register("title")}
+                  />
+                  {form.formState.errors.title?.message && (
+                    <Text size="small" className="text-ui-fg-error">
+                      {form.formState.errors.title.message}
+                    </Text>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-y-2">
                   <Label size="small">Marketplace provider</Label>
-                  <Select value={provider} onValueChange={setProvider}>
-                    <Select.Trigger>
-                      <Select.Value placeholder="Select provider" />
-                    </Select.Trigger>
 
-                    <Select.Content>
-                      {PROVIDERS.map((p) => (
-                        <Select.Item key={p.value} value={p.value}>
-                          {p.label}
-                        </Select.Item>
-                      ))}
-                    </Select.Content>
-                  </Select>
+                  <Controller
+                    control={form.control}
+                    name="provider"
+                    render={({ field }) => (
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <Select.Trigger>
+                          <Select.Value placeholder="Select provider" />
+                        </Select.Trigger>
+
+                        <Select.Content>
+                          {PROVIDERS.map((p) => (
+                            <Select.Item key={p.value} value={p.value}>
+                              {p.label}
+                            </Select.Item>
+                          ))}
+                        </Select.Content>
+                      </Select>
+                    )}
+                  />
+                  {form.formState.errors.provider?.message && (
+                    <Text size="small" className="text-ui-fg-error">
+                      {form.formState.errors.provider.message}
+                    </Text>
+                  )}
                 </div>
               </div>
             </div>
@@ -109,11 +129,12 @@ export const MarketplaceAddModal = ({
           <FocusModal.Footer>
             <div className="flex items-center gap-x-2">
               <FocusModal.Close asChild>
-                <Button size="small" variant="secondary">
+                <Button size="small" variant="secondary" type="button">
                   Cancel
                 </Button>
               </FocusModal.Close>
-              <Button type="button" onClick={addMarketplace} size="small">
+              
+              <Button size="small" type="submit" isLoading={form.formState.isSubmitting}>
                 Add
               </Button>
             </div>

@@ -6,21 +6,23 @@ import {
 } from "@medusajs/ui"
 import { useMemo, useState } from "react"
 import { Header } from "../../../common/header"
+import { useNavigate } from "react-router-dom"
 import type { Marketplace } from "../../../../types"
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 5
 
 export const MarketplaceListTable = ({
   stateModal,
   openModal,
-  marketplaces,
-  isLoading = false,
+  marketplaces
 }: {
   marketplaces: Marketplace[]
   stateModal: boolean
   openModal: () => void
-  isLoading?: boolean
 }) => {
+
+  const navigate = useNavigate()
+  
   const columnHelper = createDataTableColumnHelper<Marketplace>()
 
   const [pagination, setPagination] = useState<DataTablePaginationState>({
@@ -29,11 +31,12 @@ export const MarketplaceListTable = ({
   })
 
 
-  const pagedData = useMemo(() => {
-    const start = pagination.pageIndex * pagination.pageSize
-    const end = start + pagination.pageSize
-    return (marketplaces ?? []).slice(start, end)
-  }, [marketplaces, pagination.pageIndex, pagination.pageSize])
+ const shownMarketplaces = useMemo(() => {
+    return marketplaces.slice(
+      pagination.pageIndex * pagination.pageSize,
+      (pagination.pageIndex + 1) * pagination.pageSize
+    )
+  }, [pagination])
 
   const columns = [
     columnHelper.accessor("title", { header: "Title" }),
@@ -42,15 +45,17 @@ export const MarketplaceListTable = ({
 
   const table = useDataTable({
     columns,
-    data: pagedData,
-    getRowId: (row) => (row as any).id ?? row.title,
+    data: shownMarketplaces,
+    getRowId: (row) => row.id,
     rowCount: marketplaces?.length || 0,
-    isLoading,
     pagination: {
       state: pagination,
       onPaginationChange: setPagination,
     },
-    
+
+    onRowClick: (_e, row) => {
+      navigate(`/marketplaces/${row.id}`)
+    },
   })
 
   return (

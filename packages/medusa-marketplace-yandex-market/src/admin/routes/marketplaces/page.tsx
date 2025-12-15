@@ -1,30 +1,16 @@
-import {
-  Container,
-  useToggleState
-} from "@medusajs/ui"
+import { Container, useToggleState } from "@medusajs/ui"
 import { Shopping } from "@medusajs/icons"
 import { defineRouteConfig } from "@medusajs/admin-sdk"
-import { useState } from "react"
+import { useLoaderData, useRevalidator } from "react-router-dom"
 import {
   MarketplaceAddModal,
-  MarketplaceListTable
+  MarketplaceListTable,
 } from "../../components/routes/marketplaces/marketplace-list"
 import { SingleColumnLayout } from "../../components/layout"
-import type { Marketplace } from "../../types"
+import { marketplacesData } from "../../lib/marketplaces"
 
-
-const MarketplaceList = () => {
-  const [marketplaces, setMarketplaces] = useState<Marketplace[]>([])
-  const [stateModal, openModal, closeModal] = useToggleState()
-
-  return (
-      <SingleColumnLayout>
-        <Container className="p-0">
-          <MarketplaceListTable stateModal={stateModal} openModal={openModal} marketplaces={marketplaces} />
-          <MarketplaceAddModal stateModal={stateModal} closeModal={closeModal} marketplaces={marketplaces} setMarketplaces={setMarketplaces} />
-        </Container>
-      </SingleColumnLayout>
-  )
+export async function loader() {
+  return { marketplaces: marketplacesData.list() }
 }
 
 export const config = defineRouteConfig({
@@ -33,7 +19,29 @@ export const config = defineRouteConfig({
 })
 
 export const handle = {
-  breadcrumb: () => "Marketplaces"
+  breadcrumb: () => "Marketplaces",
 }
 
-export default MarketplaceList
+export default function MarketplaceList() {
+  const { marketplaces } = useLoaderData() as Awaited<ReturnType<typeof loader>>
+  const revalidator = useRevalidator()
+  const [stateModal, openModal, closeModal] = useToggleState()
+
+  return (
+    <SingleColumnLayout>
+      <Container className="p-0">
+        <MarketplaceListTable
+          stateModal={stateModal}
+          openModal={openModal}
+          marketplaces={marketplaces}
+        />
+
+        <MarketplaceAddModal
+          stateModal={stateModal}
+          closeModal={closeModal}
+          onCreated={() => revalidator.revalidate()}
+        />
+      </Container>
+    </SingleColumnLayout>
+  )
+}
