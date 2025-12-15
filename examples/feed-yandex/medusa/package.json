@@ -25,13 +25,13 @@
   },
   "dependencies": {
     "@gorgo/medusa-feed-yandex": "latest",
-    "@medusajs/admin-sdk": "2.11.3",
-    "@medusajs/cli": "2.11.3",
-    "@medusajs/framework": "2.11.3",
-    "@medusajs/medusa": "2.11.3"
+    "@medusajs/admin-sdk": "2.12.2",
+    "@medusajs/cli": "2.12.2",
+    "@medusajs/framework": "2.12.2",
+    "@medusajs/medusa": "2.12.2"
   },
   "devDependencies": {
-    "@medusajs/test-utils": "2.11.3",
+    "@medusajs/test-utils": "2.12.2",
     "@swc/core": "1.5.7",
     "@swc/jest": "^0.2.36",
     "@types/jest": "^29.5.13",
