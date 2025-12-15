@@ -78,9 +78,9 @@ export function applyField<S>(src: S, dst: any, rule: FieldMap, ctx: MapCtx) {
 
   if (!rule.children?.length) return
 
-  const parentOut = getByPath(dst, rule.to)
+  const parent = getByPath(dst, rule.to)
 
-  if (rule.to === "attributes" && Array.isArray(parentOut)) {
+  if (rule.to === "attributes" && Array.isArray(parent)) {
     for (const child of rule.children) {
       if (child.when) {
         const condVal = getByPath(src as any, child.when.path)
@@ -98,16 +98,16 @@ export function applyField<S>(src: S, dst: any, rule: FieldMap, ctx: MapCtx) {
       if (childVal === undefined) continue
 
       const attrId = Number(child.to)
-      const attr = ensureAttribute(parentOut, attrId)
+      const attr = ensureAttribute(parent, attrId)
       attr.values = normalizeToValuesArray(childVal)
     }
 
     return
   }
 
-  if (parentOut && typeof parentOut === "object") {
+  if (parent && typeof parent === "object") {
     for (const child of rule.children) {
-      applyField(src, parentOut, child, ctx)
+      applyField(src, parent, child, ctx)
     }
   }
 }
