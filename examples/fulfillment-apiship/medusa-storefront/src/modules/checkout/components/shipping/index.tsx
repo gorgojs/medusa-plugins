@@ -109,21 +109,11 @@ const Shipping: React.FC<ShippingProps> = ({
     setIsLoadingPrices(true)
 
     if (_shippingMethods?.length) {
-      const allPointIds = new Set<number>()
-
       const promises = _shippingMethods
         .filter((sm) => sm.price_type === "calculated")
         .map(async (sm) => {
           const calculation = await retrieveCalculation(cart.id, sm.id) as any
           console.log(`Calculation to ${sm.name}`, calculation)
-
-          calculation?.deliveryToPoint?.forEach((block: any) => {
-            block.tariffs?.forEach((tariff: any) => {
-              tariff.pointIds?.forEach((id: number) => {
-                allPointIds.add(id)
-              })
-            })
-          })
 
           return calculatePriceForShippingOption(sm.id, cart.id)
         })
@@ -137,13 +127,6 @@ const Shipping: React.FC<ShippingProps> = ({
 
           setCalculatedPricesMap(pricesMap)
           setIsLoadingPrices(false)
-
-          const idsArray = Array.from(allPointIds)
-          if (idsArray.length) {
-            getPointAddresses(idsArray).then((points) => {
-              console.log("Apiship pickup addresses:", points)
-            })
-          }
         })
       }
     }
@@ -180,15 +163,43 @@ const Shipping: React.FC<ShippingProps> = ({
       return id
     })
 
-    await setShippingMethod({ cartId: cart.id, shippingMethodId: id })
-      .catch((err) => {
-        setShippingMethodId(currentId)
+    try {
+      await setShippingMethod({ cartId: cart.id, shippingMethodId: id })
+      if (variant === "shipping") {
+        const option = _shippingMethods?.find((sm) => sm.id === id)
 
-        setError(err.message)
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
+        if (option?.price_type === "calculated" && option.data?.deliveryType === 2) {
+          try {
+            const calculation = await retrieveCalculation(
+              cart.id,
+              id
+            ) as ApishipCalculation
+
+            const pointIds = extractPointIdsFromCalculation(calculation)
+            if (pointIds.length) {
+              const points = await getPointAddresses(pointIds)
+              console.log(
+                "Apiship pickup addresses for shipping option",
+                option.name,
+                points
+              )
+            } else {
+              console.log(
+                "No pickup points for this shipping option",
+                option.name
+              )
+            }
+          } catch (e) {
+            console.error("Failed to load pickup points for option", id, e)
+          }
+        }
+      }
+    } catch (err: any) {
+      setShippingMethodId(currentId)
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   useEffect(() => {
