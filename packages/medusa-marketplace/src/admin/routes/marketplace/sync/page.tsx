@@ -19,7 +19,7 @@ const SyncMarketplacePage = () => {
     setData(null)
 
     try {
-      const response = await sdk.client.fetch("/admin/marketplaces/products/sync", {
+      const response = await sdk.client.fetch("/admin/marketplaces/id_marketplace_id/products/sync", {
         method: "POST",
         body: {
           provider_id: "mp_wildberries_test",
