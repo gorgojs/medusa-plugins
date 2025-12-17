@@ -18,7 +18,15 @@ module.exports = defineConfig({
       sslmode: "disable",
     },
   },
+  featureFlags: {
+    backend_hmr: true
+  },
   plugins: [
+    {
+      resolve: "@gorgo/medusa-marketplace-ozon",
+      options: {
+      }
+    },
     {
       resolve: "@gorgo/medusa-marketplace",
       options: {
