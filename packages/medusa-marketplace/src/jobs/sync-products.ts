@@ -5,7 +5,7 @@ export default async function (container: MedusaContainer) {
   const logger = container.resolve("logger")
 
   const { result } = await syncMarketplaceProductsWorkflow(container).run({
-    input: { providerId: "mp_system_default" },
+    input: { providerId: "mp_ozon_test" },
   })
   logger.info(`Exported products to marketplace: ${JSON.stringify(result, null, 2)}`)
 }

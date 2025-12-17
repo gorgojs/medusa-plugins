@@ -63,11 +63,17 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
     return result
   }
 
-  async mapProductsToMarketplace(products: ProductDTO[], container: MedusaContainer) {
+  async exportProducts(data: ImportProductsInput): Promise<ImportProductsOutput> {
+
+    return true
+  }
+
+  async mapProducts(data, container: MedusaContainer) {
     // This is a mock implementation. Replace with actual mapping logic.
     const mappingSchemas = await this.getMarketplaceMappingSchema()
     let marketplaceProducts: V3ImportProductsRequestItem[] = []
-  
+    const products = data.products
+    console.log()
     mappingSchemas.forEach((schema) => {
       products.forEach((product) => {
         // TODO: what to do with multiple categories?

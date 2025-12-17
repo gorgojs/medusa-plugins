@@ -33,7 +33,7 @@ module.exports = defineConfig({
         providers: [
           {
             resolve: "@gorgo/medusa-marketplace-ozon/providers/marketplace-ozon",
-            id: "ozon",
+            id: "test",
             options: {
 
             }

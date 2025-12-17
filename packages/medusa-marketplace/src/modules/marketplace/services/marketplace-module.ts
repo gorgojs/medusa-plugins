@@ -45,7 +45,7 @@ export default class MarketplaceModuleService extends MedusaService({
 
   async logEvent(input: LogEventInput) {
     const result = await this.createMarketplaceEvents({
-      marketplace_id: process.env.DEFAULT_MARKETPLACE_ID as string,
+      marketplace_id: "01KCP77NYGDDHVP62T3ZH592PH",
       correlation_id: input.correlationId,
       direction: input.direction,
       entity_type: input.entityType,
