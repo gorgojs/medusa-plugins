@@ -1,4 +1,4 @@
-import { FieldMap, MappingSchema, MapCtx, TRANSFORMS } from "../../../types"
+import { FieldMap, MappingSchema, MapCtx, TRANSFORMS } from "../types"
 
 export function getByPath(obj: any, path: string): unknown {
   if (!path) return obj

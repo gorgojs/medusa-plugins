@@ -60,6 +60,7 @@
     "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
+    "@gorgo/medusa-marketplace": "*",
     "@medusajs/admin-sdk": "^2.11.2",
     "@medusajs/cli": "^2.11.2",
     "@medusajs/framework": "^2.11.2",
@@ -72,6 +73,7 @@
     "node": ">=20"
   },
   "dependencies": {
+    "@gorgo/medusa-marketplace": "file:.yalc/@gorgo/medusa-marketplace",
     "axios": "^1.13.2"
   }
 }

@@ -1,1 +1,1 @@
-export * from "./import-ozon-products"
+export * from "./import-marketplace-products"

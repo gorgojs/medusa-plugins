@@ -1,14 +1,14 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { batchProductsWorkflow, batchProductVariantsWorkflow } from "@medusajs/medusa/core-flows"
 import { productApi, withAuth } from "../../../lib/ozon-client"
-import { getMarketplaceProducts } from "../../../providers/marketplace/core"
+import { getMarketplaceProducts } from "../../../providers/marketplace-ozon/core"
 
 
-export type ImportOzonProductsStepInput = any
+export type ImportMarketplaceProductsStepInput = any
 
-export const importOzonProductsStep = createStep(
+export const importMarketplaceProductsStep = createStep(
   "import-ozon-products",
-  async (input: ImportOzonProductsStepInput, { container }) => {
+  async (input: ImportMarketplaceProductsStepInput, { container }) => {
     const query = container.resolve("query")
 
     const updatedVariantsIds: string[] = []

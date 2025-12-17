@@ -1,4 +1,5 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import { resolve } from 'path'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -17,24 +18,20 @@ module.exports = defineConfig({
       sslmode: "disable",
     },
   },
-  modules: [
-    {
-      resolve: "@gorgo/medusa-marketplace-ozon/modules/ozon-export",
-      options: {},
-    },
-    {
-      resolve: "@gorgo/medusa-marketplace-ozon/modules/marketplace",
-      options: {},
-    }
-  ],
   plugins: [
     {
-      resolve: "@gorgo/medusa-marketplace-ozon",
+      resolve: "@gorgo/medusa-marketplace",
       options: {
-        clientId: process.env.OZON_CLIENT_ID!,
-        apiKey: process.env.OZON_API_KEY!,
-        baseUrl: process.env.OZON_BASE_URL ?? "https://api-seller.ozon.ru",
-      },
-    },
+        providers: [
+          {
+            resolve: "@gorgo/medusa-marketplace-ozon/providers/marketplace-ozon",
+            id: "ozon",
+            options: {
+
+            }
+          }
+        ]
+      }
+    }
   ],
 })
