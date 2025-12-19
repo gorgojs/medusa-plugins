@@ -22,15 +22,15 @@
   },
   "keywords": [
     "medusa",
-    "plugin",
-    "medusa-plugin-other",
     "medusa-v2",
     "medusa-plugin",
     "medusa-plugin-integration",
     "medusa-plugin-payment",
     "medusa-payment",
     "medusa-payment-robokassa",
-    "robokassa-payment"
+    "robokassa-payment",
+    "robokassa",
+    "Робокасса"
   ],
   "scripts": {
     "build": "medusa plugin:build",

@@ -41,7 +41,8 @@
     "export",
     "catalog export",
     "yandex yml",
-    "marketplace"
+    "marketplace",
+    "Яндекс"
   ],
   "scripts": {
     "build": "medusa plugin:build",

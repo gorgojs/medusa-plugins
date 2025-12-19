@@ -22,8 +22,6 @@
   },
   "keywords": [
     "medusa",
-    "plugin",
-    "medusa-plugin-other",
     "medusa-v2",
     "medusa-plugin",
     "medusa-plugin-integration",
@@ -35,7 +33,10 @@
     "tinkoff",
     "tbank",
     "tbank-tkassa",
-    "tbank-payment"
+    "tbank-payment",
+    "Т-Касса",
+    "ткасса",
+    "Т-Банк"
   ],
   "scripts": {
     "build": "medusa plugin:build",
