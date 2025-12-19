@@ -1,5 +1,11 @@
 # @gorgo/medusa-feed-yandex
 
+## 0.2.18
+
+### Patch Changes
+
+- Fix keywords
+
 ## 0.2.17
 
 ### Patch Changes

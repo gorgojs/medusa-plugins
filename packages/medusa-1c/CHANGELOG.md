@@ -1,5 +1,11 @@
 # @gorgo/medusa-1c
 
+## 0.0.15
+
+### Patch Changes
+
+- Fix keywords
+
 ## 0.0.14
 
 ### Patch Changes

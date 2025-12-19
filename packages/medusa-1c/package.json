@@ -1,6 +1,6 @@
 {
 	"name": "@gorgo/medusa-1c",
-	"version": "0.0.14",
+	"version": "0.0.15",
 	"description": "Medusa plugin for integration with 1C:Enterprise",
 	"repository": {
 		"type": "git",
@@ -37,10 +37,10 @@
 		"medusa-plugin-other",
 		"medusa-plugin-erp",
 		"1c",
-    "1С",
+		"1С",
 		"1c:enterprise",
-    "1С:Предприятие",
-    "1С Предприятие"
+		"1С:Предприятие",
+		"1С Предприятие"
 	],
 	"scripts": {
 		"build": "medusa plugin:build",
