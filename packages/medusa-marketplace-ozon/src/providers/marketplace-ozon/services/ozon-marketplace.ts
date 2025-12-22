@@ -68,7 +68,7 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
     return true
   }
 
-  async mapProducts(data, container: MedusaContainer) {
+  async mapToMarketplaceProducts(data, container: MedusaContainer) {
     // This is a mock implementation. Replace with actual mapping logic.
     const mappingSchemas = await this.getMarketplaceMappingSchema()
     let marketplaceProducts: V3ImportProductsRequestItem[] = []
@@ -245,7 +245,7 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
   }
   
   
-  async mapProductsToMedusa(marketplaceProducts: V3ImportProductsRequestItem[]): Promise<ProductDTO[]> {
+  async mapToMedusaProducts(marketplaceProducts: V3ImportProductsRequestItem[]): Promise<ProductDTO[]> {
     // This is a mock implementation. Replace with actual mapping logic.
     const products = [] as ProductDTO[]
     // Save Ozon ids to product/product.variant metadata

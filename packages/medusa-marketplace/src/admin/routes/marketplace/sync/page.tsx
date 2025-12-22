@@ -22,7 +22,7 @@ const SyncMarketplacePage = () => {
       const response = await sdk.client.fetch("/admin/marketplaces/id_marketplace_id/products/sync", {
         method: "POST",
         body: {
-          provider_id: "mp_wildberries_test",
+          provider_id: "mp_ozon_test",
           ids: []
         }
       })

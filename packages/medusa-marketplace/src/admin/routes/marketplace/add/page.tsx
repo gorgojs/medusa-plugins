@@ -23,7 +23,7 @@ const AddMarketplacePage = () => {
         method: "POST",
         body: {
           data: {
-            provider_id: "wildberries",
+            provider_id: "ozon",
             credentials: {},
             settings: {},
             is_active: true
