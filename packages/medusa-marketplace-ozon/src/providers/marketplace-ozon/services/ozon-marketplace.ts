@@ -55,6 +55,7 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
     return products
   }
 
+
   async importProducts(data: ImportProductsInput): Promise<ImportProductsOutput> {
     const { container, ...input } = data
 
@@ -63,9 +64,17 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
     return result
   }
 
-  async exportProducts(data: ImportProductsInput): Promise<ImportProductsOutput> {
+  async exportProducts(data: ExportProductsInput): Promise<ExportProductsOutput> {
+    const { container, ...input } = data
 
-    return true
+    const products = await this.getProducts({
+      container,
+      ids: ["prod_01KCP70X2XK3YDKQXQ3F5C4Z42"],
+    } as any)
+
+    const items = await this.mapToMarketplaceProducts({ products }, container)
+
+    return { items } as any
   }
 
   async mapToMarketplaceProducts(data, container: MedusaContainer) {
@@ -79,7 +88,7 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
         // TODO: what to do with multiple categories?
         const intersect = product.categories?.filter(value => schema.medusa_categories.includes(value.id)).map(c => c.id) || []
         if (intersect.length == 0) return
-  
+
         product.variants.forEach(variant => {
           const { variants: _ignored, ...productWithoutVariants } = product
           const images = (variant.images && variant.images.length ? variant.images : product.images || []).map((img) => img.url)
@@ -88,9 +97,9 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
             ...variant,
             images,
           }
-  
+
           const combinedName = `${mergedProductVariant.product?.title ?? ""} ${variant.title ?? ""} ${mergedProductVariant.product?.description ?? ""}`.trim()
-  
+
           const mergedForMapping = {
             ...mergedProductVariant,
             combined_name: combinedName,
@@ -99,21 +108,21 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
             mergedForMapping,
             schema
           ) as V3ImportProductsRequestItem
-  
+
           ozonItem.price = String(ozonItem.price ?? 0)
           ozonItem.old_price = String(ozonItem.old_price ?? ozonItem.price)
-  
+
           if (schema.ozon_category) {
             ozonItem.type_id = schema.ozon_category.type_id
             ozonItem.description_category_id = schema.ozon_category.description_category_id
           }
-  
+
           marketplaceProducts.push(ozonItem)
         })
       })
     })
     return marketplaceProducts
-  
+
     /*[
     {
       "id": "prod_01KC3R4AH5YH8KCWPFB4AJYTP9",
@@ -177,7 +186,7 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
     }
   ]
   */
-  
+
     /*
       const marketplaceProducts: V3ImportProductsRequestItem[] = [
         {
@@ -243,15 +252,15 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
       ]
       */
   }
-  
-  
+
+
   async mapToMedusaProducts(marketplaceProducts: V3ImportProductsRequestItem[]): Promise<ProductDTO[]> {
     // This is a mock implementation. Replace with actual mapping logic.
     const products = [] as ProductDTO[]
     // Save Ozon ids to product/product.variant metadata
     return products
   }
-  
+
 
   async getMarketplaceMappingSchema(): Promise<MappingSchema[]> {
     const schema = [
@@ -261,7 +270,7 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
           "type_id": 93228
         },
         "medusa_categories": [
-          "pcat_01KBHXW40P2WV8P2GRK1FA96EH"
+          "pcat_01KCP70X23QSZN9QS0CJCF9R3R"
         ],
         "fields": [
           {
@@ -342,18 +351,21 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
               { "id": 31, "values": [{ "value": "Нет бренда" }] },
               { "id": 8292, "values": [{ "value": "prod_01KBHXW41JG2DVDQXQESNFRT85" }] }
             ],
-            "children": [
-              {
-                "from": "options.option_id.opt_01KC3R4AH6EYX1SKZ1MK074875",
-                "to": "4295",
-                "default": ["48", "54", "58"]
+          },
+          {
+            "to": "attributes",
+            optionRules: {
+              // Size
+              "opt_01KC3R4AH6EYX1SKZ1MK074875": {
+                attributeId: 4295,
+                default: ["48", "54", "58"]
               },
-              {
-                "from": "options.option_id.opt_01KC3R4AH64XYH46RRWQ49S1VB",
-                "to": "10096",
-                "default": ["белый"]
-              },
-            ],
+              // Color
+              "opt_01KC3R4AH64XYH46RRWQ49S1VB": {
+                attributeId: 10096,
+                default: ["белый"]
+              }
+            },
           }
         ]
       }

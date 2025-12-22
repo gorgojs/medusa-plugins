@@ -1,4 +1,4 @@
-import { FieldMap, MappingSchema, MapCtx, TRANSFORMS } from "../types"
+import { FieldMap, MappingSchema, MapCtx, TRANSFORMS, OptionRule, OptionRules } from "../types"
 
 export function getByPath(obj: any, path: string): unknown {
   if (!path) return obj
@@ -58,7 +58,72 @@ export function evalRuleValue<S>(src: S, rule: FieldMap, ctx: MapCtx): any {
 }
 
 
+function applyOptionRulesFromVariant(src: any, dst: any, optionRules: OptionRules) {
+  if (!dst.attributes) dst.attributes = []
+  if (!Array.isArray(dst.attributes)) dst.attributes = []
+
+  const opts = src?.options
+  if (!Array.isArray(opts)) return
+
+  for (const opt of opts) {
+    const optionId = String(opt?.option_id ?? "")
+    const raw = String(opt?.value ?? "")
+    if (!optionId || !raw) continue
+
+    const rule = optionRules[optionId]
+    if (!rule) continue
+
+    const attrId = Number(rule.attributeId)
+    if (!attrId) continue
+
+    let mapped: any = rule.valueMap?.[raw]
+    if (mapped === undefined) mapped = rule.default
+    if (mapped === undefined) continue
+
+    if (rule.lowercase) {
+      mapped = Array.isArray(mapped)
+        ? mapped.map((v) => String(v).toLowerCase())
+        : String(mapped).toLowerCase()
+    }
+
+    const attr = ensureAttribute(dst.attributes, attrId)
+    attr.values = normalizeToValuesArray(mapped)
+  }
+}
+
+
+function applyOptionDefaults(attributes: any[], optionRules: OptionRules) {
+  for (const rule of Object.values(optionRules)) {
+    const attrId = Number(rule.attributeId)
+    if (!attrId) continue
+
+    let mapped: any = rule.default
+    if (mapped === undefined) continue
+
+    if (rule.lowercase) {
+      mapped = Array.isArray(mapped)
+        ? mapped.map((v) => String(v).toLowerCase())
+        : String(mapped).toLowerCase()
+    }
+
+    const attr = ensureAttribute(attributes, attrId)
+    attr.values = normalizeToValuesArray(mapped)
+  }
+}
+
+
 export function applyField<S>(src: S, dst: any, rule: FieldMap, ctx: MapCtx) {
+  // if (rule.optionRules && rule.to === "attributes") {
+  //   applyOptionRulesFromVariant(src as any, dst, rule.optionRules as OptionRules)
+  //   return
+  // }
+
+  if (rule.optionRules && rule.to === "attributes") {
+    if (!Array.isArray(dst.attributes)) dst.attributes = []
+    applyOptionDefaults(dst.attributes, rule.optionRules as OptionRules)
+    return
+  }
+
   if (rule.when) {
     const condVal = getByPath(src as any, rule.when.path)
 

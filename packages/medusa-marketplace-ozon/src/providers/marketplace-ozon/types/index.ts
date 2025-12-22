@@ -43,6 +43,7 @@ export type FieldMap = {
   default?: unknown
   when?: WhenClause
   children?: FieldMap[]
+  optionRules?: OptionRules
 }
 
 export type MappingSchema = {
@@ -56,3 +57,12 @@ export type MappingSchema = {
   medusa_categories: string[],
   fields: FieldMap[]
 }
+
+export type OptionRule = {
+  attributeId?: number
+  valueMap?: Record<string, string | string[]>
+  default?: string | string[]
+  lowercase?: boolean
+}
+
+export type OptionRules = Record<string, OptionRule>
