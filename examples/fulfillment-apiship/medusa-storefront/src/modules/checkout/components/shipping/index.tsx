@@ -177,7 +177,7 @@ const Shipping: React.FC<ShippingProps> = ({
 
             const pointIds = extractPointIdsFromCalculation(calculation)
             if (pointIds.length) {
-              const points = await getPointAddresses(pointIds)
+              const points = await getPointAddresses(cart.id, option.id, pointIds)
               console.log(
                 "Apiship pickup addresses for shipping option",
                 option.name,

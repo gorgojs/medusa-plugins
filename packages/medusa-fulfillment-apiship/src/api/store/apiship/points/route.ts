@@ -1,33 +1,26 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { getApishipClient } from "../../../../providers/fulfillment-apiship/utils/apiship-registry"
+import { getPointsAddressesWorkflow } from "../../../../workflows/get-point-addresses"
 
 export const POST = async (
-  req: MedusaRequest<{ pointIds: Array<number> }>,
+  req: MedusaRequest<{
+    cartId: string
+    shippingOptionId: string
+    pointIds: Array<number>
+  }>,
   res: MedusaResponse
 ) => {
-  const { pointIds } = req.body
-  const filter = `id=[${pointIds.join(",")}]`
-  const fields = [
-    "id",
-    "providerKey",
-    "code",
-    "name",
-    "postIndex",
-    "city",
-    "region",
-    "address",
-    "lat",
-    "lng",
-    "phone",
-    "availableOperation",
-  ].join(",")
-  const limit = pointIds.length
-  const { listsApi } = getApishipClient()
-  const { data } = await listsApi.getListPoints({ filter, fields, limit })
-  const points = data.rows
+  const { cartId, shippingOptionId, pointIds } = req.body
+  const { result } = await getPointsAddressesWorkflow(
+    req.scope
+  ).run({
+    input: {
+      cartId,
+      shippingOptionId,
+      pointIds,
+    },
+  })
 
   res.status(200).json({
-    points,
-    meta: data.meta
+    points: result.points
   })
 }

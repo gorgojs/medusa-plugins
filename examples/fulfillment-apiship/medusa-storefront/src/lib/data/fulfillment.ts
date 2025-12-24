@@ -98,7 +98,11 @@ export const retrieveCalculation = async (
     })
 }
 
-export const getPointAddresses = async (pointIds: Array<number>) => {
+export const getPointAddresses = async (
+  cartId: string,
+  shippingOptionId: string,
+  pointIds: Array<number>
+) => {
   const headers = {
     ...(await getAuthHeaders()),
   }
@@ -107,7 +111,11 @@ export const getPointAddresses = async (pointIds: Array<number>) => {
     ...(await getCacheOptions("fulfillment")),
   }
 
-  const body = { pointIds }
+  const body = {
+    cartId,
+    shippingOptionId,
+    pointIds
+  }
 
   return sdk.client
     .fetch<{
