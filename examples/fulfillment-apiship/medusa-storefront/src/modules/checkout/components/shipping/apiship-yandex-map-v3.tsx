@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
-import { Button, Text } from "@medusajs/ui"
+import { useEffect, useMemo, useRef } from "react"
+import { Button, Text, clx } from "@medusajs/ui"
 
 export type ApishipPoint = {
   id: string
@@ -18,12 +18,36 @@ export type ApishipPoint = {
   phone?: string
 }
 
+export type ApishipTariffForPoint = {
+  key: string // unique key: providerKey:tariffProviderId:tariffId
+  providerKey: string
+  tariffProviderId?: string
+  tariffId?: number
+  tariffName?: string
+  deliveryCost?: number
+  deliveryCostOriginal?: number
+  daysMin?: number
+  daysMax?: number
+  calendarDaysMin?: number
+  calendarDaysMax?: number
+  workDaysMin?: number
+  workDaysMax?: number
+}
+
 type Props = {
   points: ApishipPoint[]
+  tariffsByPointId: Record<string, ApishipTariffForPoint[]>
   isLoading?: boolean
+
+  currencyCode: string // e.g. "rub"
   selectedPointId: string | null
+  selectedTariffKey: string | null
+
   onSelectPoint: (id: string) => void
-  onChoose?: () => void
+  onSelectTariff: (tariffKey: string) => void
+
+  onChoose: (payload: { point: ApishipPoint; tariff: ApishipTariffForPoint }) => void
+  onClearSelection: () => void
 }
 
 declare global {
@@ -39,7 +63,6 @@ function ensureYmaps3Loaded(params: { apikey: string; lang?: string }): Promise<
   if (window.__ymaps3_loading_promise__) return window.__ymaps3_loading_promise__
 
   window.__ymaps3_loading_promise__ = new Promise<void>((resolve, reject) => {
-    // Если скрипт уже есть — просто дождемся ymaps3.ready ниже
     const existing = document.querySelector<HTMLScriptElement>(
       'script[src^="https://api-maps.yandex.ru/v3/"]'
     )
@@ -65,29 +88,61 @@ function ensureYmaps3Loaded(params: { apikey: string; lang?: string }): Promise<
   return window.__ymaps3_loading_promise__
 }
 
+function formatMoneyMajorUnits(amount: number, currencyCode: string) {
+  try {
+    return new Intl.NumberFormat("ru-RU", {
+      style: "currency",
+      currency: currencyCode.toUpperCase(),
+      maximumFractionDigits: 2,
+    }).format(amount)
+  } catch {
+    return `${amount} ${currencyCode.toUpperCase()}`
+  }
+}
+
+function formatDays(t: ApishipTariffForPoint) {
+  const min = t.daysMin ?? 0
+  const max = t.daysMax ?? 0
+  if (!min && !max) return "—"
+  if (min === max) return `${min} дн.`
+  return `${min}–${max} дн.`
+}
+
 export default function ApishipYandexMapV3({
   points,
+  tariffsByPointId,
   isLoading,
+  currencyCode,
   selectedPointId,
+  selectedTariffKey,
   onSelectPoint,
+  onSelectTariff,
   onChoose,
+  onClearSelection,
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<any>(null)
   const markersRef = useRef<Map<string, { marker: any; el: HTMLDivElement }>>(new Map())
 
-  const [activePoint, setActivePoint] = useState<ApishipPoint | null>(null)
+  const activePoint = useMemo(() => {
+    return selectedPointId ? points.find((p) => p.id === selectedPointId) ?? null : null
+  }, [points, selectedPointId])
+
+  const activeTariffs = useMemo(() => {
+    if (!selectedPointId) return []
+    return tariffsByPointId[selectedPointId] ?? []
+  }, [tariffsByPointId, selectedPointId])
+
+  const selectedTariff = useMemo(() => {
+    if (!selectedTariffKey) return null
+    return activeTariffs.find((t) => t.key === selectedTariffKey) ?? null
+  }, [activeTariffs, selectedTariffKey])
 
   const firstCenter = useMemo<[number, number]>(() => {
     const p = points?.[0]
     if (p) return [p.lng, p.lat]
-    return [37.618423, 55.751244] // Москва
+    return [37.618423, 55.751244]
   }, [points])
-
-  useEffect(() => {
-    const sp = selectedPointId ? points.find((p) => p.id === selectedPointId) : null
-    setActivePoint(sp ?? null)
-  }, [selectedPointId, points])
 
   useEffect(() => {
     let cancelled = false
@@ -119,10 +174,7 @@ export default function ApishipYandexMapV3({
 
       if (!mapRef.current) {
         const map = new YMap(containerRef.current, {
-          location: {
-            center: firstCenter,
-            zoom: 10,
-          },
+          location: { center: firstCenter, zoom: 10 },
         })
 
         map.addChild(new YMapDefaultSchemeLayer({}))
@@ -141,7 +193,7 @@ export default function ApishipYandexMapV3({
       })
       markersRef.current.clear()
 
-      for (const p of points) {
+      points.forEach((p) => {
         const el = document.createElement("div")
         el.style.width = "12px"
         el.style.height = "12px"
@@ -158,14 +210,10 @@ export default function ApishipYandexMapV3({
           onSelectPoint(p.id)
         })
 
-        const marker = new YMapMarker(
-          { coordinates: [p.lng, p.lat] },
-          el
-        )
-
+        const marker = new YMapMarker({ coordinates: [p.lng, p.lat] }, el)
         map.addChild(marker)
         markersRef.current.set(p.id, { marker, el })
-      }
+      })
     }
 
     init().catch((e) => console.error(e))
@@ -197,28 +245,91 @@ export default function ApishipYandexMapV3({
         <div ref={containerRef} style={{ width: "100%", height: 420 }} />
 
         {activePoint && (
-          <div className="absolute left-3 top-3 right-3 md:right-auto md:w-[420px] rounded-rounded border bg-white/95 p-4 shadow">
+          <div className="absolute left-3 top-3 right-3 md:right-auto md:w-[460px] rounded-rounded border bg-white/95 p-4 shadow">
+            <button
+              type="button"
+              aria-label="Закрыть"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onClearSelection()
+              }}
+              className="absolute right-2 top-2 inline-flex h-8 w-8 items-center justify-center rounded-full border bg-white/70 text-ui-fg-subtle hover:bg-white"
+            >
+              ✕
+            </button>
+
             <Text className="txt-medium-plus">
               {activePoint.name || `ПВЗ #${activePoint.id}`}
             </Text>
+
             {activePoint.address && (
               <Text className="text-ui-fg-muted mt-1">{activePoint.address}</Text>
             )}
-            {(activePoint.phone || activePoint.providerKey) && (
-              <Text className="text-ui-fg-muted mt-1">
-                {activePoint.phone ? `📞 ${activePoint.phone}` : null}
-                {activePoint.phone && activePoint.providerKey ? " · " : null}
-                {activePoint.providerKey ? `Provider: ${activePoint.providerKey}` : null}
-              </Text>
-            )}
 
-            {onChoose && (
-              <div className="mt-3">
-                <Button size="small" onClick={onChoose}>
-                  Choose
-                </Button>
-              </div>
-            )}
+            <div className="mt-3">
+              <Text className="txt-medium-plus">Тарифы</Text>
+
+              {activeTariffs.length ? (
+                <div className="mt-2 flex flex-col gap-2 max-h-[220px] overflow-auto p-1">
+                  {activeTariffs.map((t) => {
+                    const active = t.key === selectedTariffKey
+                    const price =
+                      typeof t.deliveryCost === "number"
+                        ? formatMoneyMajorUnits(t.deliveryCost, currencyCode)
+                        : "—"
+
+                    return (
+                      <button
+                        key={t.key}
+                        type="button"
+                        onClick={() => onSelectTariff(t.key)}
+                        className={clx(
+                          "box-border text-left rounded-rounded border px-3 py-2 hover:shadow-borders-interactive-with-active",
+                          {
+                            "border-ui-border-interactive bg-ui-bg-subtle": active,
+                          }
+                        )}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <Text className="txt-small-plus">
+                            {t.tariffName || "Tariff"}{" "}
+                            <span className="text-ui-fg-muted">({t.providerKey})</span>
+                          </Text>
+                          <Text className="txt-small-plus">{price}</Text>
+                        </div>
+                        <Text className="text-ui-fg-muted mt-1 txt-small">
+                          Срок: {formatDays(t)}
+                        </Text>
+                      </button>
+                    )
+                  })}
+                </div>
+              ) : (
+                <Text className="text-ui-fg-muted mt-2">
+                  Для этой точки нет тарифов.
+                </Text>
+              )}
+            </div>
+
+            <div className="mt-3 flex items-center gap-2">
+              <Button
+                size="small"
+                onClick={() => {
+                  if (!activePoint || !selectedTariff) return
+                  onChoose({ point: activePoint, tariff: selectedTariff })
+                }}
+                disabled={!selectedTariff}
+              >
+                Choose
+              </Button>
+
+              {!selectedTariff && (
+                <Text className="text-ui-fg-muted txt-small">
+                  Выбери тариф, чтобы подтвердить выбор.
+                </Text>
+              )}
+            </div>
           </div>
         )}
       </div>

@@ -16,7 +16,10 @@ import Divider from "@modules/common/components/divider"
 import MedusaRadio from "@modules/common/components/radio"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
-import ApishipYandexMapV3, { ApishipPoint } from "./apiship-yandex-map-v3"
+import ApishipYandexMapV3, {
+  ApishipPoint,
+  ApishipTariffForPoint,
+} from "./apiship-yandex-map-v3"
 
 const PICKUP_OPTION_ON = "__PICKUP_ON"
 const PICKUP_OPTION_OFF = "__PICKUP_OFF"
@@ -30,60 +33,105 @@ type ApishipCalculation = {
   deliveryToPoint?: Array<{
     providerKey: string
     tariffs?: Array<{
+      tariffProviderId?: string
+      tariffId?: number
+      tariffName?: string
+      deliveryCost?: number
+      deliveryCostOriginal?: number
+      daysMin?: number
+      daysMax?: number
+      calendarDaysMin?: number
+      calendarDaysMax?: number
+      workDaysMin?: number
+      workDaysMax?: number
       pointIds?: number[]
     }>
   }>
 }
 
-const extractPointIdsFromCalculation = (calculation?: ApishipCalculation | null): number[] => {
-  const ids = new Set<number>()
+function buildTariffsByPointId(calculation?: ApishipCalculation | null) {
+  const map: Record<string, ApishipTariffForPoint[]> = {}
 
   calculation?.deliveryToPoint?.forEach((block) => {
+    const providerKey = block.providerKey
+
     block.tariffs?.forEach((tariff) => {
-      tariff.pointIds?.forEach((id) => ids.add(id))
+      const pointIds = tariff.pointIds ?? []
+      pointIds.forEach((pid) => {
+        const pointId = String(pid)
+
+        const key = `${providerKey}:${tariff.tariffProviderId ?? ""}:${tariff.tariffId ?? ""}`
+
+        const entry: ApishipTariffForPoint = {
+          key,
+          providerKey,
+          tariffProviderId: tariff.tariffProviderId,
+          tariffId: tariff.tariffId,
+          tariffName: tariff.tariffName,
+          deliveryCost: tariff.deliveryCost,
+          deliveryCostOriginal: tariff.deliveryCostOriginal,
+          daysMin: tariff.daysMin,
+          daysMax: tariff.daysMax,
+          calendarDaysMin: tariff.calendarDaysMin,
+          calendarDaysMax: tariff.calendarDaysMax,
+          workDaysMin: tariff.workDaysMin,
+          workDaysMax: tariff.workDaysMax,
+        }
+
+        if (!map[pointId]) map[pointId] = []
+
+        // dedupe within a point
+        if (!map[pointId].some((t) => t.key === key)) {
+          map[pointId].push(entry)
+        }
+      })
     })
   })
 
-  return Array.from(ids)
+  return map
+}
+
+function extractPointIdsFromTariffsMap(tariffsByPointId: Record<string, ApishipTariffForPoint[]>) {
+  return Object.keys(tariffsByPointId).map((id) => Number(id)).filter(Number.isFinite)
 }
 
 function formatAddress(address: HttpTypes.StoreCartAddress) {
-  if (!address) {
-    return ""
-  }
+  if (!address) return ""
 
   let ret = ""
-  if (address.address_1) {
-    ret += ` ${address.address_1}`
-  }
-
-  if (address.address_2) {
-    ret += `, ${address.address_2}`
-  }
-
-  if (address.postal_code) {
-    ret += `, ${address.postal_code} ${address.city}`
-  }
-
-  if (address.country_code) {
-    ret += `, ${address.country_code.toUpperCase()}`
-  }
-
+  if (address.address_1) ret += ` ${address.address_1}`
+  if (address.address_2) ret += `, ${address.address_2}`
+  if (address.postal_code) ret += `, ${address.postal_code} ${address.city}`
+  if (address.country_code) ret += `, ${address.country_code.toUpperCase()}`
   return ret
 }
 
-const Shipping: React.FC<ShippingProps> = ({
-  cart,
-  availableShippingMethods,
-}) => {
+function formatMoneyMajorUnits(amount: number, currencyCode: string) {
+  try {
+    return new Intl.NumberFormat("ru-RU", {
+      style: "currency",
+      currency: currencyCode.toUpperCase(),
+      maximumFractionDigits: 2,
+    }).format(amount)
+  } catch {
+    return `${amount} ${currencyCode.toUpperCase()}`
+  }
+}
+
+function formatDays(min?: number, max?: number) {
+  const a = min ?? 0
+  const b = max ?? 0
+  if (!a && !b) return "—"
+  if (a === b) return `${a} дн.`
+  return `${a}–${b} дн.`
+}
+
+const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingPrices, setIsLoadingPrices] = useState(true)
 
-  const [showPickupOptions, setShowPickupOptions] =
-    useState<string>(PICKUP_OPTION_OFF)
-  const [calculatedPricesMap, setCalculatedPricesMap] = useState<
-    Record<string, number>
-  >({})
+  const [showPickupOptions, setShowPickupOptions] = useState<string>(PICKUP_OPTION_OFF)
+  const [calculatedPricesMap, setCalculatedPricesMap] = useState<Record<string, number>>({})
   const [error, setError] = useState<string | null>(null)
   const [shippingMethodId, setShippingMethodId] = useState<string | null>(
     cart.shipping_methods?.at(-1)?.shipping_option_id || null
@@ -91,7 +139,21 @@ const Shipping: React.FC<ShippingProps> = ({
 
   const [isLoadingPoints, setIsLoadingPoints] = useState(false)
   const [apishipPoints, setApishipPoints] = useState<ApishipPoint[]>([])
+  const [tariffsByPointId, setTariffsByPointId] = useState<Record<string, ApishipTariffForPoint[]>>(
+    {}
+  )
+
   const [selectedPointId, setSelectedPointId] = useState<string | null>(null)
+  const [selectedTariffKey, setSelectedTariffKey] = useState<string | null>(null)
+  const [chosen, setChosen] = useState<{
+    pointId: string
+    pointLabel: string
+    tariffKey: string
+    tariffLabel: string
+    priceLabel: string
+    daysLabel: string
+  } | null>(null)
+
   const [activeToPointOptionId, setActiveToPointOptionId] = useState<string | null>(null)
 
   const searchParams = useSearchParams()
@@ -128,6 +190,7 @@ const Shipping: React.FC<ShippingProps> = ({
           const pricesMap: Record<string, number> = {}
           res
             .filter((r) => r.status === "fulfilled")
+            // @ts-expect-error – lib returns {id, amount}
             .forEach((p) => (pricesMap[p.value?.id || ""] = p.value?.amount!))
 
           setCalculatedPricesMap(pricesMap)
@@ -154,18 +217,22 @@ const Shipping: React.FC<ShippingProps> = ({
     router.push(pathname + "?step=payment", { scroll: false })
   }
 
-  const handleSetShippingMethod = async (
-    id: string,
-    variant: "shipping" | "pickup"
-  ) => {
+  const resetToPointSelection = () => {
+    setSelectedPointId(null)
+    setSelectedTariffKey(null)
+    setChosen(null)
+  }
+
+  const handleSetShippingMethod = async (id: string, variant: "shipping" | "pickup") => {
     setError(null)
 
     if (variant === "pickup") {
       setShowPickupOptions(PICKUP_OPTION_ON)
-      // hide apiship map
+
       setActiveToPointOptionId(null)
       setApishipPoints([])
-      setSelectedPointId(null)
+      setTariffsByPointId({})
+      resetToPointSelection()
     } else {
       setShowPickupOptions(PICKUP_OPTION_OFF)
     }
@@ -181,22 +248,23 @@ const Shipping: React.FC<ShippingProps> = ({
       await setShippingMethod({ cartId: cart.id, shippingMethodId: id })
 
       if (variant === "shipping") {
+        resetToPointSelection()
+
         const option = _shippingMethods?.find((sm) => sm.id === id)
 
-        // Only for ApiShip *-to-point
         if (option?.price_type === "calculated" && option.data?.deliveryType === 2) {
           setIsLoadingPoints(true)
           setActiveToPointOptionId(option.id)
           setApishipPoints([])
-          setSelectedPointId(null)
+          setTariffsByPointId({})
 
           try {
-            const calculation = await retrieveCalculation(
-              cart.id,
-              id
-            ) as ApishipCalculation
+            const calculation = (await retrieveCalculation(cart.id, id)) as ApishipCalculation
 
-            const pointIds = extractPointIdsFromCalculation(calculation)
+            const tariffsMap = buildTariffsByPointId(calculation)
+            setTariffsByPointId(tariffsMap)
+
+            const pointIds = extractPointIdsFromTariffsMap(tariffsMap)
 
             if (pointIds.length) {
               const resp = (await getPointAddresses(cart.id, option.id, pointIds)) as {
@@ -207,16 +275,17 @@ const Shipping: React.FC<ShippingProps> = ({
               setApishipPoints([])
             }
           } catch (e) {
-            console.error("Failed to load pickup points for option", id, e)
+            console.error("Failed to load pickup points/tariffs for option", id, e)
             setApishipPoints([])
+            setTariffsByPointId({})
           } finally {
             setIsLoadingPoints(false)
           }
         } else {
-          // Not a to-point option — hide map
           setActiveToPointOptionId(null)
           setApishipPoints([])
-          setSelectedPointId(null)
+          setTariffsByPointId({})
+          resetToPointSelection()
           setIsLoadingPoints(false)
         }
       }
@@ -235,6 +304,9 @@ const Shipping: React.FC<ShippingProps> = ({
   const shouldShowApishipMap = useMemo(() => {
     return isOpen && !!activeToPointOptionId && shippingMethodId === activeToPointOptionId
   }, [isOpen, activeToPointOptionId, shippingMethodId])
+
+  const canContinue =
+    !!cart.shipping_methods?.[0] && (!shouldShowApishipMap || !!chosen)
 
   return (
     <div className="bg-white">
@@ -358,19 +430,65 @@ const Shipping: React.FC<ShippingProps> = ({
                   <div className="mt-6">
                     <span className="font-medium txt-medium text-ui-fg-base">Пункт выдачи</span>
                     <span className="mb-4 text-ui-fg-muted txt-medium block">
-                      Выберите ПВЗ на карте
+                      Выберите ПВЗ и тариф
                     </span>
 
                     <ApishipYandexMapV3
                       points={apishipPoints}
+                      tariffsByPointId={tariffsByPointId}
                       isLoading={isLoadingPoints}
+                      currencyCode={cart.currency_code}
                       selectedPointId={selectedPointId}
-                      onSelectPoint={(id) => setSelectedPointId(id)}
-                      onChoose={() => {
-                        // пока просто пускаем дальше. позже сюда добавишь сохранение pointId в cart
-                        handleSubmit()
+                      selectedTariffKey={selectedTariffKey}
+                      onSelectPoint={(pid) => {
+                        setSelectedPointId(pid)
+                        setSelectedTariffKey(null)
+                        setChosen(null)
+                      }}
+                      onSelectTariff={(key) => {
+                        setSelectedTariffKey(key)
+                        setChosen(null)
+                      }}
+                      onClearSelection={() => {
+                        setSelectedPointId(null)
+                        setSelectedTariffKey(null)
+                        setChosen(null)
+                      }}
+                      onChoose={({ point, tariff }) => {
+                        setChosen({
+                          pointId: point.id,
+                          pointLabel: point.name || point.address || `ПВЗ #${point.id}`,
+                          tariffKey: tariff.key,
+                          tariffLabel: `${tariff.tariffName || "Tariff"} (${tariff.providerKey})`,
+                          priceLabel:
+                            typeof tariff.deliveryCost === "number"
+                              ? new Intl.NumberFormat("ru-RU", {
+                                style: "currency",
+                                currency: cart.currency_code.toUpperCase(),
+                                maximumFractionDigits: 2,
+                              }).format(tariff.deliveryCost)
+                              : "—",
+                          daysLabel:
+                            tariff.daysMin && tariff.daysMax
+                              ? tariff.daysMin === tariff.daysMax
+                                ? `${tariff.daysMin} дн.`
+                                : `${tariff.daysMin}–${tariff.daysMax} дн.`
+                              : "—",
+                        })
                       }}
                     />
+
+                    {chosen && (
+                      <div className="mt-4 rounded-rounded border p-4">
+                        <Text className="txt-medium-plus">Выбрано</Text>
+                        <Text className="text-ui-fg-muted mt-1">
+                          {chosen.pointLabel}
+                        </Text>
+                        <Text className="text-ui-fg-muted mt-1">
+                          {chosen.tariffLabel} · {chosen.priceLabel} · {chosen.daysLabel}
+                        </Text>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -411,9 +529,7 @@ const Shipping: React.FC<ShippingProps> = ({
                           <div className="flex flex-col">
                             <span className="text-base-regular">{option.name}</span>
                             <span className="text-base-regular text-ui-fg-muted">
-                              {formatAddress(
-                                option.service_zone?.fulfillment_set?.location?.address
-                              )}
+                              {formatAddress(option.service_zone?.fulfillment_set?.location?.address)}
                             </span>
                           </div>
                         </div>
@@ -439,14 +555,16 @@ const Shipping: React.FC<ShippingProps> = ({
               className="mt"
               onClick={handleSubmit}
               isLoading={isLoading}
-              disabled={!cart.shipping_methods?.[0] || (shouldShowApishipMap && !selectedPointId)}
+              disabled={!canContinue}
               data-testid="submit-delivery-option-button"
             >
               Continue to payment
             </Button>
 
-            {shouldShowApishipMap && !selectedPointId && (
-              <Text className="text-ui-fg-muted mt-2">Чтобы продолжить, выберите ПВЗ на карте.</Text>
+            {shouldShowApishipMap && !chosen && (
+              <Text className="text-ui-fg-muted mt-2">
+                Чтобы продолжить, выбери ПВЗ и нажми <b>Choose</b> на нужном тарифе.
+              </Text>
             )}
           </div>
         </>
