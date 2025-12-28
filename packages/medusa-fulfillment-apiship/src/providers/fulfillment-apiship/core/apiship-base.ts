@@ -86,46 +86,49 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       data,
       context
     )
-    const shippingOptionId = optionData.id! as string
-    const cartId = context.id! as string
+
+    const shippingOptionId = optionData.id as string
+    const cartId = context.id as string
     const key = `apiship:calc:${cartId}:${shippingOptionId}`
+
     const { result: cache } = await getCalculationWorkflow().run({
-      input: {
-        key
-      }
+      input: { key },
     })
-    let tarrifs = {}
+
+    let tariffs: any
     if (cache) {
       this.logger_.debug(`There is a record with a key: ${key} in cache`)
-      tarrifs = cache
+      tariffs = cache
     } else {
       try {
-        const { data: response } = await this.calculatorApi_.getCalculator(
-          { calculatorRequest }
-        )
-        tarrifs = response
-      } catch (e) {
-        throw this.buildError("An error occurred in calculatePrice", e)
-      }
+        const { data: response } = await this.calculatorApi_.getCalculator({ calculatorRequest })
+        tariffs = response
 
-      await saveCalculationWorkflow().run({
-        input: {
-          key,
-          data: tarrifs,
-        }
-      })
+        await saveCalculationWorkflow().run({
+          input: { key, data: tariffs },
+        })
+      } catch (error) {
+        throw this.buildError("An error occurred in calculatePrice", error as any)
+      }
     }
-    const cheapestTariff = getCheapestTariff(
-      tarrifs,
-      optionData.deliveryType! as number
-    )
-    const price = cheapestTariff.deliveryCost as number
+
+    const apiship = (data as any)?.apiship
+    let price: number | null = null
+
+    if (apiship && typeof apiship.deliveryCost === "number") {
+      price = apiship.deliveryCost
+    }
+    if (price === null) {
+      const cheapestTariff = getCheapestTariff(tariffs, optionData.deliveryType as number)
+      price = cheapestTariff.deliveryCost as number
+    }
     const result = {
       calculated_amount: price,
       is_calculated_price_tax_inclusive: true,
-      data: tarrifs
+      data: tariffs,
     }
-    this.logger_.debug(`ApiShip calculatorResponse: ${JSON.stringify(tarrifs, null, 2)}`)
+
+    this.logger_.debug(`ApiShip calculatorResponse: ${JSON.stringify(tariffs, null, 2)}`)
     this.logger_.debug(`Apiship.calculatePrice output: ${JSON.stringify(result, null, 2)}`)
     return result
   }

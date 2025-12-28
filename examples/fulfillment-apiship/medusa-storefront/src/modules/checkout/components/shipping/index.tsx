@@ -79,8 +79,6 @@ function buildTariffsByPointId(calculation?: ApishipCalculation | null) {
         }
 
         if (!map[pointId]) map[pointId] = []
-
-        // dedupe within a point
         if (!map[pointId].some((t) => t.key === key)) {
           map[pointId].push(entry)
         }
@@ -114,11 +112,8 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingPrices, setIsLoadingPrices] = useState(true)
 
-  const [showPickupOptions, setShowPickupOptions] =
-    useState<string>(PICKUP_OPTION_OFF)
-  const [calculatedPricesMap, setCalculatedPricesMap] = useState<
-    Record<string, number>
-  >({})
+  const [showPickupOptions, setShowPickupOptions] = useState<string>(PICKUP_OPTION_OFF)
+  const [calculatedPricesMap, setCalculatedPricesMap] = useState<Record<string, number>>({})
   const [error, setError] = useState<string | null>(null)
   const [shippingMethodId, setShippingMethodId] = useState<string | null>(
     cart.shipping_methods?.at(-1)?.shipping_option_id || null
@@ -126,14 +121,12 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
 
   const [isLoadingPoints, setIsLoadingPoints] = useState(false)
   const [apishipPoints, setApishipPoints] = useState<ApishipPoint[]>([])
-  const [tariffsByPointId, setTariffsByPointId] = useState<
-    Record<string, ApishipTariffForPoint[]>
-  >({})
+  const [tariffsByPointId, setTariffsByPointId] = useState<Record<string, ApishipTariffForPoint[]>>(
+    {}
+  )
 
   const [selectedPointId, setSelectedPointId] = useState<string | null>(null)
-  const [selectedTariffKey, setSelectedTariffKey] = useState<string | null>(
-    null
-  )
+  const [selectedTariffKey, setSelectedTariffKey] = useState<string | null>(null)
   const [chosen, setChosen] = useState<{
     pointId: string
     pointLabel: string
@@ -154,9 +147,7 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
     }
   } | null>(null)
 
-  const [activeToPointOptionId, setActiveToPointOptionId] = useState<string | null>(
-    null
-  )
+  const [activeToPointOptionId, setActiveToPointOptionId] = useState<string | null>(null)
 
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -167,12 +158,13 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
   const _shippingMethods = availableShippingMethods?.filter(
     (sm) => sm.service_zone?.fulfillment_set?.type !== "pickup"
   )
-
   const _pickupMethods = availableShippingMethods?.filter(
     (sm) => sm.service_zone?.fulfillment_set?.type === "pickup"
   )
-
   const hasPickupOptions = !!_pickupMethods?.length
+
+  const isApishipToPoint = (opt?: HttpTypes.StoreCartShippingOption | null) =>
+    opt?.price_type === "calculated" && (opt as any)?.data?.deliveryType === 2
 
   useEffect(() => {
     setIsLoadingPrices(true)
@@ -214,19 +206,46 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
     router.push(pathname + "?step=delivery", { scroll: false })
   }
 
+  const resetToPointSelection = () => {
+    setSelectedPointId(null)
+    setSelectedTariffKey(null)
+    setChosen(null)
+  }
+
+  const persistChosenTariffAndRecalculate = async (nextChosen: NonNullable<typeof chosen>) => {
+    if (!shippingMethodId) return
+
+    await setShippingMethod({
+      cartId: cart.id,
+      shippingMethodId,
+      data: {
+        apiship: nextChosen.apiship,
+      },
+    })
+
+    const calc = await calculatePriceForShippingOption(shippingMethodId, cart.id)
+    if (calc?.id && typeof calc.amount === "number") {
+      setCalculatedPricesMap((prev) => ({ ...prev, [calc.id]: calc.amount }))
+    }
+  }
+
   const handleSubmit = async () => {
     setError(null)
     try {
       setIsLoading(true)
+
       if (shouldShowApishipMap) {
         if (!chosen || !shippingMethodId) return
         await setShippingMethod({
           cartId: cart.id,
           shippingMethodId,
-          data: {
-            apiship: chosen.apiship,
-          },
+          data: { apiship: chosen.apiship },
         })
+
+        const calc = await calculatePriceForShippingOption(shippingMethodId, cart.id)
+        if (calc?.id && typeof calc.amount === "number") {
+          setCalculatedPricesMap((prev) => ({ ...prev, [calc.id]: calc.amount }))
+        }
       }
 
       router.push(pathname + "?step=payment", { scroll: false })
@@ -237,16 +256,7 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
     }
   }
 
-  const resetToPointSelection = () => {
-    setSelectedPointId(null)
-    setSelectedTariffKey(null)
-    setChosen(null)
-  }
-
-  const handleSetShippingMethod = async (
-    id: string,
-    variant: "shipping" | "pickup"
-  ) => {
+  const handleSetShippingMethod = async (id: string, variant: "shipping" | "pickup") => {
     setError(null)
 
     if (variant === "pickup") {
@@ -268,6 +278,7 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
     })
 
     try {
+      // обычная установка метода (без выбранного тарифа)
       await setShippingMethod({ cartId: cart.id, shippingMethodId: id })
 
       if (variant === "shipping") {
@@ -275,25 +286,21 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
 
         const option = _shippingMethods?.find((sm) => sm.id === id)
 
-        if (option?.price_type === "calculated" && (option as any).data?.deliveryType === 2) {
+        if (isApishipToPoint(option)) {
           setIsLoadingPoints(true)
-          setActiveToPointOptionId(option.id)
+          setActiveToPointOptionId(option!.id)
           setApishipPoints([])
           setTariffsByPointId({})
 
           try {
-            const calculation = (await retrieveCalculation(
-              cart.id,
-              id
-            )) as ApishipCalculation
-
+            const calculation = (await retrieveCalculation(cart.id, id)) as ApishipCalculation
             const tariffsMap = buildTariffsByPointId(calculation)
             setTariffsByPointId(tariffsMap)
 
             const pointIds = extractPointIdsFromTariffsMap(tariffsMap)
 
             if (pointIds.length) {
-              const resp = (await getPointAddresses(cart.id, option.id, pointIds)) as {
+              const resp = (await getPointAddresses(cart.id, option!.id, pointIds)) as {
                 points: ApishipPoint[]
               }
               setApishipPoints(resp?.points ?? [])
@@ -365,8 +372,8 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
               setSelectedTariffKey(null)
               setChosen(null)
             }}
-            onChoose={({ point, tariff }) => {
-              setChosen({
+            onChoose={async ({ point, tariff }) => {
+              const nextChosen = {
                 pointId: point.id,
                 pointLabel: point.name || point.address || `ПВЗ #${point.id}`,
                 tariffKey: tariff.key,
@@ -396,7 +403,19 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
                   daysMin: tariff.daysMin,
                   daysMax: tariff.daysMax,
                 },
-              })
+              } as NonNullable<typeof chosen>
+
+              setError(null)
+              setChosen(nextChosen)
+
+              try {
+                setIsLoading(true)
+                await persistChosenTariffAndRecalculate(nextChosen)
+              } catch (e: any) {
+                setError(e?.message ?? "Failed to save выбранный тариф")
+              } finally {
+                setIsLoading(false)
+              }
             }}
           />
 
@@ -419,18 +438,13 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
-          className={clx(
-            "flex flex-row text-3xl-regular gap-x-2 items-baseline",
-            {
-              "opacity-50 pointer-events-none select-none":
-                !isOpen && cart.shipping_methods?.length === 0,
-            }
-          )}
+          className={clx("flex flex-row text-3xl-regular gap-x-2 items-baseline", {
+            "opacity-50 pointer-events-none select-none":
+              !isOpen && cart.shipping_methods?.length === 0,
+          })}
         >
           Delivery
-          {!isOpen && (cart.shipping_methods?.length ?? 0) > 0 && (
-            <CheckCircleSolid />
-          )}
+          {!isOpen && (cart.shipping_methods?.length ?? 0) > 0 && <CheckCircleSolid />}
         </Heading>
 
         {!isOpen && cart?.shipping_address && cart?.billing_address && cart?.email && (
@@ -450,9 +464,7 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
         <>
           <div className="grid">
             <div className="flex flex-col">
-              <span className="font-medium txt-medium text-ui-fg-base">
-                Shipping method
-              </span>
+              <span className="font-medium txt-medium text-ui-fg-base">Shipping method</span>
               <span className="mb-4 text-ui-fg-muted txt-medium">
                 How would you like you order delivered
               </span>
@@ -464,9 +476,7 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
                   <RadioGroup
                     value={showPickupOptions}
                     onChange={() => {
-                      const id = _pickupMethods.find(
-                        (option) => !option.insufficient_inventory
-                      )?.id
+                      const id = _pickupMethods.find((option) => !option.insufficient_inventory)?.id
                       if (id) handleSetShippingMethod(id, "pickup")
                     }}
                   >
@@ -475,10 +485,7 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
                       data-testid="delivery-option-radio"
                       className={clx(
                         "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
-                        {
-                          "border-ui-border-interactive":
-                            showPickupOptions === PICKUP_OPTION_ON,
-                        }
+                        { "border-ui-border-interactive": showPickupOptions === PICKUP_OPTION_ON }
                       )}
                     >
                       <div className="flex items-center gap-x-4">
@@ -496,7 +503,7 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
                     if (v) return handleSetShippingMethod(v, "shipping")
                   }}
                 >
-                  {_shippingMethods?.map((option, idx) => {
+                  {_shippingMethods?.map((option) => {
                     const isDisabled =
                       option.price_type === "calculated" &&
                       !isLoadingPrices &&
@@ -505,7 +512,9 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
                     const isSelected = option.id === shippingMethodId
 
                     const shouldInsertAfterThis =
-                      shouldShowApishipMap && option.id === activeToPointOptionId && isSelected
+                      shouldShowApishipMap &&
+                      option.id === activeToPointOptionId &&
+                      isSelected
 
                     return (
                       <div key={option.id}>
@@ -517,8 +526,7 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
                             "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
                             {
                               "border-ui-border-interactive": isSelected,
-                              "hover:shadow-brders-none cursor-not-allowed":
-                                isDisabled,
+                              "hover:shadow-brders-none cursor-not-allowed": isDisabled,
                             }
                           )}
                         >
@@ -577,8 +585,7 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
                           "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
                           {
                             "border-ui-border-interactive": option.id === shippingMethodId,
-                            "hover:shadow-brders-none cursor-not-allowed":
-                              option.insufficient_inventory,
+                            "hover:shadow-brders-none cursor-not-allowed": option.insufficient_inventory,
                           }
                         )}
                       >
