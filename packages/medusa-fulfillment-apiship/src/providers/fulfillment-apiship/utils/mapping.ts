@@ -28,7 +28,10 @@ export function mapToApishipOrderRequest(
   providerKey: string,
   providerConnectId: string,
   tariffId: number,
-  isCod: boolean
+  deliveryType: number,
+  pickupType: number,
+  isCod: boolean,
+  pointOutId?: number
 ): OrderRequest {
   const stolstockLocationAddress = stockLocation.address!
 
@@ -142,10 +145,11 @@ export function mapToApishipOrderRequest(
       providerKey,
       providerConnectId,
       tariffId,
-      pickupType: 1,
-      deliveryType: 1,
+      pickupType,
+      deliveryType: 2,
       clientNumber: order.shipping_address?.customer_id || `medusa-${Date.now()}`,
       weight: totalWeight,
+      ...(deliveryType === 2 ? { pointOutId } : {}),
     },
     cost,
     sender,

@@ -157,12 +157,15 @@ class ApishipBase extends AbstractFulfillmentProviderService {
         input: {
           id: fulfillment.shipping_option_id!
         }
-      })
-    const providerKey = shippingOption.data?.providerKey as string
+      })      
     const isCod = shippingOption.data?.isCod as boolean
-
+    const deliveryType = shippingOption.data?.deliveryType as number
+    const pickupType = shippingOption.data?.pickupType as number
     // TODO: pick tariffId based on order data (inculing shipping address)
-    const tariffId = await this.pickTariffId("cdek")
+    const apishipData = data.apiship as any
+    const tariffId = apishipData?.tariffId
+    const providerKey = apishipData?.tariffProviderKey
+    const pointOutId = Number(apishipData?.pointId)
     const apishipOrder = mapToApishipOrderRequest(
       data,
       items,
@@ -170,15 +173,21 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       fulfillment,
       stockLocation,
       providerKey,
-      "1595",
+      "36253", // providerConnectId TODO: get from option data
       tariffId,
-      isCod
+      deliveryType,
+      pickupType,
+      isCod,
+      pointOutId
     )
+    console.log("--------------")
+    console.log(`Apiship order request: ${JSON.stringify(apishipOrder, null, 2)}`)
+    console.log("--------------")
     try {
       const response = await this.ordersApi_.addOrder({
         orderRequest: apishipOrder,
       })
-      const orderId = response.data.orderId // или просто response.orderId, см. тип
+      const orderId = response.data.orderId
       const labels = await this.getShipmentDocuments({ orderId })
       const result: CreateFulfillmentResult = {
         data: {
@@ -470,9 +479,9 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     context: any
   ): Promise<any> {
     this.logger_.debug(`Apiship.validateFulfillmentData input: ${JSON.stringify({ optionData, data, context }, null, 2)}`)
-
-    return {}
+    return data
   }
+
   async validateOption(data: any): Promise<boolean> {
     this.logger_.debug(`Apiship.validateOption input: ${JSON.stringify(data, null, 2)}`)
 

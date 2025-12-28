@@ -152,6 +152,18 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
     tariffLabel: string
     priceLabel: string
     daysLabel: string
+
+    apiship?: {
+      pointId: string
+      pointProviderKey?: string
+      tariffKey: string
+      tariffId?: number
+      tariffProviderId?: string
+      tariffProviderKey?: string
+      deliveryCost?: number
+      daysMin?: number
+      daysMax?: number
+    }
   } | null>(null)
 
   const [activeToPointOptionId, setActiveToPointOptionId] = useState<string | null>(null)
@@ -190,7 +202,6 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
           const pricesMap: Record<string, number> = {}
           res
             .filter((r) => r.status === "fulfilled")
-            // @ts-expect-error – lib returns {id, amount}
             .forEach((p) => (pricesMap[p.value?.id || ""] = p.value?.amount!))
 
           setCalculatedPricesMap(pricesMap)
@@ -213,8 +224,27 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
     router.push(pathname + "?step=delivery", { scroll: false })
   }
 
-  const handleSubmit = () => {
-    router.push(pathname + "?step=payment", { scroll: false })
+  const handleSubmit = async () => {
+    setError(null)
+    try {
+      setIsLoading(true)
+      if (shouldShowApishipMap) {
+        if (!chosen || !shippingMethodId) return
+        await setShippingMethod({
+          cartId: cart.id,
+          shippingMethodId,
+          data: {
+            apiship: chosen.apiship,
+          },
+        })
+      }
+
+      router.push(pathname + "?step=payment", { scroll: false })
+    } catch (e: any) {
+      setError(e?.message ?? "Failed to save delivery selection")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const resetToPointSelection = () => {
@@ -474,6 +504,18 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
                                 ? `${tariff.daysMin} дн.`
                                 : `${tariff.daysMin}–${tariff.daysMax} дн.`
                               : "—",
+
+                          apiship: {
+                            pointId: point.id,
+                            pointProviderKey: point.providerKey,
+                            tariffKey: tariff.key,
+                            tariffId: tariff.tariffId,
+                            tariffProviderId: tariff.tariffProviderId,
+                            tariffProviderKey: tariff.providerKey,
+                            deliveryCost: tariff.deliveryCost,
+                            daysMin: tariff.daysMin,
+                            daysMax: tariff.daysMax,
+                          },
                         })
                       }}
                     />
