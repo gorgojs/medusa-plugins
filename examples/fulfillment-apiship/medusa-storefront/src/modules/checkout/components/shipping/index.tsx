@@ -91,8 +91,12 @@ function buildTariffsByPointId(calculation?: ApishipCalculation | null) {
   return map
 }
 
-function extractPointIdsFromTariffsMap(tariffsByPointId: Record<string, ApishipTariffForPoint[]>) {
-  return Object.keys(tariffsByPointId).map((id) => Number(id)).filter(Number.isFinite)
+function extractPointIdsFromTariffsMap(
+  tariffsByPointId: Record<string, ApishipTariffForPoint[]>
+) {
+  return Object.keys(tariffsByPointId)
+    .map((id) => Number(id))
+    .filter(Number.isFinite)
 }
 
 function formatAddress(address: HttpTypes.StoreCartAddress) {
@@ -106,32 +110,15 @@ function formatAddress(address: HttpTypes.StoreCartAddress) {
   return ret
 }
 
-function formatMoneyMajorUnits(amount: number, currencyCode: string) {
-  try {
-    return new Intl.NumberFormat("ru-RU", {
-      style: "currency",
-      currency: currencyCode.toUpperCase(),
-      maximumFractionDigits: 2,
-    }).format(amount)
-  } catch {
-    return `${amount} ${currencyCode.toUpperCase()}`
-  }
-}
-
-function formatDays(min?: number, max?: number) {
-  const a = min ?? 0
-  const b = max ?? 0
-  if (!a && !b) return "—"
-  if (a === b) return `${a} дн.`
-  return `${a}–${b} дн.`
-}
-
 const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingPrices, setIsLoadingPrices] = useState(true)
 
-  const [showPickupOptions, setShowPickupOptions] = useState<string>(PICKUP_OPTION_OFF)
-  const [calculatedPricesMap, setCalculatedPricesMap] = useState<Record<string, number>>({})
+  const [showPickupOptions, setShowPickupOptions] =
+    useState<string>(PICKUP_OPTION_OFF)
+  const [calculatedPricesMap, setCalculatedPricesMap] = useState<
+    Record<string, number>
+  >({})
   const [error, setError] = useState<string | null>(null)
   const [shippingMethodId, setShippingMethodId] = useState<string | null>(
     cart.shipping_methods?.at(-1)?.shipping_option_id || null
@@ -139,12 +126,14 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
 
   const [isLoadingPoints, setIsLoadingPoints] = useState(false)
   const [apishipPoints, setApishipPoints] = useState<ApishipPoint[]>([])
-  const [tariffsByPointId, setTariffsByPointId] = useState<Record<string, ApishipTariffForPoint[]>>(
-    {}
-  )
+  const [tariffsByPointId, setTariffsByPointId] = useState<
+    Record<string, ApishipTariffForPoint[]>
+  >({})
 
   const [selectedPointId, setSelectedPointId] = useState<string | null>(null)
-  const [selectedTariffKey, setSelectedTariffKey] = useState<string | null>(null)
+  const [selectedTariffKey, setSelectedTariffKey] = useState<string | null>(
+    null
+  )
   const [chosen, setChosen] = useState<{
     pointId: string
     pointLabel: string
@@ -152,7 +141,6 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
     tariffLabel: string
     priceLabel: string
     daysLabel: string
-
     apiship?: {
       pointId: string
       pointProviderKey?: string
@@ -166,7 +154,9 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
     }
   } | null>(null)
 
-  const [activeToPointOptionId, setActiveToPointOptionId] = useState<string | null>(null)
+  const [activeToPointOptionId, setActiveToPointOptionId] = useState<string | null>(
+    null
+  )
 
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -191,7 +181,7 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
       const promises = _shippingMethods
         .filter((sm) => sm.price_type === "calculated")
         .map(async (sm) => {
-          const calculation = await retrieveCalculation(cart.id, sm.id) as any
+          const calculation = (await retrieveCalculation(cart.id, sm.id)) as any
           console.log(`Calculation to ${sm.name}`, calculation)
 
           return calculatePriceForShippingOption(sm.id, cart.id)
@@ -253,7 +243,10 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
     setChosen(null)
   }
 
-  const handleSetShippingMethod = async (id: string, variant: "shipping" | "pickup") => {
+  const handleSetShippingMethod = async (
+    id: string,
+    variant: "shipping" | "pickup"
+  ) => {
     setError(null)
 
     if (variant === "pickup") {
@@ -282,14 +275,17 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
 
         const option = _shippingMethods?.find((sm) => sm.id === id)
 
-        if (option?.price_type === "calculated" && option.data?.deliveryType === 2) {
+        if (option?.price_type === "calculated" && (option as any).data?.deliveryType === 2) {
           setIsLoadingPoints(true)
           setActiveToPointOptionId(option.id)
           setApishipPoints([])
           setTariffsByPointId({})
 
           try {
-            const calculation = (await retrieveCalculation(cart.id, id)) as ApishipCalculation
+            const calculation = (await retrieveCalculation(
+              cart.id,
+              id
+            )) as ApishipCalculation
 
             const tariffsMap = buildTariffsByPointId(calculation)
             setTariffsByPointId(tariffsMap)
@@ -335,21 +331,106 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
     return isOpen && !!activeToPointOptionId && shippingMethodId === activeToPointOptionId
   }, [isOpen, activeToPointOptionId, shippingMethodId])
 
-  const canContinue =
-    !!cart.shipping_methods?.[0] && (!shouldShowApishipMap || !!chosen)
+  const canContinue = !!cart.shipping_methods?.[0] && (!shouldShowApishipMap || !!chosen)
+
+  const renderApishipInsert = () => {
+    if (!shouldShowApishipMap) return null
+
+    return (
+      <div className="mt-2 mb-2">
+        <div className="mt-6">
+          <span className="font-medium txt-medium text-ui-fg-base">Пункт выдачи</span>
+          <span className="mb-4 text-ui-fg-muted txt-medium block">
+            Выберите ПВЗ и тариф
+          </span>
+
+          <ApishipYandexMapV3
+            points={apishipPoints}
+            tariffsByPointId={tariffsByPointId}
+            isLoading={isLoadingPoints}
+            currencyCode={cart.currency_code}
+            selectedPointId={selectedPointId}
+            selectedTariffKey={selectedTariffKey}
+            onSelectPoint={(pid) => {
+              setSelectedPointId(pid)
+              setSelectedTariffKey(null)
+              setChosen(null)
+            }}
+            onSelectTariff={(key) => {
+              setSelectedTariffKey(key)
+              setChosen(null)
+            }}
+            onClearSelection={() => {
+              setSelectedPointId(null)
+              setSelectedTariffKey(null)
+              setChosen(null)
+            }}
+            onChoose={({ point, tariff }) => {
+              setChosen({
+                pointId: point.id,
+                pointLabel: point.name || point.address || `ПВЗ #${point.id}`,
+                tariffKey: tariff.key,
+                tariffLabel: `${tariff.tariffName || "Tariff"} (${tariff.providerKey})`,
+                priceLabel:
+                  typeof tariff.deliveryCost === "number"
+                    ? new Intl.NumberFormat("ru-RU", {
+                        style: "currency",
+                        currency: cart.currency_code.toUpperCase(),
+                        maximumFractionDigits: 2,
+                      }).format(tariff.deliveryCost)
+                    : "—",
+                daysLabel:
+                  tariff.daysMin && tariff.daysMax
+                    ? tariff.daysMin === tariff.daysMax
+                      ? `${tariff.daysMin} дн.`
+                      : `${tariff.daysMin}–${tariff.daysMax} дн.`
+                    : "—",
+                apiship: {
+                  pointId: point.id,
+                  pointProviderKey: point.providerKey,
+                  tariffKey: tariff.key,
+                  tariffId: tariff.tariffId,
+                  tariffProviderId: tariff.tariffProviderId,
+                  tariffProviderKey: tariff.providerKey,
+                  deliveryCost: tariff.deliveryCost,
+                  daysMin: tariff.daysMin,
+                  daysMax: tariff.daysMax,
+                },
+              })
+            }}
+          />
+
+          {chosen && (
+            <div className="mt-4 rounded-rounded border p-4">
+              <Text className="txt-medium-plus">Выбрано</Text>
+              <Text className="text-ui-fg-muted mt-1">{chosen.pointLabel}</Text>
+              <Text className="text-ui-fg-muted mt-1">
+                {chosen.tariffLabel} · {chosen.priceLabel} · {chosen.daysLabel}
+              </Text>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
-          className={clx("flex flex-row text-3xl-regular gap-x-2 items-baseline", {
-            "opacity-50 pointer-events-none select-none":
-              !isOpen && cart.shipping_methods?.length === 0,
-          })}
+          className={clx(
+            "flex flex-row text-3xl-regular gap-x-2 items-baseline",
+            {
+              "opacity-50 pointer-events-none select-none":
+                !isOpen && cart.shipping_methods?.length === 0,
+            }
+          )}
         >
           Delivery
-          {!isOpen && (cart.shipping_methods?.length ?? 0) > 0 && <CheckCircleSolid />}
+          {!isOpen && (cart.shipping_methods?.length ?? 0) > 0 && (
+            <CheckCircleSolid />
+          )}
         </Heading>
 
         {!isOpen && cart?.shipping_address && cart?.billing_address && cart?.email && (
@@ -369,7 +450,9 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
         <>
           <div className="grid">
             <div className="flex flex-col">
-              <span className="font-medium txt-medium text-ui-fg-base">Shipping method</span>
+              <span className="font-medium txt-medium text-ui-fg-base">
+                Shipping method
+              </span>
               <span className="mb-4 text-ui-fg-muted txt-medium">
                 How would you like you order delivered
               </span>
@@ -381,7 +464,9 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
                   <RadioGroup
                     value={showPickupOptions}
                     onChange={() => {
-                      const id = _pickupMethods.find((option) => !option.insufficient_inventory)?.id
+                      const id = _pickupMethods.find(
+                        (option) => !option.insufficient_inventory
+                      )?.id
                       if (id) handleSetShippingMethod(id, "pickup")
                     }}
                   >
@@ -391,7 +476,8 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
                       className={clx(
                         "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
                         {
-                          "border-ui-border-interactive": showPickupOptions === PICKUP_OPTION_ON,
+                          "border-ui-border-interactive":
+                            showPickupOptions === PICKUP_OPTION_ON,
                         }
                       )}
                     >
@@ -410,129 +496,59 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
                     if (v) return handleSetShippingMethod(v, "shipping")
                   }}
                 >
-                  {_shippingMethods?.map((option) => {
+                  {_shippingMethods?.map((option, idx) => {
                     const isDisabled =
                       option.price_type === "calculated" &&
                       !isLoadingPrices &&
                       typeof calculatedPricesMap[option.id] !== "number"
 
+                    const isSelected = option.id === shippingMethodId
+
+                    const shouldInsertAfterThis =
+                      shouldShowApishipMap && option.id === activeToPointOptionId && isSelected
+
                     return (
-                      <Radio
-                        key={option.id}
-                        value={option.id}
-                        data-testid="delivery-option-radio"
-                        disabled={isDisabled}
-                        className={clx(
-                          "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
-                          {
-                            "border-ui-border-interactive": option.id === shippingMethodId,
-                            "hover:shadow-brders-none cursor-not-allowed": isDisabled,
-                          }
-                        )}
-                      >
-                        <div className="flex items-center gap-x-4">
-                          <MedusaRadio checked={option.id === shippingMethodId} />
-                          <span className="text-base-regular">{option.name}</span>
-                        </div>
-                        <span className="justify-self-end text-ui-fg-base">
-                          {option.price_type === "flat" ? (
-                            convertToLocale({
-                              amount: option.amount!,
-                              currency_code: cart?.currency_code,
-                            })
-                          ) : calculatedPricesMap[option.id] ? (
-                            convertToLocale({
-                              amount: calculatedPricesMap[option.id],
-                              currency_code: cart?.currency_code,
-                            })
-                          ) : isLoadingPrices ? (
-                            <Loader />
-                          ) : (
-                            "-"
+                      <div key={option.id}>
+                        <Radio
+                          value={option.id}
+                          data-testid="delivery-option-radio"
+                          disabled={isDisabled}
+                          className={clx(
+                            "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+                            {
+                              "border-ui-border-interactive": isSelected,
+                              "hover:shadow-brders-none cursor-not-allowed":
+                                isDisabled,
+                            }
                           )}
-                        </span>
-                      </Radio>
+                        >
+                          <div className="flex items-center gap-x-4">
+                            <MedusaRadio checked={isSelected} />
+                            <span className="text-base-regular">{option.name}</span>
+                          </div>
+                          <span className="justify-self-end text-ui-fg-base">
+                            {option.price_type === "flat" ? (
+                              convertToLocale({
+                                amount: option.amount!,
+                                currency_code: cart?.currency_code,
+                              })
+                            ) : calculatedPricesMap[option.id] ? (
+                              convertToLocale({
+                                amount: calculatedPricesMap[option.id],
+                                currency_code: cart?.currency_code,
+                              })
+                            ) : isLoadingPrices ? (
+                              <Loader />
+                            ) : (
+                              "-"
+                            )}
+                          </span>
+                        </Radio>
+                        {shouldInsertAfterThis ? renderApishipInsert() : null}
+                      </div>
                     )
                   })}
                 </RadioGroup>
-
-                {shouldShowApishipMap && (
-                  <div className="mt-6">
-                    <span className="font-medium txt-medium text-ui-fg-base">Пункт выдачи</span>
-                    <span className="mb-4 text-ui-fg-muted txt-medium block">
-                      Выберите ПВЗ и тариф
-                    </span>
-
-                    <ApishipYandexMapV3
-                      points={apishipPoints}
-                      tariffsByPointId={tariffsByPointId}
-                      isLoading={isLoadingPoints}
-                      currencyCode={cart.currency_code}
-                      selectedPointId={selectedPointId}
-                      selectedTariffKey={selectedTariffKey}
-                      onSelectPoint={(pid) => {
-                        setSelectedPointId(pid)
-                        setSelectedTariffKey(null)
-                        setChosen(null)
-                      }}
-                      onSelectTariff={(key) => {
-                        setSelectedTariffKey(key)
-                        setChosen(null)
-                      }}
-                      onClearSelection={() => {
-                        setSelectedPointId(null)
-                        setSelectedTariffKey(null)
-                        setChosen(null)
-                      }}
-                      onChoose={({ point, tariff }) => {
-                        setChosen({
-                          pointId: point.id,
-                          pointLabel: point.name || point.address || `ПВЗ #${point.id}`,
-                          tariffKey: tariff.key,
-                          tariffLabel: `${tariff.tariffName || "Tariff"} (${tariff.providerKey})`,
-                          priceLabel:
-                            typeof tariff.deliveryCost === "number"
-                              ? new Intl.NumberFormat("ru-RU", {
-                                style: "currency",
-                                currency: cart.currency_code.toUpperCase(),
-                                maximumFractionDigits: 2,
-                              }).format(tariff.deliveryCost)
-                              : "—",
-                          daysLabel:
-                            tariff.daysMin && tariff.daysMax
-                              ? tariff.daysMin === tariff.daysMax
-                                ? `${tariff.daysMin} дн.`
-                                : `${tariff.daysMin}–${tariff.daysMax} дн.`
-                              : "—",
-
-                          apiship: {
-                            pointId: point.id,
-                            pointProviderKey: point.providerKey,
-                            tariffKey: tariff.key,
-                            tariffId: tariff.tariffId,
-                            tariffProviderId: tariff.tariffProviderId,
-                            tariffProviderKey: tariff.providerKey,
-                            deliveryCost: tariff.deliveryCost,
-                            daysMin: tariff.daysMin,
-                            daysMax: tariff.daysMax,
-                          },
-                        })
-                      }}
-                    />
-
-                    {chosen && (
-                      <div className="mt-4 rounded-rounded border p-4">
-                        <Text className="txt-medium-plus">Выбрано</Text>
-                        <Text className="text-ui-fg-muted mt-1">
-                          {chosen.pointLabel}
-                        </Text>
-                        <Text className="text-ui-fg-muted mt-1">
-                          {chosen.tariffLabel} · {chosen.priceLabel} · {chosen.daysLabel}
-                        </Text>
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
           </div>
