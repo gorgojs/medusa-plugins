@@ -104,8 +104,13 @@ function formatDays(t: ApishipTariffForPoint) {
   const min = t.daysMin ?? 0
   const max = t.daysMax ?? 0
   if (!min && !max) return "—"
-  if (min === max) return `${min} дн.`
-  return `${min}–${max} дн.`
+  if (min === max) {
+    if(min === 1)
+      return `${min} day`
+    else 
+      return `${min} days`
+  }
+  return `${min}–${max} days`
 }
 
 export default function ApishipYandexMapV3({
@@ -232,11 +237,11 @@ export default function ApishipYandexMapV3({
   }, [selectedPointId])
 
   if (isLoading) {
-    return <Text className="text-ui-fg-muted">Загрузка ПВЗ…</Text>
+    return <Text className="text-ui-fg-muted">Loading pickup points…</Text>
   }
 
   if (!points?.length) {
-    return <Text className="text-ui-fg-muted">ПВЗ для этого способа доставки не найдены.</Text>
+    return <Text className="text-ui-fg-muted">No pickup points found for this shipping method.</Text>
   }
 
   return (
@@ -268,8 +273,7 @@ export default function ApishipYandexMapV3({
             )}
 
             <div className="mt-3">
-              <Text className="txt-medium-plus">Тарифы</Text>
-
+              <Text className="txt-medium-plus">Tariffs</Text>
               {activeTariffs.length ? (
                 <div className="mt-2 flex flex-col gap-2 max-h-[220px] overflow-auto p-1">
                   {activeTariffs.map((t) => {
@@ -299,7 +303,7 @@ export default function ApishipYandexMapV3({
                           <Text className="txt-small-plus">{price}</Text>
                         </div>
                         <Text className="text-ui-fg-muted mt-1 txt-small">
-                          Срок: {formatDays(t)}
+                          Delivery time: {formatDays(t)}
                         </Text>
                       </button>
                     )
@@ -326,7 +330,7 @@ export default function ApishipYandexMapV3({
 
               {!selectedTariff && (
                 <Text className="text-ui-fg-muted txt-small">
-                  Выбери тариф, чтобы подтвердить выбор.
+                  Select a tariff to confirm your choice.
                 </Text>
               )}
             </div>
@@ -336,7 +340,7 @@ export default function ApishipYandexMapV3({
 
       {!activePoint && (
         <Text className="text-ui-fg-muted mt-2">
-          Кликни по точке на карте, чтобы выбрать ПВЗ.
+          Click on a point on the map to select a pickup point.
         </Text>
       )}
     </div>

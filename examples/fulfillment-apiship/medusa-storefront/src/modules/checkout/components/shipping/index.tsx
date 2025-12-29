@@ -278,7 +278,6 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
     })
 
     try {
-      // обычная установка метода (без выбранного тарифа)
       await setShippingMethod({ cartId: cart.id, shippingMethodId: id })
 
       if (variant === "shipping") {
@@ -346,9 +345,9 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
     return (
       <div className="mt-2 mb-2">
         <div className="mt-6">
-          <span className="font-medium txt-medium text-ui-fg-base">Пункт выдачи</span>
+          <span className="font-medium txt-medium text-ui-fg-base">Order pickup point</span>
           <span className="mb-4 text-ui-fg-muted txt-medium block">
-            Выберите ПВЗ и тариф
+            Select a pickup point and tariff
           </span>
 
           <ApishipYandexMapV3
@@ -389,8 +388,8 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
                 daysLabel:
                   tariff.daysMin && tariff.daysMax
                     ? tariff.daysMin === tariff.daysMax
-                      ? `${tariff.daysMin} дн.`
-                      : `${tariff.daysMin}–${tariff.daysMax} дн.`
+                      ? (tariff.daysMin === 1 ? `${tariff.daysMin} day` : `${tariff.daysMin} days`)
+                      : `${tariff.daysMin}–${tariff.daysMax} days`
                     : "—",
                 apiship: {
                   pointId: point.id,
@@ -628,7 +627,7 @@ const Shipping: React.FC<ShippingProps> = ({ cart, availableShippingMethods }) =
 
             {shouldShowApishipMap && !chosen && (
               <Text className="text-ui-fg-muted mt-2">
-                Чтобы продолжить, выбери ПВЗ и нажми <b>Choose</b> на нужном тарифе.
+                To continue, select a pickup point and click <b>Choose</b> on the desired tariff.
               </Text>
             )}
           </div>
