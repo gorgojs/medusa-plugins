@@ -168,7 +168,6 @@ export function mapToApishipCalculatorRequest(
   const toAddress = {
     countryCode: shippingAddress.country_code!.toUpperCase(),
     index: shippingAddress?.postal_code,
-    cityGuid: "0c5b2444-70a0-4932-980c-b4dc0d3f02b5",
     addressString: [
       shippingAddress.city,
       shippingAddress.address_1,
@@ -182,7 +181,6 @@ export function mapToApishipCalculatorRequest(
   const fromAddress = {
     countryCode: stockLocationAddress.country_code.toUpperCase(),
     index: stockLocationAddress.postal_code!,
-    cityGuid: "0c5b2444-70a0-4932-980c-b4dc0d3f02b5",
     addressString: [
       stockLocationAddress.city,
       stockLocationAddress.address_1,
@@ -214,12 +212,12 @@ export function mapToApishipCalculatorRequest(
     const quantity = item.quantity as number
     return sum + unitPrice * quantity 
   }, 0)
-  const codCost = assessedCost
+  const codCost = optionData.isCod ? assessedCost : 0
   const includeFees = false
 
   const calculatorRequest: CalculatorRequest = {
-    to: toAddress,
-    from: fromAddress,
+    to: toAddress as any,
+    from: fromAddress as any,
     places,
     pickupTypes,
     deliveryTypes,
