@@ -21,6 +21,14 @@ const ITEM_WIDTH = 10
 const ITEM_HEIGHT = 10
 const ITEM_WEIGHT = 20
 
+function mapItemVatRateToEnum(item: any): ItemCostVatEnum {
+  const rate = item?.tax_lines?.[0]?.rate
+  if (rate === 0 || rate === 5 || rate === 7 || rate === 10 || rate === 20) {
+    return rate as ItemCostVatEnum
+  }
+  return -1 as ItemCostVatEnum
+}
+
 export function mapToApishipOrderRequest(
   apishipOptions: ApishipOptions,
   data: Record<string, unknown>,
@@ -87,7 +95,7 @@ export function mapToApishipOrderRequest(
       quantity: quantity,
       assessedCost: cost,
       cost: cost,
-      costVat: -1 as ItemCostVatEnum,
+      costVat: mapItemVatRateToEnum(item),
       ...((item as any).variant.barcode ? { barcode: (item as any).variant.barcode } : {}),
     }
   })
@@ -134,16 +142,13 @@ export function mapToApishipOrderRequest(
       const quantity = item.quantity
       return sum + cost * quantity
     }, 0)
-  const codCost = isCod ? itemsCost + deliveryCost : 0
+  const codCost = isCod ? itemsCost : 0
   const cost = {
-    deliveryCostVat,
+    ...(isCod ? { deliveryCostVat } : {}),
     codCost,
     assessedCost,
-    // TODO: in example DeliveryPayedByRecipient always false
-    isDeliveryPayedByRecipient: isCod ? true : false,
-    // TODO: in example there is no paymentMethod at all
+    isDeliveryPayedByRecipient: false,
     ...(isCod ? { paymentMethod: 3 as CostPaymentMethodEnum } : {}),
-    ...(isCod ? { deliveryCost } : {}),
   }
 
   const connectionsMap = apishipOptions.connectionsMap
