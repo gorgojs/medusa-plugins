@@ -13,6 +13,8 @@ import {
   type CostPaymentMethodEnum,
   type ItemCostVatEnum,
 } from "../../../lib/apiship-client"
+import { ApishipOptions } from "../types"
+import { MedusaError } from "@medusajs/framework/utils"
 
 const ITEM_LENGTH = 10
 const ITEM_WIDTH = 10
@@ -20,13 +22,13 @@ const ITEM_HEIGHT = 10
 const ITEM_WEIGHT = 20
 
 export function mapToApishipOrderRequest(
+  apishipOptions: ApishipOptions,
   data: Record<string, unknown>,
   items: Partial<Omit<FulfillmentItemDTO, "fulfillment">>[],
   order: Partial<FulfillmentOrderDTO>,
   fulfillment: Partial<Omit<FulfillmentDTO, "provider_id" | "data" | "items">>,
   stockLocation: StockLocationDTO,
   providerKey: string,
-  providerConnectId: string,
   tariffId: number,
   deliveryType: number,
   pickupType: number,
@@ -34,16 +36,18 @@ export function mapToApishipOrderRequest(
   pointOutId?: number
 ): OrderRequest {
   const stolstockLocationAddress = stockLocation.address!
-
+  const defaultSenderSettings = apishipOptions.defaultSenderSettings
   const sender = {
-    countryCode: stolstockLocationAddress.country_code.toUpperCase(),
-    city: stolstockLocationAddress.city!,
-    region: stolstockLocationAddress.province!,
-    addressString: `${stolstockLocationAddress.city}, ${stolstockLocationAddress.address_1}, ${stolstockLocationAddress.address_2}`,
-    // TODO: parse real sender contact name (mb in provider option?)
-    contactName: "Отправитель",
-    phone: stolstockLocationAddress.phone!,
-    companyName: stolstockLocationAddress.company!,
+    countryCode: stolstockLocationAddress.country_code || defaultSenderSettings.countryCode,
+    ...((stolstockLocationAddress.city && stolstockLocationAddress.address_1 && stolstockLocationAddress.address_2) ?
+      { addressString: `${stolstockLocationAddress.city}, ${stolstockLocationAddress.address_1}, ${stolstockLocationAddress.address_2}` } :
+      { addressString: defaultSenderSettings.addressString }),
+    contactName: defaultSenderSettings.contactName,
+    phone: stolstockLocationAddress.phone || defaultSenderSettings.phone,
+    ...(stolstockLocationAddress.province ? { region: stolstockLocationAddress.province } : {}),
+    ...(stolstockLocationAddress.city ? { city: stolstockLocationAddress.city } : {}),
+    ...(stolstockLocationAddress.company ? { companyName: stolstockLocationAddress.company } : {}),
+    ...(stolstockLocationAddress.postal_code ? { postIndex: stolstockLocationAddress.postal_code } : {}),
   }
 
   const shippingAddress = order.shipping_address!
@@ -63,6 +67,7 @@ export function mapToApishipOrderRequest(
     ...((order as any).customer.email ? { email: (order as any).customer.email } : {}),
   }
 
+  const defaultProductSizes = apishipOptions.defaultProductSizes
   const placeItems = order.items!.map((item, idx) => {
     const quantity = item.quantity
     const weight = (item as any).variant.weight
@@ -73,10 +78,10 @@ export function mapToApishipOrderRequest(
     const description = `${item.title} ${item.subtitle}`
     const cost = isCod ? item.unit_price : 0
     return {
-      height: height || ITEM_HEIGHT,
-      length: length || ITEM_LENGTH,
-      width: width || ITEM_WIDTH,
-      weight: weight || ITEM_WEIGHT,
+      length: length || defaultProductSizes?.length || ITEM_LENGTH,
+      width: width || defaultProductSizes?.width || ITEM_WIDTH,
+      height: height || defaultProductSizes?.height || ITEM_HEIGHT,
+      weight: weight || defaultProductSizes?.weight || ITEM_WEIGHT,
       articul: articul,
       description: description,
       quantity: quantity,
@@ -115,6 +120,7 @@ export function mapToApishipOrderRequest(
     items: placeItems,
   }
 
+  const deliveryCostVat = apishipOptions.deliveryCostVat
   const assessedCost =
     placeItems.reduce((sum, item) => {
       const assessedCost = item.assessedCost
@@ -130,7 +136,7 @@ export function mapToApishipOrderRequest(
     }, 0)
   const codCost = isCod ? itemsCost + deliveryCost : 0
   const cost = {
-    deliveryCostVat: -1 as CostDeliveryCostVatEnum,
+    deliveryCostVat,
     codCost,
     assessedCost,
     // TODO: in example DeliveryPayedByRecipient always false
@@ -140,13 +146,21 @@ export function mapToApishipOrderRequest(
     ...(isCod ? { deliveryCost } : {}),
   }
 
+  const connectionsMap = apishipOptions.connectionsMap
+  const providerConnectId = connectionsMap?.[providerKey]
+  if (!providerConnectId) {
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      "The `providerConnectId` parameter is missing or incorrectly specified."
+    )
+  }
   const apishipOrder: OrderRequest = {
     order: {
       providerKey,
       providerConnectId,
       tariffId,
       pickupType,
-      deliveryType: 2,
+      deliveryType,
       clientNumber: order.shipping_address?.customer_id || `medusa-${Date.now()}`,
       weight: totalWeight,
       ...(deliveryType === 2 ? { pointOutId } : {}),
@@ -210,7 +224,7 @@ export function mapToApishipCalculatorRequest(
   const assessedCost = context.items.reduce((sum, item) => {
     const unitPrice = item.unit_price as number
     const quantity = item.quantity as number
-    return sum + unitPrice * quantity 
+    return sum + unitPrice * quantity
   }, 0)
   const codCost = optionData.isCod ? assessedCost : 0
   const includeFees = false
@@ -227,20 +241,3 @@ export function mapToApishipCalculatorRequest(
   }
   return calculatorRequest
 }
-
-
-
-// export function mapToApishipOrderRequest(
-//   fulfillment: Record<string, unknown>
-// ): OrderReturnRequest {
-//   const order = {
-//     clientNumber: 
-
-//   }
-
-
-
-//   const apishipReturnOrder: OrderReturnRequest = {
-
-//   }
-// }

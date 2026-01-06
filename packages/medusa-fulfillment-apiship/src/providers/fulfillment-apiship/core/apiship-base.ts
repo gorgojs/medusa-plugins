@@ -163,28 +163,25 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     const isCod = shippingOption.data?.isCod as boolean
     const deliveryType = shippingOption.data?.deliveryType as number
     const pickupType = shippingOption.data?.pickupType as number
-    // TODO: pick tariffId based on order data (inculing shipping address)
     const apishipData = data.apiship as any
     const tariffId = apishipData?.tariffId
     const providerKey = apishipData?.tariffProviderKey
     const pointOutId = Number(apishipData?.pointId)
     const apishipOrder = mapToApishipOrderRequest(
+      this.options_,
       data,
       items,
       order!,
       fulfillment,
       stockLocation,
       providerKey,
-      "36253", // providerConnectId TODO: get from option data
       tariffId,
       deliveryType,
       pickupType,
       isCod,
       pointOutId
     )
-    console.log("--------------")
     console.log(`Apiship order request: ${JSON.stringify(apishipOrder, null, 2)}`)
-    console.log("--------------")
     try {
       const response = await this.ordersApi_.addOrder({
         orderRequest: apishipOrder,
