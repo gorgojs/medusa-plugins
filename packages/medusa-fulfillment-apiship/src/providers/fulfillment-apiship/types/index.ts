@@ -1,17 +1,12 @@
 import {
-  type OrderRequest,
-  type OrderReturnRequest,
-  type CalculatorRequest,
   type CostDeliveryCostVatEnum,
-  type CostPaymentMethodEnum,
-  type ItemCostVatEnum,
 } from "../../../lib/apiship-client"
 
 export const FulfillmentProviderKeys = {
   APISHIP: "apiship",
 }
 
-export interface DefaultSenderSettings {
+interface DefaultSenderSettings {
   /**
    * Код страны в соответствии с ISO 3166-1 alpha-2
    */
@@ -30,7 +25,7 @@ export interface DefaultSenderSettings {
   phone: string
 }
 
-export interface DefaultProductSizes {
+interface DefaultProductSizes {
   /**
    * Длина товара по умолчанию
    */
@@ -49,23 +44,15 @@ export interface DefaultProductSizes {
   weight: number
 }
 
-export interface ApishipOptions {
-  /**
-   * Токен ApiShip
-   */
-  token: string
-  /**
-   * Использовать тестовый режим
-   */
-  isTest?: boolean
-  /**
-   * Параменты магазина по умолчанию
-   */
-  defaultSenderSettings: DefaultSenderSettings
+interface Settings {
   /**
    * Настройка подключений
    */
   connectionsMap?: Record<string, string>
+  /**
+   * Параменты магазина по умолчанию
+   */
+  defaultSenderSettings: DefaultSenderSettings
   /**
    * Размеры товара по умолчанию
    */
@@ -80,4 +67,23 @@ export interface ApishipOptions {
    * 20 - НДС 20%
    */
   deliveryCostVat: CostDeliveryCostVatEnum
+  /**
+   * Использовать ли наложенный платеж при создании заказа
+   */
+  isCod?: boolean
+}
+
+export interface ApishipOptions {
+  /**
+   * Токен ApiShip
+   */
+  token: string
+  /**
+   * Использовать тестовый режим
+   */
+  isTest?: boolean
+  /**
+   * Параменты провайдера
+   */
+  settings: Settings
 }

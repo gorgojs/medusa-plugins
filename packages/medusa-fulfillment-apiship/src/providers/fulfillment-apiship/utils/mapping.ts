@@ -1,15 +1,12 @@
 import {
-  FulfillmentDTO,
-  FulfillmentItemDTO,
+  CustomerDTO,
   FulfillmentOrderDTO,
   StockLocationDTO,
   CalculateShippingOptionPriceDTO
 } from "@medusajs/framework/types"
 import {
   type OrderRequest,
-  type OrderReturnRequest,
   type CalculatorRequest,
-  type CostDeliveryCostVatEnum,
   type CostPaymentMethodEnum,
   type ItemCostVatEnum,
 } from "../../../lib/apiship-client"
@@ -31,20 +28,16 @@ function mapItemVatRateToEnum(item: any): ItemCostVatEnum {
 
 export function mapToApishipOrderRequest(
   apishipOptions: ApishipOptions,
-  data: Record<string, unknown>,
-  items: Partial<Omit<FulfillmentItemDTO, "fulfillment">>[],
-  order: Partial<FulfillmentOrderDTO>,
-  fulfillment: Partial<Omit<FulfillmentDTO, "provider_id" | "data" | "items">>,
+  order: Partial<FulfillmentOrderDTO> & { customer?: CustomerDTO },
   stockLocation: StockLocationDTO,
   providerKey: string,
   tariffId: number,
   deliveryType: number,
   pickupType: number,
-  isCod: boolean,
   pointOutId?: number
 ): OrderRequest {
   const stolstockLocationAddress = stockLocation.address!
-  const defaultSenderSettings = apishipOptions.defaultSenderSettings
+  const defaultSenderSettings = apishipOptions.settings.defaultSenderSettings
   const sender = {
     countryCode: stolstockLocationAddress.country_code || defaultSenderSettings.countryCode,
     ...((stolstockLocationAddress.city && stolstockLocationAddress.address_1 && stolstockLocationAddress.address_2) ?
@@ -72,10 +65,10 @@ export function mapToApishipOrderRequest(
     contactName: [shippingAddress.first_name, shippingAddress.last_name].join(" ") as string,
     phone: shippingAddress.phone!,
     ...(shippingAddress.company ? { companyName: shippingAddress.company } : {}),
-    ...((order as any).customer.email ? { email: (order as any).customer.email } : {}),
+    ...(order.customer?.email ? { email: order.customer?.email } : {}),
   }
 
-  const defaultProductSizes = apishipOptions.defaultProductSizes
+  const defaultProductSizes = apishipOptions.settings.defaultProductSizes
   const placeItems = order.items!.map((item, idx) => {
     const quantity = item.quantity
     const weight = (item as any).variant.weight
@@ -83,8 +76,8 @@ export function mapToApishipOrderRequest(
     const length = (item as any).variant.length
     const width = (item as any).variant.width
     const articul = (item as any).variant.sku
-    const description = `${item.title} ${item.subtitle}`
-    const cost = isCod ? item.unit_price : 0
+    const description = `${item.title} ${item.subtitle}` // TODO: clarify
+    const cost = apishipOptions.settings.isCod ? item.unit_price : 0
     return {
       length: length || defaultProductSizes?.length || ITEM_LENGTH,
       width: width || defaultProductSizes?.width || ITEM_WIDTH,
@@ -128,7 +121,7 @@ export function mapToApishipOrderRequest(
     items: placeItems,
   }
 
-  const deliveryCostVat = apishipOptions.deliveryCostVat
+  const deliveryCostVat = apishipOptions.settings.deliveryCostVat
   const assessedCost =
     placeItems.reduce((sum, item) => {
       const assessedCost = item.assessedCost
@@ -142,16 +135,16 @@ export function mapToApishipOrderRequest(
       const quantity = item.quantity
       return sum + cost * quantity
     }, 0)
-  const codCost = isCod ? itemsCost : 0
+  const codCost = apishipOptions.settings.isCod ? itemsCost : 0
   const cost = {
-    ...(isCod ? { deliveryCostVat } : {}),
+    ...(apishipOptions.settings.isCod ? { deliveryCostVat } : {}),
     codCost,
     assessedCost,
     isDeliveryPayedByRecipient: false,
-    ...(isCod ? { paymentMethod: 3 as CostPaymentMethodEnum } : {}),
+    ...(apishipOptions.settings.isCod ? { paymentMethod: 3 as CostPaymentMethodEnum } : {}),
   }
 
-  const connectionsMap = apishipOptions.connectionsMap
+  const connectionsMap = apishipOptions.settings.connectionsMap
   const providerConnectId = connectionsMap?.[providerKey]
   if (!providerConnectId) {
     throw new MedusaError(

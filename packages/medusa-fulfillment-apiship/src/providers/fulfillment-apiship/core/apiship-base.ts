@@ -50,7 +50,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
 
   constructor({ logger }: InjectedDependencies, options: ApishipOptions) {
     super()
-    this.options_ = options
+    this.options_ = options // TODO: validate options
     this.logger_ = logger
 
     this.serverUrl_ = options.isTest
@@ -160,7 +160,6 @@ class ApishipBase extends AbstractFulfillmentProviderService {
           id: fulfillment.shipping_option_id!
         }
       })      
-    const isCod = shippingOption.data?.isCod as boolean
     const deliveryType = shippingOption.data?.deliveryType as number
     const pickupType = shippingOption.data?.pickupType as number
     const apishipData = data.apiship as any
@@ -169,19 +168,14 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     const pointOutId = Number(apishipData?.pointId)
     const apishipOrder = mapToApishipOrderRequest(
       this.options_,
-      data,
-      items,
       order!,
-      fulfillment,
       stockLocation,
       providerKey,
       tariffId,
       deliveryType,
       pickupType,
-      isCod,
       pointOutId
     )
-    console.log(`Apiship order request: ${JSON.stringify(apishipOrder, null, 2)}`)
     try {
       const response = await this.ordersApi_.addOrder({
         orderRequest: apishipOrder,
@@ -464,6 +458,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
 
     return [] as never[]
   }
+
   async retrieveDocuments(
     fulfillmentData: any,
     documentType: any
@@ -472,6 +467,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
 
     return
   }
+
   async validateFulfillmentData(
     optionData: any,
     data: any,
@@ -484,6 +480,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
   async validateOption(data: any): Promise<boolean> {
     this.logger_.debug(`Apiship.validateOption input: ${JSON.stringify(data, null, 2)}`)
 
+    // TODO: implement validation logic
     return true
   }
 
