@@ -83,7 +83,6 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     this.logger_.debug(`Apiship.calculatePrice input: ${JSON.stringify({ optionData, data, context }, null, 2)}`)
     const calculatorRequest = mapToApishipCalculatorRequest(
       optionData,
-      data,
       context
     )
 

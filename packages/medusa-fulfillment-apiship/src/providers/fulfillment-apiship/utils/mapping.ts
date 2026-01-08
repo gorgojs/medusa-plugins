@@ -1,7 +1,9 @@
 import {
   CustomerDTO,
   FulfillmentOrderDTO,
+  ProductVariantDTO,
   StockLocationDTO,
+  OrderShippingMethodTaxLineDTO,
   CalculateShippingOptionPriceDTO
 } from "@medusajs/framework/types"
 import {
@@ -13,12 +15,26 @@ import {
 import { ApishipOptions } from "../types"
 import { MedusaError } from "@medusajs/framework/utils"
 
+type OrderItem = NonNullable<FulfillmentOrderDTO["items"]>[number] & {
+  variant?: ProductVariantDTO
+  tax_lines?: OrderShippingMethodTaxLineDTO[];
+}
+
+type CartItem = NonNullable<CalculateShippingOptionPriceDTO["context"]["items"]>[number] & {
+  variant?: {
+    weight?: number | null
+    height?: number | null
+    length?: number | null
+    width?: number | null
+  }
+}
+
 const ITEM_LENGTH = 10
 const ITEM_WIDTH = 10
 const ITEM_HEIGHT = 10
 const ITEM_WEIGHT = 20
 
-function mapItemVatRateToEnum(item: any): ItemCostVatEnum {
+function mapItemVatRateToEnum(item: OrderItem): ItemCostVatEnum {
   const rate = item?.tax_lines?.[0]?.rate
   if (rate === 0 || rate === 5 || rate === 7 || rate === 10 || rate === 20) {
     return rate as ItemCostVatEnum
@@ -69,27 +85,29 @@ export function mapToApishipOrderRequest(
   }
 
   const defaultProductSizes = apishipOptions.settings.defaultProductSizes
-  const placeItems = order.items!.map((item, idx) => {
+  const items = (order.items ?? []) as OrderItem[]
+  const placeItems = items!.map((item) => {
     const quantity = item.quantity
-    const weight = (item as any).variant.weight
-    const height = (item as any).variant.height
-    const length = (item as any).variant.length
-    const width = (item as any).variant.width
-    const articul = (item as any).variant.sku
-    const description = `${item.title} ${item.subtitle}` // TODO: clarify
+    const weight = item.variant?.weight
+    const height = item.variant?.height
+    const length = item.variant?.length
+    const width = item.variant?.width
+    const articul = item.variant?.sku ?? undefined
+    const barcode = item.variant?.barcode ?? undefined
+    const description = [item.title, item.subtitle].filter(Boolean).join(" ")
     const cost = apishipOptions.settings.isCod ? item.unit_price : 0
     return {
-      length: length || defaultProductSizes?.length || ITEM_LENGTH,
-      width: width || defaultProductSizes?.width || ITEM_WIDTH,
-      height: height || defaultProductSizes?.height || ITEM_HEIGHT,
-      weight: weight || defaultProductSizes?.weight || ITEM_WEIGHT,
-      articul: articul,
-      description: description,
-      quantity: quantity,
+      length: length ?? defaultProductSizes?.length ?? ITEM_LENGTH,
+      width: width ?? defaultProductSizes?.width ?? ITEM_WIDTH,
+      height: height ?? defaultProductSizes?.height ?? ITEM_HEIGHT,
+      weight: weight ?? defaultProductSizes?.weight ?? ITEM_WEIGHT,
+      description,
+      quantity,
+      cost,
       assessedCost: cost,
-      cost: cost,
       costVat: mapItemVatRateToEnum(item),
-      ...((item as any).variant.barcode ? { barcode: (item as any).variant.barcode } : {}),
+      ...(articul !== undefined  ? { articul } : {}),
+      ...(barcode !== undefined ? { barcode } : {}),
     }
   })
 
@@ -128,7 +146,6 @@ export function mapToApishipOrderRequest(
       const quantity = item.quantity
       return sum + assessedCost * quantity
     }, 0)
-  const deliveryCost = order.shipping_total as number
   const itemsCost =
     placeItems.reduce((sum, item) => {
       const cost = item.cost
@@ -137,10 +154,10 @@ export function mapToApishipOrderRequest(
     }, 0)
   const codCost = apishipOptions.settings.isCod ? itemsCost : 0
   const cost = {
-    ...(apishipOptions.settings.isCod ? { deliveryCostVat } : {}),
     codCost,
     assessedCost,
     isDeliveryPayedByRecipient: false,
+    ...(apishipOptions.settings.isCod ? { deliveryCostVat } : {}),
     ...(apishipOptions.settings.isCod ? { paymentMethod: 3 as CostPaymentMethodEnum } : {}),
   }
 
@@ -173,7 +190,6 @@ export function mapToApishipOrderRequest(
 
 export function mapToApishipCalculatorRequest(
   optionData: CalculateShippingOptionPriceDTO["optionData"],
-  data: CalculateShippingOptionPriceDTO["data"],
   context: CalculateShippingOptionPriceDTO["context"]
 ): CalculatorRequest {
   const shippingAddress = context.shipping_address!
@@ -191,7 +207,7 @@ export function mapToApishipCalculatorRequest(
 
   const stockLocationAddress = context.from_location!.address!
   const fromAddress = {
-    countryCode: stockLocationAddress.country_code.toUpperCase(),
+    countryCode: stockLocationAddress.country_code,
     index: stockLocationAddress.postal_code!,
     addressString: [
       stockLocationAddress.city,
@@ -202,11 +218,12 @@ export function mapToApishipCalculatorRequest(
     city: stockLocationAddress.city!,
   }
 
-  const places = context.items.flatMap((item) => {
-    const weight = (item as any).variant.weight as number || ITEM_WEIGHT
-    const height = (item as any).variant.height as number || ITEM_HEIGHT
-    const length = (item as any).variant.length as number || ITEM_LENGTH
-    const width = (item as any).variant.width as number || ITEM_WIDTH
+  const items = context.items as CartItem[]
+  const places = items.flatMap((item) => {
+    const weight = item.variant?.weight ?? ITEM_WEIGHT
+    const height = item.variant?.height ?? ITEM_HEIGHT
+    const length = item.variant?.length ?? ITEM_LENGTH
+    const width = item.variant?.width ?? ITEM_WIDTH
     const quantity = item.quantity as number
     return Array.from({ length: quantity }, () => ({
       height,
@@ -219,7 +236,7 @@ export function mapToApishipCalculatorRequest(
   const pickupTypes = [optionData.pickupType as number]
   const deliveryTypes = [optionData.deliveryType as number]
 
-  const assessedCost = context.items.reduce((sum, item) => {
+  const assessedCost = items.reduce((sum, item) => {
     const unitPrice = item.unit_price as number
     const quantity = item.quantity as number
     return sum + unitPrice * quantity
