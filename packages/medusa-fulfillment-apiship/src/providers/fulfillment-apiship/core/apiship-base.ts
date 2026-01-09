@@ -1,5 +1,6 @@
 import {
-  AbstractFulfillmentProviderService
+  AbstractFulfillmentProviderService,
+  isDefined
 } from "@medusajs/framework/utils"
 import {
   Logger,
@@ -158,7 +159,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
         input: {
           id: fulfillment.shipping_option_id!
         }
-      })      
+      })
     const deliveryType = shippingOption.data?.deliveryType as number
     const pickupType = shippingOption.data?.pickupType as number
     const apishipData = data.apiship as any
@@ -348,87 +349,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
   async createReturnFulfillment(fulfillment: Record<string, unknown>): Promise<CreateFulfillmentResult> {
     this.logger_.debug(`Apiship.createReturnFulfillment input: ${JSON.stringify(fulfillment, null, 2)}`)
 
-    // TODO: map input fulfillment to make return order request
-    const tariffId = await this.pickTariffId("cdek")
-    const orderReturnRequest: OrderReturnRequest = {
-      order: {
-        providerKey: "cdek",
-        providerConnectId: "1595",
-        tariffId: tariffId,
-        pickupType: 1,
-        deliveryType: 1,
-        clientNumber: `medusa-${Date.now()}`,
-      },
-      "cost": {
-        "assessedCost": 50,
-      },
-      sender: {
-        countryCode: "RU",
-        city: "Москва",
-        addressString: "г Москва, ул Машкова, д 21",
-        contactName: "Отправитель Тест",
-        phone: "79990000000",
-      },
-      recipient: {
-        countryCode: "RU",
-        city: "Москва",
-        addressString: "г Москва, ул Машкова, д 21",
-        contactName: "Получатель Тест",
-        phone: "79990000001",
-      },
-      "places": [
-        {
-          "height": 45,
-          "length": 30,
-          "width": 20,
-          "weight": 500,
-          "placeNumber": "123421931239",
-          "barcode": "800028197737",
-          "items": [
-            {
-              "height": 45,
-              "length": 30,
-              "width": 20,
-              "weight": 500,
-              "articul": "1189.0",
-              "markCode": "010290000046994521AK-rO?H!hC2(M\\u001D91003A\\u001D92cYTu3sTj82KJR3+6hVtQyAfa5Zf6Q2alfJEnwe2RIv4GAWVy2GUptk7P1NYxRsIgsTJi+Wgg+K3dncPELDJ9Ag==",
-              "description": "Товар 1",
-              "quantity": 1,
-              "quantityDelivered": 2,
-              "assessedCost": 50,
-              "cost": 30,
-              "costVat": -1,
-              "barcode": "1234567890123",
-              "companyName": "ООО \"Тест\"",
-              "companyInn": "1234567890",
-              "companyPhone": "79887776655",
-              "tnved": "6810190009",
-              "url": "https://mymarket.example.com/item/product-1/"
-            }
-          ]
-        }
-      ],
-    }
-
-    try {
-      const { data: response } = await this.ordersApi_.addReturnOrder({ orderReturnRequest })
-      this.logger_.debug(`Apiship.createReturnFulfillment response: ${JSON.stringify(response, null, 2)}`)
-      const orderId = response.orderId
-      const labels = await this.getShipmentDocuments({
-        orderId
-      })
-      const result: CreateFulfillmentResult = {
-        data: {
-          orderId: response.orderId,
-          order: orderReturnRequest
-        },
-        labels
-      }
-      this.logger_.debug(`Apiship.createReturnFulfillment output: ${JSON.stringify(result, null, 2)}`)
-      return result
-    } catch (e: any) {
-      throw this.buildError("An error occurred in createReturnFulfillment", e)
-    }
+    return { data: {}, labels: [] } as CreateFulfillmentResult
   }
 
   /**
@@ -479,7 +400,24 @@ class ApishipBase extends AbstractFulfillmentProviderService {
   async validateOption(data: any): Promise<boolean> {
     this.logger_.debug(`Apiship.validateOption input: ${JSON.stringify(data, null, 2)}`)
 
-    // TODO: implement validation logic
+    if (!isDefined(data.id)) {
+      this.logger_.error("Required option `id` is missing in shipping option data")
+      return false
+    }
+    if (!isDefined(data.deliveryType)) {
+      this.logger_.error("Required option `deliveryType` is missing in shipping option data")
+      return false
+    } else if (![1, 2].includes(data.deliveryType)) {
+      this.logger_.error(`Invalid option \`deliveryType\` provided in shipping option data. Valid values are: ${[1, 2].join(", ")}`)
+      return false
+    }
+    if (!isDefined(data.pickupType)) {
+      this.logger_.error("Required option `pickupType` is missing in shipping option data")
+      return false
+    } else if (![1, 2].includes(data.pickupType)) {
+      this.logger_.error(`Invalid option \`pickupType\` provided in shipping option data. Valid values are: ${[1, 2].join(", ")}`)
+      return false
+    }
     return true
   }
 
