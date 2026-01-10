@@ -1,6 +1,7 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
 import { MarketplaceModuleService } from "../../../modules/marketplace/services"
+import { AdminCreateMarketplaceType } from "./validators"
 
 export const GET = async (
   req: MedusaRequest,
@@ -12,21 +13,12 @@ export const GET = async (
   res.json(result)
 }
 
-type PostMarketplaceReq = {
-  data: {
-    provider_id: string,
-    credentials: Record<string, unknown>,
-    settings: Record<string, unknown>,
-    is_active?: boolean 
-  }
-}
-
 export const POST = async (
-  req: MedusaRequest<PostMarketplaceReq>,
+  req: MedusaRequest<AdminCreateMarketplaceType>,
   res: MedusaResponse
 ) => {
   const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
-  const result = await marketplaceService.createMarketplaces(req.body.data)
+  const result = await marketplaceService.createMarketplaces(req.validatedBody)
   
   res.json(result)
 }

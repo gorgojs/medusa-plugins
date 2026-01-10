@@ -1,20 +1,15 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 import { syncMarketplaceProductsWorkflow } from "../../../../../../workflows/marketplace-product"
-
-type SyncProductsReq = {
-  provider_id: string,
-  ids: string[]
-}
+import { AdminMarketplaceSyncProductsType } from "../validators"
 
 export const POST = async (
-  req: MedusaRequest<SyncProductsReq>,
+  req: MedusaRequest<AdminMarketplaceSyncProductsType>,
   res: MedusaResponse
 ) => {
-
   const response = await syncMarketplaceProductsWorkflow(req.scope).run({
     input: {
-      providerId: req.body.provider_id, // TODO: pass marketplace context instead from setMarketplaceContext
-      ids: req.body.ids,
+      providerId: req["marketplaceContext"].provider_id,
+      ids: req.validatedBody.ids,
      },
   })
 
