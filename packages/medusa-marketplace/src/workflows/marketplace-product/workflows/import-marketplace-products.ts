@@ -17,11 +17,13 @@ export const importMarketplaceProductsWorkflowId = "import-marketplace-products"
 
 export const importMarketplaceProductsWorkflow = createWorkflow(
   importMarketplaceProductsWorkflowId,
-  (input: ImportMarketplaceProductsWorkflowInput) => {
-    const providerId = input.marketplace.provider_id
-    
+  (input: ImportMarketplaceProductsWorkflowInput) => {   
+     
     const startedAt = new Date()
-    const importResult = importProductsStep({ providerId })
+    const importResult = importProductsStep({
+      providerId: input.marketplace.provider_id,
+      credentials: input.marketplace.credentials
+    })
     const logResult = logMarketplaceEventWorkflow.runAsStep({
       input: {
         startedAt,

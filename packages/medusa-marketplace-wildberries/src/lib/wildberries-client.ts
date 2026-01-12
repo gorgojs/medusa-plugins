@@ -2,6 +2,7 @@ import { Configuration, ProductCardsApi, CreatingProductCardsApi } from "./wildb
 import axios, { AxiosError } from "axios"
 import rateLimit from "axios-rate-limit"
 import axiosRetry from "axios-retry"
+import { MarketplaceCredentialsType } from  "@gorgo/medusa-marketplace/modules/marketplace/types"
 
 const BASE_URL = "https://content-api-sandbox.wildberries.ru"
 const TIMEOUT = 30_000
@@ -27,11 +28,18 @@ axiosRetry(limitedAxiosInst, {
   }
 })
 
-const config = new Configuration({
-  apiKey: process.env.WB_API_KEY!,
-  accessToken: process.env.WB_API_KEY!,
-  basePath: BASE_URL,
-})
+export function getProductCardsApi(credentials: MarketplaceCredentialsType) {
+  return new ProductCardsApi(new Configuration({
+      apiKey: credentials.apiKey,
+      accessToken: credentials.apiKey,
+      basePath: BASE_URL
+    }), BASE_URL, limitedAxiosInst)
+}
 
-export const productApi = new ProductCardsApi(config, BASE_URL, limitedAxiosInst)
-export const creatingProductsApi = new CreatingProductCardsApi(config, BASE_URL, limitedAxiosInst)
+export function getCreatingProductCardsApi(credentials: MarketplaceCredentialsType) {
+  return new CreatingProductCardsApi(new Configuration({
+      apiKey: credentials.apiKey,
+      accessToken: credentials.apiKey,
+      basePath: BASE_URL
+    }), BASE_URL, limitedAxiosInst)
+}

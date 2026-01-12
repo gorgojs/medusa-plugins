@@ -1,17 +1,24 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
-import { productApi } from "../../../lib/wildberries-client"
-import { ContentV2CardsUpdatePostRequestInner } from "../../../lib/wildberries-products-client"
+import { Configuration, ContentV2CardsUpdatePostRequestInner, CreatingProductCardsApi } from "../../../lib/wildberries-products-client"
+import { MarketplaceCredentialsType } from  "@gorgo/medusa-marketplace/modules/marketplace/types"
+import { getProductCardsApi } from "../../../lib/wildberries-client"
 
 const BATCH_SIZE = 3000
 
-export type UpdateProductCardsStep = Array<ContentV2CardsUpdatePostRequestInner>
+export type UpdateProductCardsStepInput = {
+  productCards: Array<ContentV2CardsUpdatePostRequestInner>,
+  credentials: MarketplaceCredentialsType
+}
 
 export const updateProductCardsStepId = "update-product-cards"
 
 export const updateProductCardsStep = createStep(
   updateProductCardsStepId,
-  async (productCards: UpdateProductCardsStep, { container }) => {
+  async (input: UpdateProductCardsStepInput, { container }) => {
     const logger = container.resolve("logger")
+    const productCards = input.productCards
+
+    const productApi = getProductCardsApi(input.credentials)
 
     if (productCards.length === 0) {
       logger.info("Nothing to update. Skipping...")

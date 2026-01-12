@@ -9,13 +9,15 @@ export type LogEventInput = {
   responseData?: Record<string, unknown>
 }
 
+export type MarketplaceCredentialsType = {
+  apiKey: string,
+  [key: string]: any
+}
+
 export type MarketplaceDTO = {
   id: string,
   provider_id: string,
-  credentials: {
-    api_token: string,
-    [key: string]: any
-  },
+  credentials: MarketplaceCredentialsType
   settings: any,
   is_active: boolean
 }

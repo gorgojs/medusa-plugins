@@ -1,15 +1,22 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
-import { creatingProductsApi } from "../../../lib/wildberries-client"
+import { getCreatingProductCardsApi } from "../../../lib/wildberries-client"
 import { ContentV2CardsUploadAddPostRequest } from "../../../lib/wildberries-products-client"
+import { MarketplaceCredentialsType } from  "@gorgo/medusa-marketplace/modules/marketplace/types"
 
-export type MergeProductCardsStepInput = Array<ContentV2CardsUploadAddPostRequest>
+export type MergeProductCardsStepInput = {
+  productCards: Array<ContentV2CardsUploadAddPostRequest>,
+  credentials: MarketplaceCredentialsType
+}
 
 export const mergeProductCardsStepId = "merge-product-cards"
 
 export const mergeProductCardsStep = createStep(
   mergeProductCardsStepId,
-  async (productCards: MergeProductCardsStepInput, { container }) => {
+  async (input: MergeProductCardsStepInput, { container }) => {
     const logger = container.resolve("logger")
+    const productCards = input.productCards
+
+    const creatingProductsApi = getCreatingProductCardsApi(input.credentials)
 
     if (productCards.length === 0) {
       logger.info("Nothing to merge. Skipping...")

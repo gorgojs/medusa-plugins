@@ -1,9 +1,11 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { MarketplaceModuleService } from "../../../modules/marketplace/services"
 import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
+import { MarketplaceCredentialsType } from "../../../modules/marketplace/types"
 
 type ImportProductsStepInput = {
-  providerId: string
+  providerId: string,
+  credentials: MarketplaceCredentialsType
 }
 
 export const importProductsStep = createStep(

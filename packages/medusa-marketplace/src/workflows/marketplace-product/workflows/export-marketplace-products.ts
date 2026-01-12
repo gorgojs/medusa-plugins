@@ -33,7 +33,8 @@ export const exportMarketplaceProductsWorkflow = createWorkflow(
     const startedAt = new Date()
     const exportResult = exportProductsStep({
       providerId,
-      marketplaceProducts
+      marketplaceProducts,
+      credentials: input.marketplace.credentials
     })
     const logResult = logMarketplaceEventWorkflow.runAsStep({
       input: {

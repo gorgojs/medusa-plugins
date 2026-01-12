@@ -14,9 +14,11 @@ import {
   ContentV2CardsUpdatePostRequestInner,
   ContentV2CardsUploadAddPostRequest
 } from "../../../lib/wildberries-products-client"
+import { MarketplaceCredentialsType } from "@gorgo/medusa-marketplace/modules/marketplace/types"
 
 
-export type GetMarketplaceProductsWbWorkflowInput = {
+export type ExportMarketplaceProductsWbWorkflowInput = {
+  credentials: MarketplaceCredentialsType,
   create: ContentV2CardsUploadPostRequestInner[]
   update: ContentV2CardsUpdatePostRequestInner[]
   merge: ContentV2CardsUploadAddPostRequest[]
@@ -26,12 +28,22 @@ export const exportMarketplaceProductsWbWorkflowId = "export-marketplace-product
 
 export const exportMarketplaceProductsWbWorkflow = createWorkflow(
   exportMarketplaceProductsWbWorkflowId,
-  (input: GetMarketplaceProductsWbWorkflowInput) => {
+  (input: ExportMarketplaceProductsWbWorkflowInput) => {
+    const credentials = input.credentials
 
-    const createResponse = createProductsStep(input.create)
-    const updateResponse = updateProductCardsStep(input.update)
-    const mergeResponse = mergeProductCardsStep(input.merge)
-    const cardsErrors = collectErrorsStep()
+    const createResponse = createProductsStep({
+      credentials,
+      products: input.create
+    })
+    const updateResponse = updateProductCardsStep({
+      credentials,
+      productCards: input.update
+    })
+    const mergeResponse = mergeProductCardsStep({
+      credentials,
+      productCards: input.merge
+    })
+    const cardsErrors = collectErrorsStep({ credentials })
 
     const result = {
       createResponse,

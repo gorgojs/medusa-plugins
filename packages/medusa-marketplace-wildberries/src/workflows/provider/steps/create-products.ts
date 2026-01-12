@@ -1,17 +1,24 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
-import { creatingProductsApi } from "../../../lib/wildberries-client"
+import { MarketplaceCredentialsType } from  "@gorgo/medusa-marketplace/modules/marketplace/types"
+import { getCreatingProductCardsApi } from "../../../lib/wildberries-client"
 import { ContentV2CardsUploadPostRequestInner } from "../../../lib/wildberries-products-client"
 
 const BATCH_SIZE = 100
 
-export type CreateProductsStepInput = Array<ContentV2CardsUploadPostRequestInner>
+export type CreateProductsStepInput = {
+  products: Array<ContentV2CardsUploadPostRequestInner>,
+  credentials: MarketplaceCredentialsType
+}
 
 export const createProductsStepId = "create-products"
 
 export const createProductsStep = createStep(
   createProductsStepId,
-  async (products: CreateProductsStepInput, { container }) => {
+  async (input: CreateProductsStepInput, { container }) => {
     const logger = container.resolve("logger")
+    const products = input.products
+
+    const creatingProductsApi = getCreatingProductCardsApi(input.credentials)
 
     if (products.length === 0) {
       logger.info("Nothing to create. Skipping...")

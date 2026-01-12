@@ -10,7 +10,7 @@ export default async function (container: MedusaContainer) {
         id: "",
         provider_id: "mp_system_default",
         credentials: {
-          api_token: ""
+          apiKey: ""
         },
         settings: {},
         is_active: true

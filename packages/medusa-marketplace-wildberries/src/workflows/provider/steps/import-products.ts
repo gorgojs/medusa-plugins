@@ -1,12 +1,17 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { batchProductsWorkflow, batchProductVariantsWorkflow } from "@medusajs/medusa/core-flows"
-import { productApi } from "../../../lib/wildberries-client"
+import { MarketplaceCredentialsType } from  "@gorgo/medusa-marketplace/modules/marketplace/types"
+import { getProductCardsApi } from "../../../lib/wildberries-client"
+
+export type ImportProductsStepInput = {
+  credentials: MarketplaceCredentialsType
+}
 
 export const importProductsStepId = "import-products"
 
 export const importProductsStep = createStep(
   importProductsStepId,
-  async (_, { container }) => {
+  async (input: ImportProductsStepInput, { container }) => {
     const query = container.resolve("query")
 
     const updatedVariantsIds: string[] = []
@@ -25,6 +30,8 @@ export const importProductsStep = createStep(
     }
     let total: number
     do {
+      const productApi = getProductCardsApi(input.credentials)
+
       const { status, data: {cards, cursor} } = await productApi.contentV2GetCardsListPost(body)
       total = cursor!.total!
       body.settings.cursor["updatedAt"] = cursor!.updatedAt

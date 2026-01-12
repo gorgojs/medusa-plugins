@@ -27,8 +27,13 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
   static identifier = "wildberries"
 
   async exportProducts(data: ExportProductsInput): Promise<ExportProductsOutput> {
-    const { container, marketplaceProducts } = data
-    const { result } = await exportMarketplaceProductsWbWorkflow(container).run({ input: marketplaceProducts })
+    const { container, marketplaceProducts, credentials } = data
+    const { result } = await exportMarketplaceProductsWbWorkflow(container).run({
+      input: {
+        credentials,
+        ...marketplaceProducts
+      }
+    })
 
     return result
   }
