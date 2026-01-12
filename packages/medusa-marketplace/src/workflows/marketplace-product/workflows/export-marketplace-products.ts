@@ -8,9 +8,10 @@ import {
   exportProductsStep,
 } from "../steps"
 import { logMarketplaceEventWorkflow } from "../../marketplace-event"
+import { MarketplaceDTO } from "../../../modules/marketplace/types"
 
 export type ExportMarketplaceProductsWorkflowInput = {
-  providerId: string,
+  marketplace: MarketplaceDTO,
   ids?: string[]
 }
 
@@ -19,9 +20,12 @@ export const exportMarketplaceProductsWorkflowId = "export-marketplace-products"
 export const exportMarketplaceProductsWorkflow = createWorkflow(
   exportMarketplaceProductsWorkflowId,
   (input: ExportMarketplaceProductsWorkflowInput) => {
-    const providerId = input.providerId
+    const providerId = input.marketplace.provider_id
 
-    const products = getProductsStep(input)
+    const products = getProductsStep({
+      providerId,
+      ids: input.ids
+    })
     const marketplaceProducts = mapToMarketplaceProductsStep({
       providerId,
       products

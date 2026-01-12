@@ -23,7 +23,9 @@ const AddMarketplacePage = () => {
         method: "POST",
         body: {
           provider_id: "mp_wildberries_test",
-          credentials: {},
+          credentials: {
+            api_token: process.env.WB_API_KEY!
+          },
           settings: {},
           is_active: true
         }

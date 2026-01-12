@@ -8,9 +8,10 @@ export const GET = async (
   res: MedusaResponse
 ) => {
   const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
-  const result = await marketplaceService.listMarketplaces({
-    id: req.params.id
-  })
+  const result = await marketplaceService.listMarketplaces(
+    { id: req.params.id },
+    { select: req.queryConfig.fields }
+  )
 
   res.json(result)
 }
@@ -38,5 +39,5 @@ export const DELETE = async (
   const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
   const result = await marketplaceService.deleteMarketplaces(req.params.id)
 
-  res.json(result)  
+  res.json(result)
 }

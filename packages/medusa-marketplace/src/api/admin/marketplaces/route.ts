@@ -8,7 +8,10 @@ export const GET = async (
   res: MedusaResponse
 ) => {
   const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
-  const result = await marketplaceService.listMarketplaces()
+  const result = await marketplaceService.listMarketplaces({}, {
+    select: req.queryConfig.fields,
+    ...req.queryConfig.pagination
+  })
 
   res.json(result)
 }

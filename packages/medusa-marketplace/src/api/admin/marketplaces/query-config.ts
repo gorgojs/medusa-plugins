@@ -1,3 +1,22 @@
+export const defaultAdminMarketplaceFields = [
+  "id",
+  "provider_id",
+  "credentials",
+  "settings",
+  "is_active"
+]
+
+export const retrieveMarketplaceQueryConfig = {
+  defaults: defaultAdminMarketplaceFields,
+  isList: false
+}
+
+export const listMarketplaceQueryConfig = {
+  ...retrieveMarketplaceQueryConfig,
+  defaultLimit: 20,
+  isList: true,
+}
+
 export const defaultAdminMarketplaceEventFields = [
   "id",
   "marketplace_id",

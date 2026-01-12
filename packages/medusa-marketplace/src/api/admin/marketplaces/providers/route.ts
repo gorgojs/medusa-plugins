@@ -7,7 +7,9 @@ export const GET = async (
   res: MedusaResponse
 ) => {
 
-  const service: MarketplaceModuleService = req.scope.resolve(MARKETPLACE_MODULE)
+  const marketplaceService: MarketplaceModuleService = req.scope.resolve(MARKETPLACE_MODULE)
 
-  res.json(service.getProvidersList())
+  const result = marketplaceService.getProvidersList()
+
+  res.json(result)
 }

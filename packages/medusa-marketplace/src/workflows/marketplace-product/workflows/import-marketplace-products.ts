@@ -6,9 +6,10 @@ import {
   importProductsStep
 } from "../steps"
 import { logMarketplaceEventWorkflow } from "../../marketplace-event"
+import { MarketplaceDTO } from "../../../modules/marketplace/types"
 
 export type ImportMarketplaceProductsWorkflowInput = {
-  providerId: string,
+  marketplace: MarketplaceDTO,
   ids?: String[]
 }
 
@@ -17,7 +18,7 @@ export const importMarketplaceProductsWorkflowId = "import-marketplace-products"
 export const importMarketplaceProductsWorkflow = createWorkflow(
   importMarketplaceProductsWorkflowId,
   (input: ImportMarketplaceProductsWorkflowInput) => {
-    const providerId = input.providerId
+    const providerId = input.marketplace.provider_id
     
     const startedAt = new Date()
     const importResult = importProductsStep({ providerId })
