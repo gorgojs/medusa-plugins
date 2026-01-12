@@ -8,6 +8,7 @@ export const GET = async (
   res: MedusaResponse
 ) => {
   const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
+  // TODO: do we need caching here with the query module? 
   const result = await marketplaceService.listMarketplaces({}, {
     select: req.queryConfig.fields,
     ...req.queryConfig.pagination
