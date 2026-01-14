@@ -1,5 +1,6 @@
 import type { Toc } from "@stefanprobst/rehype-extract-toc";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import PaginationCards from "@/components/layout/pagination-cards";
@@ -10,6 +11,7 @@ import ScrollToTop from "@/components/layout/scroll-to-top";
 import Sidebar from "@/components/layout/sidebar";
 import TableOfContents from "@/components/layout/toc";
 import { routing } from "@/i18n/routing";
+import { buildAlternates } from "@/lib/alternates";
 import { getAllSidebarPaths, getCurrentSidebar } from "@/lib/sidebar";
 
 type PageProps = {
@@ -57,8 +59,11 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
+  // biome-ignore lint/style/noNonNullAssertion: always persists
+  const host = (await headers()).get("host")!;
   const { locale, slug } = await params;
   const path = slug?.join("/") || "index";
+  const cleanPath = slug?.length ? `/${slug.join("/")}` : "/";
 
   let mdxModule: MDXModule;
   try {
@@ -71,6 +76,7 @@ export async function generateMetadata({
   return {
     title: mdxModule.frontmatter?.title,
     description: mdxModule.frontmatter?.description,
+    alternates: buildAlternates(cleanPath, locale, host),
   } as Metadata;
 }
 

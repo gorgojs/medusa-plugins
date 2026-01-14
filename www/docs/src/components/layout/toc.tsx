@@ -1,8 +1,7 @@
 "use client";
 
-import { ScrollText } from "@medusajs/icons";
 import type { Toc, TocEntry } from "@stefanprobst/rehype-extract-toc";
-import { useTranslations } from "next-intl";
+import type { MouseEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -15,247 +14,165 @@ function debounce<T extends (...args: any[]) => void>(fn: T, wait = 50) {
   };
 }
 
-type ContentBlock = {
+type HeadingPosition = {
   id: string;
-  element: HTMLElement;
-  startY: number;
-  endY: number;
-  text: string;
+  top: number;
 };
 
 function TableOfContents({ toc }: { toc: Toc }) {
-  const t = useTranslations("toc");
-
   const itemRefs = useRef<Record<string, HTMLLIElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const headingPositionsRef = useRef<HeadingPosition[]>([]);
+  const rafRef = useRef<number | null>(null);
 
-  const contentBlocksRef = useRef<ContentBlock[]>([]);
-  const scrollDirectionRef = useRef<{
-    direction: "up" | "down" | "none";
-    lastY: number;
-    lastTimestamp: number;
-  }>({
-    direction: "none",
-    lastY: 0,
-    lastTimestamp: 0,
-  });
-  const directionResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
+  const tocIdSet = useMemo(() => {
+    const ids = new Set<string>();
+    const walk = (entry: TocEntry) => {
+      if (entry.id) ids.add(entry.id);
+      entry.children?.forEach(walk);
+    };
+    toc.forEach(walk);
+    return ids;
+  }, [toc]);
 
-  const generateContentBlocks = useCallback(() => {
+  const updateHeadingPositions = useCallback(() => {
     const contentContainer = document.querySelector(
-      ".prose"
+      ".prose",
     ) as HTMLElement | null;
     if (!contentContainer) {
-      contentBlocksRef.current = [];
+      headingPositionsRef.current = [];
       return;
     }
 
-    const allHeadings = Array.from(
+    const headings = Array.from(
       document.querySelectorAll(
-        ".prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6"
-      )
+        ".prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6",
+      ),
     ) as HTMLElement[];
 
-    if (allHeadings.length === 0) {
-      contentBlocksRef.current = [];
+    if (headings.length === 0) {
+      headingPositionsRef.current = [];
       return;
     }
 
-    const headings = allHeadings.map((h, i) => {
-      if (!h.id) {
-        h.id = `heading-${i}`;
-      }
-      return h;
-    });
-
-    const containerRect = contentContainer.getBoundingClientRect();
-    const containerOffsetTop = containerRect.top + window.scrollY;
-
-    const blocks: ContentBlock[] = headings.map((heading, index) => {
-      const headingRect = heading.getBoundingClientRect();
-      const startY = headingRect.top + window.scrollY;
-      let endY: number;
-      if (index < headings.length - 1) {
-        const nextRect = headings[index + 1].getBoundingClientRect();
-        endY = nextRect.top + window.scrollY;
-      } else {
-        endY = containerOffsetTop + containerRect.height;
+    const positions: HeadingPosition[] = headings.map((heading, index) => {
+      if (!heading.id) {
+        heading.id = `heading-${index}`;
       }
       return {
         id: heading.id,
-        element: heading,
-        startY,
-        endY,
-        text: heading.textContent || "",
+        top: heading.getBoundingClientRect().top + window.scrollY,
       };
     });
 
-    contentBlocksRef.current = blocks;
+    headingPositionsRef.current = positions.filter((pos) =>
+      tocIdSet.has(pos.id),
+    );
+  }, [tocIdSet]);
+
+  const getActivationOffset = useCallback(() => {
+    return Math.min(180, Math.round(window.innerHeight * 0.3));
   }, []);
-
-  const updateScrollDirection = useCallback((currentY: number) => {
-    const now = Date.now();
-    const last = scrollDirectionRef.current;
-    const timeDiff = now - last.lastTimestamp;
-    const yDiff = currentY - last.lastY;
-
-    if (timeDiff > 0) {
-      const speed = Math.abs(yDiff) / timeDiff;
-      if (Math.abs(yDiff) > 1 && speed < 2) {
-        const newDirection = yDiff > 0 ? "down" : "up";
-        scrollDirectionRef.current = {
-          direction: newDirection,
-          lastY: currentY,
-          lastTimestamp: now,
-        };
-      } else {
-        scrollDirectionRef.current.lastY = currentY;
-        scrollDirectionRef.current.lastTimestamp = now;
-      }
-    }
-
-    if (directionResetTimeoutRef.current)
-      clearTimeout(directionResetTimeoutRef.current);
-    directionResetTimeoutRef.current = setTimeout(() => {
-      scrollDirectionRef.current.direction = "none";
-    }, 2000);
-  }, []);
-
-  const calculateBlockIntersection = useCallback(
-    (block: ContentBlock, viewportTop: number, viewportHeight: number) => {
-      const focusTop = viewportTop + viewportHeight * 0.3;
-      const focusBottom = viewportTop + viewportHeight * 0.7;
-      const focusHeight = focusBottom - focusTop;
-
-      const intersectionTop = Math.max(block.startY, focusTop);
-      const intersectionBottom = Math.min(block.endY, focusBottom);
-      const intersectionHeight = Math.max(
-        0,
-        intersectionBottom - intersectionTop
-      );
-
-      return intersectionHeight / focusHeight;
-    },
-    []
-  );
 
   const findActiveHeading = useCallback((): string | "" => {
-    const blocks = contentBlocksRef.current;
-    if (blocks.length === 0) return "";
+    const positions = headingPositionsRef.current;
+    if (positions.length === 0) return "";
 
     const viewportTop = window.scrollY;
-    const viewportHeight = window.innerHeight;
+    const maxScrollTop = Math.max(
+      0,
+      document.documentElement.scrollHeight - window.innerHeight,
+    );
 
-    updateScrollDirection(viewportTop);
+    if (viewportTop <= 0) return positions[0].id;
+    if (viewportTop >= maxScrollTop - 1)
+      return positions[positions.length - 1].id;
 
-    const focusTop = viewportTop + viewportHeight * 0.3;
-    const focusBottom = viewportTop + viewportHeight * 0.7;
-
-    const blocksInFocus = blocks
-      .map((block, index) => {
-        const coverage = calculateBlockIntersection(
-          block,
-          viewportTop,
-          viewportHeight
-        );
-        return { block, index, coverage };
-      })
-      .filter((b) => b.coverage > 0)
-      .sort((a, b) => b.coverage - a.coverage);
-
-    const firstBlock = blocks[0];
-    const lastBlock = blocks[blocks.length - 1];
-
-    if (
-      firstBlock &&
-      viewportTop < 100 &&
-      firstBlock.startY > viewportTop + viewportHeight * 0.5
-    ) {
-      return "";
-    }
-
-    if (blocksInFocus.length === 0) {
-      if (firstBlock && firstBlock.endY <= focusTop) return "";
-      if (lastBlock && lastBlock.startY >= focusBottom) return "";
-      if (lastBlock && lastBlock.endY <= focusTop) return "";
-      return "";
-    }
-
-    if (blocksInFocus.length === 1) return blocksInFocus[0].block.id;
-
-    const topBlock = blocksInFocus[0];
-    const secondBlock = blocksInFocus[1];
-    const coverageDiff = topBlock.coverage - secondBlock.coverage;
-
-    if (coverageDiff > 0.15) return topBlock.block.id;
-    if (topBlock.coverage > 0.3 && secondBlock.coverage < 0.2)
-      return topBlock.block.id;
-
-    const scrollDirection = scrollDirectionRef.current.direction;
-    if (scrollDirection === "down") {
-      const lowerBlock = blocksInFocus.find(
-        (item) =>
-          item.block.startY > topBlock.block.startY && item.coverage > 0.2
-      );
-      return lowerBlock ? lowerBlock.block.id : topBlock.block.id;
-    } else if (scrollDirection === "up") {
-      const upperBlock = blocksInFocus.find(
-        (item) =>
-          item.block.startY < topBlock.block.startY && item.coverage > 0.2
-      );
-      return upperBlock ? upperBlock.block.id : topBlock.block.id;
-    } else {
-      if (Math.abs(topBlock.coverage - secondBlock.coverage) < 0.05) {
-        const focusCenter = focusTop + (focusBottom - focusTop) / 2;
-        let closest = topBlock;
-        let minDistance = Infinity;
-        for (const item of blocksInFocus) {
-          const blockCenter = (item.block.startY + item.block.endY) / 2;
-          const distance = Math.abs(blockCenter - focusCenter);
-          if (distance < minDistance) {
-            minDistance = distance;
-            closest = item;
-          }
-        }
-        return closest.block.id;
+    const lineY = viewportTop + getActivationOffset();
+    let lo = 0;
+    let hi = positions.length - 1;
+    let ans = 0;
+    while (lo <= hi) {
+      const mid = Math.floor((lo + hi) / 2);
+      if (positions[mid].top <= lineY) {
+        ans = mid;
+        lo = mid + 1;
       } else {
-        return topBlock.block.id;
+        hi = mid - 1;
       }
     }
-  }, [calculateBlockIntersection, updateScrollDirection]);
 
-  const debouncedHandler = useMemo(
-    () =>
-      debounce(() => {
-        const newActive = findActiveHeading();
-        if (newActive !== activeId) {
-          setActiveId(newActive || null);
-        }
-      }, 50),
-    [findActiveHeading, activeId]
+    return positions[ans].id;
+  }, [getActivationOffset]);
+
+  const scheduleActiveUpdate = useCallback(() => {
+    if (rafRef.current !== null) return;
+    rafRef.current = window.requestAnimationFrame(() => {
+      rafRef.current = null;
+      const next = findActiveHeading();
+      setActiveId((prev) => (next && prev !== next ? next : prev));
+    });
+  }, [findActiveHeading]);
+
+  const handleTocClick = useCallback(
+    (id: string) => (event: MouseEvent<HTMLAnchorElement>) => {
+      const target = document.getElementById(id);
+      if (!target) return;
+      event.preventDefault();
+      updateHeadingPositions();
+      const targetTop = target.getBoundingClientRect().top + window.scrollY;
+      const maxScrollTop = Math.max(
+        0,
+        document.documentElement.scrollHeight - window.innerHeight,
+      );
+      const offset = getActivationOffset();
+      const nextScrollTop = Math.max(
+        0,
+        Math.min(maxScrollTop, targetTop - offset),
+      );
+      window.history.replaceState(null, "", `#${id}`);
+      setActiveId(id);
+      window.scrollTo({ top: nextScrollTop, behavior: "smooth" });
+    },
+    [getActivationOffset, updateHeadingPositions],
   );
 
   useEffect(() => {
-    generateContentBlocks();
+    updateHeadingPositions();
 
-    const onResize = debounce(() => generateContentBlocks(), 150);
+    const onResize = debounce(() => {
+      updateHeadingPositions();
+      scheduleActiveUpdate();
+    }, 150);
 
-    window.addEventListener("scroll", debouncedHandler, { passive: true });
+    const onScroll = () => scheduleActiveUpdate();
+
+    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize, { passive: true });
+
+    const contentContainer = document.querySelector(".prose");
+    const resizeObserver =
+      contentContainer && "ResizeObserver" in window
+        ? new ResizeObserver(() => {
+            updateHeadingPositions();
+            scheduleActiveUpdate();
+          })
+        : null;
+    if (contentContainer && resizeObserver) {
+      resizeObserver.observe(contentContainer);
+    }
 
     const initial = findActiveHeading();
     if (initial) setActiveId(initial);
 
     return () => {
-      window.removeEventListener("scroll", debouncedHandler);
+      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
-      if (directionResetTimeoutRef.current)
-        clearTimeout(directionResetTimeoutRef.current);
+      if (resizeObserver) resizeObserver.disconnect();
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, [generateContentBlocks, debouncedHandler, findActiveHeading]);
+  }, [findActiveHeading, scheduleActiveUpdate, updateHeadingPositions]);
 
   useEffect(() => {
     if (!activeId) return;
@@ -309,14 +226,15 @@ function TableOfContents({ toc }: { toc: Toc }) {
           <div
             className={cn(
               "h-5 w-0 shrink-0 bg-ui-fg-base left-1 mr-2 rounded-r-2xl transition-all",
-              activeId === item.id && "h-5 w-0.5"
+              activeId === item.id && "h-5 w-0.5",
             )}
           />
           <a
             href={`#${item.id}`}
+            onClick={handleTocClick(item.id!)}
             className={cn(
               "hover:text-foreground transition-colors",
-              activeId === item.id && "text-ui-fg-base"
+              activeId === item.id && "text-ui-fg-base",
             )}
           >
             {item.value}
