@@ -14,11 +14,11 @@ import {
   ContentV2CardsUpdatePostRequestInner,
   ContentV2CardsUploadAddPostRequest
 } from "../../../lib/wildberries-products-client"
-import { MarketplaceCredentialsType } from "@gorgo/medusa-marketplace/modules/marketplace/types"
+import { MarketplaceWildberriesCredentialsType } from "../../../providers/marketplace-wildberries/types"
 
 
 export type ExportMarketplaceProductsWbWorkflowInput = {
-  credentials: MarketplaceCredentialsType,
+  credentials: MarketplaceWildberriesCredentialsType,
   create: ContentV2CardsUploadPostRequestInner[]
   update: ContentV2CardsUpdatePostRequestInner[]
   merge: ContentV2CardsUploadAddPostRequest[]

@@ -2,10 +2,10 @@ import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { RequestPublicViewerPublicErrorsTableListV2 } from "../../../lib/wildberries-products-client"
 import { getProductCardsApi } from "../../../lib/wildberries-client"
 import { batchProductVariantsWorkflow } from "@medusajs/medusa/core-flows"
-import { MarketplaceCredentialsType } from  "@gorgo/medusa-marketplace/modules/marketplace/types"
+import { MarketplaceWildberriesCredentialsType } from "../../../providers/marketplace-wildberries/types"
 
 export type CollectErrorsStepInput = {
-  credentials: MarketplaceCredentialsType
+  credentials: MarketplaceWildberriesCredentialsType
 }
 
 export const collectErrorsStepId = "collect-errors"

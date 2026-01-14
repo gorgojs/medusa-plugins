@@ -1,11 +1,11 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { getCreatingProductCardsApi } from "../../../lib/wildberries-client"
 import { ContentV2CardsUploadAddPostRequest } from "../../../lib/wildberries-products-client"
-import { MarketplaceCredentialsType } from  "@gorgo/medusa-marketplace/modules/marketplace/types"
+import { MarketplaceWildberriesCredentialsType } from "../../../providers/marketplace-wildberries/types"
 
 export type MergeProductCardsStepInput = {
   productCards: Array<ContentV2CardsUploadAddPostRequest>,
-  credentials: MarketplaceCredentialsType
+  credentials: MarketplaceWildberriesCredentialsType
 }
 
 export const mergeProductCardsStepId = "merge-product-cards"

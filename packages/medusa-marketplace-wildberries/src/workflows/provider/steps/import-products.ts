@@ -1,10 +1,10 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { batchProductsWorkflow, batchProductVariantsWorkflow } from "@medusajs/medusa/core-flows"
-import { MarketplaceCredentialsType } from  "@gorgo/medusa-marketplace/modules/marketplace/types"
 import { getProductCardsApi } from "../../../lib/wildberries-client"
+import { MarketplaceWildberriesCredentialsType } from "../../../providers/marketplace-wildberries/types"
 
 export type ImportProductsStepInput = {
-  credentials: MarketplaceCredentialsType
+  credentials: MarketplaceWildberriesCredentialsType
 }
 
 export const importProductsStepId = "import-products"

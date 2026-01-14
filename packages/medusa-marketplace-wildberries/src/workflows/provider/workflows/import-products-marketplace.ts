@@ -1,9 +1,9 @@
 import { createWorkflow, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
 import { importProductsStep } from "../steps"
-import { MarketplaceCredentialsType } from "@gorgo/medusa-marketplace/modules/marketplace/types"
+import { MarketplaceWildberriesCredentialsType } from "../../../providers/marketplace-wildberries/types"
 
 export type ImportMarketplaceProductsWbWorkflowInput = {
-  credentials: MarketplaceCredentialsType
+  credentials: MarketplaceWildberriesCredentialsType
 }
 
 export const importMarketplaceProductsWbWorkflowId = "import-marketplace-products-wb"
