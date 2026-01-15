@@ -1,5 +1,6 @@
 import {
   createWorkflow,
+  transform,
   WorkflowResponse
 } from "@medusajs/framework/workflows-sdk"
 import {
@@ -19,15 +20,16 @@ export const importMarketplaceProductsWorkflow = createWorkflow(
   importMarketplaceProductsWorkflowId,
   (input: ImportMarketplaceProductsWorkflowInput) => {   
      
-    const startedAt = new Date()
+    const startedAt = transform({}, () => new Date())
     const importResult = importProductsStep({
       providerId: input.marketplace.provider_id,
       credentials: input.marketplace.credentials
     })
+    const finishedAt = transform({}, () => new Date())
     const logResult = logMarketplaceEventWorkflow.runAsStep({
       input: {
         startedAt,
-        finishedAt: new Date(),
+        finishedAt,
         action: "UPDATE",
         direction: "MARKETPLACE_TO_MEDUSA",
         entityType: "PRODUCT",
