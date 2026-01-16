@@ -28,6 +28,7 @@ export const importMarketplaceProductsWorkflow = createWorkflow(
     const finishedAt = transform({}, () => new Date())
     const logResult = logMarketplaceEventWorkflow.runAsStep({
       input: {
+        marketplaceId: input.marketplace.id,
         startedAt,
         finishedAt,
         action: "UPDATE",

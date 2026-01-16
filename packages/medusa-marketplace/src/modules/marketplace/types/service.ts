@@ -1,4 +1,5 @@
 export type LogEventInput = {
+  marketplaceId: string,
   correlationId?: string,
   direction: "MEDUSA_TO_MARKETPLACE" | "MARKETPLACE_TO_MEDUSA",
   entityType: "PRODUCT" | "PRODUCT_MEDIA" | "PRODUCT_PRICE" | "PRODUCT_STOCK" | "ORDER",
