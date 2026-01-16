@@ -7,11 +7,23 @@ import {
 } from "@medusajs/ui"
 import { useState } from "react"
 import { sdk } from "../../../lib/sdk"
+import {
+  useQuery,
+} from "@tanstack/react-query"
 
 const AddMarketplacePage = () => {
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+
+  const resp1 = useQuery({
+      queryFn: () =>
+        sdk.client.fetch(`/admin/marketplaces`,),
+      queryKey: [["feeds"]],
+    })
+
+  console.log("resp1", resp1.data)
 
   const addMarketplace = async () => {
     setLoading(true)
