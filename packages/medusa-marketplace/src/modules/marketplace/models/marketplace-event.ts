@@ -2,7 +2,9 @@ import { model } from "@medusajs/framework/utils";
 import Marketplace from "./marketplace";
 
 const MarketplaceEvent = model.define("marketplace_event", {
-  id: model.id().primaryKey(),
+  id: model.id({
+    prefix: "mpevent"
+  }).primaryKey(),
   marketplace: model.belongsTo(() => Marketplace, {
     mappedBy: undefined,
   }),

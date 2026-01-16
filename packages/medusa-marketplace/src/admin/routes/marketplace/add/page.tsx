@@ -36,7 +36,7 @@ const AddMarketplacePage = () => {
         body: {
           provider_id: "mp_wildberries_test",
           credentials: {
-            apiKey: process.env.WB_API_KEY!
+            apiKey: ""
           },
           settings: {},
           is_active: true
