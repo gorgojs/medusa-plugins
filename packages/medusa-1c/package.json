@@ -1,6 +1,6 @@
 {
 	"name": "@gorgo/medusa-1c",
-	"version": "0.0.15",
+	"version": "0.0.16",
 	"description": "Medusa plugin for integration with 1C:Enterprise",
 	"repository": {
 		"type": "git",

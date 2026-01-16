@@ -1,5 +1,11 @@
 # @gorgo/medusa-feed-yandex
 
+## 0.2.19
+
+### Patch Changes
+
+- Test on Medusa 2.12.5
+
 ## 0.2.18
 
 ### Patch Changes

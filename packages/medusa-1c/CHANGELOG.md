@@ -1,5 +1,11 @@
 # @gorgo/medusa-1c
 
+## 0.0.16
+
+### Patch Changes
+
+- Test on Medusa 2.12.5
+
 ## 0.0.15
 
 ### Patch Changes
