@@ -1,10 +1,15 @@
-# Getting Started with ApiShip Fulfillment
+---
+title: "Getting Started with ApiShip"
+description: "In this document, you’ll learn how to install and configure the ApiShip fulfillment provider for Medusa"
+---
+
+# {frontmatter.title}
 
 In this document, you’ll learn how to install and configure the ApiShip fulfillment provider for Medusa.
 
 ## Requirements
 
-- Medusa v2.7.0 or later
+- Medusa v2.7.1 or later
 - Node.js v20 or later
 - An Apiship account - [sign in or create one](https://a.apiship.ru)
 
@@ -34,7 +39,7 @@ module.exports = defineConfig({
             id: "apiship",
             options: {
               token: process.env.APISHIP_TOKEN,
-              isTest: true,
+              isTest: false,
               settings: {
                 defaultSenderSettings: {
                   countryCode: "RU",
@@ -70,7 +75,7 @@ module.exports = defineConfig({
 })
 ```
 
-Add environment variable with your ApiShip:
+Add environment variable with your token from your ApiShip account:
 
 ```
 APISHIP_TOKEN=supersecret
@@ -92,5 +97,5 @@ APISHIP_TOKEN=supersecret
 | `settings.defaultProductSizes.width` | Default product width. | No | – |
 | `settings.defaultProductSizes.height` | Default product height. | No | – |
 | `settings.defaultProductSizes.weight` | Default product weight. | No | – |
-| `settings.deliveryCostVat` | Delivery VAT rate:<br>- `-1` — No VAT<br>- `0` — 0%<br>- `5` — 5%<br>- `7` — 7%<br>- `10` — 10%<br>- `20` — 20% | Yes | – |
+| `settings.deliveryCostVat` | Delivery VAT rate:<br />- `-1` — No VAT<br />- `0` — 0%<br />- `5` — 5%<br />- `7` — 7%<br />- `10` — 10%<br />- `20` — 20% | Yes | – |
 | `settings.isCod` | Enables Cash on Delivery (C.O.D.) for created orders. | No | `false` |

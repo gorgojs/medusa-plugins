@@ -4,6 +4,7 @@ import RobokassaIcon from "@/svg/icons/robokassa-icon.svg";
 import TbankIcon from "@/svg/icons/tbank-icon.svg";
 import YandexIcon from "@/svg/icons/yandex-ru-icon.svg";
 import YookassaIcon from "@/svg/icons/yookassa-icon.svg";
+import ApishipIcon from "@/svg/icons/apiship-icon.svg";
 
 export const pluginCategories: PluginCategory[] = [
   {
@@ -52,6 +53,31 @@ export const pluginCategories: PluginCategory[] = [
           ru: "Принимайте платежи через Robokassa",
         },
         icon: <RobokassaIcon />,
+      },
+    ],
+  },
+   {
+    id: "fulfillment",
+    title: {
+      en: "Fulfillment",
+      ru: "Фулфилмент",
+    },
+    description: {
+      en: "Handle order fulfillment and shipping with multiple providers.",
+      ru: "Управляйте выполнением заказов и доставкой через разных провайдеров.",
+    },
+    plugins: [
+      {
+        id: "apiship",
+        name: {
+          en: "ApiShip",
+          ru: "ApiShip",
+        },
+        description: {
+          en: "Ship orders with ApiShip",
+          ru: "Отправляйте заказы с помощью ApiShip",
+        },
+        icon: <ApishipIcon />,
       },
     ],
   },

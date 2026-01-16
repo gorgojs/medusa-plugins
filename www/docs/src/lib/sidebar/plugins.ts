@@ -139,6 +139,41 @@ export const pluginsSidebar: SidebarType = {
     },
     {
       title: {
+        en: "ApiShip",
+        ru: "ApiShip",
+      },
+      slug: "apiship",
+      icon: "apiship",
+      isSection: true,
+      hasOverview: true,
+      npmPackage: "@gorgo/medusa-fulfillment-apiship",
+      links: [
+        {
+          service: "npm",
+          url: "https://www.npmjs.com/package/@gorgo/medusa-fulfillment-apiship",
+        },
+        {
+          service: "github",
+          url: "https://github.com/gorgojs/medusa-plugins/tree/main/packages/medusa-fulfillment-apiship",
+        },
+        {
+          service: "telegram",
+          url: "https://t.me/medusajs_apiship",
+        },
+      ],
+      children: [
+        {
+          title: {
+            en: "Getting Started",
+            ru: "Быстрый старт",
+          },
+          slug: "getting-started",
+          children: [],
+        },
+      ],
+    },
+    {
+      title: {
         en: "1C:Enterprise",
         ru: "1C:Предприятие",
       },

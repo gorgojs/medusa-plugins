@@ -5,11 +5,13 @@ import Robokassa from "@/svg/icons/sidebar/robokassa.svg";
 import Tkassa from "@/svg/icons/sidebar/tkassa.svg";
 import Yandex from "@/svg/icons/sidebar/yandex.svg";
 import Yookassa from "@/svg/icons/sidebar/yookassa.svg";
+import Apiship from "@/svg/icons/sidebar/apiship.svg";
 
 const ICONS: Record<string, FC<SVGProps<SVGSVGElement>>> = {
   tkassa: Tkassa,
   robokassa: Robokassa,
   yookassa: Yookassa,
+  apiship: Apiship,
   yandex: Yandex,
   "1c": Onec,
 };
