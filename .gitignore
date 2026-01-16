@@ -30,4 +30,7 @@ examples/**/yalc.lock
 
 **/tsconfig.tsbuildinfo
 
-
+# temp
+packages/medusa-marketplace-wildberries/src/lib/wildberries-products-client
+packages/medusa-marketplace-yandex-market/src/lib/yandex-market-client
+packages/medusa-marketplace-ozon/src/lib/ozon-seller-api
