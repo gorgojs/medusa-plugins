@@ -7,6 +7,7 @@ const config = new Configuration({
   basePath: BASE_URL
 })
 
+// TODO: move to providers types
 export interface MarketplaceOzonCredentialsType extends MarketplaceCredentialsType {
   apiKey: string;
   clientId: string;
