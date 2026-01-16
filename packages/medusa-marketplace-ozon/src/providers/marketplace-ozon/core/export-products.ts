@@ -16,7 +16,7 @@ export const exportProducts = async (input: exportProductsStepInput) => {
 
   for (let batchedProducts of batches) {
     const { status, data } = await productApi.productAPIImportProductsV3(
-      withAuth({
+      withAuth(credentials, {
         v3ImportProductsRequest: {
           items: batchedProducts,
         },

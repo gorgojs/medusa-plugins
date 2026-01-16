@@ -1,13 +1,21 @@
 import { Configuration, ProductAPIApi } from './ozon-seller-api';
+import { MarketplaceCredentialsType } from  "@gorgo/medusa-marketplace/modules/marketplace/types"
+
+const BASE_URL="https://api-seller.ozon.ru"
 
 const config = new Configuration({
-  basePath: process.env.OZON_BASE_URL,
+  basePath: BASE_URL
 })
 
+export interface MarketplaceOzonCredentialsType extends MarketplaceCredentialsType {
+  apiKey: string;
+  clientId: string;
+}
+
 // TODO: find better way to pass auth
-export const withAuth = <T extends object>(body: T) => ({
-  clientId: process.env.OZON_CLIENT_ID!,
-  apiKey: process.env.OZON_API_KEY!,
+export const withAuth = <T extends object>(credentials: MarketplaceOzonCredentialsType, body: T) => ({
+  apiKey: credentials.apiKey,
+  clientId: credentials.clientId,
   ...body,
 });
 
