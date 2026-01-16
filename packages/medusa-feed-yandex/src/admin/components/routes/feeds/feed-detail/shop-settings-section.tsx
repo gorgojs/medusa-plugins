@@ -1,145 +1,178 @@
-import {
-  Container,
-  Drawer,
-  Button,
-  Heading,
-  useToggleState,
-  Input,
-  Label,
-} from "@medusajs/ui"
-import { Pencil } from "@medusajs/icons"
-import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-
-import { i18n } from "../../../../components/utilities/i18n"
-import { SectionRow } from "../../../common/section-row"
+import { z } from "zod"
+import { Text, Button, Drawer, Input, Label, Switch } from "@medusajs/ui"
+import { useState } from "react"
+import { useRevalidator } from "react-router-dom"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { sdk } from "../../../../lib/sdk"
-import { Header } from "../../../common/header"
-import type { Feed, FeedResponse } from "../../../../types"
+import type { MarketplaceDTO } from "@gorgo/medusa-marketplace/modules/marketplace/types"
 
-export const ShopSettingsSection = () => {
-  const { id } = useParams()
-  const [editShopOpen, openEditShop, closeEditShop] = useToggleState()
+const editMarketplaceSchema = z.object({
+  provider_id: z.string().trim().min(1, "Min 1 chars").max(120, "Max 120 chars"),
+  is_active: z.boolean(),
+})
 
-  const [shopName, setShopName] = useState("")
-  const [shopCompany, setShopCompany] = useState("")
-  const [shopUrl, setShopUrl] = useState("")
+type EditMarketplaceFormValues = {
+  provider_id: string
+  is_active: boolean
+}
 
-  const { data, isError, error } = useQuery<FeedResponse>({
-    queryFn: () => sdk.client.fetch(`/admin/feeds/${id}`),
-    queryKey: ["feed", id],
-  })
-  if (isError) {
-    throw error
+const zodFieldErrors = <T extends Record<string, any>>(error: z.ZodError<T>) => {
+  const out: Partial<Record<keyof T, string>> = {}
+  for (const issue of error.issues) {
+    const key = issue.path[0] as keyof T
+    if (key && !out[key]) out[key] = issue.message
   }
-  useEffect(() => {
-    if (data?.feed) {
-      setShopName(data.feed.settings?.name!)
-      setShopCompany(data.feed.settings?.company!)
-      setShopUrl(data.feed.settings?.url!)
-    }
-  }, [data])
-  const feed = data?.feed
+  return out
+}
 
+export const MarketplaceEditDrawer = ({ marketplace }: { marketplace: MarketplaceDTO }) => {
+  const { revalidate } = useRevalidator()
   const queryClient = useQueryClient()
-  const { mutate: updateFeedMutate } = useMutation({
-    mutationFn: async (updatedFeed: Feed) => {
-      return sdk.client.fetch(`/admin/feeds/${updatedFeed.id}`, {
-        method: "PATCH",
-        body: updatedFeed,
+
+  const [open, setOpen] = useState(false)
+  const [values, setValues] = useState<EditMarketplaceFormValues>({
+    provider_id: marketplace.provider_id,
+    is_active: Boolean(marketplace.is_active),
+  })
+  const [touched, setTouched] = useState<{ provider_id: boolean }>({ provider_id: false })
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof EditMarketplaceFormValues, string>>
+  >({})
+
+  const resetForm = () => {
+    setTouched({ provider_id: false })
+    setErrors({})
+    setValues({
+      provider_id: marketplace.provider_id,
+      is_active: Boolean(marketplace.is_active),
+    })
+  }
+
+  const { mutate: updateMarketplaceMutate, isPending } = useMutation({
+    mutationFn: async (payload: EditMarketplaceFormValues) => {
+      return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`, {
+        method: "POST", 
+        body: {
+          provider_id: payload.provider_id.trim(),
+          is_active: payload.is_active,
+          credentials: marketplace.credentials ?? {},
+          settings: marketplace.settings ?? {},
+        },
         headers: {
           "Content-Type": "application/json",
         },
       })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["feed", feed?.id],
-      })
-      queryClient.invalidateQueries({ queryKey: [["feeds"]] })
+      queryClient.invalidateQueries({ queryKey: ["marketplaces"] })
+      queryClient.invalidateQueries({ queryKey: ["marketplace", marketplace.id] })
+      revalidate()
+      setOpen(false)
     },
     onError: (error) => {
-      console.error("Error updating feed:", error)
-    }
+      console.error("Error updating marketplace:", error)
+    },
   })
 
-  const saveShopSettings = () => {
-    const updatedFeed: Feed = {
-      id: feed?.id!,
-      settings: {
-        name: shopName,
-        company: shopCompany,
-        url: shopUrl,
-        platform: "Medusa"
-      }
+  const parsed = editMarketplaceSchema.safeParse(values)
+  const isDirty =
+    values.provider_id.trim() !== marketplace.provider_id.trim() ||
+    values.is_active !== Boolean(marketplace.is_active)
+
+  const canSave = parsed.success && isDirty && !isPending
+
+  const onSave = () => {
+    setTouched({ provider_id: true })
+
+    const res = editMarketplaceSchema.safeParse(values)
+    if (!res.success) {
+      setErrors(zodFieldErrors(res.error))
+      return
     }
-    updateFeedMutate(updatedFeed)
-    closeEditShop()
+    updateMarketplaceMutate(res.data)
+  }
+
+  const onCancel = () => {
+    setOpen(false)
+    resetForm()
   }
 
   return (
-    <Container className="divide-y p-0">
-      <Header
-        key={`${editShopOpen ? "edit-shop-open" : "edit-shop-closed"}`}
-        title={i18n.t("settings.shop.title")}
-        subtitle={i18n.t("settings.shop.subtitle")}
-        actions={[
-          {
-            type: "action-menu",
-            props: {
-              groups: [
-                {
-                  actions: [
-                    {
-                      icon: <Pencil />,
-                      label: i18n.t("actions.edit"),
-                      onClick: () => openEditShop(),
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-        ]}
-      />
-      <SectionRow title={i18n.t("settings.shop.fields.name")} value={feed?.settings?.name || "-"} />
-      <SectionRow title={i18n.t("settings.shop.fields.company")} value={feed?.settings?.company || "-"} />
-      <SectionRow title={i18n.t("settings.shop.fields.url")} value={feed?.settings?.url || "-"} />
-      <SectionRow title={i18n.t("settings.shop.fields.platform")} value="Medusa" />
-      <Drawer open={editShopOpen} onOpenChange={(open) => {
-        if (!open) closeEditShop()
-      }}>
-        <Drawer.Content>
-          <Drawer.Header>
-            <Drawer.Title asChild><Heading>{i18n.t("feeds.edit.title")}</Heading></Drawer.Title>
-          </Drawer.Header>
-          <Drawer.Body>
-            <div className="flex flex-col gap-y-4">
-              <div className="flex flex-col gap-y-2">
-                <Label htmlFor="shop-name" size="small">{i18n.t("settings.shop.fields.name")}</Label>
-                <Input id="shop-name" value={shopName} onChange={(e) => setShopName(e.target.value)} />
-              </div>
-              <div className="flex flex-col gap-y-2">
-                <Label size="small" htmlFor="shop-company">{i18n.t("settings.shop.fields.company")}</Label>
-                <Input id="shop-company" value={shopCompany} onChange={(e) => setShopCompany(e.target.value)} />
-              </div>
-              <div className="flex flex-col gap-y-2">
-                <Label htmlFor="shop-url" size="small">{i18n.t("settings.shop.fields.url")}</Label>
-                <Input id="shop-url" value={shopUrl} onChange={(e) => setShopUrl(e.target.value)} />
-              </div>
+    <Drawer
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next)
+        resetForm()
+      }}
+    >
+      <Drawer.Trigger asChild>
+        <Button variant="secondary" size="small">
+          Edit
+        </Button>
+      </Drawer.Trigger>
+
+      <Drawer.Content>
+        <Drawer.Header>
+          <Drawer.Title>Edit Marketplace</Drawer.Title>
+        </Drawer.Header>
+
+        <Drawer.Body>
+          <div className="flex flex-col gap-y-6">
+            <div className="flex flex-col gap-y-2">
+              <Label htmlFor="provider_id" size="small">
+                Provider ID
+              </Label>
+
+              <Input
+                id="provider_id"
+                value={values.provider_id}
+                onChange={(e) => {
+                  const next = { ...values, provider_id: e.target.value }
+                  setValues(next)
+
+                  const r = editMarketplaceSchema.safeParse(next)
+                  setErrors(r.success ? {} : zodFieldErrors(r.error))
+                }}
+                onBlur={() => setTouched({ provider_id: true })}
+                aria-invalid={Boolean(touched.provider_id && errors.provider_id)}
+                aria-describedby={
+                  touched.provider_id && errors.provider_id ? "provider_id-error" : undefined
+                }
+              />
+
+              {touched.provider_id && errors.provider_id && (
+                <Text id="provider_id-error" size="small" className="text-ui-fg-error">
+                  {errors.provider_id}
+                </Text>
+              )}
             </div>
-          </Drawer.Body>
-          <Drawer.Footer>
-            <div className="flex items-center justify-end gap-x-2">
-              <Drawer.Close asChild>
-                <Button size="small" variant="secondary">{i18n.t("actions.cancel")}</Button>
-              </Drawer.Close>
-              <Button size="small" type="submit" onClick={saveShopSettings}>{i18n.t("actions.save")}</Button>
+
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col">
+                <Text size="small" className="text-ui-fg-subtle">
+                  Active
+                </Text>
+                <Text size="small">{values.is_active ? "Enabled" : "Disabled"}</Text>
+              </div>
+
+              <Switch
+                checked={values.is_active}
+                onCheckedChange={(v) => setValues({ ...values, is_active: Boolean(v) })}
+              />
             </div>
-          </Drawer.Footer>
-        </Drawer.Content>
-      </Drawer>
-    </Container>
+          </div>
+        </Drawer.Body>
+
+        <Drawer.Footer className="flex justify-end gap-x-2">
+          <Button variant="secondary" size="small" onClick={onCancel}>
+            Cancel
+          </Button>
+
+          <Button size="small" onClick={onSave} disabled={!canSave}>
+            {isPending ? "Saving..." : "Save"}
+          </Button>
+        </Drawer.Footer>
+      </Drawer.Content>
+    </Drawer>
   )
 }

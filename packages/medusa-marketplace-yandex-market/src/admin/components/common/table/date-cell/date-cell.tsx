@@ -29,7 +29,7 @@ export const DateCell = ({ date, mode = "full" }: DateCellProps) => {
         }
       >
         <span className="truncate">
-          {}
+          { }
         </span>
       </Tooltip>
     </div>
