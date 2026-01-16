@@ -44,6 +44,7 @@
     "axios-retry": "^4.5.0"
   },
   "devDependencies": {
+    "@gorgo/medusa-marketplace": "*",
     "@medusajs/admin-sdk": "^2.11.2",
     "@medusajs/cli": "^2.11.2",
     "@medusajs/framework": "^2.11.2",
@@ -54,11 +55,11 @@
     "@openapitools/openapi-generator-cli": "^2.25.0",
     "@swc/core": "^1.5.7",
     "@types/node": "^20.0.0",
-    "@types/react": "^19.2.8",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.2.25",
     "prop-types": "^15.8.1",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2",
     "vite": "^5.2.11",
