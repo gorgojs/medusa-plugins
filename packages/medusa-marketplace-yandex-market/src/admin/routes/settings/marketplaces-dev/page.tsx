@@ -17,17 +17,17 @@ const MarketplaceList = () => {
           stateModal={stateModal}
           openModal={openModal}
         />
-        {/* <MarketplaceAddModal
+        <MarketplaceAddModal
           stateModal={stateModal}
           closeModal={closeModal}
-        /> */}
+        />
       </Container>
     </SingleColumnLayout>
   )
 }
 
 export const config = defineRouteConfig({
-  label: "Marketplaces",
+  label: "Marketplaces Dev",
   icon: Shopping,
 })
 

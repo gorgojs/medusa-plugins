@@ -12,7 +12,6 @@ import {
 } from "@tanstack/react-query"
 import { Header } from "../../../common/header"
 import { sdk } from "../../../../lib/sdk"
-import type { MarketplaceResponse } from "../../../../types"
 import type { MarketplaceDTO } from "@gorgo/medusa-marketplace/modules/marketplace/types"
 
 const PAGE_SIZE = 20
@@ -24,9 +23,8 @@ export const MarketplaceListTable = ({
   stateModal: boolean
   openModal: () => void
 }) => {
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   const limit = PAGE_SIZE
-
   const [pagination, setPagination] = useState<DataTablePaginationState>({
     pageSize: limit,
     pageIndex: 0,
@@ -34,20 +32,19 @@ export const MarketplaceListTable = ({
 
   const offset = useMemo(() => pagination.pageIndex * limit, [pagination])
 
-  const { data, isLoading } = useQuery<MarketplaceResponse>({
+  const { data, isLoading } = useQuery<MarketplaceDTO[]>({
     queryFn: () =>
-      sdk.client.fetch(`/admin/feeds`, {
+      sdk.client.fetch(`/admin/marketplaces`, {
         query: { limit, offset },
       }),
-    queryKey: [["feeds"]],
+    queryKey: [["marketplaces"]],
   })
 
   const columnHelper = createDataTableColumnHelper<MarketplaceDTO>()
 
   const columns = [
-    columnHelper.accessor("provider_id", {
-      header: "Provider",
-    }),
+    columnHelper.accessor("id", { header: "ID" }),
+    columnHelper.accessor("provider_id", {header: "Provider ID"}),
     columnHelper.accessor("is_active", {
       header: "Status",
       cell: ({ getValue }) => {
@@ -58,28 +55,21 @@ export const MarketplaceListTable = ({
           </StatusBadge>
         )
       },
-    }),
-    columnHelper.accessor("id", {
-      header: "ID",
-      cell: ({ getValue }) => (
-        <span className="font-mono text-ui-fg-subtle">{getValue()}</span>
-      ),
-    }),
+    })
   ]
 
   const table = useDataTable({
     columns,
-    data: data?.marketplaces || [],
+    data: data || [],
     getRowId: (row) => row.id,
-    rowCount: data?.count || 0,
+    rowCount: data?.length || 0,
     isLoading,
     pagination: {
       state: pagination,
       onPaginationChange: setPagination,
     },
     onRowClick: (_e, row) => {
-      // navigate(row.id)
-      console.log("row", row.id)
+      navigate(row.id)
     }
   })
 

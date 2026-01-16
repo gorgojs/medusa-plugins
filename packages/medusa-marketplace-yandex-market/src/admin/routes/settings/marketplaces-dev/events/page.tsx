@@ -9,7 +9,7 @@ import {
 } from "@medusajs/ui"
 import { defineRouteConfig } from "@medusajs/admin-sdk"
 import { useState } from "react"
-import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { sdk } from "../../../../lib/sdk"
 
 type MarketplaceEvent = {
@@ -24,8 +24,6 @@ type MarketplaceEvent = {
   request_data?: any
   response_data?: any
 }
-
-const queryClient = new QueryClient()
 
 const PAGE_SIZE = 20
 
@@ -160,8 +158,6 @@ function MarketplaceEventsPageInner() {
 
 export default function MarketplaceEventsPage() {
   return (
-    <QueryClientProvider client={queryClient}>
       <MarketplaceEventsPageInner />
-    </QueryClientProvider>
   )
 }

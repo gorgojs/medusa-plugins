@@ -1,7 +1,5 @@
 import { Container, Heading, Text, StatusBadge } from "@medusajs/ui"
 import {
-  QueryClient,
-  QueryClientProvider,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query"
@@ -15,11 +13,9 @@ type Marketplace = {
   settings: Record<string, unknown>
   is_active: boolean
 }
-const queryClient = new QueryClient()
 
-function MarketplaceDetailInner() {
+const MarketplaceDetail = () => {
   
-  const qc = useQueryClient()
 
   const id = window.location.pathname.split("/").pop() || ""
 
@@ -51,10 +47,6 @@ function MarketplaceDetailInner() {
 
           <MarketplaceEditDrawer
             marketplace={marketplace}
-            onSaved={async () => {
-              await qc.invalidateQueries({ queryKey: ["admin-marketplace", id] })
-              await qc.invalidateQueries({ queryKey: ["admin-marketplaces"] })
-            }}
           />
         </div>
       </div>
@@ -62,10 +54,4 @@ function MarketplaceDetailInner() {
   )
 }
 
-export default function MarketplaceDetail() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <MarketplaceDetailInner />
-    </QueryClientProvider>
-  )
-}
+export default MarketplaceDetail
