@@ -12,7 +12,6 @@ import {
 } from "@tanstack/react-query"
 import { Header } from "../../../common/header"
 import { sdk } from "../../../../lib/sdk"
-import type { MarketplaceResponse } from "../../../../types"
 import type { MarketplaceDTO } from "../../../../../modules/marketplace/types"
 
 const PAGE_SIZE = 20
@@ -33,7 +32,7 @@ export const MarketplaceListTable = ({
 
   const offset = useMemo(() => pagination.pageIndex * limit, [pagination])
 
-  const { data, isLoading } = useQuery<MarketplaceResponse>({
+  const { data, isLoading } = useQuery<MarketplaceDTO[]>({
     queryFn: () =>
       sdk.client.fetch(`/admin/marketplaces`, {
         query: { limit, offset },
@@ -56,20 +55,14 @@ export const MarketplaceListTable = ({
           </StatusBadge>
         )
       },
-    }),
-    // columnHelper.accessor("id", {
-    //   header: "ID",
-    //   cell: ({ getValue }) => (
-    //     <span className="font-mono text-ui-fg-subtle">{getValue()}</span>
-    //   ),
-    // }),
+    })
   ]
 
   const table = useDataTable({
     columns,
-    data: data?.marketplaces || [],
+    data: data || [],
     getRowId: (row) => row.id,
-    rowCount: data?.count || 0,
+    rowCount: data?.length || 0,
     isLoading,
     pagination: {
       state: pagination,

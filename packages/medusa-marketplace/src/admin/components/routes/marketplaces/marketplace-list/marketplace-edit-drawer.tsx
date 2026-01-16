@@ -32,10 +32,8 @@ const zodFieldErrors = <T extends Record<string, any>>(error: z.ZodError<T>) => 
 
 export const MarketplaceEditDrawer = ({
   marketplace,
-  onSaved,
 }: {
   marketplace: Marketplace
-  onSaved: () => void | Promise<void>
 }) => {
   const [open, setOpen] = useState(false)
 
@@ -81,7 +79,7 @@ export const MarketplaceEditDrawer = ({
 
 
     setOpen(false)
-    await onSaved()
+    // await onSaved()
   }
 
   const onCancel = () => {
