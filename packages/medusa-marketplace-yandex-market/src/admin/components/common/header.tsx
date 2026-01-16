@@ -27,7 +27,7 @@ type CustomAction = {
 type Action = ButtonAction | ActionMenuAction | CustomAction
 
 export type HeadingProps = {
-  title: string
+  title: string | React.ReactNode
   subtitle?: string
   status?: Status
   actions?: Action[]

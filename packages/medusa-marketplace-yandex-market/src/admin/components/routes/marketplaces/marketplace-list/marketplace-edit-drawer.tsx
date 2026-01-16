@@ -1,183 +1,210 @@
 import { z } from "zod"
-import { Text, Button, Drawer, Input, Label, Switch } from "@medusajs/ui"
-import { useState } from "react"
+import {
+  Button,
+  Drawer,
+  Input,
+  Label,
+  Switch,
+  Text,
+  Select,
+} from "@medusajs/ui"
+import { Controller, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect } from "react"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useRevalidator } from "react-router-dom"
 import { sdk } from "../../../../lib/sdk"
+import type { AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/types"
+import type { HttpTypes } from "@medusajs/framework/types"
 
-type Marketplace = {
-  id: string
-  provider_id: string
-  credentials: Record<string, unknown>
-  settings: Record<string, unknown>
-  is_active: boolean
-}
-
-const editMarketplaceSchema = z.object({
-  provider_id: z.string().trim().min(1, "Min 1 chars").max(120, "Max 120 chars"),
-  is_active: z.boolean(),
+const MarketplaceEditSchema = z.object({
+  title: z.string().trim().min(1, "Min 1 chars").max(20, "Max 20 chars"),
+  is_enabled: z.boolean(),
+  //sales_channel_id: z.string().optional(),
 })
 
-type EditMarketplaceFormValues = {
-  provider_id: string
-  is_active: boolean
-}
-
-const zodFieldErrors = <T extends Record<string, any>>(error: z.ZodError<T>) => {
-  const out: Partial<Record<keyof T, string>> = {}
-  for (const issue of error.issues) {
-    const key = issue.path[0] as keyof T
-    if (key && !out[key]) out[key] = issue.message
-  }
-  return out
-}
+type MarketplaceEditValues = z.infer<typeof MarketplaceEditSchema>
 
 export const MarketplaceEditDrawer = ({
-  marketplace,
-  onSaved,
+  response,
+  open,
+  setOpen,
 }: {
-  marketplace: Marketplace
-  onSaved: () => void | Promise<void>
+  response: AdminMarketplaceResponse
+  open: boolean
+  setOpen: (open: boolean) => void
 }) => {
-  const [open, setOpen] = useState(false)
+  const marketplace = response.marketplace
+  const queryClient = useQueryClient()
+  const { revalidate } = useRevalidator()
 
-  const [values, setValues] = useState<EditMarketplaceFormValues>({
-    provider_id: marketplace.provider_id,
-    is_active: Boolean(marketplace.is_active),
+  // const { data: salesChannelsData, isLoading: isSalesChannelsLoading } =
+  //   useQuery<HttpTypes.AdminSalesChannelListResponse>({
+  //     queryKey: ["admin-sales-channels"],
+  //     queryFn: () => sdk.admin.salesChannel.list({ limit: 50 }),
+  //     enabled: open,
+  //     staleTime: 5 * 60 * 1000,
+  //   })
+
+  // const salesChannels = salesChannelsData?.sales_channels ?? []
+
+  const form = useForm<MarketplaceEditValues>({
+    defaultValues: {
+      title: String(marketplace.title),
+      is_enabled: Boolean(marketplace.is_enabled),
+      //sales_channel_id: marketplace.sales_channel_id ?? "",
+    },
+    resolver: zodResolver(MarketplaceEditSchema),
+    mode: "onSubmit",
   })
 
-  const [touched, setTouched] = useState<{ provider_id: boolean }>({
-    provider_id: false,
+  const resetForm = () =>
+    form.reset({
+      title: String(marketplace.title),
+      is_enabled: Boolean(marketplace.is_enabled),
+      //sales_channel_id: marketplace.sales_channel_id ?? "",
+    })
+
+  useEffect(() => {
+    resetForm()
+  }, [open, marketplace.id, marketplace.title, marketplace.is_enabled])
+
+  const updateMarketplace = useMutation({
+    mutationFn: async (values: MarketplaceEditValues) => {
+      return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`, {
+        method: "POST",
+        body: {
+          title: values.title.trim(),
+          provider_id: marketplace.provider_id,
+          is_enabled: values.is_enabled,
+          credentials: marketplace.credentials ?? {},
+          settings: marketplace.settings ?? {},
+          // sales_channel_id: values.sales_channel_id || null,
+        },
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["marketplaces"] })
+      revalidate()
+      resetForm()
+      setOpen(false)
+    },
   })
 
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof EditMarketplaceFormValues, string>>
-  >({})
-
-  const parsed = editMarketplaceSchema.safeParse(values)
-
-  const isDirty =
-    values.provider_id.trim() !== marketplace.provider_id.trim() ||
-    values.is_active !== Boolean(marketplace.is_active)
-
-  const canSave = parsed.success && isDirty
-
-  const onSave = async () => {
-    setTouched({ provider_id: true })
-
-    const res = editMarketplaceSchema.safeParse(values)
-    if (!res.success) {
-      setErrors(zodFieldErrors(res.error))
-      return
-    }
-
-    await sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`, {
-      method: "POST",
-      body: {
-        provider_id: values.provider_id.trim(),
-        is_active: values.is_active,
-        credentials: marketplace.credentials ?? {},
-        settings: marketplace.settings ?? {},
-      },
-    })
-
-
-    setOpen(false)
-    await onSaved()
-  }
-
-  const onCancel = () => {
-    setOpen(false)
-    setTouched({ provider_id: false })
-    setErrors({})
-    setValues({
-      provider_id: marketplace.provider_id,
-      is_active: Boolean(marketplace.is_active),
-    })
-  }
+  const onSubmit = form.handleSubmit((values) => updateMarketplace.mutate(values))
 
   return (
     <Drawer
       open={open}
-      onOpenChange={(next) => {
+      onOpenChange={(next: boolean) => {
         setOpen(next)
-        if (next) {
-          setValues({
-            provider_id: marketplace.provider_id,
-            is_active: Boolean(marketplace.is_active),
-          })
-          setTouched({ provider_id: false })
-          setErrors({})
-        }
       }}
     >
-      <Drawer.Trigger asChild>
-        <Button variant="secondary" size="small">
-          Edit
-        </Button>
-      </Drawer.Trigger>
-
       <Drawer.Content>
-        <Drawer.Header>
-          <Drawer.Title>Edit Marketplace</Drawer.Title>
-        </Drawer.Header>
+        <form onSubmit={onSubmit}>
+          <Drawer.Header>
+            <Drawer.Title>Edit Marketplace</Drawer.Title>
+          </Drawer.Header>
 
-        <Drawer.Body>
-          <div className="flex flex-col gap-y-6">
-            <div className="flex flex-col gap-y-2">
-              <Label htmlFor="provider_id" size="small">
-                Provider ID
-              </Label>
-
-              <Input
-                id="provider_id"
-                value={values.provider_id}
-                onChange={(e) => {
-                  const next = { ...values, provider_id: e.target.value }
-                  setValues(next)
-
-                  const r = editMarketplaceSchema.safeParse(next)
-                  setErrors(r.success ? {} : zodFieldErrors(r.error))
-                }}
-                onBlur={() => setTouched({ provider_id: true })}
-                aria-invalid={Boolean(touched.provider_id && errors.provider_id)}
-                aria-describedby={
-                  touched.provider_id && errors.provider_id
-                    ? "provider_id-error"
-                    : undefined
-                }
-              />
-
-              {touched.provider_id && errors.provider_id && (
-                <Text id="provider_id-error" size="small" className="text-ui-fg-error">
-                  {errors.provider_id}
-                </Text>
-              )}
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col">
+          <Drawer.Body>
+            <div className="flex flex-col gap-y-6">
+              <div className="flex flex-col gap-y-2">
+                <Label size="small">Provider ID</Label>
                 <Text size="small" className="text-ui-fg-subtle">
-                  Active
+                  {marketplace.provider_id}
                 </Text>
-                <Text size="small">{values.is_active ? "Enabled" : "Disabled"}</Text>
               </div>
 
-              <Switch
-                checked={values.is_active}
-                onCheckedChange={(v) => setValues({ ...values, is_active: Boolean(v) })}
-              />
+              <div className="flex flex-col gap-y-2">
+                <Label htmlFor="title" size="small">
+                  Title
+                </Label>
+                <Input id="title" autoComplete="off" {...form.register("title")} />
+                {form.formState.errors.title?.message && (
+                  <Text size="small" className="text-ui-fg-error">
+                    {form.formState.errors.title.message}
+                  </Text>
+                )}
+              </div>
+
+              {/* <div className="flex flex-col gap-y-2">
+                <Label htmlFor="sales_channel_id" size="small">
+                  Sales Channel
+                </Label>
+
+                <Controller
+                  control={form.control}
+                  name="sales_channel_id"
+                  render={({ field }) => (
+                    <Select
+                      value={field.value || undefined}
+                      onValueChange={(v: string) => field.onChange(v)}
+                      disabled={isSalesChannelsLoading || salesChannels.length === 0}
+                    >
+                      <Select.Trigger>
+                        <Select.Value placeholder="Select sales channel" />
+                      </Select.Trigger>
+
+                      <Select.Content>
+                        {salesChannels.map((sc) => (
+                          <Select.Item key={sc.id} value={sc.id}>
+                            {sc.name}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select>
+                  )}
+                />
+
+                {form.formState.errors.sales_channel_id?.message && (
+                  <Text size="small" className="text-ui-fg-error">
+                    {form.formState.errors.sales_channel_id.message}
+                  </Text>
+                )}
+              </div> */}
+
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <Text size="small" className="text-ui-fg-subtle">
+                    Enabled
+                  </Text>
+                  <Text size="small">
+                    Specify whether the marketplace is enabled.
+                  </Text>
+                </div>
+
+                <Controller
+                  control={form.control}
+                  name="is_enabled"
+                  render={({ field }) => (
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={(v: boolean) => field.onChange(Boolean(v))}
+                    />
+                  )}
+                />
+              </div>
             </div>
-          </div>
-        </Drawer.Body>
+          </Drawer.Body>
 
-        <Drawer.Footer className="flex justify-end gap-x-2">
-          <Button variant="secondary" size="small" onClick={onCancel}>
-            Cancel
-          </Button>
+          <Drawer.Footer className="flex justify-end gap-x-2">
+            <Button
+              type="button"
+              variant="secondary"
+              size="small"
+              onClick={() => {
+                resetForm()
+                setOpen(false)
+              }}
+            >
+              Cancel
+            </Button>
 
-          <Button size="small" onClick={onSave} disabled={!canSave}>
-            Save
-          </Button>
-        </Drawer.Footer>
+            <Button size="small" type="submit" disabled={updateMarketplace.isPending}>
+              Save
+            </Button>
+          </Drawer.Footer>
+        </form>
       </Drawer.Content>
     </Drawer>
   )

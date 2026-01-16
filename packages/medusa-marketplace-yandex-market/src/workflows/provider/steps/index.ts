@@ -1,1 +1,2 @@
-export * from "./import-ym-products"
+export * from "./export-products"
+export * from "./import-products"
