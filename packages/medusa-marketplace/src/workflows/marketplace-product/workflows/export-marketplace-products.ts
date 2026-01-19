@@ -24,7 +24,8 @@ export const exportMarketplaceProductsWorkflow = createWorkflow(
     })
     const marketplaceProducts = mapToMarketplaceProductsStep({
       providerId,
-      products
+      products,
+      // settings: input.marketplace.settings
     })
     const startedAt = transform({}, () => new Date())
     const exportResult = exportProductsStep({

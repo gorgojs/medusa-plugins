@@ -69,6 +69,10 @@ export default class MarketplaceModuleService extends MedusaService({
   async getProducts(providerId, data: GetProductsInput): Promise<GetProductsOutput> {
     return await this.marketplaceProviderService_.getProducts(providerId, data)
   }
+  
+  // async getMarketplaceProducts(providerId, data: GetMarketplaceProductsInput): Promise<GetMarketplaceProductsOutput> {
+  //   return await this.marketplaceProviderService_.getMarketplaceProducts(providerId, data)
+  // }
 
   async importProducts(providerId, data: ImportProductsInput): Promise<ImportProductsOutput> {
     return await this.marketplaceProviderService_.importProducts(providerId, data)

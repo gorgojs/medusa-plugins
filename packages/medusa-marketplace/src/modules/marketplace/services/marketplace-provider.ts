@@ -72,6 +72,15 @@ Please make sure that the provider is registered in the container and it is conf
     return provider.getProducts(input)
   }
 
+  // async getMarketplaceProducts(
+  //   providerId: string,
+  //   input: GetMarketplaceProductsInput
+  // ): Promise<GetMarketplaceProductsOutput> {
+  //   const provider = this.retrieveProvider(providerId)
+
+  //   return provider.getMarketplaceProducts(input)
+  // }
+
   async importProducts(
     providerId: string,
     input: ImportProductsInput
@@ -90,6 +99,7 @@ Please make sure that the provider is registered in the container and it is conf
     return provider.mapToMarketplaceProducts(input)
   }
 
+  // async mapToProducts(
   async mapToMedusaProducts(
     providerId: string,
     input: MapToMedusaProductsInput
