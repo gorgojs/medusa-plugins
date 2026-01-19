@@ -1,5 +1,11 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 0.2.0
+
+### Minor Changes
+
+- Update OpenAPI schema and docs
+
 ## 0.1.1
 
 ### Patch Changes
