@@ -9,11 +9,11 @@
 </p>
 
 <h1 align="center">
-Apiship Fulfillment for Medusa
+ApiShip Fulfillment for Medusa
 </h1>
 
 <p align="center">
-  A Medusa plugin that provides Apiship fulfillment.
+  A Medusa plugin that integrates the ApiShip delivery services platform.
   <br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/apiship">Documentation ↗</a>
   <br/>
@@ -45,10 +45,10 @@ Apiship Fulfillment for Medusa
 
 ## Features
 
-- 🔗  **Seamless integration** with the Apiship logistics platform
-- 💰  **Real-time shipping rate calculation** directly in checkout
+- ✅  **Complete integration** with ApiShip
+- 💰  **Shipping rate calculation** in checkout
 - 📍  **Pickup point delivery** with list and interactive map selection
-- 🧾  **Automatic order creation** in Apiship with selected tariff and pickup point
+- 🧾  **Automatic order creation** in ApiShip with selected tariff and pickup point
 - 🏷️  **Shipment documents retrieval**, including labels and waybills
 - ⚙️  **Test mode** for simulating calculations  
 - 🔍  **Detailed logging** for monitoring, debugging, and support
@@ -66,7 +66,7 @@ Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.
 
 - Medusa v2.7.0 or later
 - Node.js v20 or later
-- An Apiship account - [sign in or create one](https://a.apiship.ru)
+- An ApiShip account - [sign in or create one](https://a.apiship.ru)
 
 ## Installation
 

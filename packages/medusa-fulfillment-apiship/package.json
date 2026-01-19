@@ -28,13 +28,15 @@
     "medusa-v2",
     "medusa-plugin",
     "medusa-plugin-integration",
+    "medusa-plugin-shipping",
     "medusa-plugin-fulfillment",
+    "medusa-apiship",
     "medusa-fulfillment",
-    "medusa-fulfillment-apiship",
+    "medusa-shipping",
     "apiship",
-    "apiship-fulfillment",
+    "apiship-shipping",
     "shipping",
-    "shipment"
+    "fulfillment"
   ],
   "scripts": {
     "build": "medusa plugin:build",

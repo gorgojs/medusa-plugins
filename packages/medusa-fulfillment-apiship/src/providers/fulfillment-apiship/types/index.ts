@@ -65,6 +65,7 @@ interface Settings {
    * 7 - НДС 7%
    * 10 - НДС 10%
    * 20 - НДС 20%
+   * 22 - НДС 22%
    */
   deliveryCostVat: CostDeliveryCostVatEnum
   /**

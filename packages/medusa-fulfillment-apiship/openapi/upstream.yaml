@@ -1171,6 +1171,7 @@ paths:
           $ref: '#/components/responses/ServerErrorResponse'
   /orders/upload:
     post:
+      deprecated: true
       tags:
         - orders
       summary: Загрузка xlsx файла c данными о заказах
@@ -3947,6 +3948,7 @@ components:
                 - '0' - НДС 0%;
                 - '10' - НДС 10%;
                 - '20' - НДС 20%;
+                - '22' - НДС 22%;
                 - '5' - НДС 5%;
                 - '7' - НДС 7%;
               enum:
@@ -3954,6 +3956,7 @@ components:
                 - 0
                 - 10
                 - 20
+                - 22
                 - 5
                 - 7
               default: -1
@@ -4201,6 +4204,7 @@ components:
             - '0' - НДС 0%;
             - '10' - НДС 10%;
             - '20' - НДС 20%;
+            - '22' - НДС 22%;
             - '5' - НДС 5%;
             - '7' - НДС 7%;
           enum:
@@ -4208,6 +4212,7 @@ components:
             - 0
             - 10
             - 20
+            - 22
             - 5
             - 7
           default: -1
