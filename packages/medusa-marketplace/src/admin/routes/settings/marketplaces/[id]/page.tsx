@@ -2,6 +2,7 @@ import { Container, Heading, Text, StatusBadge } from "@medusajs/ui"
 import { useQuery } from "@tanstack/react-query"
 import { sdk } from "../../../../lib/sdk"
 import { MarketplaceEditDrawer } from "../../../../components/routes/marketplaces/marketplace-list"
+import { AdminMarketplaceResponse } from "../../../../../api/types"
 
 type Marketplace = {
   id: string
@@ -15,15 +16,13 @@ const MarketplaceDetail = () => {
 
   const id = window.location.pathname.split("/").pop() || ""
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery<AdminMarketplaceResponse>({
     queryKey: ["admin-marketplace", id],
     enabled: Boolean(id),
     queryFn: async () => sdk.client.fetch(`/admin/marketplaces/${id}`),
   })
 
-  const marketplace: Marketplace | undefined = Array.isArray(data)
-    ? (data[0] as any)
-    : (data as any)
+  const marketplace: Marketplace | undefined = data?.marketplace
 
   if (isLoading) return <Container className="p-6">Loading…</Container>
   if (isError || !marketplace) return <Container className="p-6">Not found</Container>

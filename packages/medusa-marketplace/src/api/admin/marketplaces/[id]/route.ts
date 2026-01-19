@@ -2,26 +2,27 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework";
 import { MarketplaceModuleService } from "../../../../modules/marketplace/services";
 import { MARKETPLACE_MODULE } from "../../../../modules/marketplace";
 import { AdminUpdateMarketplaceType } from "../validators";
+import { AdminMarketplaceResponse, AdminMarketplaceDeleteResponse } from "../../../types";
 
 export const GET = async (
   req: MedusaRequest,
-  res: MedusaResponse
+  res: MedusaResponse<AdminMarketplaceResponse>
 ) => {
   const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
-  const result = await marketplaceService.listMarketplaces(
+  const marketplace = await marketplaceService.listMarketplaces(
     { id: req.params.id },
     { select: req.queryConfig.fields }
   )
 
-  res.json(result)
+  res.status(200).json({ marketplace: marketplace[0] })
 }
 
 export const POST = async (
   req: MedusaRequest<AdminUpdateMarketplaceType>,
-  res: MedusaResponse
+  res: MedusaResponse<AdminMarketplaceResponse>
 ) => {
   const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
-  const result = await marketplaceService.updateMarketplaces({
+  const marketplace = await marketplaceService.updateMarketplaces({
     id: req.params.id,
     provider_id: req.validatedBody.provider_id,
     credentials: req.validatedBody.credentials,
@@ -29,15 +30,21 @@ export const POST = async (
     is_active: req.validatedBody.is_active
   })
 
-  res.json(result)
+  res.status(200).json({ marketplace })
 }
 
 export const DELETE = async (
   req: MedusaRequest,
-  res: MedusaResponse
+  res: MedusaResponse<AdminMarketplaceDeleteResponse>
 ) => {
   const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
-  const result = await marketplaceService.deleteMarketplaces(req.params.id)
+  const id = req.params.id
 
-  res.json(result)
+  await marketplaceService.deleteMarketplaces(id)
+
+  res.status(200).json({
+    id,
+    object: "marketplace",
+    deleted: true
+  })
 }

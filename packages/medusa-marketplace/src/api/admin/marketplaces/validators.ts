@@ -1,9 +1,11 @@
 import { z } from "zod"
 import { createFindParams } from "@medusajs/medusa/api/utils/validators"
 
-export const AdminGetMarketplaceParams = createFindParams({ limit: 20, offset: 0 })
+export const AdminMarketplaceDefaultFindParams = { limit: 20, offset: 0 }
 
-export const AdminMarketplaceGetEventsParams = createFindParams({ limit: 20, offset: 0 })
+export const AdminGetMarketplaceParams = createFindParams(AdminMarketplaceDefaultFindParams)
+
+export const AdminMarketplaceGetEventsParams = createFindParams(AdminMarketplaceDefaultFindParams)
 
 export type AdminCreateMarketplaceType = z.infer<typeof AdminCreateMarketplace>
 export const AdminCreateMarketplace = z.object({

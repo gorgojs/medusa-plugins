@@ -1,28 +1,34 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 import { MarketplaceModuleService } from "../../../../modules/marketplace/services"
 import { MARKETPLACE_MODULE } from "../../../../modules/marketplace"
-import { AdminMarketplaceCreateEventsType } from "../validators"
+import { AdminMarketplaceCreateEventsType, AdminMarketplaceDefaultFindParams } from "../validators"
+import { AdminMarketplaceEventListResponse, AdminMarketplaceEventResponse } from "../../../types"
 
 export const GET = async (
   req: MedusaRequest,
-  res: MedusaResponse
+  res: MedusaResponse<AdminMarketplaceEventListResponse>
 ) => {
   const marketplaceService: MarketplaceModuleService = req.scope.resolve(MARKETPLACE_MODULE)
-  const result = await marketplaceService.listMarketplaceEvents({}, {
+  const [events, count] = await marketplaceService.listAndCountMarketplaceEvents({}, {
     select: req.queryConfig.fields,
     ...req.queryConfig.pagination,
   })
 
-  res.json(result)
+  res.status(200).json({
+    events,
+    count,
+    limit: req.queryConfig.pagination.take ?? AdminMarketplaceDefaultFindParams.limit,
+    offset: req.queryConfig.pagination.skip
+  })
 }
 
 export const POST = async (
   req: MedusaRequest<AdminMarketplaceCreateEventsType>,
-  res: MedusaResponse
+  res: MedusaResponse<AdminMarketplaceEventResponse>
 ) => {
   const marketplaceService: MarketplaceModuleService = req.scope.resolve(MARKETPLACE_MODULE)
-  const result = await marketplaceService.createMarketplaceEvents(req.validatedBody)
+  const event = await marketplaceService.createMarketplaceEvents(req.validatedBody)
 
-  res.json(result)
+  res.status(200).json({ event })
 }
 

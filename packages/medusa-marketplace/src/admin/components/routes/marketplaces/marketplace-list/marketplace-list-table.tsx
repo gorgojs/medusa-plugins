@@ -13,6 +13,7 @@ import {
 import { Header } from "../../../common/header"
 import { sdk } from "../../../../lib/sdk"
 import type { MarketplaceDTO } from "../../../../../modules/marketplace/types"
+import { AdminMarketplaceListResponse } from "../../../../../api/types"
 
 const PAGE_SIZE = 20
 
@@ -32,7 +33,7 @@ export const MarketplaceListTable = ({
 
   const offset = useMemo(() => pagination.pageIndex * limit, [pagination])
 
-  const { data, isLoading } = useQuery<MarketplaceDTO[]>({
+  const { data, isLoading } = useQuery<AdminMarketplaceListResponse>({
     queryFn: () =>
       sdk.client.fetch(`/admin/marketplaces`, {
         query: { limit, offset },
@@ -60,9 +61,9 @@ export const MarketplaceListTable = ({
 
   const table = useDataTable({
     columns,
-    data: data || [],
+    data: data?.marketplaces || [],
     getRowId: (row) => row.id,
-    rowCount: data?.length || 0,
+    rowCount: data?.marketplaces.length || 0,
     isLoading,
     pagination: {
       state: pagination,

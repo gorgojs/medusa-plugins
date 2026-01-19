@@ -1,12 +1,18 @@
+export type EventDirectionType = "MEDUSA_TO_MARKETPLACE" | "MARKETPLACE_TO_MEDUSA"
+
+export type EventEntityType = "PRODUCT" | "PRODUCT_MEDIA" | "PRODUCT_PRICE" | "PRODUCT_STOCK" | "ORDER"
+
+export type EventActionType = "CREATE" | "UPDATE" | "DELETE"
+
 export type LogEventInput = {
-  marketplaceId: string,
-  correlationId?: string,
-  direction: "MEDUSA_TO_MARKETPLACE" | "MARKETPLACE_TO_MEDUSA",
-  entityType: "PRODUCT" | "PRODUCT_MEDIA" | "PRODUCT_PRICE" | "PRODUCT_STOCK" | "ORDER",
-  action: "CREATE" | "UPDATE" | "DELETE",
-  startedAt?: Date,
-  finishedAt?: Date,
-  requestData?: Record<string, unknown>,
+  marketplaceId: string
+  correlationId?: string
+  direction: EventDirectionType
+  entityType: EventEntityType
+  action: EventActionType
+  startedAt?: Date
+  finishedAt?: Date
+  requestData?: Record<string, unknown>
   responseData?: Record<string, unknown>
 }
 
@@ -15,9 +21,22 @@ export type MarketplaceCredentialsType = Record<string, unknown>
 export type MarketplaceSettingsType = Record<string, unknown>
 
 export type MarketplaceDTO = {
-  id: string,
-  provider_id: string,
+  id: string
+  provider_id: string
   credentials: MarketplaceCredentialsType
-  settings: MarketplaceSettingsType,
+  settings: MarketplaceSettingsType
   is_active: boolean
+}
+
+export type MarketplaceEventDTO = {
+  id: string
+  marketplace: MarketplaceDTO
+  correlationId?: string
+  direction: EventDirectionType
+  entity_type: EventEntityType
+  action: EventActionType
+  startedAt?: Date
+  finishedAt?: Date
+  requestData?: Record<string, unknown>
+  responseData?: Record<string, unknown>
 }
