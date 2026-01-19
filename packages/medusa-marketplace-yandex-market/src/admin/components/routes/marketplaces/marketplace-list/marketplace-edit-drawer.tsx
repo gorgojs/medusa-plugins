@@ -2,14 +2,12 @@ import { z } from "zod"
 import { Text, Button, Drawer, Input, Label, Switch } from "@medusajs/ui"
 import { useState } from "react"
 import { sdk } from "../../../../lib/sdk"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useRevalidator } from "react-router-dom"
+import type { MarketplaceDTO } from "@gorgo/medusa-marketplace/modules/marketplace/types"
 
-type Marketplace = {
-  id: string
-  provider_id: string
-  credentials: Record<string, unknown>
-  settings: Record<string, unknown>
-  is_active: boolean
-}
+
+
 
 const editMarketplaceSchema = z.object({
   provider_id: z.string().trim().min(1, "Min 1 chars").max(120, "Max 120 chars"),
@@ -33,7 +31,7 @@ const zodFieldErrors = <T extends Record<string, any>>(error: z.ZodError<T>) => 
 export const MarketplaceEditDrawer = ({
   marketplace,
 }: {
-  marketplace: Marketplace
+  marketplace: MarketplaceDTO
 }) => {
   const [open, setOpen] = useState(false)
 
@@ -56,9 +54,40 @@ export const MarketplaceEditDrawer = ({
     values.provider_id.trim() !== marketplace.provider_id.trim() ||
     values.is_active !== Boolean(marketplace.is_active)
 
-  const canSave = parsed.success && isDirty
+  const resetForm = () => {
+    setValues({
+      provider_id: marketplace.provider_id,
+      is_active: Boolean(marketplace.is_active),
+    })
+    setTouched({ provider_id: false })
+    setErrors({})
+  }
 
-  const onSave = async () => {
+  const { revalidate } = useRevalidator()
+  const queryClient = useQueryClient()
+
+  const updateMarketplace = useMutation({
+    mutationFn: async (payload: EditMarketplaceFormValues) => {
+      return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`, {
+        method: "POST",
+        body: {
+          provider_id: payload.provider_id.trim(),
+          is_active: payload.is_active,
+          credentials: marketplace.credentials ?? {},
+          settings: marketplace.settings ?? {},
+        },
+      })
+    },
+    onSuccess: () => {
+      setOpen(false)
+      revalidate()
+      queryClient.invalidateQueries({ queryKey: ["marketplaces"] })
+    },
+  })
+
+  const canSave = parsed.success && isDirty && !updateMarketplace.isPending
+
+  const onSave = () => {
     setTouched({ provider_id: true })
 
     const res = editMarketplaceSchema.safeParse(values)
@@ -67,46 +96,24 @@ export const MarketplaceEditDrawer = ({
       return
     }
 
-    await sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`, {
-      method: "POST",
-      body: {
-        provider_id: values.provider_id.trim(),
-        is_active: values.is_active,
-        credentials: marketplace.credentials ?? {},
-        settings: marketplace.settings ?? {},
-      },
-    })
-
-
-    setOpen(false)
-    // await onSaved()
+    updateMarketplace.mutate(res.data)
   }
 
   const onCancel = () => {
-    setOpen(false)
-    setTouched({ provider_id: false })
-    setErrors({})
-    setValues({
-      provider_id: marketplace.provider_id,
-      is_active: Boolean(marketplace.is_active),
-    })
-  }
+  setOpen(false)
+}
 
   return (
     <Drawer
       open={open}
       onOpenChange={(next) => {
-        setOpen(next)
-        if (next) {
-          setValues({
-            provider_id: marketplace.provider_id,
-            is_active: Boolean(marketplace.is_active),
-          })
-          setTouched({ provider_id: false })
-          setErrors({})
-        }
-      }}
+  setOpen(next)
+  if (next) {
+    resetForm()
+  }
+}}
     >
+
       <Drawer.Trigger asChild>
         <Button variant="secondary" size="small">
           Edit

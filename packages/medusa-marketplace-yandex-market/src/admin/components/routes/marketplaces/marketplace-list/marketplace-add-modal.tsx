@@ -2,6 +2,7 @@ import { Button, FocusModal, Input, Label, Switch, Text } from "@medusajs/ui"
 import { Controller, useForm } from "react-hook-form"
 import * as zod from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { sdk } from "../../../../lib/sdk"
 
 const MarketplaceAddSchema = zod.object({
@@ -18,30 +19,49 @@ export const MarketplaceAddModal = ({
   stateModal: boolean
   closeModal: () => void
 }) => {
+  const queryClient = useQueryClient()
+
   const form = useForm<MarketplaceAddValues>({
     defaultValues: { provider_id: "", is_active: true },
     resolver: zodResolver(MarketplaceAddSchema),
     mode: "onSubmit",
   })
 
-  const onSubmit = form.handleSubmit(async (values) => {
-    await sdk.client.fetch("/admin/marketplaces", {
-      method: "POST",
-      body: {
-        provider_id: values.provider_id.trim(),
-        is_active: values.is_active,
-        credentials: {},
-        settings: {},
-      },
-    })
+  const resetForm = () => form.reset({ provider_id: "", is_active: true })
 
-    // await onCreated()
-    form.reset({ provider_id: "", is_active: true })
-    closeModal()
+  const createMarketplace = useMutation({
+    mutationFn: async (values: MarketplaceAddValues) => {
+      return sdk.client.fetch("/admin/marketplaces", {
+        method: "POST",
+        body: {
+          provider_id: values.provider_id.trim(),
+          is_active: values.is_active,
+          credentials: {},
+          settings: {},
+        },
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["marketplaces"] })
+      resetForm()
+      closeModal()
+    },
   })
 
+  const onSubmit = form.handleSubmit((values) => {
+    createMarketplace.mutate(values)
+  })
+
+
   return (
-    <FocusModal open={stateModal} onOpenChange={(open) => !open && closeModal()}>
+    <FocusModal
+      open={stateModal}
+      onOpenChange={(open) => {
+        if (!open) {
+          resetForm()
+          closeModal()
+        }
+      }}>
       <FocusModal.Content>
         <form className="flex h-full flex-col overflow-hidden" onSubmit={onSubmit}>
           <FocusModal.Header />

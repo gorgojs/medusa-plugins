@@ -7,14 +7,30 @@ import {
 import { useMemo, useState } from "react"
 import { StatusBadge } from "@medusajs/ui"
 import { useNavigate } from "react-router-dom"
-import {
-  useQuery,
-} from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { Header } from "../../../common/header"
 import { sdk } from "../../../../lib/sdk"
 import type { MarketplaceDTO } from "@gorgo/medusa-marketplace/modules/marketplace/types"
 
 const PAGE_SIZE = 20
+
+const columnHelper = createDataTableColumnHelper<MarketplaceDTO>()
+
+const columns = [
+  columnHelper.accessor("id", { header: "ID" }),
+  columnHelper.accessor("provider_id", { header: "Provider ID" }),
+  columnHelper.accessor("is_active", {
+    header: "Status",
+    cell: ({ getValue }) => {
+      const active = Boolean(getValue())
+      return (
+        <StatusBadge color={active ? "green" : "red"}>
+          {active ? "Active" : "Inactive"}
+        </StatusBadge>
+      )
+    },
+  }),
+]
 
 export const MarketplaceListTable = ({
   stateModal,
@@ -25,38 +41,21 @@ export const MarketplaceListTable = ({
 }) => {
   const navigate = useNavigate()
   const limit = PAGE_SIZE
+
   const [pagination, setPagination] = useState<DataTablePaginationState>({
     pageSize: limit,
     pageIndex: 0,
   })
 
-  const offset = useMemo(() => pagination.pageIndex * limit, [pagination])
+  const offset = useMemo(() => pagination.pageIndex * limit, [pagination.pageIndex, limit])
 
   const { data, isLoading } = useQuery<MarketplaceDTO[]>({
     queryFn: () =>
       sdk.client.fetch(`/admin/marketplaces`, {
         query: { limit, offset },
       }),
-    queryKey: [["marketplaces"]],
+    queryKey: ["marketplaces", limit, offset],
   })
-
-  const columnHelper = createDataTableColumnHelper<MarketplaceDTO>()
-
-  const columns = [
-    columnHelper.accessor("id", { header: "ID" }),
-    columnHelper.accessor("provider_id", {header: "Provider ID"}),
-    columnHelper.accessor("is_active", {
-      header: "Status",
-      cell: ({ getValue }) => {
-        const active = Boolean(getValue())
-        return (
-          <StatusBadge color={active ? "green" : "red"}>
-            {active ? "Active" : "Inactive"}
-          </StatusBadge>
-        )
-      },
-    })
-  ]
 
   const table = useDataTable({
     columns,
@@ -70,7 +69,7 @@ export const MarketplaceListTable = ({
     },
     onRowClick: (_e, row) => {
       navigate(row.id)
-    }
+    },
   })
 
   return (

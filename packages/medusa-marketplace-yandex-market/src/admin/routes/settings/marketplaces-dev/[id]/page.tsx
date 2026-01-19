@@ -1,42 +1,53 @@
 import { Container, Heading, Text, StatusBadge } from "@medusajs/ui"
 import {
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query"
+  LoaderFunctionArgs,
+  UIMatch,
+  useLoaderData,
+} from "react-router-dom"
 import { sdk } from "../../../../lib/sdk"
 import { MarketplaceEditDrawer } from "../../../../components/routes/marketplaces/marketplace-list"
+import type { MarketplaceResponse } from "../../../../types"
 
-type Marketplace = {
-  id: string
-  provider_id: string
-  credentials: Record<string, unknown>
-  settings: Record<string, unknown>
-  is_active: boolean
+const Breadcrumb = (
+  props: UIMatch<MarketplaceResponse>
+) => {
+  const { marketplace } = props.data || {}
+  if (!marketplace)
+    return null
+
+  return <span>{marketplace.provider_id}</span>
+}
+
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+  const { id } = params
+
+  const response = await sdk.client.fetch(`/admin/marketplaces/${id}`)
+  const marketplace = Array.isArray(response) ? response[0] : response
+
+  if (!marketplace) throw new Response("Not found", { status: 404 })
+
+  return { marketplace }
+}
+
+
+export const handle = {
+  breadcrumb: (match: UIMatch<MarketplaceResponse>) => <Breadcrumb {...match} />,
 }
 
 const MarketplaceDetail = () => {
-  
+  const { marketplace } = useLoaderData() as MarketplaceResponse
 
-  const id = window.location.pathname.split("/").pop() || ""
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["admin-marketplace", id],
-    enabled: Boolean(id),
-    queryFn: async () => sdk.client.fetch(`/admin/marketplaces/${id}`),
-  })
-
-  const marketplace: Marketplace | undefined = Array.isArray(data)
-    ? (data[0] as any)
-    : (data as any)
-
-  if (isLoading) return <Container className="p-6">Loading…</Container>
-  if (isError || !marketplace) return <Container className="p-6">Not found</Container>
+  if (!marketplace) {
+    return <Container className="p-6">Not found</Container>
+  }
 
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
         <div>
-          <Text size="small" className="text-ui-fg-subtle">Marketplace provider</Text>
+          <Text size="small" className="text-ui-fg-subtle">
+            Marketplace provider
+          </Text>
           <Heading level="h1">{marketplace.provider_id}</Heading>
         </div>
 
@@ -45,9 +56,7 @@ const MarketplaceDetail = () => {
             {marketplace.is_active ? "Active" : "Inactive"}
           </StatusBadge>
 
-          <MarketplaceEditDrawer
-            marketplace={marketplace}
-          />
+          <MarketplaceEditDrawer marketplace={marketplace} />
         </div>
       </div>
     </Container>
