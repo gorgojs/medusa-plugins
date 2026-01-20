@@ -20,6 +20,10 @@ export class AbstractMarketplaceProvider implements IMarketplaceProvider {
     return (this.constructor as any).identifier
   }
 
+  getWidgets() {
+    return []
+  }
+
   async exportProducts(data: ExportProductsInput): Promise<ExportProductsOutput> {
     throw Error("exportProducts must be overridden by the child class")
   }

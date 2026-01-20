@@ -23,8 +23,14 @@ import {
 } from "../../../lib/wildberries-products-client"
 import { MAX_VARIANTS_TO_CREATE } from "../types"
 
+import * as widgets from "../../../widgets"
+
 export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider {
   static identifier = "wildberries"
+
+  getWidgets() {
+    return Object.values(widgets)
+  }
 
   async exportProducts(data: ExportProductsInput): Promise<ExportProductsOutput> {
     const { container, marketplaceProducts, credentials } = data
@@ -77,8 +83,8 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
         title: title,
         sizes: [
           {
-            techSize: "A",
-            wbSize: "1",
+            // techSize: "A",
+            // wbSize: "1",
             skus: sizeSkus
           }
         ]

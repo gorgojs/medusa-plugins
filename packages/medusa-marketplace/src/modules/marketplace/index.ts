@@ -1,12 +1,12 @@
 import { Module } from "@medusajs/framework/utils"
 import { MarketplaceModuleService } from "./services"
-import { loadProviders } from "./loaders"
+import { loadProviders, loadWidgets } from "./loaders"
 
 export const MARKETPLACE_MODULE = "marketplace"
 
 export default Module(MARKETPLACE_MODULE, {
   service: MarketplaceModuleService,
-  loaders: [loadProviders]
+  loaders: [loadProviders, loadWidgets]
 })
 
 export { MarketplaceModuleOptions } from "./types"
