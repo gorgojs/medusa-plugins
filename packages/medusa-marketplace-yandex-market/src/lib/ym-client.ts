@@ -1,17 +1,23 @@
 import { Configuration, BusinessOfferMappingsApi, ContentApi } from './yandex-market-client';
+import { MarketplaceCredentialsType } from  "@gorgo/medusa-marketplace/modules/marketplace/types"
 
-// TODO validate that YM_API_KEY and YM_BUSINESS_ID are set
+// const BASE_URL = "https://api.partner.market.yandex.ru"
 
-export const config = new Configuration({
-    apiKey: process.env.YM_API_KEY as string,
-})
-
-export const withBusinessId = <T extends object>(body: T) => ({
-  businessId: process.env.YM_BUSINESS_ID as unknown as number,
+export const withBusinessId = <T extends object>(credentials: MarketplaceCredentialsType, body: T) => ({
+  apiKey: credentials.apiKey,
+  businessId: credentials.businessId,
   ...body,
 });
 
-export const businessOfferMappingsApi = new BusinessOfferMappingsApi(config)
+export function businessOfferMappingsApi(credentials: MarketplaceCredentialsType){
+  return new BusinessOfferMappingsApi(new Configuration({
+    apiKey: credentials.apiKey
+  }))
+}
 
-export const contentApi = new ContentApi(config)
+export function contentApi(credentials: MarketplaceCredentialsType){
+  return new ContentApi(new Configuration({
+    apiKey: credentials.apiKey
+  }))
+}
 
