@@ -81,6 +81,14 @@ export const MarketplaceListTable = ({
           {
             type: "button",
             props: {
+              children: "Events",
+              variant: "secondary",
+              onClick: () => navigate("events"),
+            }
+          },
+          {
+            type: "button",
+            props: {
               children: "Add marketplace",
               variant: "secondary",
               onClick: () => openModal(),

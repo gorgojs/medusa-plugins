@@ -9,8 +9,8 @@ import {
 import { defineRouteConfig } from "@medusajs/admin-sdk"
 import { useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { sdk } from "../../../lib/sdk"
-import { Header } from "../../../components/common/header"
+import { sdk } from "../../../../lib/sdk"
+import { Header } from "../../../../components/common/header"
 
 type MarketplaceEvent = {
   id: string

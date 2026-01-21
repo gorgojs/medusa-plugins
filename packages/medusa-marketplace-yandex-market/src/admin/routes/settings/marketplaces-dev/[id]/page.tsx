@@ -6,7 +6,7 @@ import {
 } from "react-router-dom"
 import { sdk } from "../../../../lib/sdk"
 import { MarketplaceEditDrawer } from "../../../../components/routes/marketplaces/marketplace-list"
-import type { MarketplaceResponse } from "../../../../types"
+import type { MarketplaceResponse } from "../../../../types" 
 
 const Breadcrumb = (
   props: UIMatch<MarketplaceResponse>
