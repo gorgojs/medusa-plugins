@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { Header } from "../../../common/header"
 import { sdk } from "../../../../lib/sdk"
+import type { AdminMarketplaceListResponse } from "@gorgo/medusa-marketplace/api/types"
 import type { MarketplaceDTO } from "@gorgo/medusa-marketplace/modules/marketplace/types"
 
 const PAGE_SIZE = 20
@@ -49,7 +50,7 @@ export const MarketplaceListTable = ({
 
   const offset = useMemo(() => pagination.pageIndex * limit, [pagination.pageIndex, limit])
 
-  const { data, isLoading } = useQuery<MarketplaceDTO[]>({
+  const { data, isLoading } = useQuery<AdminMarketplaceListResponse>({
     queryFn: () =>
       sdk.client.fetch(`/admin/marketplaces`, {
         query: { limit, offset },
@@ -59,9 +60,9 @@ export const MarketplaceListTable = ({
 
   const table = useDataTable({
     columns,
-    data: data || [],
+    data: data?.marketplaces || [],
     getRowId: (row) => row.id,
-    rowCount: data?.length || 0,
+    rowCount: data?.count || 0,
     isLoading,
     pagination: {
       state: pagination,

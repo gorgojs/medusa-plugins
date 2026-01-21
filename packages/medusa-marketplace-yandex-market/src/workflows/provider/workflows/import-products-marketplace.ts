@@ -11,7 +11,7 @@ export type ImportMarketplaceProductsYmWorkflowInput = {
 
 export const importMarketplaceProductsYmWorkflowId = "import-marketplace-products-ym"
 
-export const importYmMarketplaceProductsWorkflow = createWorkflow(
+export const importMarketplaceProductsYmWorkflow = createWorkflow(
   importMarketplaceProductsYmWorkflowId,
   (input: ImportMarketplaceProductsYmWorkflowInput) => {
     const importResult = importProductsStep({ credentials: input.credentials })

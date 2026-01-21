@@ -21,7 +21,8 @@ import {
     GetOfferMappingDTO
 } from "../../../lib/yandex-market-client/api"
 import {
-    importYmMarketplaceProductsWorkflow
+    importMarketplaceProductsYmWorkflow,
+    exportMarketplaceProductsYmWorkflow
 } from "../../../workflows/provider"
 
 
@@ -63,10 +64,41 @@ export class YandexMarketMarketplaceProvider extends AbstractMarketplaceProvider
   async importProducts(data: ImportProductsInput): Promise<ImportProductsOutput> {
     const { container, ...input } = data
 
-    const { result } = await importMarketplaceProductsWbWorkflow(container).run({ input })
+    const { result } = await importMarketplaceProductsYmWorkflow(container).run({ input })
 
     return result
   }
 
+  // const getMarketplaceProductsStatus = async ( input: GetOfferCardsContentStatusStepInput ) => {
+    
+  //   const { request } = input
+  //   const pages: OfferCardsContentStatusPage[] = []
+  //   let pageToken: string | undefined
+  
+  //   do {
+  //     const response = await contentApi.getOfferCardsContentStatus(
+  //       withBusinessId({
+  //         pageToken,
+  //         limit: PAGE_LIMIT,
+  //         getOfferCardsContentStatusRequest: request,
+  //       })
+  //     )
+  
+  //     const { status, result,} = response.data
+  
+  //     const offerCards = result?.offerCards ?? []
+  //     const nextPageToken = result?.paging?.nextPageToken ?? null
+  
+  //     pages.push({
+  //       status,
+  //       offerCards,
+  //       nextPageToken,
+  //     })
+  
+  //     pageToken = nextPageToken || undefined
+  //   } while (pageToken)
+  
+  //   return pages
+  // }
 
 }
