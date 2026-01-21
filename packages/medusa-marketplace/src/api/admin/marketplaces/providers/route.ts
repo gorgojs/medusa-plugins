@@ -1,7 +1,7 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 import { MARKETPLACE_MODULE } from "../../../../modules/marketplace"
 import { MarketplaceModuleService } from "../../../../modules/marketplace/services"
-import { AdminMarketplaceProviderList } from "../../../types"
+import { AdminMarketplaceProviderList } from "../../../../types"
 
 export const GET = async (
   req: MedusaRequest,

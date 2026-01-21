@@ -1,8 +1,8 @@
-import { MedusaRequest, MedusaResponse } from "@medusajs/framework";
-import { MarketplaceModuleService } from "../../../../modules/marketplace/services";
-import { MARKETPLACE_MODULE } from "../../../../modules/marketplace";
-import { AdminUpdateMarketplaceType } from "../validators";
-import { AdminMarketplaceResponse, AdminMarketplaceDeleteResponse } from "../../../types";
+import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
+import { MarketplaceModuleService } from "../../../../modules/marketplace/services"
+import { MARKETPLACE_MODULE } from "../../../../modules/marketplace"
+import { AdminUpdateMarketplaceType } from "../validators"
+import { AdminMarketplaceResponse, AdminMarketplaceDeleteResponse } from "../../../../types"
 
 export const GET = async (
   req: MedusaRequest,

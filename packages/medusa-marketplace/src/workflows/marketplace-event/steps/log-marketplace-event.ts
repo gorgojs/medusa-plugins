@@ -3,7 +3,7 @@ import {
   StepResponse
 } from "@medusajs/workflows-sdk"
 import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
-import { LogEventInput } from "../../../modules/marketplace/types"
+import { LogEventInput } from "../../../types"
 import { MarketplaceModuleService } from "../../../modules/marketplace/services"
 
 export type LogMarketplaceEventStepInput = LogEventInput

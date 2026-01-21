@@ -10,9 +10,9 @@ import {
   MapToMarketplaceProductsInput,
   MapToMarketplaceProductsOutput,
   MapToMedusaProductsInput,
-  MapToMedusaProductsOutput,
-  MarketplaceProviderRegistrationPrefix
-} from "../types"
+  MapToMedusaProductsOutput
+} from "../../../types"
+import { MarketplaceProviderRegistrationPrefix } from "../types"
 
 type InjectedDependencies = {
   logger?: Logger

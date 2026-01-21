@@ -1,12 +1,7 @@
 import { createWorkflow, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
 import { importMarketplaceProductsWorkflow } from "./import-marketplace-products"
 import { exportMarketplaceProductsWorkflow } from "./export-marketplace-products"
-import { MarketplaceDTO } from "../../../modules/marketplace/types"
-
-export type SyncMarketplaceProductsWorkflowInput = {
-  marketplace: MarketplaceDTO,
-  ids?: string[]
-}
+import { SyncMarketplaceProductsWorkflowInput } from "../../../types"
 
 export const syncMarketplaceProductsWorkflowId = "sync-marketplace-products"
 

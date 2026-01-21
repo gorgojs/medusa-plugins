@@ -1,4 +1,4 @@
-import { MarketplaceCredentialsType, MarketplaceSettingsType } from "@gorgo/medusa-marketplace/modules/marketplace/types"
+import { MarketplaceCredentialsType, MarketplaceSettingsType } from "@gorgo/medusa-marketplace/types"
 
 export const MAX_VARIANTS_TO_CREATE = 30
 

@@ -10,7 +10,7 @@ import {
   MapToMarketplaceProductsOutput,
   MapToMedusaProductsInput,
   MapToMedusaProductsOutput
-} from "../types"
+} from "../../../types"
 
 export class AbstractMarketplaceProvider implements IMarketplaceProvider {
   static identifier: string

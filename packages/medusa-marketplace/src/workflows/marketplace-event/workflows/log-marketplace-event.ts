@@ -1,8 +1,6 @@
 import { createWorkflow, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
 import { logMarketplaceEventStep } from "../steps"
-import { LogEventInput } from "../../../modules/marketplace/types"
-
-export type LogMarketplaceEventWorkflowInput = LogEventInput
+import { LogMarketplaceEventWorkflowInput } from "../../../types"
 
 export const logMarketplaceEventWorkflowId = "log-marketplace-event"
 

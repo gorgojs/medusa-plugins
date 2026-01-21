@@ -4,18 +4,6 @@ export type EventEntityType = "PRODUCT" | "PRODUCT_MEDIA" | "PRODUCT_PRICE" | "P
 
 export type EventActionType = "CREATE" | "UPDATE" | "DELETE"
 
-export type LogEventInput = {
-  marketplaceId: string
-  correlationId?: string
-  direction: EventDirectionType
-  entityType: EventEntityType
-  action: EventActionType
-  startedAt?: Date
-  finishedAt?: Date
-  requestData?: Record<string, unknown>
-  responseData?: Record<string, unknown>
-}
-
 export type MarketplaceCredentialsType = Record<string, unknown>
 
 export type MarketplaceSettingsType = Record<string, unknown>

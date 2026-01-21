@@ -10,8 +10,7 @@ import {
   MapToMarketplaceProductsOutput,
   MapToMedusaProductsInput,
   MapToMedusaProductsOutput,
-  MAX_VARIANTS_TO_CREATE,
-} from "@gorgo/medusa-marketplace/modules/marketplace/types"
+} from "@gorgo/medusa-marketplace/types"
 import {
   exportMarketplaceProductsWbWorkflow,
   importMarketplaceProductsWbWorkflow
@@ -22,6 +21,7 @@ import {
   ContentV2CardsUploadAddPostRequestCardsToAddInner,
   ContentV2CardsUploadPostRequestInner
 } from "../../../lib/wildberries-products-client"
+import { MAX_VARIANTS_TO_CREATE } from "../types"
 
 export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider {
   static identifier = "wildberries"

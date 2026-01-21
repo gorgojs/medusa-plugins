@@ -8,3 +8,5 @@ export default Module(MARKETPLACE_MODULE, {
   service: MarketplaceModuleService,
   loaders: [loadProviders]
 })
+
+export { MarketplaceModuleOptions } from "./types"

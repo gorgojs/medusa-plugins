@@ -13,7 +13,7 @@ import {
   MapToMarketplaceProductsOutput,
   MapToMedusaProductsInput,
   MapToMedusaProductsOutput
-} from "../types"
+} from "../../../types"
 import { Logger } from "@medusajs/medusa"
 import MarketplaceProviderService from "./marketplace-provider"
 import { joinerConfig } from "../joiner-config"

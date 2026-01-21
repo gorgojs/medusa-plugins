@@ -1,5 +1,5 @@
 import { DeleteResponse, PaginatedResponse } from "@medusajs/framework/types";
-import { MarketplaceDTO, MarketplaceEventDTO } from "../../modules/marketplace/types";
+import { MarketplaceDTO, MarketplaceEventDTO } from "../../../../types";
 
 export interface AdminMarketplaceListResponse
   extends PaginatedResponse<{

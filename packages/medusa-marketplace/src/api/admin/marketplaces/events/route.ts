@@ -2,7 +2,7 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 import { MarketplaceModuleService } from "../../../../modules/marketplace/services"
 import { MARKETPLACE_MODULE } from "../../../../modules/marketplace"
 import { AdminMarketplaceCreateEventsType, AdminMarketplaceDefaultFindParams } from "../validators"
-import { AdminMarketplaceEventListResponse, AdminMarketplaceEventResponse } from "../../../types"
+import { AdminMarketplaceEventListResponse, AdminMarketplaceEventResponse } from "../../../../types"
 
 export const GET = async (
   req: MedusaRequest,

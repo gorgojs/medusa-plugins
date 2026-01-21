@@ -7,12 +7,7 @@ import {
   importProductsStep
 } from "../steps"
 import { logMarketplaceEventWorkflow } from "../../marketplace-event"
-import { MarketplaceDTO } from "../../../modules/marketplace/types"
-
-export type ImportMarketplaceProductsWorkflowInput = {
-  marketplace: MarketplaceDTO,
-  ids?: String[]
-}
+import { ImportMarketplaceProductsWorkflowInput } from "../../../types"
 
 export const importMarketplaceProductsWorkflowId = "import-marketplace-products"
 

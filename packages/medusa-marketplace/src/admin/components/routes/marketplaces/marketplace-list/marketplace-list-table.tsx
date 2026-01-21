@@ -12,8 +12,10 @@ import {
 } from "@tanstack/react-query"
 import { Header } from "../../../common/header"
 import { sdk } from "../../../../lib/sdk"
-import type { MarketplaceDTO } from "../../../../../modules/marketplace/types"
-import { AdminMarketplaceListResponse } from "../../../../../api/types"
+import {
+  AdminMarketplaceListResponse,
+  MarketplaceDTO
+} from "../../../../../types"
 
 const PAGE_SIZE = 20
 

@@ -2,7 +2,7 @@ import { Container, Heading, Text, StatusBadge } from "@medusajs/ui"
 import { useQuery } from "@tanstack/react-query"
 import { sdk } from "../../../../lib/sdk"
 import { MarketplaceEditDrawer } from "../../../../components/routes/marketplaces/marketplace-list"
-import { AdminMarketplaceResponse } from "../../../../../api/types"
+import { AdminMarketplaceResponse } from "../../../../../types"
 
 type Marketplace = {
   id: string
