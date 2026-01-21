@@ -3,7 +3,7 @@ import {
 } from "@medusajs/framework/types"
 import { UpdateOfferMappingDTO,
           GetOfferMappingDTO
-} from "../../lib/yandex-market-client/api"
+} from "../../../lib/yandex-market-client/api"
 
 
 type MapProductsStepInput = ProductDTO[]
