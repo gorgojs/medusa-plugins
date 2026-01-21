@@ -1,5 +1,6 @@
 export const defaultAdminMarketplaceFields = [
   "id",
+  "title",
   "provider_id",
   "credentials",
   "settings",
