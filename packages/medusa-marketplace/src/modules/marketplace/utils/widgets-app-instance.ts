@@ -1,4 +1,4 @@
-import { MarketplaceInjectionZone, WidgetConfig } from "../types"
+import { MarketplaceInjectionZone, WidgetConfig } from "../../../types"
 import * as widgets from "../widgets"
 
 type WidgetMap = Map<MarketplaceInjectionZone, React.ComponentType[]>
