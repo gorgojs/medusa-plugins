@@ -24,10 +24,7 @@ export const POST = async (
   const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
   const marketplace = await marketplaceService.updateMarketplaces({
     id: req.params.id,
-    provider_id: req.validatedBody.provider_id,
-    credentials: req.validatedBody.credentials,
-    settings: req.validatedBody.settings,
-    is_active: req.validatedBody.is_active
+    ...req.validatedBody
   })
 
   res.status(200).json({ marketplace })

@@ -8,6 +8,7 @@ export default async function (container: MedusaContainer) {
     input: { 
       marketplace: {
         id: "",
+        title: "",
         provider_id: "mp_system_default",
         credentials: {
           apiKey: ""

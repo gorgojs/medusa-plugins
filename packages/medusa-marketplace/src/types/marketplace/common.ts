@@ -10,6 +10,7 @@ export type MarketplaceSettingsType = Record<string, unknown>
 
 export type MarketplaceDTO = {
   id: string
+  title: string
   provider_id: string
   credentials: MarketplaceCredentialsType
   settings: MarketplaceSettingsType

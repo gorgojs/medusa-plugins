@@ -9,6 +9,7 @@ export const AdminMarketplaceGetEventsParams = createFindParams(AdminMarketplace
 
 export type AdminCreateMarketplaceType = z.infer<typeof AdminCreateMarketplace>
 export const AdminCreateMarketplace = z.object({
+  title: z.string().optional(),
   provider_id: z.string(),
   credentials: z.record(z.unknown()).optional(),
   settings: z.record(z.unknown()).optional(),
@@ -17,6 +18,7 @@ export const AdminCreateMarketplace = z.object({
 
 export type AdminUpdateMarketplaceType = z.infer<typeof AdminUpdateMarketplace>
 export const AdminUpdateMarketplace = z.object({
+  title: z.string().optional(),
   provider_id: z.string().optional(),
   credentials: z.record(z.unknown()).optional(),
   settings: z.record(z.unknown()).optional(),
