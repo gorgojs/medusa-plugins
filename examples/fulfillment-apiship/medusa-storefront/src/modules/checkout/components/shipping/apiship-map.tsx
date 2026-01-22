@@ -343,7 +343,10 @@ const ApishipMap = ({
                       <button
                         key={t.key}
                         type="button"
-                        onClick={() => onSelectTariff(t.key)}
+                        onClick={() => {
+                          onSelectTariff(t.key)
+                          onChoose({ point: activePoint, tariff: t })
+                        }}
                         className={clx(
                           "box-border text-left rounded-rounded border px-3 py-2 hover:shadow-borders-interactive-with-active",
                           { "border-ui-border-interactive bg-ui-bg-subtle": active }
@@ -366,17 +369,6 @@ const ApishipMap = ({
             </div>
 
             <div className="mt-3 flex items-center gap-2">
-              <Button
-                size="small"
-                onClick={() => {
-                  if (!activePoint || !selectedTariff) return
-                  onChoose({ point: activePoint, tariff: selectedTariff })
-                }}
-                disabled={!selectedTariff}
-              >
-                Choose
-              </Button>
-
               {!selectedTariff && (
                 <Text className="text-ui-fg-muted txt-small">Select a tariff to confirm your choice.</Text>
               )}

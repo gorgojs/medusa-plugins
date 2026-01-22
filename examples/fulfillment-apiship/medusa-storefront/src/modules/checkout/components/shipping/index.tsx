@@ -293,6 +293,12 @@ const Shipping: React.FC<ShippingProps> = ({
                               currency_code: cart?.currency_code,
                             })
                           ) : calculatedPricesMap[option.id] ? (
+                            option.provider_id === "apiship_apiship" ? (
+                              "from " + convertToLocale({
+                                amount: calculatedPricesMap[option.id],
+                                currency_code: cart?.currency_code,
+                              })
+                            ) :
                             convertToLocale({
                               amount: calculatedPricesMap[option.id],
                               currency_code: cart?.currency_code,

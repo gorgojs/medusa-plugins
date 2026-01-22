@@ -339,27 +339,29 @@ const ApishipWrapper = ({
       />
 
       {chosen && (
-        <div className="mt-4 rounded-rounded border p-4">
-          <Text className="txt-medium-plus">Pickup Point</Text>
-          <Text className="text-ui-fg-muted mt-1">{chosen.pointLabel}</Text>
-          <Text className="text-ui-fg-muted mt-1">{chosen.description}</Text>
+        <div className="relative mt-4 rounded-rounded border p-4">
+          <Text className="font-medium txt-medium text-ui-fg-base">Pickup Point</Text>
+          <Text className="mb-4 text-ui-fg-muted txt-medium">{chosen.pointLabel}</Text>
+          <Text className="text-ui-fg-muted mt-0">{chosen.description}</Text>
           <Schedule worktime={chosen.worktime!} />
           <Text className="text-ui-fg-muted mt-1 pb-3">
             {chosen.tariffLabel} · {chosen.priceLabel} · {chosen.daysLabel}
           </Text>
-          <Button
-            size="small"
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              setSelectedPointId(null)
-              setSelectedTariffKey(null)
-              setChosen(null)
-              setIsPanelOpen(false)
-            }}
-          >
-            Remove
-          </Button>
+          <Text className="absolute top-4 right-5">
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setSelectedPointId(null)
+                setSelectedTariffKey(null)
+                setChosen(null)
+                setIsPanelOpen(false)
+              }}
+              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+            >
+              Remove
+            </button>
+          </Text>
         </div>
       )}
     </div>
