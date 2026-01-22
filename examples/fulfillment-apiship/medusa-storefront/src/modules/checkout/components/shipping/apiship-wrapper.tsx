@@ -260,6 +260,16 @@ const ApishipWrapper = ({
     [enabled, shippingOptionId, cart.id]
   )
 
+  useEffect(() => {
+    setSelectedPointId(null)
+    setSelectedTariffKey(null)
+    setChosen(null)
+    setIsPanelOpen(false)
+    if (enabled && shippingOptionId) {
+      onReadyRef.current?.(false)
+    }
+  }, [shippingOptionId])
+
   const persistChosen = useCallback(
     async (next: Chosen) => {
       if (!shippingOptionId) return
@@ -281,7 +291,7 @@ const ApishipWrapper = ({
   if (!enabled) return null
 
   return (
-    <div className="mt-4 rounded-rounded border bg-ui-bg-base p-4">
+    <div className="mt-4">
       <span className="font-medium txt-medium text-ui-fg-base block">Pickup Point</span>
       <span className="mb-3 text-ui-fg-muted txt-medium block">Select a pickup point and tariff</span>
 
@@ -339,7 +349,7 @@ const ApishipWrapper = ({
       />
 
       {chosen && (
-        <div className="relative mt-4 rounded-rounded border p-4">
+        <div className="relative mt-4">
           <Text className="font-medium txt-medium text-ui-fg-base">Pickup Point</Text>
           <Text className="mb-4 text-ui-fg-muted txt-medium">{chosen.pointLabel}</Text>
           <Text className="text-ui-fg-muted mt-0">{chosen.description}</Text>
@@ -347,7 +357,7 @@ const ApishipWrapper = ({
           <Text className="text-ui-fg-muted mt-1 pb-3">
             {chosen.tariffLabel} · {chosen.priceLabel} · {chosen.daysLabel}
           </Text>
-          <Text className="absolute top-4 right-5">
+          <Text className="absolute top-0 right-0">
             <button
               onClick={(e) => {
                 e.preventDefault()

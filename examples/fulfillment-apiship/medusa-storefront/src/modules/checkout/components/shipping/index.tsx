@@ -412,7 +412,7 @@ const Shipping: React.FC<ShippingProps> = ({
             </Button>
             {isApishipActive && !apishipReady && (
               <Text className="text-ui-fg-muted mt-2">
-                To continue, select a pickup point and click <b>Choose</b> on the desired tariff.
+                To continue, select a pickup point and choose the desired tariff.
               </Text>
             )}
           </div>

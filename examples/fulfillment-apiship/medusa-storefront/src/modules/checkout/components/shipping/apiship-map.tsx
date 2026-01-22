@@ -230,7 +230,7 @@ const ApishipMap = ({
         for (const p of points) {
           const el = document.createElement("div")
 
-          const SIZE = 14
+          const SIZE = 18
 
           el.style.width = `${SIZE}px`
           el.style.height = `${SIZE}px`
@@ -239,14 +239,14 @@ const ApishipMap = ({
           el.style.border = "2px solid rgba(0,0,0,0.25)"
           el.style.borderRadius = "50% 50% 50% 0"
           el.style.transform = "rotate(-45deg)"
-          el.style.boxShadow = "0 2px 10px rgba(0,0,0,0.18)"
+          el.style.boxShadow = "0 2px 2px rgba(0,0,0,0.18)"
           el.style.cursor = "pointer"
           el.style.position = "relative"
           el.style.transformOrigin = "50% 50%"
 
           const dot = document.createElement("div")
-          dot.style.width = "6px"
-          dot.style.height = "6px"
+          dot.style.width = "8px"
+          dot.style.height = "8px"
           dot.style.background = "white"
           dot.style.border = "2px solid rgba(0,0,0,0.25)"
           dot.style.borderRadius = "9999px"
