@@ -1,0 +1,40 @@
+{
+  "name": "@gorgo/medusa-vite-plugin",
+  "version": "0.0.1",
+  "description": "Vite plugin for Medusa",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "./*": "./dist/src/*.js",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "keywords": [
+    "medusa",
+    "plugin",
+    "vite"
+  ],
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "dev": "yarn predev && yarn build && yalc publish",
+    "predev": "yalc add @gorgo/medusa-marketplace --dev"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "^5.6.2",
+    "vite": "^5.2.11",
+    "yalc": "^1.0.0-pre.53"
+  },
+  "peerDependencies": {
+    "vite": "^5.2.11"
+  }
+}

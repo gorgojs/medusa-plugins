@@ -2,6 +2,22 @@ import { MedusaContainer } from "@medusajs/framework"
 import { ProductDTO } from "@medusajs/types"
 import {MarketplaceDTO, MarketplaceProductDTO} from "../../types"
 
+const MARKETPLACE_INJECTION_ZONES = ["marketplaces.list.before", "marketplaces.list.after"]
+
+export type MarketplaceInjectionZone = (typeof MARKETPLACE_INJECTION_ZONES)[number]
+
+/**
+ * Validates that the provided zone is a valid injection zone for a widget.
+ */
+export function isValidInjectionZone(zone: string) {
+  return MARKETPLACE_INJECTION_ZONES.includes(zone)
+}
+
+export type WidgetConfig = {
+  Component: () => JSX.Element;
+  zone: MarketplaceInjectionZone[];
+}
+
 export interface IMarketplaceProvider {
   getIdentifier(): string
 

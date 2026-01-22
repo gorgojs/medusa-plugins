@@ -11,7 +11,11 @@
     "./.medusa/server/src/modules/*": "./.medusa/server/src/modules/*/index.js",
     "./modules/*": "./.medusa/server/src/modules/*/index.js",
     "./providers/*": "./.medusa/server/src/providers/*/index.js",
-    "./types": "./.medusa/server/src/types/index.js",
+    "./types": {
+      "types": "./.medusa/server/src/types/index.d.ts",
+      "default": "./.medusa/server/src/types/index.js"
+    },
+    "./admin-vite-plugin": "./.medusa/server/src/admin-vite-plugin.js",
     "./*": "./.medusa/server/src/*.js",
     "./admin": {
       "import": "./.medusa/server/src/admin/index.mjs",
@@ -31,13 +35,14 @@
   "scripts": {
     "build": "medusa plugin:build",
     "dev": "yarn predev && medusa plugin:develop",
-    "predev": "medusa plugin:publish",
+    "predev": "yalc add @gorgo/medusa-vite-plugin && medusa plugin:publish",
     "prepublishOnly": "medusa plugin:build"
   },
   "dependencies": {
     "awilix": "^8.0.1"
   },
   "devDependencies": {
+    "@gorgo/medusa-vite-plugin": "file:.yalc/@gorgo/medusa-vite-plugin",
     "@medusajs/admin-sdk": "^2.11.2",
     "@medusajs/cli": "^2.11.2",
     "@medusajs/framework": "^2.11.2",
