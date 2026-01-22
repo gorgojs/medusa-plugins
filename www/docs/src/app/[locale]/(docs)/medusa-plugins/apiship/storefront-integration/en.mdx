@@ -5,13 +5,14 @@ description: "Learn how to integrate the ApiShip Fulfillment provider into a Nex
 
 # {frontmatter.title}
 
-To integrate the Apiship fulfillment provider in a Next.js storefront, you need to extend the checkout shipping step with support for pickup-point delivery.
+To integrate the ApiShip fulfillment provider into a Next.js storefront, you need to extend the checkout shipping step to support pickup-point delivery.
 
-Apiship pickup delivery differs from regular shipping methods in that it requires additional data to be collected during checkout, such as the selected pickup point and delivery tariff. This data must be loaded dynamically from the backend, presented to the customer in a convenient form, and then persisted in the cart so it can be used later by the fulfillment provider when creating a orders in the Apiship.
+ApiShip shipping differs from regular shipping methods in that it requires additional data to be collected during checkout, such as the selected pickup point and delivery tariff.
+This data must be loaded dynamically from the backend, presented to the customer in a convenient form, and then persisted in the cart so it can be used later by the fulfillment provider when creating an order in the ApiShip.
 
 ## Environment Variables
 
-The pickup point selector uses Yandex Maps JS API v3. To enable the map in the storefront, you must provide a public API key through environment variables.
+The pickup point selector uses [Yandex Maps JS API v3](https://yandex.com/maps-api/docs/js-api/index.html). To enable the map in the storefront, you must provide a public API key through environment variables.
 
 Add the following to your storefront’s `.env` file:
 
@@ -19,11 +20,11 @@ Add the following to your storefront’s `.env` file:
 NEXT_PUBLIC_YANDEX_MAPS_API_KEY=supersecret
 ```
 
-For the Next.js start you need to make the following changes:
+For the Next.js start, you need to make the following changes:
 
-## 1. Shipping method metadata support
+## 1. Provider-specific Data Support
 
-To support Apiship pickup delivery, the storefront needs a way to attach provider-specific metadata to a shipping method. This metadata is used to store delivery-related information that cannot be derived from the shipping option alone, such as the selected pickup point and tariff.
+To support ApiShip delivery, the storefront needs a way to attach provider-specific data to a shipping method. This data is used to store delivery-related information that cannot be derived from the shipping option alone, such as the selected pickup point and tariff.
 
 Open [`src/lib/data/cart.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/lib/data/cart.ts#L217-L242) and add the following:
 
@@ -48,7 +49,7 @@ export async function setShippingMethod({
       cartId,
       {
         option_id: shippingMethodId,
-        data // Apiship selection data
+        data // ApiShip selection data
       },
       {},
       headers
@@ -61,13 +62,13 @@ export async function setShippingMethod({
 }
 ```
 
-By extending the `setShippingMethod` helper to accept an optional `data` field, the storefront can include Apiship-specific information when applying a shipping method to the cart.
+By extending the `setShippingMethod` helper to accept an optional `data` field, the storefront can include ApiShip-specific information when applying a shipping method to the cart.
 
-This metadata is later read by the Apiship fulfillment provider during order creation, allowing it to correctly create an order in the Apiship using the pickup point and tariff selected during checkout.
+This data is later read by the ApiShip fulfillment provider during order creation, allowing it to correctly create an order in the ApiShip using the pickup point and tariff selected during checkout.
 
-## 2. Pickup calculation and points requests
+## 2. Calculating Shipping Costs and Requesting Pickup Points
 
-To render pickup delivery options in the shipping step, the storefront needs access to Apiship calculation data and pickup point details. This information is not static and must be requested dynamically based on the current cart and selected shipping option.
+To render pickup delivery options in the shipping step, the storefront needs access to ApiShip calculation data and pickup points details. This information is not static and must be requested dynamically based on the current cart and selected shipping option.
 
 Open [`src/lib/data/fulfillment.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/lib/data/fulfillment.ts#L70-L134) and add the following helpers:
 
@@ -145,9 +146,9 @@ export const getPointAddresses = async (
 
 The `retrieveCalculation` request returns available delivery tariffs together with the pickup point identifiers they apply to. The `getPointAddresses` request resolves those identifiers into full pickup point data, such as addresses and coordinates, which can then be displayed in the checkout interface.
 
-## 3. Require recipient phone number
+## 3. Require Recipient Phone Number
 
-Apiship requires the recipient’s phone number for delivery calculations and for creating a order in the Apiship. For this reason, the storefront must enforce a phone number in the shipping address form.
+ApiShip requires the recipient’s phone number for shipping calculations and for creating an order in the ApiShip. For this reason, the storefront must enforce a phone number in the shipping address form.
 
 Open [`src/modules/checkout/components/shipping-address/index.tsx`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) and mark the phone input as required:
 
@@ -160,16 +161,16 @@ Open [`src/modules/checkout/components/shipping-address/index.tsx`](https://gith
   autoComplete="tel"
   value={formData["shipping_address.phone"]}
   onChange={handleChange}
-  required // Required for Apiship
+  required // Required for ApiShip
   data-testid="shipping-phone-input"
 />
 ```
 
-By marking the phone input as `required`, the checkout always collects the recipient phone number early in the flow, ensuring the Apiship shipping calculation and shipment creation requests have the necessary data available.
+By marking the phone input as `required`, the checkout always collects the recipient phone number early in the flow, ensuring the ApiShip shipping calculation and shipment creation requests have the necessary data available.
 
 ## 4. Pickup Selection Wrapper
 
-To integrate Apiship pickup delivery into the shipping step, the storefront needs a component that loads pickup points and tariffs for the selected shipping option, tracks the current selection, and persists the final choice into the cart.
+To integrate ApiShip delivery into the shipping step, the storefront needs a component that loads pickup points and tariffs for the selected shipping option, tracks the current selection, and persists the final choice into the cart.
 
 Create the [`src/modules/checkout/components/shipping/apiship-wrapper.tsx`](https://github.com/gorgojs/medusa-plugins/blob/main/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping/apiship-wrapper.tsx) file with the following content:
 
@@ -548,7 +549,7 @@ export default ApishipWrapper
 
 ```
 
-The `ApishipWrapper` component retrieves the Apiship calculation, builds a tariff list grouped by pickup point, and then resolves pickup point IDs into full point objects. When a point and tariff are selected, the wrapper saves the selection into the cart by calling `setShippingMethod` with necessary data, so the Apiship fulfillment provider can later create the fulfillment using the stored metadata.
+The `ApishipWrapper` component retrieves the ApiShip calculation, builds a tariff list grouped by pickup point, and then resolves pickup point IDs into full point objects. When a point and tariff are selected, the wrapper saves the selection into the cart by calling `setShippingMethod` with necessary data, so the ApiShip fulfillment provider can later create the fulfillment using the stored metadata.
 
 ## 5. Pickup Point Map Component
 
@@ -556,7 +557,7 @@ To select a pickup point in the shipping step, the storefront needs a UI compone
 
 Create the [`src/modules/checkout/components/shipping/apiship-map.tsx`](https://github.com/gorgojs/medusa-plugins/blob/main/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping/apiship-map.tsx) file with the following content:
 
-![Directory structure in the Medusa Storefront after creating the file for apiship map component](https://github.com/user-attachments/assets/ddbedd6c-3e76-4912-b0f6-3b776e252edd)
+![Directory structure in the Medusa Storefront after creating the file for ApiShip map component](https://github.com/user-attachments/assets/ddbedd6c-3e76-4912-b0f6-3b776e252edd)
 
 ```tsx
 "use client"
@@ -961,7 +962,7 @@ The `ApishipMap` component renders pickup points as map markers and opens a deta
 
 ## 6. Shipping Step Integration
 
-To enable Apiship pickup delivery in checkout, the shipping step must detect when an Apiship pickup shipping option is selected, render the pickup selection UI, and control the step completion state based on whether the selection is saved to the cart.
+To enable ApiShip delivery in checkout, the shipping step must detect when an ApiShip pickup shipping option is selected, render the pickup selection UI, and control the step completion state based on whether the selection is saved to the cart.
 
 Open [`src/modules/checkout/components/shipping/index.tsx`](https://github.com/gorgojs/medusa-plugins/blob/main/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping/index.tsx) and add the following content:
 
@@ -978,10 +979,10 @@ const Shipping: React.FC<ShippingProps> = ({
 }) => {
   // ... other checkout state
 
-  // Controls whether Apiship pickup selection is completed
+  // Controls whether ApiShip pickup selection is completed
   const [apishipReady, setApishipReady] = useState(true)
 
-  // Helper to detect Apiship pickup delivery option
+  // Helper to detect ApiShip pickup delivery option
   const isApishipToPoint = (option?: HttpTypes.StoreCartShippingOption | null) =>
     option?.price_type === "calculated" &&
     option?.data?.deliveryType === 2
@@ -993,7 +994,7 @@ const Shipping: React.FC<ShippingProps> = ({
     ) ?? null
   }, [_shippingMethods, shippingMethodId])
 
-  // Apiship pickup is active only for specific options
+  // ApiShip pickup is active only for specific options
   const isApishipActive = useMemo(() => {
     return isOpen &&
       !!shippingMethodId &&
@@ -1056,13 +1057,13 @@ const Shipping: React.FC<ShippingProps> = ({
 }
 ```
 
-This integration adds an `apishipReady` state that is updated by `ApishipWrapper` through `onReadyChange`. When an Apiship pickup option is active and the selection is not yet completed, the shipping step disables the `Continue to payment` button. This ensures the cart always contains the required Apiship pickup metadata before moving to the payment step.
+This integration adds an `apishipReady` state that is updated by `ApishipWrapper` through `onReadyChange`. When an ApiShip shipping option is active and the selection is not yet completed, the shipping step disables the `Continue to payment` button. This ensures the cart always contains the required ApiShip shipping data before moving to the payment step.
 
 ## Example
 
 You can refer to the modifications made in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-plugins/tree/main/examples/fulfillment-apiship/medusa-storefront) directory.
 
-The complete integration diff can be viewed in the [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-fulfillment-apiship%400.1.0...main), open the `Files changed` tab, and explore the differences under the `examples/fulfillment-apiship/medusa-storefront` directory. Or run diff in the terminal:
+The complete integration diff can be viewed in the [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-fulfillment-apiship%400.0.1...main), open the `Files changed` tab, and explore the differences under the `examples/fulfillment-apiship/medusa-storefront` directory. Or run diff in the terminal:
 
 ```bash
 git clone https://github.com/gorgojs/medusa-plugins
