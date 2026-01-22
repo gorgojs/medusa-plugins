@@ -56,6 +56,7 @@ export const fetchPointsAddressesFromApishipStep = createStep(
       "address",
       "photos",
       "worktime",
+      "timetable",
       "lat",
       "lng",
       "phone",

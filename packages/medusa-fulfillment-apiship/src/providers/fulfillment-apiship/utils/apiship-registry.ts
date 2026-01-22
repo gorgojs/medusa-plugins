@@ -21,7 +21,7 @@ export function getApishipClient(providerId = "apiship_apiship"): ApishipClientB
 
   if (!client) {
     throw new Error(
-      `Apiship client for provider "${providerId}" is not initialized yet.`
+      `ApiShip client for provider "${providerId}" is not initialized yet.`
     )
   }
 

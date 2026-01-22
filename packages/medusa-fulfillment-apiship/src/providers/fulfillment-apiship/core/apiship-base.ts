@@ -112,11 +112,12 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       }
     }
 
-    const apiship = (data as any)?.apiship
+    const apishipData = (data as any)?.apishipData
+    const chosenTariff = apishipData?.tariff
     let price: number | null = null
 
-    if (apiship && typeof apiship.deliveryCost === "number") {
-      price = apiship.deliveryCost
+    if (chosenTariff && typeof chosenTariff.deliveryCost === "number") {
+      price = chosenTariff.deliveryCost
     }
     if (price === null) {
       const cheapestTariff = getCheapestTariff(tariffs, optionData.deliveryType as number)
@@ -162,10 +163,12 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       })
     const deliveryType = shippingOption.data?.deliveryType as number
     const pickupType = shippingOption.data?.pickupType as number
-    const apishipData = data.apiship as any
-    const tariffId = apishipData?.tariffId
-    const providerKey = apishipData?.tariffProviderKey
-    const pointOutId = Number(apishipData?.pointId)
+    const apishipData = data.apishipData as any
+    const tariffId = apishipData?.tariff.tariffId
+    const providerKey = apishipData?.tariff.providerKey
+    const pointOutId = apishipData?.point?.id
+      ? Number(apishipData.point.id)
+      : undefined
     const apishipOrder = mapToApishipOrderRequest(
       this.options_,
       order!,
@@ -289,22 +292,29 @@ class ApishipBase extends AbstractFulfillmentProviderService {
    * Retrieve an order information.
    */
   private async waitForOrderInfo(orderId: number): Promise<{ trackingNumber: string; trackingUrl: string }> {
+    this.logger_.debug(`Apiship.waitForOrderInfo input: ${orderId}`)
+
     const response = await this.executeWithRetry({
       apiCall: () => this.ordersApi_.getOrderInfo({ orderId }),
-      isReady: (response: any) => Boolean(response?.order?.providerNumber),
+      isReady: (response: any) => Boolean(response?.data?.order?.providerNumber),
       label: `orderInfo:${orderId}`,
     })
-    const order = (response as any).order
-    return {
+    const order = (response as any).data.order
+    const result = {
       trackingNumber: String(order.providerNumber),
       trackingUrl: String(order.trackingUrl ?? ""),
     }
+    this.logger_.debug(`Apiship.waitForOrderInfo output: ${JSON.stringify(result, null, 2)}`)
+
+    return result
   }
 
   /**
    * Retrieve a labels for orders.
    */
   private async waitForLabelUrl(orderId: number): Promise<string> {
+    this.logger_.debug(`Apiship.waitForLabelUrl input: ${orderId}`)
+
     const response = await this.executeWithRetry({
       apiCall: () => this.orderDocsApi_.getLabels({
         labelsRequest: {
@@ -312,10 +322,13 @@ class ApishipBase extends AbstractFulfillmentProviderService {
           format: "pdf"
         }
       }),
-      isReady: (response: any) => Boolean(response?.url),
+      isReady: (response: any) => Boolean(response?.data?.url),
       label: `labels:${orderId}`,
     })
-    return String((response as any).url)
+    const result = String((response as any).data.url)
+    this.logger_.debug(`Apiship.waitForLabelUrl output: ${result}`)
+
+    return result
   }
 
   /**

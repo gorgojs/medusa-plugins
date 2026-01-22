@@ -132,3 +132,30 @@ export const getPointAddresses = async (
       return null
     })
 }
+
+export const retrieveProviders = async () => {
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  const next = {
+    ...(await getCacheOptions("fulfillment")),
+  }
+
+  return sdk.client
+    .fetch<{
+      providers: Array<{
+        key: string
+        name: string
+        description: string | null
+      }>
+    }>(`/store/apiship/providers`, {
+      method: "POST",
+      headers,
+      next,
+    })
+    .catch((e) => {
+      console.error("retrieveProviders error", e)
+      return null
+    })
+}
