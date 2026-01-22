@@ -170,6 +170,14 @@ export const pluginsSidebar: SidebarType = {
           slug: "getting-started",
           children: [],
         },
+        {
+          title: {
+            en: "Storefront Integration",
+            ru: "Интеграция с Storefront",
+          },
+          slug: "storefront-integration",
+          children: [],
+        },
       ],
     },
     {
