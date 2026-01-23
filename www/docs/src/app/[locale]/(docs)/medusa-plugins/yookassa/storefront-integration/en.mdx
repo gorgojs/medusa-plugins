@@ -11,6 +11,8 @@ When YooKassa is selected, the storefront should call `initiatePayment` with the
 
 Once the payment is completed, YooKassa will concurrently send a webhook and redirect the customer back to the storefront. Whichever arrives first will complete the cart and create a new order in Medusa.
 
+For the storefront on Next.js, you need to make the following changes:
+
 ## 1. Payment Provider Configuration
 
 To make YooKassa available as a payment method on the storefront checkout page, you must add its configuration to the payment provider mapping in your storefront's constants file. This mapping determines how each payment provider is displayed in the UI.

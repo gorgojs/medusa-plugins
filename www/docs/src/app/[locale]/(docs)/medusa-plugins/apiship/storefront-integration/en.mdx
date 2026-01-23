@@ -20,7 +20,7 @@ Add the following to your storefront’s `.env` file:
 NEXT_PUBLIC_YANDEX_MAPS_API_KEY=supersecret
 ```
 
-For the Next.js start, you need to make the following changes:
+For the storefront on Next.js, you need to make the following changes:
 
 ## 1. Provider-specific Data Support
 
@@ -168,7 +168,7 @@ Open [`src/modules/checkout/components/shipping-address/index.tsx`](https://gith
 
 By marking the phone input as `required`, the checkout always collects the recipient phone number early in the flow, ensuring the ApiShip shipping calculation and shipment creation requests have the necessary data available.
 
-## 4. Pickup Selection Wrapper
+## 4. Pickup Point Selection Wrapper
 
 To integrate ApiShip delivery into the shipping step, the storefront needs a component that loads pickup points and tariffs for the selected shipping option, tracks the current selection, and persists the final choice into the cart.
 
@@ -546,7 +546,6 @@ const ApishipWrapper = ({
 }
 
 export default ApishipWrapper
-
 ```
 
 The `ApishipWrapper` component retrieves the ApiShip calculation, builds a tariff list grouped by pickup point, and then resolves pickup point IDs into full point objects. When a point and tariff are selected, the wrapper saves the selection into the cart by calling `setShippingMethod` with necessary data, so the ApiShip fulfillment provider can later create the fulfillment using the stored metadata.
@@ -955,12 +954,11 @@ const ApishipMap = ({
 }
 
 export default ApishipMap
-
 ```
 
 The `ApishipMap` component renders pickup points as map markers and opens a details panel for the selected point. The panel lists available tariffs for that point, including price and delivery time, and confirms the selection through the `onChoose` callback, passing the chosen point and tariff back to the checkout flow.
 
-## 6. Shipping Step Integration
+## 6. Shipping Step Completion
 
 To enable ApiShip delivery in checkout, the shipping step must detect when an ApiShip pickup shipping option is selected, render the pickup selection UI, and control the step completion state based on whether the selection is saved to the cart.
 
