@@ -11,28 +11,10 @@ import { useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { sdk } from "../../../../lib/sdk"
 import { Header } from "../../../../components/common/header"
-
-type MarketplaceEvent = {
-  id: string
-  marketplace_id?: string | null
-  correlation_id?: string | null
-  direction: string
-  entity_type: string
-  action: string
-  started_at?: string | Date | null
-  finished_at?: string | Date | null
-  request_data?: any
-  response_data?: any
-}
-
-type MarketplaceEventsResponse =
-  | MarketplaceEvent[]
-  | {
-      marketplace_events?: MarketplaceEvent[]
-      count?: number
-      limit?: number
-      offset?: number
-    }
+import type {
+  AdminMarketplaceEventListResponse,
+  MarketplaceEventDTO,
+} from "@gorgo/medusa-marketplace/api/types"
 
 const PAGE_SIZE = 20
 
@@ -44,7 +26,7 @@ export const handle = {
   breadcrumb: () => "Marketplace Events",
 }
 
-const columnHelper = createDataTableColumnHelper<MarketplaceEvent>()
+const columnHelper = createDataTableColumnHelper<MarketplaceEventDTO>()
 
 const formatDateTime = (value: unknown) => {
   if (!value) return "-"
@@ -95,7 +77,7 @@ const columns = [
       </Text>
     ),
   }),
-] as const
+]
 
 
 export default function MarketplaceEventsPage() {
@@ -108,7 +90,7 @@ export default function MarketplaceEventsPage() {
 
   const offset = useMemo(() => pagination.pageIndex * limit, [pagination.pageIndex, limit])
 
-  const { data, isLoading } = useQuery<MarketplaceEventsResponse>({
+  const { data, isLoading } = useQuery<AdminMarketplaceEventListResponse>({
     queryKey: ["admin-marketplace-events", limit, offset],
     queryFn: () =>
       sdk.client.fetch(`/admin/marketplaces/events`, {
@@ -116,12 +98,9 @@ export default function MarketplaceEventsPage() {
       }),
   })
 
-  const events: MarketplaceEvent[] = Array.isArray(data)
-    ? data
-    : (data?.marketplace_events ?? [])
+  const events = data?.events ?? []
+  const rowCount = data?.count ?? 0
 
-  const rowCount =
-    (Array.isArray(data) ? data.length : data?.count) ?? events.length
 
   const table = useDataTable({
     columns,

@@ -1,16 +1,20 @@
-import { Button, FocusModal, Input, Label, Switch, Text } from "@medusajs/ui"
+import { Button, FocusModal, Label, Switch, Text, Select, Input } from "@medusajs/ui"
 import { Controller, useForm } from "react-hook-form"
 import * as zod from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { sdk } from "../../../../lib/sdk"
+import type { AdminMarketplaceProviderList, AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/modules/marketplace/types"
+
 
 const MarketplaceAddSchema = zod.object({
-  provider_id: zod.string().min(1, "Provider ID is required"),
+  provider_id: zod.string().min(1, "Provider is required"),
+  title: zod.string().trim().min(1, "Title is required").max(20, "Max 20 chars"),
   is_active: zod.boolean().default(true),
 })
 
 type MarketplaceAddValues = zod.infer<typeof MarketplaceAddSchema>
+
 
 export const MarketplaceAddModal = ({
   stateModal,
@@ -22,18 +26,33 @@ export const MarketplaceAddModal = ({
   const queryClient = useQueryClient()
 
   const form = useForm<MarketplaceAddValues>({
-    defaultValues: { provider_id: "", is_active: true },
+    defaultValues: { provider_id: "", title: "", is_active: true },
     resolver: zodResolver(MarketplaceAddSchema),
     mode: "onSubmit",
   })
 
-  const resetForm = () => form.reset({ provider_id: "", is_active: true })
+  const resetForm = () => form.reset({ provider_id: "", title: "", is_active: true })
 
-  const createMarketplace = useMutation({
-    mutationFn: async (values: MarketplaceAddValues) => {
-      return sdk.client.fetch("/admin/marketplaces", {
+  const { data: providersData, isLoading: isProvidersLoading } =
+    useQuery<AdminMarketplaceProviderList>({
+      queryKey: ["marketplace-providers"],
+      queryFn: () => sdk.client.fetch("/admin/marketplaces/providers"),
+      enabled: stateModal,
+      staleTime: 5 * 60 * 1000,
+    })
+
+  const providers = providersData?.providers ?? []
+
+  const createMarketplace = useMutation<
+    AdminMarketplaceResponse,
+    Error,
+    MarketplaceAddValues
+  >({
+    mutationFn: async (values) => {
+      return sdk.client.fetch<AdminMarketplaceResponse>("/admin/marketplaces", {
         method: "POST",
         body: {
+          title: values.title.trim(),
           provider_id: values.provider_id.trim(),
           is_active: values.is_active,
           credentials: {},
@@ -52,7 +71,6 @@ export const MarketplaceAddModal = ({
     createMarketplace.mutate(values)
   })
 
-
   return (
     <FocusModal
       open={stateModal}
@@ -61,7 +79,8 @@ export const MarketplaceAddModal = ({
           resetForm()
           closeModal()
         }
-      }}>
+      }}
+    >
       <FocusModal.Content>
         <form className="flex h-full flex-col overflow-hidden" onSubmit={onSubmit}>
           <FocusModal.Header />
@@ -72,15 +91,63 @@ export const MarketplaceAddModal = ({
                 <Text>Add marketplace connection</Text>
 
                 <div className="flex flex-col gap-y-2">
-                  <Label htmlFor="provider_id" size="small">
-                    Provider ID
+                  <Label htmlFor="title" size="small">
+                    Title
                   </Label>
+
                   <Input
-                    id="provider_id"
+                    id="title"
                     autoComplete="off"
-                    placeholder="mp_wildberries_test"
-                    {...form.register("provider_id")}
+                    placeholder="Wildberries (Test)"
+                    {...form.register("title")}
                   />
+
+                  {form.formState.errors.title?.message && (
+                    <Text size="small" className="text-ui-fg-error">
+                      {form.formState.errors.title.message}
+                    </Text>
+                  )}
+                </div>
+
+
+                { }
+                <div className="flex flex-col gap-y-2">
+                  <Label htmlFor="provider_id" size="small">
+                    Provider
+                  </Label>
+
+                  <Controller
+                    control={form.control}
+                    name="provider_id"
+                    render={({ field }) => (
+                      <Select
+                        value={field.value || undefined}
+                        onValueChange={(v) => field.onChange(v)}
+                        disabled={isProvidersLoading || providers.length === 0}
+                      >
+                        <Select.Trigger>
+                          <Select.Value
+                            placeholder={
+                              isProvidersLoading
+                                ? "Loading providers..."
+                                : providers.length
+                                  ? "Select provider..."
+                                  : "No providers available"
+                            }
+                          />
+                        </Select.Trigger>
+
+                        <Select.Content>
+                          {providers.map((providers: string) => (
+                            <Select.Item key={providers} value={providers}>
+                              {providers}
+                            </Select.Item>
+                          ))}
+                        </Select.Content>
+                      </Select>
+                    )}
+                  />
+
                   {form.formState.errors.provider_id?.message && (
                     <Text size="small" className="text-ui-fg-error">
                       {form.formState.errors.provider_id.message}
@@ -88,6 +155,7 @@ export const MarketplaceAddModal = ({
                   )}
                 </div>
 
+                { }
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col">
                     <Text size="small" className="text-ui-fg-subtle">
@@ -120,15 +188,19 @@ export const MarketplaceAddModal = ({
                 variant="secondary"
                 type="button"
                 onClick={() => {
-                  form.reset({ provider_id: "", is_active: true })
+                  resetForm()
                   closeModal()
                 }}
               >
                 Cancel
               </Button>
 
-              <Button size="small" type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Adding..." : "Add"}
+              <Button
+                size="small"
+                type="submit"
+                disabled={createMarketplace.isPending}
+              >
+                {createMarketplace.isPending ? "Adding..." : "Add"}
               </Button>
             </div>
           </FocusModal.Footer>

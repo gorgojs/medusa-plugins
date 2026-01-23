@@ -3,35 +3,24 @@ import {
   DataTable,
   DataTablePaginationState,
   useDataTable,
+  StatusBadge,
 } from "@medusajs/ui"
 import { useMemo, useState } from "react"
-import { StatusBadge } from "@medusajs/ui"
 import { useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { Header } from "../../../common/header"
 import { sdk } from "../../../../lib/sdk"
-import type { AdminMarketplaceListResponse } from "@gorgo/medusa-marketplace/api/types"
-import type { MarketplaceDTO } from "@gorgo/medusa-marketplace/modules/marketplace/types"
+import type {
+  AdminMarketplaceListResponse,
+} from "@gorgo/medusa-marketplace/api/types"
+import { MarketplaceActionMenu } from "./marketplace-action-menu"
+import { MarketplaceEditDrawer } from "./marketplace-edit-drawer"
 
 const PAGE_SIZE = 20
 
-const columnHelper = createDataTableColumnHelper<MarketplaceDTO>()
 
-const columns = [
-  columnHelper.accessor("id", { header: "ID" }),
-  columnHelper.accessor("provider_id", { header: "Provider ID" }),
-  columnHelper.accessor("is_active", {
-    header: "Status",
-    cell: ({ getValue }) => {
-      const active = Boolean(getValue())
-      return (
-        <StatusBadge color={active ? "green" : "red"}>
-          {active ? "Active" : "Inactive"}
-        </StatusBadge>
-      )
-    },
-  }),
-]
+
+const columnHelper = createDataTableColumnHelper<AdminMarketplaceListResponse>()
 
 export const MarketplaceListTable = ({
   stateModal,
@@ -41,6 +30,9 @@ export const MarketplaceListTable = ({
   openModal: () => void
 }) => {
   const navigate = useNavigate()
+  const [editOpen, setEditOpen] = useState(false)
+  const [editingMarketplace, setEditingMarketplace] = useState<AdminMarketplaceListResponse | null>(null)
+
   const limit = PAGE_SIZE
 
   const [pagination, setPagination] = useState<DataTablePaginationState>({
@@ -48,7 +40,10 @@ export const MarketplaceListTable = ({
     pageIndex: 0,
   })
 
-  const offset = useMemo(() => pagination.pageIndex * limit, [pagination.pageIndex, limit])
+  const offset = useMemo(
+    () => pagination.pageIndex * limit,
+    [pagination.pageIndex, limit]
+  )
 
   const { data, isLoading } = useQuery<AdminMarketplaceListResponse>({
     queryFn: () =>
@@ -57,6 +52,35 @@ export const MarketplaceListTable = ({
       }),
     queryKey: ["marketplaces", limit, offset],
   })
+
+  const columns = [
+    columnHelper.accessor("title", { header: "Title" }),
+    columnHelper.accessor("provider_id", { header: "Provider ID" }),
+    columnHelper.accessor("is_active", {
+      header: "Status",
+      cell: ({ getValue }) => {
+        const active = Boolean(getValue())
+        return (
+          <StatusBadge color={active ? "green" : "red"}>
+            {active ? "Active" : "Inactive"}
+          </StatusBadge>
+        )
+      },
+    }),
+    columnHelper.display({
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <div className="flex w-full justify-end" onClick={(e) => e.stopPropagation()}>
+          <MarketplaceActionMenu
+            marketplace={row.original}
+            onEdit={() => navigate(row.original.id, { state: { openEdit: true } })}
+          />
+        </div>
+      ),
+    }),
+
+  ]
 
   const table = useDataTable({
     columns,
@@ -85,7 +109,7 @@ export const MarketplaceListTable = ({
               children: "Events",
               variant: "secondary",
               onClick: () => navigate("events"),
-            }
+            },
           },
           {
             type: "button",
@@ -97,8 +121,17 @@ export const MarketplaceListTable = ({
           },
         ]}
       />
+
       <DataTable.Table />
       <DataTable.Pagination />
+
+      {editingMarketplace && (
+        <MarketplaceEditDrawer
+          response={{ marketplace: editingMarketplace }}
+          open={editOpen}
+          setOpen={setEditOpen}
+        />
+      )}
     </DataTable>
   )
 }
