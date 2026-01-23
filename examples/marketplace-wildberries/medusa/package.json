@@ -25,6 +25,7 @@
   "dependencies": {
     "@gorgo/medusa-marketplace": "file:.yalc/@gorgo/medusa-marketplace",
     "@gorgo/medusa-marketplace-wildberries": "file:.yalc/@gorgo/medusa-marketplace-wildberries",
+    "@gorgo/medusa-vite-plugin": "file:.yalc/@gorgo/medusa-vite-plugin",
     "@medusajs/admin-sdk": "2.12.2",
     "@medusajs/cli": "2.12.2",
     "@medusajs/framework": "2.12.2",

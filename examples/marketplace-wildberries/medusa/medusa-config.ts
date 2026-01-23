@@ -1,4 +1,5 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import gorgoPluginsInject from '@gorgo/medusa-vite-plugin'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -15,6 +16,21 @@ module.exports = defineConfig({
   },
   featureFlags: {
     backend_hmr: true,
+  },
+  admin: {
+    vite: () => {
+      return {
+        // Used only during testing, do not enable in production
+        plugins: [
+          gorgoPluginsInject({
+            sources: [
+              "@gorgo/medusa-marketplace/src/admin/marketplace-widgets",
+              "@gorgo/medusa-marketplace-wildberries/providers/marketplace-wildberries",
+            ],
+          }),
+        ],
+      }
+    },
   },
   plugins: [
     {
