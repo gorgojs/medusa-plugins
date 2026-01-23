@@ -10,7 +10,7 @@ import { sdk } from "../../../../lib/sdk"
 import { useLocation } from "react-router-dom"
 import { MarketplaceActionMenu } from "../../../../components/routes/marketplaces/marketplace-list/marketplace-action-menu"
 import { MarketplaceEditDrawer } from "../../../../components/routes/marketplaces/marketplace-list/marketplace-edit-drawer"
-import type { AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/api/types"
+import type { AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/types"
 
 const Breadcrumb = (
   props: UIMatch<AdminMarketplaceResponse>

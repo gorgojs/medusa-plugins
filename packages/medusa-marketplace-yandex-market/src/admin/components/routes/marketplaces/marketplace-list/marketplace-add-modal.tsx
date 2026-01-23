@@ -4,7 +4,7 @@ import * as zod from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { sdk } from "../../../../lib/sdk"
-import type { AdminMarketplaceProviderList, AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/modules/marketplace/types"
+import type { AdminMarketplaceProviderList, AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/types"
 
 
 const MarketplaceAddSchema = zod.object({

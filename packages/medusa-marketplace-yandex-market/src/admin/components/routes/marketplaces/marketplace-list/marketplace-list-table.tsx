@@ -12,7 +12,7 @@ import { Header } from "../../../common/header"
 import { sdk } from "../../../../lib/sdk"
 import type {
   AdminMarketplaceListResponse,
-} from "@gorgo/medusa-marketplace/api/types"
+} from "@gorgo/medusa-marketplace/types"
 import { MarketplaceActionMenu } from "./marketplace-action-menu"
 import { MarketplaceEditDrawer } from "./marketplace-edit-drawer"
 

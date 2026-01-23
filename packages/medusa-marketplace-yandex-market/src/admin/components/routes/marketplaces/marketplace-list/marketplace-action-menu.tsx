@@ -3,7 +3,7 @@ import { PencilSquare, Trash } from "@medusajs/icons"
 import { sdk } from "../../../../lib/sdk"
 import { useNavigate } from "react-router-dom"
 import { ActionMenu } from "../../../common/action-menu"
-import type { AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/api/types"
+import type { AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/types"
 
 
 type Props = {

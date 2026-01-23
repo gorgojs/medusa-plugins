@@ -6,7 +6,7 @@ import { useEffect } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRevalidator } from "react-router-dom"
 import { sdk } from "../../../../lib/sdk"
-import type { AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/modules/marketplace/types"
+import type { AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/types"
 
 const MarketplaceEditSchema = z.object({
   title: z.string().trim().min(1, "Min 1 chars").max(20, "Max 20 chars"),
@@ -46,7 +46,7 @@ export const MarketplaceEditDrawer = ({
 
   useEffect(() => {
     resetForm()
-  }, [marketplace.id])
+  }, [open, marketplace.id, marketplace.title, marketplace.is_active])
 
   const updateMarketplace = useMutation({
     mutationFn: async (values: MarketplaceEditValues) => {
@@ -55,7 +55,7 @@ export const MarketplaceEditDrawer = ({
         method: "POST",
         body: {
           title: values.title.trim(),
-          provider_id: marketplace.provider_id, 
+          provider_id: marketplace.provider_id,
           is_active: values.is_active,
           credentials: marketplace.credentials ?? {},
           settings: marketplace.settings ?? {},
@@ -76,8 +76,6 @@ export const MarketplaceEditDrawer = ({
     <Drawer
       open={open}
       onOpenChange={(next) => {
-        if (!next) resetForm()
-        if (next) resetForm()
         setOpen(next)
       }}
     >

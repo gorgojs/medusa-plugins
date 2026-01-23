@@ -14,7 +14,7 @@ import { Header } from "../../../../components/common/header"
 import type {
   AdminMarketplaceEventListResponse,
   MarketplaceEventDTO,
-} from "@gorgo/medusa-marketplace/api/types"
+} from "@gorgo/medusa-marketplace/types"
 
 const PAGE_SIZE = 20
 
