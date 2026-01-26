@@ -9,6 +9,8 @@ import {
   ExportProductsOutput,
   GetProductsInput,
   GetProductsOutput,
+  GetMarketplaceProductsInput,
+  GetMarkletplaceProductsOutput,
   ImportProductsInput,
   ImportProductsOutput,
   MapProductsInput,
@@ -55,23 +57,42 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
   }
 
   async importProducts(data: ImportProductsInput): Promise<ImportProductsOutput> {
-    const { container, credentials, ...input } = data
+    const { container, marketplace, ...input } = data
 
-    const { result } = await importMarketplaceProductsWorkflow(container).run({ input: { credentials } })
+    const { result } = await importMarketplaceProductsWorkflow(container).run({ input: { credentials: marketplace.credentials, ...input } })
 
     return result
   }
 
   async exportProducts(data: ExportProductsInput): Promise<ExportProductsOutput> {
-    const { container, marketplaceProducts, credentials } = data
+    const { container, marketplace, marketplaceProducts } = data
     const { result } = await exportMarketplaceProductsWorkflow(container).run({
       input: {
-        credentials,
+        credentials: marketplace.credentials,
         create: marketplaceProducts
       }
     })
 
     return result
+  }
+
+  async getMarketplaceProducts(data: GetMarketplaceProductsInput): Promise<GetMarkletplaceProductsOutput> {
+    const { container, ...input } = data
+
+    const query = await container.resolve("query")
+
+    const { data: products } = await query.graph({
+      entity: "product",
+      fields: ["id", "variants.id"],
+      filters: {
+        id: input.ids?.length ? input.ids : undefined,
+        status: "published"
+      },
+    })
+
+    const offerIds: string[] = products.flatMap((p) => (p.variants ?? []).map((v) => v.id))
+
+    return offerIds
   }
 
   // getMarketplaceToMedusaMappingSchema(container?: MedusaContainer): MappingSchema {

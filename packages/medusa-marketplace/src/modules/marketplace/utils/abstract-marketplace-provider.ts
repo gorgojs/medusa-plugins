@@ -3,6 +3,8 @@ import {
   ExportProductsOutput,
   GetProductsInput,
   GetProductsOutput,
+  GetMarketplaceProductsInput,
+  GetMarketplaceProductsOutput,
   IMarketplaceProvider,
   ImportProductsInput,
   ImportProductsOutput,
@@ -26,6 +28,10 @@ export class AbstractMarketplaceProvider implements IMarketplaceProvider {
 
   async getProducts(data: GetProductsInput): Promise<GetProductsOutput> {
     throw Error("getProducts must be overridden by the child class")
+  }
+
+  async getMarketplaceProducts(data: GetMarketplaceProductsInput): Promise<GetMarketplaceProductsOutput> {
+    throw Error("getMarketplaceProducts must be overridden by the child class")
   }
 
   async importProducts(data: ImportProductsInput): Promise<ImportProductsOutput> {

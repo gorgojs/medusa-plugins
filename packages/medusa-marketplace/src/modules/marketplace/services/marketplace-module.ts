@@ -6,6 +6,8 @@ import {
   ExportProductsOutput,
   GetProductsInput,
   GetProductsOutput,
+  GetMarketplaceProductsInput,
+  GetMarketplaceProductsOutput,
   ImportProductsInput,
   ImportProductsOutput,
   LogEventInput,
