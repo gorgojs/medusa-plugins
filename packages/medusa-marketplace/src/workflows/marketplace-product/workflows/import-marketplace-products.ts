@@ -4,6 +4,7 @@ import {
   WorkflowResponse
 } from "@medusajs/framework/workflows-sdk"
 import {
+  getMarketplaceProductsStep,
   importProductsStep,
   mapToMedusaProductsStep
 } from "../steps"
@@ -16,22 +17,22 @@ export const importMarketplaceProductsWorkflow = createWorkflow(
   importMarketplaceProductsWorkflowId,
   (input: ImportMarketplaceProductsWorkflowInput) => {   
 
-    // const marketplaceProducts = getMarketplaceProductsStep({
-    //   providerId: input.marketplace.provider_id,
-    //   credentials: input.marketplace.credentials
-    //   ids: input.ids
-    // })
-    // const products = mapToProductsStep({
-    //   providerId: input.marketplace.provider_id,
-    //   marketplaceProducts,
-    //   settings: input.marketplace.settings
-    // })
+    const marketplaceProducts = getMarketplaceProductsStep({
+      providerId: input.marketplace.provider_id,
+      marketplace: input.marketplace,
+      ids: input.ids
+    })
+    const products = mapToMedusaProductsStep({
+      providerId: input.marketplace.provider_id,
+      marketplace: input.marketplace,
+      marketplaceProducts,
+    })
     
     const startedAt = transform({}, () => new Date())
     const importResult = importProductsStep({
       providerId: input.marketplace.provider_id,
-      credentials: input.marketplace.credentials,
-      // products
+      marketplace: input.marketplace,
+      products
     })
     const finishedAt = transform({}, () => new Date())
     const logResult = logMarketplaceEventWorkflow.runAsStep({

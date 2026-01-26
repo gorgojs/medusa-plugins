@@ -19,19 +19,20 @@ export const exportMarketplaceProductsWorkflow = createWorkflow(
     const providerId = input.marketplace.provider_id
 
     const products = getProductsStep({
-      providerId,
+      providerId: input.marketplace.provider_id,
+      marketplace: input.marketplace,
       ids: input.ids
     })
     const marketplaceProducts = mapToMarketplaceProductsStep({
-      providerId,
-      products,
-      // settings: input.marketplace.settings
+      providerId: input.marketplace.provider_id,
+      marketplace: input.marketplace,
+      products
     })
     const startedAt = transform({}, () => new Date())
     const exportResult = exportProductsStep({
-      providerId,
+      providerId: input.marketplace.provider_id,
+      marketplace: input.marketplace,
       marketplaceProducts,
-      credentials: input.marketplace.credentials
     })
     const finishedAt = transform({}, () => new Date())
     const logResult = logMarketplaceEventWorkflow.runAsStep({

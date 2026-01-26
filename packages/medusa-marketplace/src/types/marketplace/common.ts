@@ -29,3 +29,5 @@ export type MarketplaceEventDTO = {
   requestData?: Record<string, unknown>
   responseData?: Record<string, unknown>
 }
+
+export type MarketplaceProductDTO = Record<string, unknown>
