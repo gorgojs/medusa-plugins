@@ -1,9 +1,12 @@
 import { Logger } from "@medusajs/medusa"
+import { AwilixResolutionError } from "awilix"
 import {
   ExportProductsInput,
   ExportProductsOutput,
   GetProductsInput,
   GetProductsOutput,
+  GetMarketplaceProductsInput,
+  GetMarketplaceProductsOutput,
   IMarketplaceProvider,
   ImportProductsInput,
   ImportProductsOutput,
@@ -32,9 +35,9 @@ export default class MarketplaceProviderService {
 
   retrieveProvider(providerId: string): IMarketplaceProvider {
     try {
-      return this.dependencies[providerId] as IMarketplaceProvider
+      return this.dependencies[providerId as any] as IMarketplaceProvider
     } catch (err) {
-      if (err.name === "AwilixResolutionError") {
+      if (err instanceof AwilixResolutionError) {
         const errMessage = `
 Unable to retrieve the marketplace provider with id: ${providerId}
 Please make sure that the provider is registered in the container and it is configured correctly in your project configuration file.`
@@ -42,7 +45,7 @@ Please make sure that the provider is registered in the container and it is conf
         throw new Error(errMessage)
       }
 
-      const errMessage = `Unable to retrieve the marketplace provider with id: ${providerId}, the following error occurred: ${err.message}`
+      const errMessage = `Unable to retrieve the marketplace provider with id: ${providerId}, the following error occurred: ${err instanceof Error ? err.message : String(err)}`
       this.#logger.error(errMessage)
 
       throw new Error(errMessage)
@@ -72,14 +75,14 @@ Please make sure that the provider is registered in the container and it is conf
     return provider.getProducts(input)
   }
 
-  // async getMarketplaceProducts(
-  //   providerId: string,
-  //   input: GetMarketplaceProductsInput
-  // ): Promise<GetMarketplaceProductsOutput> {
-  //   const provider = this.retrieveProvider(providerId)
+  async getMarketplaceProducts(
+    providerId: string,
+    input: GetMarketplaceProductsInput
+  ): Promise<GetMarketplaceProductsOutput> {
+    const provider = this.retrieveProvider(providerId)
 
-  //   return provider.getMarketplaceProducts(input)
-  // }
+    return provider.getMarketplaceProducts(input)
+  }
 
   async importProducts(
     providerId: string,
@@ -99,7 +102,6 @@ Please make sure that the provider is registered in the container and it is conf
     return provider.mapToMarketplaceProducts(input)
   }
 
-  // async mapToProducts(
   async mapToMedusaProducts(
     providerId: string,
     input: MapToMedusaProductsInput

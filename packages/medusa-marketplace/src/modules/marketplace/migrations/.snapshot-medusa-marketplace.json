@@ -54,8 +54,8 @@
           "default": "'{}'",
           "mappedType": "json"
         },
-        "is_active": {
-          "name": "is_active",
+        "is_enabled": {
+          "name": "is_enabled",
           "type": "boolean",
           "unsigned": false,
           "autoincrement": false,

@@ -48,7 +48,7 @@ export const MarketplaceListTable = ({
   const columns = [
     columnHelper.accessor("id", { header: "ID" }),
     columnHelper.accessor("provider_id", {header: "Provider ID"}),
-    columnHelper.accessor("is_active", {
+    columnHelper.accessor("is_enabled", {
       header: "Status",
       cell: ({ getValue }) => {
         const active = Boolean(getValue())

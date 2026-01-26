@@ -4,11 +4,11 @@ import {
 } from "@medusajs/workflows-sdk"
 import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
 import { MarketplaceModuleService } from "../../../modules/marketplace/services"
-import { MarketplaceCredentialsType } from "../../../types"
+import { MarketplaceDTO } from "../../../types"
 
 export type ExportProductsStepInput = {
   providerId: string,
-  credentials: MarketplaceCredentialsType,
+  marketplace: MarketplaceDTO,
   [key: string]: any
 }
 

@@ -6,6 +6,8 @@ import {
   ExportProductsOutput,
   GetProductsInput,
   GetProductsOutput,
+  GetMarketplaceProductsInput,
+  GetMarketplaceProductsOutput,
   ImportProductsInput,
   ImportProductsOutput,
   LogEventInput,
@@ -62,27 +64,27 @@ export default class MarketplaceModuleService extends MedusaService({
     return this.marketplaceProviderService_.getProvidersList()
   }
 
-  async exportProducts(providerId, data: ExportProductsInput): Promise<ExportProductsOutput> {
+  async exportProducts(providerId: string, data: ExportProductsInput): Promise<ExportProductsOutput> {
     return await this.marketplaceProviderService_.exportProducts(providerId, data)
   }
 
-  async getProducts(providerId, data: GetProductsInput): Promise<GetProductsOutput> {
+  async getProducts(providerId: string, data: GetProductsInput): Promise<GetProductsOutput> {
     return await this.marketplaceProviderService_.getProducts(providerId, data)
   }
-  
-  // async getMarketplaceProducts(providerId, data: GetMarketplaceProductsInput): Promise<GetMarketplaceProductsOutput> {
-  //   return await this.marketplaceProviderService_.getMarketplaceProducts(providerId, data)
-  // }
 
-  async importProducts(providerId, data: ImportProductsInput): Promise<ImportProductsOutput> {
+  async getMarketplaceProducts(providerId: string, data: GetMarketplaceProductsInput): Promise<GetMarketplaceProductsOutput> {
+    return await this.marketplaceProviderService_.getMarketplaceProducts(providerId, data)
+  }
+
+  async importProducts(providerId: string, data: ImportProductsInput): Promise<ImportProductsOutput> {
     return await this.marketplaceProviderService_.importProducts(providerId, data)
   }
 
-  async mapToMarketplaceProducts(providerId, data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput> {
+  async mapToMarketplaceProducts(providerId: string, data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput> {
     return await this.marketplaceProviderService_.mapToMarketplaceProducts(providerId, data)
   }
 
-  async mapToMedusaProducts(providerId, data: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput> {
+  async mapToMedusaProducts(providerId: string, data: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput> {
     return await this.marketplaceProviderService_.mapToMedusaProducts(providerId, data)
   }
 }

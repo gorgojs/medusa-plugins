@@ -1,4 +1,6 @@
 import { MedusaContainer } from "@medusajs/framework"
+import { ProductDTO } from "@medusajs/types"
+import {MarketplaceDTO, MarketplaceProductDTO} from "../../types"
 
 export interface IMarketplaceProvider {
   getIdentifier(): string
@@ -9,9 +11,11 @@ export interface IMarketplaceProvider {
 
   importProducts(data: ImportProductsInput): Promise<ImportProductsOutput>
 
+  getMarketplaceProducts(data: GetMarketplaceProductsInput): Promise<GetMarketplaceProductsOutput>
+
   mapToMarketplaceProducts(data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput>
 
-  mapToMedusaProducts(data: MapToMedusaProductsInput): Promise<MapToMarketplaceProductsOutput>
+  mapToMedusaProducts(data: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput>
 
 }
 
@@ -25,7 +29,11 @@ export type ExportProductsOutput = Record<string, unknown>
 
 export type GetProductsInput = MarketplaceProviderInput & Record<string, unknown>
 
-export type GetProductsOutput = Record<string, unknown>
+export type GetProductsOutput = ProductDTO[]
+
+export type GetMarketplaceProductsInput  = MarketplaceProviderInput & Record<string, unknown>
+
+export type GetMarketplaceProductsOutput = MarketplaceProductDTO[]
 
 export type ImportProductsInput = MarketplaceProviderInput & Record<string, unknown>
 
@@ -37,4 +45,4 @@ export type MapToMarketplaceProductsOutput = Record<string, unknown>
 
 export type MapToMedusaProductsInput = MarketplaceProviderInput & Record<string, unknown>
 
-export type MapToMedusaProductsOutput = Record<string, unknown>
+export type MapToMedusaProductsOutput = ProductDTO[] 
