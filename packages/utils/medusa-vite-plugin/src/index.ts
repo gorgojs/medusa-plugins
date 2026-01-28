@@ -1,3 +1,3 @@
-import { testPlugin } from "./plugin"
+import { gorgoVitePlugin } from "./plugin"
 
-export default testPlugin
+export default gorgoVitePlugin

@@ -24,9 +24,10 @@ module.exports = defineConfig({
         plugins: [
           gorgoPluginsInject({
             sources: [
-              "@gorgo/medusa-marketplace/src/admin/marketplace-widgets",
-              "@gorgo/medusa-marketplace-wildberries/providers/marketplace-wildberries",
+              "@gorgo/medusa-marketplace",
+              "@gorgo/medusa-marketplace-wildberries",
             ],
+            pluginMode: true
           }),
         ],
       }

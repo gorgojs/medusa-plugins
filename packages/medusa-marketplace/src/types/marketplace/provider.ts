@@ -5,14 +5,12 @@ declare const MARKETPLACE_INJECTION_ZONES: readonly ["settings.marketplaces.list
 export type MarketplaceInjectionZone = (typeof MARKETPLACE_INJECTION_ZONES)[number]
 
 export type WidgetConfig = {
-  component: () => JSX.Element;
-  zone: MarketplaceInjectionZone;
+  Component: () => JSX.Element;
+  zone: MarketplaceInjectionZone[];
 }
 
 export interface IMarketplaceProvider {
   getIdentifier(): string
-
-  getWidgets(): WidgetConfig[] 
 
   exportProducts(data: ExportProductsInput): Promise<ExportProductsOutput>
 

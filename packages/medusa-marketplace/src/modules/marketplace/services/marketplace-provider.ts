@@ -13,7 +13,6 @@ import {
   MapToMedusaProductsOutput
 } from "../../../types"
 import { MarketplaceProviderRegistrationPrefix } from "../types"
-import { widgetsAppInstance } from "../utils/widgets-app-instance"
 
 type InjectedDependencies = {
   logger?: Logger
@@ -29,22 +28,6 @@ export default class MarketplaceProviderService {
     this.#logger = container["logger"]
       ? container.logger
       : (console as unknown as Logger)
-    
-    this.initWidgets()
-  }
-
-  private initWidgets() {
-
-    this.getProvidersList().forEach((providerId) => {
-      const provider = this.retrieveProvider(providerId)
-      console.log("Loaded provider ", providerId)
-      const widgets = provider.getWidgets()
-      console.log("Recieved widgets: ", widgets)
-      widgetsAppInstance.registerWidgets(widgets)
-    })
-
-    console.log("Widgets before: ", widgetsAppInstance.getWidgets("settings.marketplaces.list.before"))
-    console.log("Widgets after: ", widgetsAppInstance.getWidgets("settings.marketplaces.list.after"))
   }
 
   retrieveProvider(providerId: string): IMarketplaceProvider {

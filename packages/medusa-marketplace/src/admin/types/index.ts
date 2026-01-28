@@ -1,4 +1,4 @@
-import type { MarketplaceDTO } from "../../modules/marketplace/types"
+import type { MarketplaceDTO } from "../../types"
 
 export type MarketplaceResponse = {
   marketplaces: MarketplaceDTO[]

@@ -24,7 +24,8 @@
   ],
   "scripts": {
     "build": "tsup",
-    "watch": "tsup --watch"
+    "watch": "tsup --watch",
+    "dev": "yarn build && yalc publish"
   },
   "devDependencies": {
     "tsup": "^8.5.1",
