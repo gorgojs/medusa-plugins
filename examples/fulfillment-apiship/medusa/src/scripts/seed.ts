@@ -181,40 +181,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
   await createShippingOptionsWorkflow(container).run({
     input: [
       {
-        name: "Standard Shipping",
-        price_type: "flat",
-        provider_id: "apiship_apiship",
-        service_zone_id: fulfillmentSet.service_zones[0].id,
-        shipping_profile_id: shippingProfile.id,
-        type: {
-          label: "Standard",
-          description: "Ship in 2-3 days.",
-          code: "standard",
-        },
-        prices: [
-          {
-            currency_code: "rub",
-            amount: 100,
-          },
-          {
-            region_id: region.id,
-            amount: 100,
-          },
-        ],
-        rules: [
-          {
-            attribute: "enabled_in_store",
-            value: "true",
-            operator: "eq",
-          },
-          {
-            attribute: "is_return",
-            value: "false",
-            operator: "eq",
-          },
-        ],
-      },
-      {
         name: "By courier",
         price_type: "calculated",
         provider_id: "apiship_apiship",
@@ -223,7 +189,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         type_id: apishipShippingOptionType[0].id,
         data: {
           id: "apiship_doortodoor",
-          name: "От двери до двери",
+          name: "From door to door",
           deliveryType: 1,
           pickupType: 1,
         },
@@ -241,7 +207,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         ],
       },
       {
-        name: "By courier",
+        name: "By courier (from pickup point)",
         price_type: "calculated",
         provider_id: "apiship_apiship",
         service_zone_id: fulfillmentSet.service_zones[0].id,
@@ -249,7 +215,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         type_id: apishipShippingOptionType[0].id,
         data: {
           id: "apiship_pointtodoor",
-          name: "От ПВЗ до двери",
+          name: "From pickup point to door",
           deliveryType: 1,
           pickupType: 2,
         },
@@ -275,7 +241,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         type_id: apishipShippingOptionType[0].id,
         data: {
           id: "apiship_doortopoint",
-          name: "От двери до ПВЗ",
+          name: "From door to pickup point",
           deliveryType: 2,
           pickupType: 1,
         },
@@ -293,7 +259,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         ],
       },
       {
-        name: "To the pickup point",
+        name: "To the pickup point (from pickup point)",
         price_type: "calculated",
         provider_id: "apiship_apiship",
         service_zone_id: fulfillmentSet.service_zones[0].id,
@@ -301,7 +267,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         type_id: apishipShippingOptionType[0].id,
         data: {
           id: "apiship_pointtopoint",
-          name: "От ПВЗ до ПВЗ",
+          name: "From pickup point to pickup point",
           deliveryType: 2,
           pickupType: 2,
         },

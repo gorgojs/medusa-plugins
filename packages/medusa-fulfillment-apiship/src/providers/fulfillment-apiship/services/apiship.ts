@@ -15,29 +15,29 @@ class ApishipService extends ApishipBase {
         id: "apiship_doortodoor",
         deliveryType: 1,
         pickupType: 1,
-        name: "От двери до двери",
+        name: "From door to door",
       },
       {
         id: "apiship_doortopoint",
         deliveryType: 2,
         pickupType: 1,
-        name: "От двери до ПВЗ",
+        name: "From door to pickup point",
       },
       {
         id: "apiship_pointtodoor",
         deliveryType: 1,
         pickupType: 2,
-        name: "От ПВЗ до двери",
+        name: "From pickup point to door",
       },
       {
         id: "apiship_pointtopoint",
         deliveryType: 2,
         pickupType: 2,
-        name: "От ПВЗ до ПВЗ",
+        name: "From pickup point to pickup point",
       },
       {
         id: "apiship_return",
-        name: "Apiship Fulfillment (Return)",
+        name: "Return",
         is_return: true,
       }
     ]
