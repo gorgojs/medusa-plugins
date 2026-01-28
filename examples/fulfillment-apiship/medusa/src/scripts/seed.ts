@@ -12,6 +12,7 @@ import {
   createRegionsWorkflow,
   createSalesChannelsWorkflow,
   createShippingOptionsWorkflow,
+  createShippingOptionTypesWorkflow,
   createShippingProfilesWorkflow,
   createStockLocationsWorkflow,
   createTaxRegionsWorkflow,
@@ -165,6 +166,18 @@ export default async function seedDemoData({ container }: ExecArgs) {
     },
   });
 
+  const { result: apishipShippingOptionType } = await createShippingOptionTypesWorkflow(container).run({
+    input: {
+      shipping_option_types: [
+        {
+          label: "ApiShip",
+          code: "apiship",
+          description: "ApiShip delivery"
+        }
+      ]
+    }
+  })
+
   await createShippingOptionsWorkflow(container).run({
     input: [
       {
@@ -202,16 +215,12 @@ export default async function seedDemoData({ container }: ExecArgs) {
         ],
       },
       {
-        name: "От двери до двери (ApiShip)",
+        name: "By courier",
         price_type: "calculated",
         provider_id: "apiship_apiship",
         service_zone_id: fulfillmentSet.service_zones[0].id,
         shipping_profile_id: shippingProfile.id,
-        type: {
-          label: "Standard",
-          description: "Ship in 2-3 days.",
-          code: "standard",
-        },
+        type_id: apishipShippingOptionType[0].id,
         data: {
           id: "apiship_doortodoor",
           name: "От двери до двери",
@@ -232,16 +241,12 @@ export default async function seedDemoData({ container }: ExecArgs) {
         ],
       },
       {
-        name: "От ПВЗ до двери (ApiShip)",
+        name: "By courier",
         price_type: "calculated",
         provider_id: "apiship_apiship",
         service_zone_id: fulfillmentSet.service_zones[0].id,
         shipping_profile_id: shippingProfile.id,
-        type: {
-          label: "Standard",
-          description: "Ship in 2-3 days.",
-          code: "standard",
-        },
+        type_id: apishipShippingOptionType[0].id,
         data: {
           id: "apiship_pointtodoor",
           name: "От ПВЗ до двери",
@@ -251,7 +256,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         rules: [
           {
             attribute: "enabled_in_store",
-            value: "true",
+            value: "false",
             operator: "eq",
           },
           {
@@ -262,16 +267,12 @@ export default async function seedDemoData({ container }: ExecArgs) {
         ],
       },
       {
-        name: "От двери до ПВЗ (ApiShip)",
+        name: "To the pickup point",
         price_type: "calculated",
         provider_id: "apiship_apiship",
         service_zone_id: fulfillmentSet.service_zones[0].id,
         shipping_profile_id: shippingProfile.id,
-        type: {
-          label: "Standard",
-          description: "Ship in 2-3 days.",
-          code: "standard",
-        },
+        type_id: apishipShippingOptionType[0].id,
         data: {
           id: "apiship_doortopoint",
           name: "От двери до ПВЗ",
@@ -292,16 +293,12 @@ export default async function seedDemoData({ container }: ExecArgs) {
         ],
       },
       {
-        name: "От ПВЗ до ПВЗ (ApiShip)",
+        name: "To the pickup point",
         price_type: "calculated",
         provider_id: "apiship_apiship",
         service_zone_id: fulfillmentSet.service_zones[0].id,
         shipping_profile_id: shippingProfile.id,
-        type: {
-          label: "Standard",
-          description: "Ship in 2-3 days.",
-          code: "standard",
-        },
+        type_id: apishipShippingOptionType[0].id,
         data: {
           id: "apiship_pointtopoint",
           name: "От ПВЗ до ПВЗ",
@@ -311,7 +308,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         rules: [
           {
             attribute: "enabled_in_store",
-            value: "true",
+            value: "false",
             operator: "eq",
           },
           {
