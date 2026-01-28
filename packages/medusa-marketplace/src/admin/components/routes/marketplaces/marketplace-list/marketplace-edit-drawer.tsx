@@ -8,17 +8,17 @@ type Marketplace = {
   provider_id: string
   credentials: Record<string, unknown>
   settings: Record<string, unknown>
-  is_active: boolean
+  is_enabled: boolean
 }
 
 const editMarketplaceSchema = z.object({
   provider_id: z.string().trim().min(1, "Min 1 chars").max(120, "Max 120 chars"),
-  is_active: z.boolean(),
+  is_enabled: z.boolean(),
 })
 
 type EditMarketplaceFormValues = {
   provider_id: string
-  is_active: boolean
+  is_enabled: boolean
 }
 
 const zodFieldErrors = <T extends Record<string, any>>(error: z.ZodError<T>) => {
@@ -39,7 +39,7 @@ export const MarketplaceEditDrawer = ({
 
   const [values, setValues] = useState<EditMarketplaceFormValues>({
     provider_id: marketplace.provider_id,
-    is_active: Boolean(marketplace.is_active),
+    is_enabled: Boolean(marketplace.is_enabled),
   })
 
   const [touched, setTouched] = useState<{ provider_id: boolean }>({
@@ -54,7 +54,7 @@ export const MarketplaceEditDrawer = ({
 
   const isDirty =
     values.provider_id.trim() !== marketplace.provider_id.trim() ||
-    values.is_active !== Boolean(marketplace.is_active)
+    values.is_enabled !== Boolean(marketplace.is_enabled)
 
   const canSave = parsed.success && isDirty
 
@@ -71,7 +71,7 @@ export const MarketplaceEditDrawer = ({
       method: "POST",
       body: {
         provider_id: values.provider_id.trim(),
-        is_active: values.is_active,
+        is_enabled: values.is_enabled,
         credentials: marketplace.credentials ?? {},
         settings: marketplace.settings ?? {},
       },
@@ -88,7 +88,7 @@ export const MarketplaceEditDrawer = ({
     setErrors({})
     setValues({
       provider_id: marketplace.provider_id,
-      is_active: Boolean(marketplace.is_active),
+      is_enabled: Boolean(marketplace.is_enabled),
     })
   }
 
@@ -100,7 +100,7 @@ export const MarketplaceEditDrawer = ({
         if (next) {
           setValues({
             provider_id: marketplace.provider_id,
-            is_active: Boolean(marketplace.is_active),
+            is_enabled : Boolean(marketplace.is_enabled),
           })
           setTouched({ provider_id: false })
           setErrors({})
@@ -156,12 +156,12 @@ export const MarketplaceEditDrawer = ({
                 <Text size="small" className="text-ui-fg-subtle">
                   Active
                 </Text>
-                <Text size="small">{values.is_active ? "Enabled" : "Disabled"}</Text>
+                <Text size="small">{values.is_enabled ? "Enabled" : "Disabled"}</Text>
               </div>
 
               <Switch
-                checked={values.is_active}
-                onCheckedChange={(v) => setValues({ ...values, is_active: Boolean(v) })}
+                checked={values.is_enabled}
+                onCheckedChange={(v) => setValues({ ...values, is_enabled: Boolean(v) })}
               />
             </div>
           </div>

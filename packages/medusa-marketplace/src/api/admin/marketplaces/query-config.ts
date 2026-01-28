@@ -4,7 +4,7 @@ export const defaultAdminMarketplaceFields = [
   "provider_id",
   "credentials",
   "settings",
-  "is_active"
+  "is_enabled"
 ]
 
 export const retrieveMarketplaceQueryConfig = {

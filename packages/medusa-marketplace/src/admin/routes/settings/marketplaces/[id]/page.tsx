@@ -9,7 +9,7 @@ type Marketplace = {
   provider_id: string
   credentials: Record<string, unknown>
   settings: Record<string, unknown>
-  is_active: boolean
+  is_enabled: boolean
 }
 
 const MarketplaceDetail = () => {
@@ -36,8 +36,8 @@ const MarketplaceDetail = () => {
         </div>
 
         <div className="flex items-center gap-x-2">
-          <StatusBadge color={marketplace.is_active ? "green" : "red"}>
-            {marketplace.is_active ? "Active" : "Inactive"}
+          <StatusBadge color={marketplace.is_enabled ? "green" : "red"}>
+            {marketplace.is_enabled ? "Active" : "Inactive"}
           </StatusBadge>
 
           <MarketplaceEditDrawer

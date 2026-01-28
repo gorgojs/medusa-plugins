@@ -39,7 +39,7 @@ const AddMarketplacePage = () => {
             apiKey: ""
           },
           settings: {},
-          is_active: true
+          is_enabled: true
         }
       })
       setData(response)

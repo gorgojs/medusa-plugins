@@ -6,7 +6,7 @@ import { sdk } from "../../../../lib/sdk"
 
 const MarketplaceAddSchema = zod.object({
   provider_id: zod.string().min(1, "Provider ID is required"),
-  is_active: zod.boolean().default(true),
+  is_enabled: zod.boolean().default(true),
 })
 
 type MarketplaceAddValues = zod.infer<typeof MarketplaceAddSchema>
@@ -19,7 +19,7 @@ export const MarketplaceAddModal = ({
   closeModal: () => void
 }) => {
   const form = useForm<MarketplaceAddValues>({
-    defaultValues: { provider_id: "", is_active: true },
+    defaultValues: { provider_id: "", is_enabled: true },
     resolver: zodResolver(MarketplaceAddSchema),
     mode: "onSubmit",
   })
@@ -29,14 +29,14 @@ export const MarketplaceAddModal = ({
       method: "POST",
       body: {
         provider_id: values.provider_id.trim(),
-        is_active: values.is_active,
+        is_enabled: values.is_enabled,
         credentials: {},
         settings: {},
       },
     })
 
     // await onCreated()
-    form.reset({ provider_id: "", is_active: true })
+    form.reset({ provider_id: "", is_enabled: true })
     closeModal()
   })
 
@@ -74,13 +74,13 @@ export const MarketplaceAddModal = ({
                       Active
                     </Text>
                     <Text size="small">
-                      {form.watch("is_active") ? "Enabled" : "Disabled"}
+                      {form.watch("is_enabled") ? "Enabled" : "Disabled"}
                     </Text>
                   </div>
 
                   <Controller
                     control={form.control}
-                    name="is_active"
+                    name="is_enabled"
                     render={({ field }) => (
                       <Switch
                         checked={field.value}
@@ -100,7 +100,7 @@ export const MarketplaceAddModal = ({
                 variant="secondary"
                 type="button"
                 onClick={() => {
-                  form.reset({ provider_id: "", is_active: true })
+                  form.reset({ provider_id: "", is_enabled: true })
                   closeModal()
                 }}
               >

@@ -14,7 +14,7 @@ export type MarketplaceDTO = {
   provider_id: string
   credentials: MarketplaceCredentialsType
   settings: MarketplaceSettingsType
-  is_active: boolean
+  is_enabled: boolean
 }
 
 export type MarketplaceEventDTO = {

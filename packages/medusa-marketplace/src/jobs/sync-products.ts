@@ -14,7 +14,7 @@ export default async function (container: MedusaContainer) {
           apiKey: ""
         },
         settings: {},
-        is_active: true
+        is_enabled: true
       }
     }
   })

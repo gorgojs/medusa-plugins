@@ -8,7 +8,7 @@ const Marketplace = model.define("marketplace", {
   provider_id: model.text(),
   credentials: model.json().default({}),
   settings: model.json().default({}),
-  is_active: model.boolean().default(true)
+  is_enabled: model.boolean().default(true)
 })
 
 export default Marketplace
