@@ -1,4 +1,5 @@
 import { Logger } from "@medusajs/medusa"
+import { AwilixResolutionError } from "awilix"
 import {
   ExportProductsInput,
   ExportProductsOutput,
@@ -34,9 +35,9 @@ export default class MarketplaceProviderService {
 
   retrieveProvider(providerId: string): IMarketplaceProvider {
     try {
-      return this.dependencies[providerId] as IMarketplaceProvider
+      return this.dependencies[providerId as any] as IMarketplaceProvider
     } catch (err) {
-      if (err.name === "AwilixResolutionError") {
+      if (err instanceof AwilixResolutionError) {
         const errMessage = `
 Unable to retrieve the marketplace provider with id: ${providerId}
 Please make sure that the provider is registered in the container and it is configured correctly in your project configuration file.`
@@ -44,7 +45,7 @@ Please make sure that the provider is registered in the container and it is conf
         throw new Error(errMessage)
       }
 
-      const errMessage = `Unable to retrieve the marketplace provider with id: ${providerId}, the following error occurred: ${err.message}`
+      const errMessage = `Unable to retrieve the marketplace provider with id: ${providerId}, the following error occurred: ${err instanceof Error ? err.message : String(err)}`
       this.#logger.error(errMessage)
 
       throw new Error(errMessage)
@@ -101,7 +102,6 @@ Please make sure that the provider is registered in the container and it is conf
     return provider.mapToMarketplaceProducts(input)
   }
 
-  // async mapToProducts(
   async mapToMedusaProducts(
     providerId: string,
     input: MapToMedusaProductsInput

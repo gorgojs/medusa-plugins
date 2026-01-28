@@ -34,6 +34,9 @@
     "predev": "medusa plugin:publish",
     "prepublishOnly": "medusa plugin:build"
   },
+  "dependencies": {
+    "awilix": "^8.0.1"
+  },
   "devDependencies": {
     "@medusajs/admin-sdk": "^2.11.2",
     "@medusajs/cli": "^2.11.2",
