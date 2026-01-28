@@ -4,6 +4,7 @@ import {
   DataTablePaginationState,
   useDataTable,
   StatusBadge,
+  Badge 
 } from "@medusajs/ui"
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -54,6 +55,18 @@ export const MarketplaceListTable = ({
   })
 
   const columns = [
+    columnHelper.accessor("id",{
+      header: "ID",
+      cell: ({ getValue }) => {
+        const id = getValue() as string
+        
+        return (
+          <Badge size="xsmall">
+            {id}
+            </Badge>
+        )
+      },
+    }),
     columnHelper.accessor("title", { header: "Title" }),
     columnHelper.accessor("provider_id", { header: "Provider ID" }),
     columnHelper.accessor("is_active", {
