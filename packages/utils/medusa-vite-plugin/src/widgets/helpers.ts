@@ -7,6 +7,7 @@ export async function getWidgetFilesFromSources(
   return (
     await Promise.all(
       Array.from(sources).map(async (source) => crawl(
+        // TODO: test on windows and production build
         `./node_modules/${source}/.medusa/server/src/gorgo/widgets`
       ))
     )
