@@ -1,5 +1,5 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
-import gorgoPluginsInject from '@gorgo/medusa-vite-plugin'
+import gorgoPluginsInject from '@gorgo/medusa-marketplace/admin-vite-plugin'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 

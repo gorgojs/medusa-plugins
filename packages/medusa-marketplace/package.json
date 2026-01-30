@@ -35,6 +35,7 @@
     "prepublishOnly": "medusa plugin:build"
   },
   "devDependencies": {
+    "@gorgo/medusa-vite-plugin": "file:.yalc/@gorgo/medusa-vite-plugin",
     "@medusajs/admin-sdk": "^2.11.2",
     "@medusajs/cli": "^2.11.2",
     "@medusajs/framework": "^2.11.2",
