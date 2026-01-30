@@ -70,12 +70,8 @@ async function parseFile(
   const code = await fs.readFile(file, "utf-8")
   let ast: ParseResult<File>
 
-  console.log("File: ", file)
-  // console.log("Code: ", code)
-
   try {
     ast = parse(code, getParserOptions(file))
-    // console.log("Parsed code:", ast)
   } catch (e) {
     console.log(`An error occurred while parsing the file.`, {
       file,
@@ -88,7 +84,6 @@ async function parseFile(
 
   try {
     fileHasDefaultExport = await hasDefaultExport(ast)
-    // console.log("fileHasDefaultEexport:", fileHasDefaultExport)
   } catch (e) {
     console.log(`An error occurred while checking for a default export.`, {
       file,
@@ -117,6 +112,8 @@ async function parseFile(
     console.log(`'zone' property is missing from the widget config.`, { file })
     return null
   }
+
+  console.log("Widget loaded: ", file)
 
   const import_ = generateImport(file, index)
   const widget = generateWidget(zone, index)
@@ -172,14 +169,12 @@ async function getWidgetZone(
       if (zoneFound) {
         return
       }
-      // console.log("PATH NODE: ", path.node)
 
       if (
         path.node.id.type === "Identifier" &&
         path.node.id.name === "config" &&
-        path.node.init?.type === "ObjectExpression" //"CallExpression"
+        path.node.init?.type === "ObjectExpression"
       ) {
-        // const arg = path.node.init.arguments[0]
         const arg = path.node.init
         if (arg?.type === "ObjectExpression") {
           const zoneProperty = arg.properties.find(
@@ -219,7 +214,31 @@ async function getWidgetZone(
           }
         }
       }
-    },
+    }, AssignmentExpression(path) {
+      if (zoneFound) {
+        return
+      }
+
+      const left = path.node.left
+      if (
+        left.type === "MemberExpression" &&
+        left.object.type === "Identifier" &&
+        left.object.name === "exports" &&
+        left.property.type === "Identifier" &&
+        left.property.name === "config"
+      ) {
+        const right = path.node.right
+        if (right.type === "ObjectExpression") {
+          const zoneProperty = right.properties.find(
+            (p: any) => p.type === "ObjectProperty" && p.key.name === "zone"
+          )
+          if (zoneProperty?.type === "ObjectProperty") {
+            extractZoneValues(zoneProperty.value, zones, file)
+            zoneFound = true
+          }
+        }
+      }
+    }
   })
 
   if (!zoneFound) {

@@ -38,10 +38,6 @@ export const gorgoVitePlugin: GorgoVitePlugin = (options) => {
     return `
       // Auto-generated index file for Medusa Admin UI extensions
     ${widgetModule.code}
-    
-    const plugin = {
-      widgetModule
-    }
 
     export default widgetModule
     `
@@ -55,14 +51,9 @@ export const gorgoVitePlugin: GorgoVitePlugin = (options) => {
   return {
     name: "@gorgo/medusa-vite-plugin",
     async buildStart() {
-      const sources = options?.sources ?? []
       console.log("Using @gorgo/medusa-vite-plugin")
-      console.log(sources)
+      const sources = options?.sources ?? []  
       const fiels =  await getWidgetFilesFromSources(_sources)
-      console.log("Fiels:", fiels)
-      console.log("CWD:", process.cwd())
-
-      console.log("Mode:", mode)
 
       switch (mode) {
         case Mode.PLUGIN: {

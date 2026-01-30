@@ -10,8 +10,8 @@ const MarketplaceTestWidget = () => {
   )
 }
 
-const config = {
-  zone: "settings.marketplaces.list.after",
+export const config = {
+  zone: ["settings.marketplaces.list.after", "settings.marketplaces.list.before",]
 }
 
 export default MarketplaceTestWidget

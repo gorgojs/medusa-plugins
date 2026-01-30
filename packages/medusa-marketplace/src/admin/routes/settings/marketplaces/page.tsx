@@ -6,13 +6,13 @@ import {
   MarketplaceListTable,
 } from "../../../components/routes/marketplaces"
 import { SingleColumnLayout } from "../../../components/layout"
-import AppExtension from "../../../components/layout/extension"
+import { WidgetProvider } from "../../../providers/widget-provider"
 
 const MarketplaceList = () => {
   const [stateModal, openModal, closeModal] = useToggleState()
 
   return (
-    <AppExtension>
+    <WidgetProvider>
       <SingleColumnLayout widgetsZone={{
           before: "settings.marketplaces.list.before",
           after: "settings.marketplaces.list.after"
@@ -28,7 +28,7 @@ const MarketplaceList = () => {
           />
         </Container>
       </SingleColumnLayout>
-    </AppExtension>
+    </WidgetProvider>
   )
 }
 

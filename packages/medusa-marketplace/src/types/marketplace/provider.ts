@@ -1,8 +1,15 @@
 import { MedusaContainer } from "@medusajs/framework"
 
-declare const MARKETPLACE_INJECTION_ZONES: readonly ["settings.marketplaces.list.before", "settings.marketplaces.list.after"]
+const MARKETPLACE_INJECTION_ZONES = ["settings.marketplaces.list.before", "settings.marketplaces.list.after"]
 
 export type MarketplaceInjectionZone = (typeof MARKETPLACE_INJECTION_ZONES)[number]
+
+/**
+ * Validates that the provided zone is a valid injection zone for a widget.
+ */
+export function isValidInjectionZone(zone: string) {
+  return MARKETPLACE_INJECTION_ZONES.includes(zone)
+}
 
 export type WidgetConfig = {
   Component: () => JSX.Element;

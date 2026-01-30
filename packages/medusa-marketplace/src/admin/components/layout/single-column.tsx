@@ -1,22 +1,11 @@
-import { ComponentType, ReactNode } from "react"
-import { useExtension } from "../extension-provider"
+import { ReactNode } from "react"
 import { MarketplaceInjectionZone } from "../../../types"
-
-// export interface WidgetProps {
-//   before: ComponentType<any>[]
-//   after: ComponentType<any>[]
-// }
+import { useWidgets } from "../../providers/widget-provider"
 
 export interface WidgetProps {
   before: MarketplaceInjectionZone
   after: MarketplaceInjectionZone
 }
-
-// export interface PageProps<TData> {
-//   children: ReactNode
-//   widgets: WidgetProps
-//   data?: TData
-// }
 
 export interface PageProps<TData> {
   children: ReactNode
@@ -31,21 +20,16 @@ export const SingleColumnLayout = <TData,>({
 }: PageProps<TData>) => {
   const { before, after } = widgetsZone
   const widgetProps = { data }
-  const { getWidgets } = useExtension()
-  const widgetsBefore = getWidgets(before)
-  const widgetsAafter = getWidgets(after)
-
-  console.log("Widgets before: ", widgetsBefore)
-
+  const { getWidgets } = useWidgets()
 
   return (
     <div className="flex flex-col gap-y-3">
       
-      {widgetsBefore.map((Component, i) => {
+      {getWidgets(before).map((Component, i) => {
         return <Component {...widgetProps} key={i} />
       })}
       {children}
-      {widgetsAafter.map((Component, i) => {
+      {getWidgets(after).map((Component, i) => {
         return <Component {...widgetProps} key={i} />
       })}
     </div>
