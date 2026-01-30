@@ -1,4 +1,4 @@
-import { Container, Heading, Text, StatusBadge, Button } from "@medusajs/ui"
+import { Heading, Badge, StatusBadge, Button } from "@medusajs/ui"
 import {
   LoaderFunctionArgs,
   UIMatch,
@@ -11,6 +11,12 @@ import { useLocation } from "react-router-dom"
 import { MarketplaceActionMenu } from "../../../../components/routes/marketplaces/marketplace-list/marketplace-action-menu"
 import { MarketplaceEditDrawer } from "../../../../components/routes/marketplaces/marketplace-list/marketplace-edit-drawer"
 import type { AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/types"
+import { Pencil } from "@medusajs/icons"
+import { Container } from "../../../../components/common/container"
+import { Header } from "../../../../components/common/header"
+import { SectionRow } from "../../../../components/common/section-row"
+import { TwoColumnLayout } from "../../../../components/layout"
+import { JsonViewSection } from "../../../../components/common/json-view-section"
 
 const Breadcrumb = (
   props: UIMatch<AdminMarketplaceResponse>
@@ -64,52 +70,122 @@ const MarketplaceDetail = () => {
 
 
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <div>
-          <Text size="small" className="text-ui-fg-subtle">
-            Marketplace title
-          </Text>
-          <Heading level="h1">{marketplace.title}</Heading>
+    <TwoColumnLayout
+firstCol={
+    <>
+      <Container>
+        <div className="px-6 py-4 flex items-center justify-between gap-x-4">
+          <Heading level="h1" className="truncate">
+            {marketplace.title || "Untitled"}
+          </Heading>
+
+          <div className="flex items-center gap-x-3">
+            <StatusBadge color={marketplace.is_active ? "green" : "red"}>
+              {marketplace.is_active ? "Active" : "Inactive"}
+            </StatusBadge>
+
+            <Button
+              size="small"
+              variant="secondary"
+              disabled={syncProducts.isPending}
+              onClick={(event) => {
+                event.stopPropagation()
+                syncProducts.mutate()
+              }}
+            >
+              Sync products
+            </Button>
+
+            <MarketplaceActionMenu
+              marketplace={marketplace}
+              onEdit={() => setEditOpen(true)}
+              redirectOnDelete
+            />
+          </div>
         </div>
 
-        <div className="mt-2 flex flex-col gap-y-1">
-          <Text size="small" className="text-ui-fg-subtle">
-            Provider ID
-          </Text>
-          <Heading level="h1">{marketplace.provider_id}</Heading>
-        </div>
+        <SectionRow
+          title="Provider ID"
+          value={
+            <Badge size="xsmall" color="grey">
+              {marketplace.provider_id || "-"}
+            </Badge>
+          }
+        />
 
-        <div className="flex items-center gap-x-2">
-          <StatusBadge color={marketplace.is_active ? "green" : "red"}>
-            {marketplace.is_active ? "Active" : "Inactive"}
-          </StatusBadge>
+        <SectionRow
+          title="Sales channel"
+          value={
+            <Badge size="xsmall" color="grey">
+              {marketplace.sales_channel_name || "Default channel"}
+            </Badge>
+          }
+        />
+      </Container>
 
-          <Button
-            size="small"
-            variant="secondary"
-            disabled={syncProducts.isPending}
-            onClick={(event) => {
-              event.stopPropagation()
-              syncProducts.mutate()
-            }}
-          >
-            Sync products
-          </Button>
+      <Container>
+  <Header
+    title="Credentials"
+    actions={[
+      {
+        type: "action-menu",
+        props: {
+          groups: [
+            {
+              actions: [
+                {
+                  icon: <Pencil />,
+                  label: "Edit",
+                  onClick: () => {
+                    setEditOpen(true)
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ]}
+  />
 
-          <MarketplaceActionMenu
-            marketplace={marketplace}
-            onEdit={() => setEditOpen(true)}
-            redirectOnDelete
-          />
-          <MarketplaceEditDrawer
-            response={{ marketplace }}
-            open={editOpen}
-            setOpen={setEditOpen}
-          />
-        </div>
-      </div>
-    </Container>
+  <SectionRow
+    title="API key"
+    value={
+      <Badge size="xsmall" color="grey">
+        {marketplace.credentials?.api_key || "Not set"}
+      </Badge>
+    }
+  />
+
+  <SectionRow
+    title="Business ID"
+    value={ marketplace.credentials?.business_id || "-" }
+  />
+</Container>
+
+<Container>   <JsonViewSection data={marketplace} /></Container>
+
+      <MarketplaceEditDrawer
+        response={{ marketplace }}
+        open={editOpen}
+        setOpen={setEditOpen}
+      />
+    </>
+  }
+      secondCol={
+        <>
+          <Container>
+            <Header
+              title="Events"
+            />
+            <SectionRow
+              title="Events"
+              value={marketplace.last_event || "-"}
+            />
+          </Container>
+        </>
+      }
+    />
   )
 }
 
