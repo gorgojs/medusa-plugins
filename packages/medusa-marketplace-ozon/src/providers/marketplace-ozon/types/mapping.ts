@@ -45,16 +45,18 @@ export type FieldMap = {
   optionRules?: OptionRules
 }
 
-export type MappingSchema = {
-  // id?: string
-  // version?: string
-  // direction?: 'MEDUSA_TO_OZON' | 'OZON_TO_MEDUSA'
+export type BaseMappingSchema = {
+  fields: FieldMap[]
+}
+
+export type ImportMappingSchema = BaseMappingSchema
+
+export type ExportMappingSchema = BaseMappingSchema & {
   ozon_category: {
     description_category_id: number
     type_id: number
-  },
-  medusa_categories: string[],
-  fields: FieldMap[]
+  }
+  medusa_categories: string[]
 }
 
 export type OptionRule = {

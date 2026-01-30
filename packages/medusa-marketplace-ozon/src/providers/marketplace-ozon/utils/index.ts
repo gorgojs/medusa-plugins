@@ -1,4 +1,4 @@
-import { FieldMap, MappingSchema, MapCtx, TRANSFORMS, OptionRules } from "../types"
+import { FieldMap, BaseMappingSchema, MapCtx, TRANSFORMS, OptionRules } from "../types"
 
 export function getByPath(obj: any, path: string): unknown {
   if (!path) return obj
@@ -173,7 +173,7 @@ export function applyField<S>(src: S, dst: any, rule: FieldMap, ctx: MapCtx) {
   }
 }
 
-export function mapObject<S, T>(source: S, config: MappingSchema): T {
+export function mapObject<S, T>(source: S, config: BaseMappingSchema): T {
   const result: any = {}
   const ctx: MapCtx = { source }
 

@@ -24,7 +24,7 @@ import {
   importMarketplaceProductsWorkflow,
   exportMarketplaceProductsWorkflow
 } from "../../../workflows/provider"
-import { MappingSchema } from "../types"
+import { ImportMappingSchema, ExportMappingSchema } from "../types"
 import { mapObject } from "../utils"
 
 export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
@@ -300,13 +300,6 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
   async mapToMedusaProducts(input: MapToMedusaProductsStepInput): Promise<MapToMedusaProductsStepOutput[]> {
     const settings = {
       "marketplaceToMedusaMappingSchema": {
-        "ozon_category": {
-          "description_category_id": 200001517,
-          "type_id": 93228
-        },
-        "medusa_categories": [
-          "pcat_01KCP70X23QSZN9QS0CJCF9R3R"
-        ],
         "fields": [
           {
             "from": "id",
