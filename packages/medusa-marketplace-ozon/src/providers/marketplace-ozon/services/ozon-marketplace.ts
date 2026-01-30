@@ -1,5 +1,6 @@
 import { AbstractMarketplaceProvider } from "@gorgo/medusa-marketplace/modules/marketplace/utils"
-import { V3ImportProductsRequestItem } from "../../../lib/ozon-seller-api"
+import { V3ImportProductsRequestItem, Productv3GetProductListRequest } from "../../../lib/ozon-seller-api"
+import { productApi, withAuth } from "../../../lib/ozon-client"
 import {
   ProductDTO,
 } from "@medusajs/framework/types"
@@ -11,6 +12,8 @@ import {
   GetProductsOutput,
   GetMarketplaceProductsInput,
   GetMarkletplaceProductsOutput,
+  MapToMedusaProductsStepInput,
+  MapToMedusaProductsStepOutput,
   ImportProductsInput,
   ImportProductsOutput,
   MapProductsInput,
@@ -83,30 +86,28 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
 
     const { data: products } = await query.graph({
       entity: "product",
-      fields: ["id", "variants.id"],
+      fields: [
+        "*",
+        "categories.id",
+        "images.*",
+        "options.*",
+        "options.values.*",
+        "metadata.*",
+        "variants.*",
+        "variants.metadata.*",
+        "variants.images.*",
+        "variants.options.*",
+        "variants.inventory_items.*",
+        "variants.prices.*",
+      ],
       filters: {
         id: input.ids?.length ? input.ids : undefined,
-        status: "published"
+        status: "published",
       },
     })
 
-    const offerIds: string[] = products.flatMap((p) => (p.variants ?? []).map((v) => v.id))
-
-    return offerIds
+    return products
   }
-
-  // getMarketplaceToMedusaMappingSchema(container?: MedusaContainer): MappingSchema {
-  //   const marketplaceToMedusaMappingSchema = {
-  //     "fields": [
-  //       {
-  //         "from": "nmId",
-  //         "to": "metadata.ozon_nmID"
-  //       },
-  //       ...
-  //     ]
-  //   }
-  //   return marketplaceToMedusaMappingSchema
-  // }
 
   async mapToMarketplaceProducts(data, container?: MedusaContainer) {
     // This is a mock implementation. Replace with actual mapping logic.
@@ -296,12 +297,107 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
     return marketplaceProducts
   }
 
+  async mapToMedusaProducts(input: MapToMedusaProductsStepInput): Promise<MapToMedusaProductsStepOutput[]> {
+    const settings = {
+      "marketplaceToMedusaMappingSchema": {
+        "ozon_category": {
+          "description_category_id": 200001517,
+          "type_id": 93228
+        },
+        "medusa_categories": [
+          "pcat_01KCP70X23QSZN9QS0CJCF9R3R"
+        ],
+        "fields": [
+          {
+            "from": "id",
+            "to": "variant.metadata.ozon_product_id",
+            "default": [],
+          },
+          {
+            "from": "type_id",
+            "to": "product.metadata.ozon_type_id",
+            "default": [],
+          },
+          {
+            "from": "barcodes",
+            "to": "variant.metadata.ozon_barcodes",
+            "default": [],
+          },
+        ]
+      }
+    }
 
-  async mapToMedusaProducts(marketplaceProducts: V3ImportProductsRequestItem[]): Promise<ProductDTO[]> {
-    // This is a mock implementation. Replace with actual mapping logic.
-    const products = [] as ProductDTO[]
-    // Save Ozon ids to product/product.variant metadata
+    const schema = settings.marketplaceToMedusaMappingSchema
+    const products = input.marketplaceProducts
+    const limit = 100
+
+    if (!products.length) return []
+
+    const variantByOfferId = new Map<string, { product: any; variant: any }>()
+    for (const product of products as any[]) {
+      for (const variant of product.variants ?? []) {
+        variantByOfferId.set(variant.id, { product, variant })
+      }
+    }
+
+    const offerIdsToFetch = Array.from(variantByOfferId.keys())
+    if (!offerIdsToFetch.length) {
+      return products as any
+    }
+
+    let last_id = ""
+    let fetched = 0
+
+    do {
+      const ozonAttributesResponse = await productApi.productAPIGetProductAttributesV4(
+        withAuth(input.marketplace.credentials, {
+          productv4GetProductAttributesV4Request: {
+            filter: {
+              offer_id: offerIdsToFetch,
+              visibility: "ALL",
+            },
+            last_id,
+            limit,
+          },
+        })
+      )
+
+      const ozonCards = ozonAttributesResponse.data?.result ?? []
+      last_id = (ozonAttributesResponse.data?.last_id as string) ?? ""
+      fetched = ozonCards.length
+
+      if (!ozonCards.length) continue
+
+      for (const ozonCard of ozonCards as any[]) {
+        const offerId = String(ozonCard?.offer_id ?? "")
+        if (!offerId) continue
+
+        const target = variantByOfferId.get(offerId)
+        if (!target) continue
+
+        const mapped = mapObject(ozonCard, schema) as any
+
+        const mappedVariantMetadata = mapped?.variant?.metadata ?? null
+        const mappedProductMetadata = mapped?.product?.metadata ?? null
+
+        if (mappedVariantMetadata) {
+          target.variant.metadata = {
+            ...(target.variant.metadata ?? {}),
+            ...mappedVariantMetadata,
+          }
+        }
+
+        if (mappedProductMetadata) {
+          target.product.metadata = {
+            ...(target.product.metadata ?? {}),
+            ...mappedProductMetadata,
+          }
+        }
+      }
+    } while (fetched === limit && last_id)
+
     return products
+
   }
 
 }
