@@ -1,4 +1,4 @@
-import { Button, FocusModal, Label, Switch, Text, Select, Input } from "@medusajs/ui"
+import { Button, FocusModal, Label, Switch, Text, Select, Input, Heading } from "@medusajs/ui"
 import { Controller, useForm } from "react-hook-form"
 import * as zod from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -88,7 +88,12 @@ export const MarketplaceAddModal = ({
           <FocusModal.Body className="flex size-full flex-col overflow-auto">
             <div className="mx-auto flex w-full max-w-lg flex-col gap-y-6 px-2 py-8">
               <div className="flex flex-col gap-y-4">
-                <Text>Add marketplace connection</Text>
+                <div className="flex flex-col gap-y-1">
+                  <Heading>Add marketplace connection</Heading>
+                  <Text size="small" className="text-ui-fg-subtle">
+                    Create a new marketplace connection to sell your products on.
+                  </Text>
+                </div>
 
                 <div className="flex flex-col gap-y-2">
                   <Label htmlFor="title" size="small">
@@ -98,7 +103,7 @@ export const MarketplaceAddModal = ({
                   <Input
                     id="title"
                     autoComplete="off"
-                    placeholder="Wildberries (Test)"
+                    placeholder="Ozon"
                     {...form.register("title")}
                   />
 
@@ -108,64 +113,73 @@ export const MarketplaceAddModal = ({
                     </Text>
                   )}
                 </div>
+                
+                <div className="flex gap-x-4">
+                  <div className="flex w-1/2 flex-col gap-y-2">
+                    <Label htmlFor="provider_id" size="small">
+                      Provider
+                    </Label>
 
+                    <Controller
+                      control={form.control}
+                      name="provider_id"
+                      render={({ field }) => (
+                        <Select
+                          value={field.value || undefined}
+                          onValueChange={(v) => field.onChange(v)}
+                          disabled={isProvidersLoading || providers.length === 0}
+                        >
+                          <Select.Trigger>
+                            <Select.Value />
+                          </Select.Trigger>
 
-                { }
-                <div className="flex flex-col gap-y-2">
-                  <Label htmlFor="provider_id" size="small">
-                    Provider
-                  </Label>
+                          <Select.Content>
+                            {providers.map((provider: string) => (
+                              <Select.Item key={provider} value={provider}>
+                                {provider}
+                              </Select.Item>
+                            ))}
+                          </Select.Content>
+                        </Select>
+                      )}
+                    />
 
-                  <Controller
-                    control={form.control}
-                    name="provider_id"
-                    render={({ field }) => (
-                      <Select
-                        value={field.value || undefined}
-                        onValueChange={(v) => field.onChange(v)}
-                        disabled={isProvidersLoading || providers.length === 0}
-                      >
-                        <Select.Trigger>
-                          <Select.Value
-                            placeholder={
-                              isProvidersLoading
-                                ? "Loading providers..."
-                                : providers.length
-                                  ? "Select provider..."
-                                  : "No providers available"
-                            }
-                          />
-                        </Select.Trigger>
-
-                        <Select.Content>
-                          {providers.map((providers: string) => (
-                            <Select.Item key={providers} value={providers}>
-                              {providers}
-                            </Select.Item>
-                          ))}
-                        </Select.Content>
-                      </Select>
+                    {form.formState.errors.provider_id?.message && (
+                      <Text size="small" className="text-ui-fg-error">
+                        {form.formState.errors.provider_id.message}
+                      </Text>
                     )}
-                  />
+                  </div>
 
-                  {form.formState.errors.provider_id?.message && (
-                    <Text size="small" className="text-ui-fg-error">
-                      {form.formState.errors.provider_id.message}
-                    </Text>
-                  )}
+                  <div className="flex w-1/2 flex-col gap-y-2">
+                    <Label htmlFor="sales_channel_id" size="small">
+                      Sales channel
+                    </Label>
+
+                    <Select defaultValue={undefined}>
+                      <Select.Trigger>
+                        <Select.Value />
+                      </Select.Trigger>
+
+                      <Select.Content>
+                        <Select.Item value="saleschanel-one">saleschanel-one</Select.Item>
+                        <Select.Item value="saleschanel-one">saleschanel-one</Select.Item>
+                      </Select.Content>
+                    </Select>
+                  </div>
                 </div>
 
                 { }
                 <div className="flex items-center justify-between">
-                  <div className="flex flex-col">
-                    <Text size="small" className="text-ui-fg-subtle">
-                      Active
+                  <div className="flex flex-col gap-y-1">
+                    <Text size="small" weight="plus">
+                      Enabled
                     </Text>
-                    <Text size="small">
-                      {form.watch("is_active") ? "Enabled" : "Disabled"}
+
+                    <Text size="small" className="text-ui-fg-subtle">
+                      Specify whether the marketplace is enabled.
                     </Text>
                   </div>
-
                   <Controller
                     control={form.control}
                     name="is_active"
@@ -200,7 +214,7 @@ export const MarketplaceAddModal = ({
                 type="submit"
                 disabled={createMarketplace.isPending}
               >
-                {createMarketplace.isPending ? "Adding..." : "Add"}
+                Add
               </Button>
             </div>
           </FocusModal.Footer>
