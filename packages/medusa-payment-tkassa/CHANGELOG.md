@@ -1,5 +1,11 @@
 # @gorgo/medusa-payment-tkassa
 
+## 0.3.15
+
+### Patch Changes
+
+- Test on Medusa 2.13.1
+
 ## 0.3.14
 
 ### Patch Changes
