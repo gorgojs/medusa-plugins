@@ -27,7 +27,7 @@
     <img src="https://img.shields.io/badge/Medusa-^2.7.1-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Протестировано_с_Medusa-v2.12.5-green?logo=checkmarx" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Протестировано_с_Medusa-v2.13.1-green?logo=checkmarx" alt="Medusa" />
   </a>
 </p>
 
