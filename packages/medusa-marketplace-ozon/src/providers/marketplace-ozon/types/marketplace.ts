@@ -1,4 +1,4 @@
-import { MarketplaceCredentialsType } from  "@gorgo/medusa-marketplace/modules/marketplace/types"
+import { MarketplaceCredentialsType } from  "@gorgo/medusa-marketplace/types"
 
 export interface MarketplaceOzonCredentialsType extends MarketplaceCredentialsType {
   apiKey: string;

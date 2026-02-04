@@ -1,4 +1,5 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import { gorgoPluginsInject } from '@gorgo/medusa-marketplace/exports'
 import { resolve } from 'path'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
@@ -20,6 +21,28 @@ module.exports = defineConfig({
   },
   featureFlags: {
     backend_hmr: true
+  },
+  admin: {
+    vite: (config) => {
+      return {
+        ...config,
+        // Used only during testing, do not enable in production
+        plugins: [
+          gorgoPluginsInject({
+            sources: [
+              "@gorgo/medusa-marketplace",
+              "@gorgo/medusa-marketplace-ozon",
+            ],
+            pluginMode: true
+          }),
+        ],
+        optimizeDeps: {
+          exclude: [
+            "@gorgo/medusa-marketplace"
+          ]
+        },
+      }
+    },
   },
   plugins: [
     {

@@ -53,6 +53,7 @@
     "@openapitools/openapi-generator-cli": "^2.25.0",
     "@redocly/cli": "^2.11.1",
     "@swc/core": "^1.5.7",
+    "@types/lodash.debounce": "^4",
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.2.25",
@@ -78,6 +79,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "axios": "^1.13.2"
+    "axios": "^1.13.2",
+    "lodash.debounce": "^4.0.8"
   }
 }
