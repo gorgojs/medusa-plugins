@@ -62,5 +62,15 @@ export const adminMarketplaceRoutesMiddlewares: MiddlewareRoute[] = [
     middlewares: [
       validateAndTransformBody(AdminMarketplaceCreateEvents)
     ]
-  }
+  },
+  {
+    methods: ["GET"],
+    matcher: "/admin/marketplaces/events/:id",
+    middlewares: [
+      validateAndTransformQuery(
+        AdminMarketplaceGetEventsParams,
+        QueryConfig.retrieveEventQueryConfig
+      ),
+    ],
+  },
 ]
