@@ -9,12 +9,11 @@ export const GET = async (
   res: MedusaResponse<AdminMarketplaceResponse>
 ) => {
   const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
-  const marketplace = await marketplaceService.listMarketplaces(
-    { id: req.params.id },
-    { select: req.queryConfig.fields }
-  )
+  const marketplace = await marketplaceService.retrieveMarketplace(req.params.id, {
+    select: req.queryConfig.fields
+  })
 
-  res.status(200).json({ marketplace: marketplace[0] })
+  res.status(200).json({ marketplace })
 }
 
 export const POST = async (
