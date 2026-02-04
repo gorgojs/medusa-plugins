@@ -1,4 +1,4 @@
-import { Configuration, ProductAPIApi } from './ozon-seller-api';
+import { Configuration, ProductAPIApi, CategoryAPIApi } from './ozon-seller-api';
 import { MarketplaceCredentialsType } from  "@gorgo/medusa-marketplace/modules/marketplace/types"
 
 const BASE_URL="https://api-seller.ozon.ru"
@@ -15,3 +15,4 @@ export const withAuth = <T extends object>(credentials: MarketplaceCredentialsTy
 });
 
 export const productApi = new ProductAPIApi(config)
+export const categoryApi = new CategoryAPIApi(config)
