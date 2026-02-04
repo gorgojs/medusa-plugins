@@ -8,7 +8,7 @@ export function setMarketplaceContext() {
     const { data, metadata } = await query.graph(
       {
         entity: "marketplace",
-        fields: ["id", "provider_id", "credentials", "settings", "is_active"],
+        fields: ["id", "provider_id", "credentials", "settings", "is_active", "sales_channel.*"],
         filters: {
           id: [req.params.id]
         }

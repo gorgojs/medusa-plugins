@@ -3,15 +3,21 @@ import { MarketplaceModuleService } from "../../../../modules/marketplace/servic
 import { MARKETPLACE_MODULE } from "../../../../modules/marketplace"
 import { AdminUpdateMarketplaceType } from "../validators"
 import { AdminMarketplaceResponse, AdminMarketplaceDeleteResponse } from "../../../../types"
+import { ContainerRegistrationKeys } from "@medusajs/utils"
 
 export const GET = async (
   req: MedusaRequest,
   res: MedusaResponse<AdminMarketplaceResponse>
 ) => {
-  const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
-  const marketplace = await marketplaceService.retrieveMarketplace(req.params.id, {
-    select: req.queryConfig.fields
+  const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
+  
+  const { data } = await query.graph({
+    entity: "marketplace",
+    filters: { id: req.params.id },
+    ...req.queryConfig
   })
+
+  const marketplace = data[0]
 
   res.status(200).json({ marketplace })
 }

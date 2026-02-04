@@ -13,7 +13,8 @@ export const AdminCreateMarketplace = z.object({
   provider_id: z.string(),
   credentials: z.record(z.unknown()).optional(),
   settings: z.record(z.unknown()).optional(),
-  is_enabled: z.boolean().optional()
+  is_enabled: z.boolean().optional(),
+  sales_channel_id: z.string().optional()
 })
 
 export type AdminUpdateMarketplaceType = z.infer<typeof AdminUpdateMarketplace>
