@@ -2,6 +2,8 @@ import { AbstractMarketplaceProvider } from "@gorgo/medusa-marketplace/modules/m
 import {
   ExportProductsInput,
   ExportProductsOutput,
+  GetMarketplaceProductsInput,
+  GetMarketplaceProductsOutput,
   GetProductsInput,
   GetProductsOutput,
   ImportProductsInput,
@@ -27,10 +29,10 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
   static identifier = "wildberries"
 
   async exportProducts(data: ExportProductsInput): Promise<ExportProductsOutput> {
-    const { container, marketplaceProducts, credentials } = data
+    const { container, marketplace, marketplaceProducts } = data
     const { result } = await exportMarketplaceProductsWbWorkflow(container).run({
       input: {
-        credentials,
+        credentials: marketplace.credentials,
         ...marketplaceProducts
       }
     })
@@ -39,7 +41,7 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
   }
 
   async getProducts(data: GetProductsInput): Promise<GetProductsOutput> {
-    const { container, ...input } = data
+    const { container, marketplace, ids } = data
 
     const query = await container!.resolve("query")
 
@@ -50,7 +52,7 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
         "variants.*"
       ],
       filters: {
-        id: input.ids?.length ? input.ids : undefined,
+        id: ids?.length ? ids : undefined,
         status: "published"
       },
     })
@@ -58,16 +60,26 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
     return products
   }
 
-  async importProducts(data: ImportProductsInput): Promise<ImportProductsOutput> {
-    const { container, ...input } = data
+  async getMarketplaceProducts(data: GetMarketplaceProductsInput): Promise<GetMarketplaceProductsOutput> {
+    const { container, marketplace, ids } = data
 
-    const { result } = await importMarketplaceProductsWbWorkflow(container).run({ input })
+    return []
+  }
+
+  async importProducts(data: ImportProductsInput): Promise<ImportProductsOutput> {
+    const { container, marketplace, products } = data
+
+    const { result } = await importMarketplaceProductsWbWorkflow(container).run({
+      input: {
+        credentials: marketplace.credentials
+      }
+    })
 
     return result
   }
 
   async mapToMarketplaceProducts(data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput> {
-    const { container, products } = data
+    const { container, marketplace, products } = data
 
     const logger = await container!.resolve("logger")
 
@@ -77,8 +89,8 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
         title: title,
         sizes: [
           {
-            techSize: "A",
-            wbSize: "1",
+            // techSize: "A",
+            // wbSize: "1",
             skus: sizeSkus
           }
         ]
@@ -145,8 +157,8 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
   }
 
   async mapToMedusaProducts(data: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput> {
-    const { container, ...input } = data
+    const { container, marketplace, marketplaceProducts } = data
 
-    return input
+    return marketplaceProducts
   }
 }
