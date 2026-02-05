@@ -5,7 +5,10 @@ export const AdminMarketplaceDefaultFindParams = { limit: 20, offset: 0 }
 
 export const AdminGetMarketplaceParams = createFindParams(AdminMarketplaceDefaultFindParams)
 
-export const AdminMarketplaceGetEventsParams = createFindParams(AdminMarketplaceDefaultFindParams)
+export const AdminMarketplaceGetEventsParams =
+  createFindParams(AdminMarketplaceDefaultFindParams).extend({
+    marketplace_id: z.string().optional()
+  })
 
 export type AdminCreateMarketplaceType = z.infer<typeof AdminCreateMarketplace>
 export const AdminCreateMarketplace = z.object({

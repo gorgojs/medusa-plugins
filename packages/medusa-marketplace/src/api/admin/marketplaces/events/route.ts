@@ -9,7 +9,10 @@ export const GET = async (
   res: MedusaResponse<AdminMarketplaceEventListResponse>
 ) => {
   const marketplaceService: MarketplaceModuleService = req.scope.resolve(MARKETPLACE_MODULE)
-  const [events, count] = await marketplaceService.listAndCountMarketplaceEvents({}, {
+  const { marketplace_id } = req.validatedQuery
+  const [events, count] = await marketplaceService.listAndCountMarketplaceEvents({
+    marketplace_id: marketplace_id ? [marketplace_id] : undefined
+  }, {
     select: req.queryConfig.fields,
     ...req.queryConfig.pagination,
   })
