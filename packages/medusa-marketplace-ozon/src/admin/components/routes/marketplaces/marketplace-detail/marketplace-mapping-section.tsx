@@ -10,8 +10,6 @@ export const MarketplaceMappingSection = () => {
         <Heading>Mapping</Heading>
       </div>
       <MappingRow />
-      <MappingRow />
-      <MappingRow />
     </Container>
   )
 }

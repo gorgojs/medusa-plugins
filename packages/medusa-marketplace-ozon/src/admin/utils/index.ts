@@ -1,9 +1,10 @@
+import { SelectOption, OzonCategoryNode, OzonTypeNode, OzonNode, AggregatedMedusaOption, ComboboxGroupOption, ComboboxOption } from "../types"
 
-const isOzonCategory = (node: OzonNode): node is OzonCategoryNode => "description_category_id" in node
-const isOzonType = (node: OzonNode): node is OzonTypeNode => "type_id" in node
-const getEnabledOzonNodes = (nodes: OzonNode[] = []) => nodes.filter((node) => !node.disabled)
+export const isOzonCategory = (node: OzonNode): node is OzonCategoryNode => "description_category_id" in node
+export const isOzonType = (node: OzonNode): node is OzonTypeNode => "type_id" in node
+export const getEnabledOzonNodes = (nodes: OzonNode[] = []) => nodes.filter((node) => !node.disabled)
 
-const buildOzonCategorySelectOptionsDeep = (nodes: OzonNode[] = [], parentPathSegments: string[] = []): SelectOption[] => {
+export const buildOzonCategorySelectOptionsDeep = (nodes: OzonNode[] = [], parentPathSegments: string[] = []): SelectOption[] => {
   return getEnabledOzonNodes(nodes).flatMap((node) => {
     if (!isOzonCategory(node)) return []
 
@@ -25,7 +26,32 @@ const buildOzonCategorySelectOptionsDeep = (nodes: OzonNode[] = [], parentPathSe
   })
 }
 
-const findEnabledOzonCategoryByDescriptionId = (nodes: OzonNode[], descriptionCategoryId: number): OzonCategoryNode | null => {
+export const buildOzonCategoryTypeSelectOptionsDeep = (
+  nodes: OzonNode[] = [],
+  parentPathSegments: string[] = []
+): SelectOption[] => {
+  return getEnabledOzonNodes(nodes).flatMap((node) => {
+    if (!isOzonCategory(node)) return []
+
+    const nextPathSegments = [...parentPathSegments, node.category_name].filter(Boolean)
+
+    const enabledChildren = getEnabledOzonNodes(node.children ?? [])
+    const hasChildCategories = enabledChildren.some(isOzonCategory)
+
+    if (hasChildCategories) {
+      return buildOzonCategoryTypeSelectOptionsDeep(enabledChildren, nextPathSegments)
+    }
+
+    const typeOptions = buildOzonTypeSelectOptionsFromCategory(node)
+
+    return typeOptions.map((t) => ({
+      value: `${node.description_category_id}:${t.value}`,
+      label: `${nextPathSegments.join(" / ")} / ${t.label}`,
+    }))
+  })
+}
+
+export const findEnabledOzonCategoryByDescriptionId = (nodes: OzonNode[], descriptionCategoryId: number): OzonCategoryNode | null => {
   for (const node of nodes) {
     if (!isOzonCategory(node) || node.disabled) continue
     if (node.description_category_id === descriptionCategoryId) return node
@@ -39,7 +65,7 @@ const findEnabledOzonCategoryByDescriptionId = (nodes: OzonNode[], descriptionCa
   return null
 }
 
-const buildOzonTypeSelectOptionsFromCategory = (categoryNode: OzonCategoryNode | null): SelectOption[] => {
+export const buildOzonTypeSelectOptionsFromCategory = (categoryNode: OzonCategoryNode | null): SelectOption[] => {
   if (!categoryNode) return []
   const typeOptions: SelectOption[] = []
   const walk = (nodes: OzonNode[]) => {
@@ -52,12 +78,12 @@ const buildOzonTypeSelectOptionsFromCategory = (categoryNode: OzonCategoryNode |
   return typeOptions
 }
 
-const buildMedusaCategorySelectOptions = (medusaCategoriesResponse: any): SelectOption[] => {
+export const buildMedusaCategorySelectOptions = (medusaCategoriesResponse: any): SelectOption[] => {
   const categories: Array<{ id: string; name: string }> = medusaCategoriesResponse?.product_categories ?? []
   return categories.map((category) => ({ value: String(category.id), label: category.name }))
 }
 
-const aggregateMedusaProductOptionsByTitle = (products: any[] = []): AggregatedMedusaOption[] => {
+export const aggregateMedusaProductOptionsByTitle = (products: any[] = []): AggregatedMedusaOption[] => {
   const valuesByTitle = new Map<string, Set<string>>()
 
   for (const product of products) {
@@ -79,4 +105,26 @@ const aggregateMedusaProductOptionsByTitle = (products: any[] = []): AggregatedM
   return Array.from(valuesByTitle.entries())
     .map(([title, set]) => ({ title, values: Array.from(set).sort() }))
     .sort((a, b) => a.title.localeCompare(b.title))
+}
+
+export const ozonOptionsToGroups = (options: ComboboxOption[]): ComboboxGroupOption[] => {
+  const order: string[] = []
+  const map = new Map<string, ComboboxOption[]>()
+
+  for (const opt of options) {
+    const parts = opt.label.split(" / ").filter(Boolean)
+    if (!parts.length) continue
+
+    const group = parts[0]
+    const itemLabel = parts.slice(1).join(" / ") || parts[0]
+
+    if (!map.has(group)) {
+      map.set(group, [])
+      order.push(group)
+    }
+
+    map.get(group)!.push({ ...opt, label: itemLabel })
+  }
+
+  return order.map((label) => ({ label, options: map.get(label)! }))
 }

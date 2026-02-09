@@ -9,8 +9,6 @@ export const useDebouncedSearch = () => {
   const [searchValue, onSearchValueChange] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
 
-  console.log("searchValue", searchValue)
-  console.log("debouncedQuery", debouncedQuery)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedUpdate = useCallback(
     debounce((query: string) => setDebouncedQuery(query), 300),

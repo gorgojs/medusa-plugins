@@ -1,6 +1,8 @@
 import {
   Combobox as PrimitiveCombobox,
   ComboboxDisclosure as PrimitiveComboboxDisclosure,
+  ComboboxGroup as PrimitiveComboboxGroup,
+  ComboboxGroupLabel as PrimitiveComboboxGroupLabel,
   ComboboxItem as PrimitiveComboboxItem,
   ComboboxItemCheck as PrimitiveComboboxItemCheck,
   ComboboxItemValue as PrimitiveComboboxItemValue,
@@ -34,6 +36,11 @@ import {
 import { Ref, RefAttributes, forwardRef } from "react"
 import { useTranslation } from "react-i18next"
 
+type ComboboxGroupOption = {
+  label: string
+  options: ComboboxOption[]
+}
+
 type ComboboxOption = {
   value: string
   label: string
@@ -52,6 +59,7 @@ interface ComboboxProps<T extends Value = Value>
   searchValue?: string
   onSearchValueChange?: (value: string) => void
   options: ComboboxOption[]
+  groups?: ComboboxGroupOption[]
   fetchNextPage?: () => void
   isFetchingNextPage?: boolean
   onCreateOption?: (value: string) => void
@@ -73,6 +81,7 @@ const ComboboxImpl = <T extends Value = string>(
     searchValue: controlledSearchValue,
     onSearchValueChange,
     options,
+    groups,
     className,
     placeholder,
     fetchNextPage,
@@ -229,6 +238,17 @@ const ComboboxImpl = <T extends Value = string>(
     return isSearchControlled ? options : matches
   }, [matches, options, isSearchControlled])
 
+  const groupedResults = useMemo(() => {
+    if (!groups?.length) return null
+    const visible = new Set(results.map((o) => o.value))
+    return groups
+      .map((g) => ({
+        label: g.label,
+        options: g.options.filter((o) => visible.has(o.value)),
+      }))
+      .filter((g) => g.options.length > 0)
+  }, [groups, results])
+
   return (
     <PrimitiveComboboxProvider
       open={open}
@@ -360,29 +380,69 @@ const ComboboxImpl = <T extends Value = string>(
         }}
         aria-busy={isPending}
       >
-        {results.map(({ value, label, disabled }) => (
-          <PrimitiveComboboxItem
-            key={value}
-            value={value}
-            focusOnHover
-            setValueOnClick={false}
-            disabled={disabled}
-            className={clx(
-              "transition-fg bg-ui-bg-base data-[active-item=true]:bg-ui-bg-base-hover group flex cursor-pointer items-center gap-x-2 rounded-[4px] px-2 py-1",
-              {
-                "text-ui-fg-disabled": disabled,
-                "bg-ui-bg-component": disabled,
-              }
-            )}
-          >
-            <PrimitiveComboboxItemCheck className="flex !size-5 items-center justify-center">
-              {isArrayValue ? <CheckMini /> : <EllipseMiniSolid />}
-            </PrimitiveComboboxItemCheck>
-            <PrimitiveComboboxItemValue className="txt-compact-small">
-              {label}
-            </PrimitiveComboboxItemValue>
-          </PrimitiveComboboxItem>
-        ))}
+        {groupedResults
+          ? groupedResults.map((g, i) => (
+            <Fragment key={g.label}>
+              <PrimitiveComboboxGroup>
+                <PrimitiveComboboxGroupLabel className="px-2 py-1">
+                  <Text size="small" leading="compact" className="text-ui-fg-subtle">
+                    {g.label}
+                  </Text>
+                </PrimitiveComboboxGroupLabel>
+
+                {g.options.map(({ value, label, disabled }) => (
+                  <PrimitiveComboboxItem
+                    key={value}
+                    value={value}
+                    focusOnHover
+                    setValueOnClick={false}
+                    disabled={disabled}
+                    className={clx(
+                      "transition-fg bg-ui-bg-base data-[active-item=true]:bg-ui-bg-base-hover group flex cursor-pointer items-center gap-x-2 rounded-[4px] px-2 py-1",
+                      {
+                        "text-ui-fg-disabled": disabled,
+                        "bg-ui-bg-component": disabled,
+                      }
+                    )}
+                  >
+                    <PrimitiveComboboxItemCheck className="flex !size-5 items-center justify-center">
+                      {isArrayValue ? <CheckMini /> : <EllipseMiniSolid />}
+                    </PrimitiveComboboxItemCheck>
+                    <PrimitiveComboboxItemValue className="txt-compact-small">
+                      {label}
+                    </PrimitiveComboboxItemValue>
+                  </PrimitiveComboboxItem>
+                ))}
+              </PrimitiveComboboxGroup>
+
+              {i < groupedResults.length - 1 && (
+                <PrimitiveSeparator className="bg-ui-border-base -mx-1 my-1" />
+              )}
+            </Fragment>
+          ))
+          : results.map(({ value, label, disabled }) => (
+            <PrimitiveComboboxItem
+              key={value}
+              value={value}
+              focusOnHover
+              setValueOnClick={false}
+              disabled={disabled}
+              className={clx(
+                "transition-fg bg-ui-bg-base data-[active-item=true]:bg-ui-bg-base-hover group flex cursor-pointer items-center gap-x-2 rounded-[4px] px-2 py-1",
+                {
+                  "text-ui-fg-disabled": disabled,
+                  "bg-ui-bg-component": disabled,
+                }
+              )}
+            >
+              <PrimitiveComboboxItemCheck className="flex !size-5 items-center justify-center">
+                {isArrayValue ? <CheckMini /> : <EllipseMiniSolid />}
+              </PrimitiveComboboxItemCheck>
+              <PrimitiveComboboxItemValue className="txt-compact-small">
+                {label}
+              </PrimitiveComboboxItemValue>
+            </PrimitiveComboboxItem>
+          ))}
         {!!fetchNextPage && <div ref={lastOptionRef} className="w-px" />}
         {isFetchingNextPage && (
           <div className="transition-fg bg-ui-bg-base flex items-center rounded-[4px] px-2 py-1.5">
