@@ -16,13 +16,15 @@ import {
 } from "../../../lib/wildberries-products-client"
 import { MarketplaceWildberriesCredentialsType } from "../../../providers/marketplace-wildberries/types"
 
-
-export type ExportMarketplaceProductsWbWorkflowInput = {
-  credentials: MarketplaceWildberriesCredentialsType,
+export type MarketplaceProductsType = {
   create: ContentV2CardsUploadPostRequestInner[]
   update: ContentV2CardsUpdatePostRequestInner[]
   merge: ContentV2CardsUploadAddPostRequest[]
 }
+
+export type ExportMarketplaceProductsWbWorkflowInput = {
+  credentials: MarketplaceWildberriesCredentialsType
+} & MarketplaceProductsType
 
 export const exportMarketplaceProductsWbWorkflowId = "export-marketplace-products-wb"
 

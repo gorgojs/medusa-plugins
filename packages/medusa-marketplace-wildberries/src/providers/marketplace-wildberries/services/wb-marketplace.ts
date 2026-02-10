@@ -15,7 +15,8 @@ import {
 } from "@gorgo/medusa-marketplace/types"
 import {
   exportMarketplaceProductsWbWorkflow,
-  importMarketplaceProductsWbWorkflow
+  importMarketplaceProductsWbWorkflow,
+  MarketplaceProductsType
 } from "../../../workflows/provider"
 import {
   ContentV2CardsUpdatePostRequestInner,
@@ -23,7 +24,7 @@ import {
   ContentV2CardsUploadAddPostRequestCardsToAddInner,
   ContentV2CardsUploadPostRequestInner
 } from "../../../lib/wildberries-products-client"
-import { MAX_VARIANTS_TO_CREATE } from "../types"
+import { MarketplaceWildberriesCredentialsType, MAX_VARIANTS_TO_CREATE } from "../types"
 
 export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider {
   static identifier = "wildberries"
@@ -32,8 +33,8 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
     const { container, marketplace, marketplaceProducts } = data
     const { result } = await exportMarketplaceProductsWbWorkflow(container).run({
       input: {
-        credentials: marketplace.credentials,
-        ...marketplaceProducts
+        credentials: marketplace.credentials as MarketplaceWildberriesCredentialsType,
+        ...marketplaceProducts as MarketplaceProductsType
       }
     })
 
@@ -71,7 +72,7 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
 
     const { result } = await importMarketplaceProductsWbWorkflow(container).run({
       input: {
-        credentials: marketplace.credentials
+        credentials: marketplace.credentials as MarketplaceWildberriesCredentialsType
       }
     })
 
@@ -105,14 +106,14 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
       const imtID = product.metadata?.wildberries_imtID
       if (imtID == null) { // to create
         let variatnsToCreate
-        if (product.variant.length > MAX_VARIANTS_TO_CREATE) {
+        if (product.variants.length > MAX_VARIANTS_TO_CREATE) {
           variatnsToCreate = product.variants.slice(0, MAX_VARIANTS_TO_CREATE).map(
-            variant => dummyMap(variant.sku, product.title + variant.title)
+            variant => dummyMap(variant.sku!, product.title + variant.title)
           )
           // TODO: merge variants.slice(MAX_VARIANTS_TO_CREATE)
           // how to get imtID?
         } else {
-          variatnsToCreate = product.variants.map(variant => dummyMap(variant.sku, product.title + variant.title))
+          variatnsToCreate = product.variants.map(variant => dummyMap(variant.sku!, product.title + variant.title))
         }
         productsToCreate.push({
           subjectID: 105,
@@ -124,15 +125,15 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
         product.variants.forEach(variant => {
           const nmID = variant.metadata?.wildberries_nmID
           if (nmID == null) { // to merge
-            variantsToMerge.push(dummyMap(variant.sku, product.title + variant.title))
+            variantsToMerge.push(dummyMap(variant.sku!, product.title + variant.title))
           } else { // to update 
             const sizeSkus = variant.metadata?.wildberries_sizeSkus
             if (sizeSkus == null) {
               logger.error(`Failed to update variant with nmID=${nmID} (vendorCode=${variant.sku}): sizeSkus is none`)
             } else {
               productCardsToUpdate.push({
-                nmID: nmID,
-                ...dummyMap(variant.sku, product.title + variant.title, sizeSkus)
+                nmID: nmID as number,
+                ...dummyMap(variant.sku!, product.title + variant.title, sizeSkus)
               })
             }
           }
@@ -140,7 +141,7 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
 
         if (variantsToMerge.length) {
           productCardsToMerge.push({
-            imtID: imtID,
+            imtID: imtID as number,
             cardsToAdd: variantsToMerge
           })
         }
@@ -159,6 +160,6 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
   async mapToMedusaProducts(data: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput> {
     const { container, marketplace, marketplaceProducts } = data
 
-    return marketplaceProducts
+    return marketplaceProducts as any
   }
 }
