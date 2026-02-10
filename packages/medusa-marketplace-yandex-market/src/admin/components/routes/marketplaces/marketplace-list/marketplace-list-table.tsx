@@ -15,7 +15,7 @@ import type {
   AdminMarketplaceListResponse,
 } from "@gorgo/medusa-marketplace/types"
 import { MarketplaceActionMenu } from "./marketplace-action-menu"
-import { MarketplaceEditDrawer } from "./marketplace-edit-drawer"
+import { MarketplaceEdit } from "./marketplace-edit"
 
 const PAGE_SIZE = 20
 
@@ -148,7 +148,7 @@ export const MarketplaceListTable = ({
       <DataTable.Pagination />
 
       {editingMarketplace && (
-        <MarketplaceEditDrawer
+        <MarketplaceEdit
           response={{ marketplace: editingMarketplace }}
           open={editOpen}
           setOpen={setEditOpen}

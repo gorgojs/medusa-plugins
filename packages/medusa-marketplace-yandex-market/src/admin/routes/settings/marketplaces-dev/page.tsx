@@ -2,7 +2,7 @@ import { Container, useToggleState } from "@medusajs/ui"
 import { Shopping } from "@medusajs/icons"
 import { defineRouteConfig } from "@medusajs/admin-sdk"
 import {
-  MarketplaceAddModal,
+  MarketplaceAdd,
   MarketplaceListTable,
 } from "../../../components/routes/marketplaces/marketplace-list"
 import { SingleColumnLayout } from "../../../components/layout"
@@ -17,7 +17,7 @@ const MarketplaceList = () => {
           stateModal={stateModal}
           openModal={openModal}
         />
-        <MarketplaceAddModal
+        <MarketplaceAdd
           stateModal={stateModal}
           closeModal={closeModal}
         />

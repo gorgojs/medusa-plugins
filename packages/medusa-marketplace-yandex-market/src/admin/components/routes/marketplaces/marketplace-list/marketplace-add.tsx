@@ -16,7 +16,7 @@ const MarketplaceAddSchema = zod.object({
 
 type MarketplaceAddValues = zod.infer<typeof MarketplaceAddSchema>
 
-export const MarketplaceAddModal = ({
+export const MarketplaceAdd = ({
   stateModal,
   closeModal,
 }: {

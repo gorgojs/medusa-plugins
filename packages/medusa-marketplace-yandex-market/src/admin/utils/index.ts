@@ -19,3 +19,20 @@ export const getFullDate = ({
         : {}),
     }).format(d)
   }
+
+
+export const formatDateTime = (value: unknown) => {
+  if (!value) return "-"
+  const d = value instanceof Date ? value : new Date(value as any)
+  return Number.isNaN(d.getTime()) ? String(value) : d.toLocaleString()
+}
+
+export const jsonPreview = (value: unknown) => {
+  if (value == null) return "-"
+  try {
+    return JSON.stringify(value)
+  } catch {
+    return String(value)
+  }
+}
+ 

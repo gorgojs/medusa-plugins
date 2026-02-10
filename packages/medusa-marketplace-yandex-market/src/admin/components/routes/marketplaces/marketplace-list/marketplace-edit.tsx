@@ -25,7 +25,7 @@ const MarketplaceEditSchema = z.object({
 
 type MarketplaceEditValues = z.infer<typeof MarketplaceEditSchema>
 
-export const MarketplaceEditDrawer = ({
+export const MarketplaceEdit = ({
   response,
   open,
   setOpen,

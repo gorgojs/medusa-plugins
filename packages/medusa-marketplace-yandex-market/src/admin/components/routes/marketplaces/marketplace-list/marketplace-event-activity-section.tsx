@@ -34,7 +34,7 @@ const useLocalDate = () => {
   return { getFullDate, getRelativeDate }
 }
 
-export const MarketplaceTimeline = ({
+export const EventActivity = ({
   marketplace_id,
 }: {
   marketplace_id?: string
@@ -58,12 +58,12 @@ export const MarketplaceTimeline = ({
   const events = (data?.events ?? []) as MarketplaceEventDTO[]
 
   const items = useMemo<Activity[]>(() => {
-    return events.map((e: MarketplaceEventDTO) => ({
-      title: String((e as any).marketplace_id ?? "-"),
+    return events.map((event: MarketplaceEventDTO) => ({
+      title: String((event as any).marketplace_id ?? "-"),
       timestamp:
-        (e as any).created_at ??
-        (e as any).started_at ??
-        (e as any).finished_at ??
+        (event as any).created_at ??
+        (event as any).started_at ??
+        (event).finished_at ??
         new Date(),
       children: null,
     }))
