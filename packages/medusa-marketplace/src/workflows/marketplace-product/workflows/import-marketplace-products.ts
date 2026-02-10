@@ -16,22 +16,23 @@ export const importMarketplaceProductsWorkflowId = "import-marketplace-products"
 export const importMarketplaceProductsWorkflow = createWorkflow(
   importMarketplaceProductsWorkflowId,
   (input: ImportMarketplaceProductsWorkflowInput) => {   
+    const marketplace = input.marketplace
 
     const marketplaceProducts = getMarketplaceProductsStep({
-      providerId: input.marketplace.provider_id,
-      marketplace: input.marketplace,
+      providerId: marketplace.provider_id,
+      marketplace,
       ids: input.ids
     })
     const products = mapToMedusaProductsStep({
-      providerId: input.marketplace.provider_id,
-      marketplace: input.marketplace,
+      providerId: marketplace.provider_id,
+      marketplace,
       marketplaceProducts,
     })
     
     const startedAt = transform({}, () => new Date())
     const importResult = importProductsStep({
-      providerId: input.marketplace.provider_id,
-      marketplace: input.marketplace,
+      providerId: marketplace.provider_id,
+      marketplace,
       products
     })
     const finishedAt = transform({}, () => new Date())

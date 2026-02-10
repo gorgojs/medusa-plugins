@@ -36,29 +36,43 @@ export interface IMarketplaceProvider {
 }
 
 export type MarketplaceProviderInput = {
-  container?: MedusaContainer
+  marketplace: MarketplaceDTO
+  container: MedusaContainer
+  // data?: unknown  // if additional provider-specific data is required
 }
 
-export type ExportProductsInput = MarketplaceProviderInput & Record<string, unknown>
+export type ExportProductsInput = MarketplaceProviderInput & {
+  marketplaceProducts: unknown
+}
+
+export type GetProductsInput = MarketplaceProviderInput & {
+  ids?: string[]
+}
+
+export type GetMarketplaceProductsInput = MarketplaceProviderInput & {
+  ids?: string[]
+}
+
+export type ImportProductsInput = MarketplaceProviderInput & {
+  products: ProductDTO[]
+}
+
+export type MapToMarketplaceProductsInput = MarketplaceProviderInput & {
+  products: ProductDTO[]
+}
+
+export type MapToMedusaProductsInput = MarketplaceProviderInput & {
+  marketplaceProducts: any
+}
 
 export type ExportProductsOutput = Record<string, unknown>
 
-export type GetProductsInput = MarketplaceProviderInput & Record<string, unknown>
-
 export type GetProductsOutput = ProductDTO[]
-
-export type GetMarketplaceProductsInput  = MarketplaceProviderInput & Record<string, unknown>
 
 export type GetMarketplaceProductsOutput = MarketplaceProductDTO[]
 
-export type ImportProductsInput = MarketplaceProviderInput & Record<string, unknown>
-
 export type ImportProductsOutput = Record<string, unknown>
 
-export type MapToMarketplaceProductsInput = MarketplaceProviderInput & Record<string, unknown>
-
 export type MapToMarketplaceProductsOutput = Record<string, unknown>
-
-export type MapToMedusaProductsInput = MarketplaceProviderInput & Record<string, unknown>
 
 export type MapToMedusaProductsOutput = ProductDTO[] 

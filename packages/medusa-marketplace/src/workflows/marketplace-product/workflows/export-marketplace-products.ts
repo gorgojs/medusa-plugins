@@ -16,22 +16,22 @@ export const exportMarketplaceProductsWorkflowId = "export-marketplace-products"
 export const exportMarketplaceProductsWorkflow = createWorkflow(
   exportMarketplaceProductsWorkflowId,
   (input: ExportMarketplaceProductsWorkflowInput) => {
-    const providerId = input.marketplace.provider_id
+    const marketplace = input.marketplace
 
     const products = getProductsStep({
-      providerId: input.marketplace.provider_id,
-      marketplace: input.marketplace,
+      providerId: marketplace.provider_id,
+      marketplace,
       ids: input.ids
     })
     const marketplaceProducts = mapToMarketplaceProductsStep({
-      providerId: input.marketplace.provider_id,
-      marketplace: input.marketplace,
+      providerId: marketplace.provider_id,
+      marketplace,
       products
     })
     const startedAt = transform({}, () => new Date())
     const exportResult = exportProductsStep({
-      providerId: input.marketplace.provider_id,
-      marketplace: input.marketplace,
+      providerId: marketplace.provider_id,
+      marketplace,
       marketplaceProducts,
     })
     const finishedAt = transform({}, () => new Date())

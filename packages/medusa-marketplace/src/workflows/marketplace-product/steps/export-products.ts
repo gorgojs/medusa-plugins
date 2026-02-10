@@ -4,13 +4,11 @@ import {
 } from "@medusajs/workflows-sdk"
 import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
 import { MarketplaceModuleService } from "../../../modules/marketplace/services"
-import { MarketplaceDTO } from "../../../types"
+import { ExportProductsInput } from "../../../types"
 
 export type ExportProductsStepInput = {
-  providerId: string,
-  marketplace: MarketplaceDTO,
-  [key: string]: any
-}
+  providerId: string
+} & Omit<ExportProductsInput, "container">
 
 export const exportProductsStep = createStep(
   "export-products",

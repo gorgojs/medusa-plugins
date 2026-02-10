@@ -2,16 +2,13 @@ import {
   createStep,
   StepResponse
 } from "@medusajs/workflows-sdk"
-import { ProductDTO } from "@medusajs/types"
 import { MarketplaceModuleService } from "../../../modules/marketplace/services"
 import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
-import { MarketplaceDTO, MarketplaceProductDTO } from "../../../types"
+import { MapToMarketplaceProductsInput, MapToMedusaProductsInput } from "../../../types"
 
 export type MapToMarketplaceProductsStepInput = {
-  providerId: string,
-  marketplace: MarketplaceDTO,
-  products: ProductDTO[],
-}
+  providerId: string
+} & Omit<MapToMarketplaceProductsInput, "container">
 
 export const mapToMarketplaceProductsStep = createStep(
   "map-to-marketplace-products",
@@ -29,10 +26,8 @@ export const mapToMarketplaceProductsStep = createStep(
 )
 
 export type MapToMedusaProductsStepInput = {
-  providerId: string,
-  marketplace: MarketplaceDTO,
-  marketplaceProducts: MarketplaceProductDTO[],
-}
+  providerId: string
+} & Omit<MapToMedusaProductsInput, "container">
 
 export const mapToMedusaProductsStep = createStep(
   "map-to-medusa-products",
