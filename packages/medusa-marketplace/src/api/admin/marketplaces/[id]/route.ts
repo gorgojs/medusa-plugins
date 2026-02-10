@@ -3,14 +3,14 @@ import { MarketplaceModuleService } from "../../../../modules/marketplace/servic
 import { MARKETPLACE_MODULE } from "../../../../modules/marketplace"
 import { AdminUpdateMarketplaceType } from "../validators"
 import { AdminMarketplaceResponse, AdminMarketplaceDeleteResponse } from "../../../../types"
-import { ContainerRegistrationKeys } from "@medusajs/utils"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/utils"
 
 export const GET = async (
   req: MedusaRequest,
   res: MedusaResponse<AdminMarketplaceResponse>
 ) => {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
-  
+
   const { data } = await query.graph({
     entity: "marketplace",
     filters: { id: req.params.id },
@@ -31,6 +31,27 @@ export const POST = async (
     id: req.params.id,
     ...req.validatedBody
   })
+
+  if (req.validatedBody.sales_channel_id) {
+    const link = req.scope.resolve(ContainerRegistrationKeys.LINK)
+    // TODO: how to correctly update the link
+    await link.dismiss({
+      marketplace: {
+        marketplace_id: marketplace.id
+      },
+      [Modules.SALES_CHANNEL]: {
+        sales_channel_id: marketplace.sales_channel_id  // TODO: fix types
+      }
+    })
+    await link.create({
+      marketplace: {
+        marketplace_id: marketplace.id
+      },
+      [Modules.SALES_CHANNEL]: {
+        sales_channel_id: req.validatedBody.sales_channel_id
+      }
+    })
+  }
 
   res.status(200).json({ marketplace })
 }

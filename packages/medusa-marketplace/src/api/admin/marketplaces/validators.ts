@@ -26,7 +26,8 @@ export const AdminUpdateMarketplace = z.object({
   provider_id: z.string().optional(),
   credentials: z.record(z.unknown()).optional(),
   settings: z.record(z.unknown()).optional(),
-  is_enabled: z.boolean().optional()
+  is_enabled: z.boolean().optional(),
+  sales_channel_id: z.string().optional()
 })
 
 export type AdminMarketplaceSyncProductsType = z.infer<typeof AdminMarketplaceSyncProducts>
