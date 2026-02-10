@@ -295,7 +295,7 @@ export const ApishipMap: React.FC<ApishipMapProps> = ({
         </div>
       )}
       {!isLoading && activePoint && isPanelOpen && !showNoPoints && (
-        <div className="absolute left-0 top-0 md:w-[470px] h-full border-r bg-white flex flex-col min-h-0">
+        <div className="absolute left-0 top-0 z-[70] w-full md:w-[470px] h-full border-r bg-white flex flex-col min-h-0">
           <div className="flex flex-row justify-between p-[35px] pb-0 items-center">
             <Heading
               level="h2"

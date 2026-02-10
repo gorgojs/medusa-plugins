@@ -487,18 +487,16 @@ export async function removeShippingMethodFromCart(shippingMethodId: string) {
 
   return sdk.client
     .fetch<Record<string, unknown>>(
-      `/store/apiship/${shippingMethodId}/remove-shipping-method`,
+      `/store/shipping-methods/${shippingMethodId}`,
       {
-        method: "POST",
+        method: "DELETE",
         headers,
         next,
       }
     )
-    .then(async ({ data }) => {
+    .then(async () => {
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
-
-      return data
     })
     .catch(() => null)
 }

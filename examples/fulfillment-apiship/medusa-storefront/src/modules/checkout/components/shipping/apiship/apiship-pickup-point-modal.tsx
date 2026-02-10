@@ -51,10 +51,6 @@ export const ApishipPickupPointModal: React.FC<ApishipPickupPointModalProps> = (
   const onErrorRef = useLatestRef(onError)
   const onPriceRef = useLatestRef(onPriceUpdate)
 
-  const wrapperRef = useRef<HTMLDivElement | null>(null)
-  const closeButtonRef = useRef<HTMLButtonElement | null>(null)
-  const [pinCloseInside, setPinCloseInside] = useState(false)
-
   const [isLoadingPoints, setIsLoadingPoints] = useState(false)
   const [points, setPoints] = useState<ApishipPoint[]>([])
   const [tariffsByPointId, setTariffsByPointId] = useState<Record<string, ApishipTariff[]>>({})
@@ -64,46 +60,6 @@ export const ApishipPickupPointModal: React.FC<ApishipPickupPointModalProps> = (
   const [isPanelOpen, setIsPanelOpen] = useState(false)
 
   useLockBodyScroll(open)
-
-  useEffect(() => {
-    if (!open) return
-
-    const OUTSIDE_POSITION_OFFSET_PX = 48
-    const VIEWPORT_SAFE_MARGIN_PX = 8
-    const SWITCH_BACK_HYSTERESIS_PX = 24
-
-    let animationFrameId = 0
-
-    const updateCloseButtonPlacement = () => {
-      cancelAnimationFrame(animationFrameId)
-
-      animationFrameId = requestAnimationFrame(() => {
-        const modalWrapperEl = wrapperRef.current
-        if (!modalWrapperEl) return
-        const wrapperRect = modalWrapperEl.getBoundingClientRect()
-        const overflowRightPx =
-          wrapperRect.right +
-          OUTSIDE_POSITION_OFFSET_PX +
-          VIEWPORT_SAFE_MARGIN_PX -
-          window.innerWidth
-
-        setPinCloseInside((isPinnedInside) => {
-          if (!isPinnedInside) {
-            return overflowRightPx > 0
-          }
-          return overflowRightPx > -SWITCH_BACK_HYSTERESIS_PX
-        })
-      })
-    }
-
-    updateCloseButtonPlacement()
-    window.addEventListener("resize", updateCloseButtonPlacement)
-
-    return () => {
-      cancelAnimationFrame(animationFrameId)
-      window.removeEventListener("resize", updateCloseButtonPlacement)
-    }
-  }, [open])
 
   useEffect(() => {
     if (!open) return
@@ -184,20 +140,17 @@ export const ApishipPickupPointModal: React.FC<ApishipPickupPointModalProps> = (
           if (e.target === e.currentTarget) onClose(initialChosen ? false : true)
         }}
       >
-        <div className="relative" ref={wrapperRef}>
+        <div className="relative">
           <IconButton
             aria-label="Close"
-            ref={closeButtonRef}
             onClick={() => onClose(initialChosen ? false : true)}
-            className={pinCloseInside
-              ? "absolute right-2 top-2 z-50 shadow-none border"
-              : "absolute top-0 -right-12 z-50 shadow-none border"
-            }
+            className="absolute right-2 top-2 z-[60] shadow-none"
           >
             <XMark />
           </IconButton>
           <div
             className="
+              relative
               h-[820px] w-[1350px]
               max-w-[calc(100vw-32px)] max-h-[calc(100vh-32px)]
               overflow-hidden rounded-rounded border bg-white

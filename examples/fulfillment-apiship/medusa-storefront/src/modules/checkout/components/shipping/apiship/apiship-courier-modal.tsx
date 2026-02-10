@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { Button, clx, Heading, IconButton, Text } from "@medusajs/ui"
 import MedusaRadio from "@modules/common/components/radio"
 import { Loader, XMark } from "@medusajs/icons"
@@ -46,10 +46,6 @@ export const ApishipCourierModal: React.FC<ApishipCourierModalProps> = ({
   const onErrorRef = useLatestRef(onError)
   const onPriceRef = useLatestRef(onPriceUpdate)
 
-  const wrapperRef = useRef<HTMLDivElement | null>(null)
-  const closeButtonRef = useRef<HTMLButtonElement | null>(null)
-  const [pinCloseInside, setPinCloseInside] = useState(false)
-
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingCalc, setIsLoadingCalc] = useState(false)
 
@@ -57,46 +53,6 @@ export const ApishipCourierModal: React.FC<ApishipCourierModalProps> = ({
   const [selectedTariffKey, setSelectedTariffKey] = useState<string | null>(null)
 
   useLockBodyScroll(open)
-
-  useEffect(() => {
-    if (!open) return
-
-    const OUTSIDE_POSITION_OFFSET_PX = 48
-    const VIEWPORT_SAFE_MARGIN_PX = 8
-    const SWITCH_BACK_HYSTERESIS_PX = 24
-
-    let animationFrameId = 0
-
-    const updateCloseButtonPlacement = () => {
-      cancelAnimationFrame(animationFrameId)
-
-      animationFrameId = requestAnimationFrame(() => {
-        const modalWrapperEl = wrapperRef.current
-        if (!modalWrapperEl) return
-        const wrapperRect = modalWrapperEl.getBoundingClientRect()
-        const overflowRightPx =
-          wrapperRect.right +
-          OUTSIDE_POSITION_OFFSET_PX +
-          VIEWPORT_SAFE_MARGIN_PX -
-          window.innerWidth
-
-        setPinCloseInside((isPinnedInside) => {
-          if (!isPinnedInside) {
-            return overflowRightPx > 0
-          }
-          return overflowRightPx > -SWITCH_BACK_HYSTERESIS_PX
-        })
-      })
-    }
-
-    updateCloseButtonPlacement()
-    window.addEventListener("resize", updateCloseButtonPlacement)
-
-    return () => {
-      cancelAnimationFrame(animationFrameId)
-      window.removeEventListener("resize", updateCloseButtonPlacement)
-    }
-  }, [open])
 
   useEffect(() => {
     if (!open) return
@@ -208,18 +164,7 @@ export const ApishipCourierModal: React.FC<ApishipCourierModalProps> = ({
           if (e.target === e.currentTarget) onClose(initialChosen ? false : true)
         }}
       >
-        <div className="relative w-[470px] max-w-[calc(100vw-32px)]" ref={wrapperRef}>
-          <IconButton
-            aria-label="Close"
-            onClick={() => onClose(initialChosen ? false : true)}
-            ref={closeButtonRef}
-            className={pinCloseInside
-              ? "absolute right-2 top-2 z-50 shadow-none border"
-              : "absolute top-0 -right-12 z-50 shadow-none border"
-            }
-          >
-            <XMark />
-          </IconButton>
+        <div className="relative w-[470px] max-w-[calc(100vw-32px)]">
           <div
             className="
               h-[820px] w-[470px]
@@ -228,13 +173,20 @@ export const ApishipCourierModal: React.FC<ApishipCourierModalProps> = ({
               flex flex-col
             "
           >
-            <div className="p-[35px] pb-0">
+            <div className=" flex flex-row justify-between items-center p-[35px] pb-0">
               <Heading
                 level="h2"
                 className="flex flex-row text-3xl-regular gap-x-2 items-baseline"
               >
                 By courier
               </Heading>
+              <IconButton
+                aria-label="Close"
+                onClick={() => onClose(initialChosen ? false : true)}
+                className="shadow-none"
+              >
+                <XMark />
+              </IconButton>
             </div>
             <div className="flex-1 min-h-0 overflow-y-auto px-[35px] pt-[18px]">
               {isLoadingCalc ? (
