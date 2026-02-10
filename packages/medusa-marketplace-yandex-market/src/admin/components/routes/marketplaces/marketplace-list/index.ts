@@ -1,3 +1,2 @@
-export * from "./marketplace-add"
+export * from "./marketplace-add-modal"
 export * from "./marketplace-list-table"
-export * from "./marketplace-edit"

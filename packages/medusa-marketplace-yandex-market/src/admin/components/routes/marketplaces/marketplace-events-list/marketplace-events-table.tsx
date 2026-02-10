@@ -115,7 +115,7 @@ const columns = [
   }),
 ]
 
-export const EventsTable = () => {
+export const MarketplaceEventsTable = () => {
   const navigate = useNavigate()
   const limit = PAGE_SIZE
 

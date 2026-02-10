@@ -1,9 +1,14 @@
-import {
-  Container
-} from "@medusajs/ui"
 import { defineRouteConfig } from "@medusajs/admin-sdk"
-import { EventsTable } from "../../../../components/routes/marketplaces/marketplace-list/marketplace-events-table"
+import { MarketplaceEventsTable } from "../../../../components/routes/marketplaces/marketplace-events-list"
 import { SingleColumnLayout } from "../../../../components/layout"
+
+const MarketplaceEventsList = () => {
+  return (
+    <SingleColumnLayout>
+      <MarketplaceEventsTable/>
+    </SingleColumnLayout>
+  )
+}
 
 export const config = defineRouteConfig({
   label: "Events",
@@ -13,16 +18,4 @@ export const handle = {
   breadcrumb: () => "Events"
 }
 
-const EventsList = () => {
-
-  return (
-    <SingleColumnLayout>
-      <Container className="p-0">
-        <EventsTable
-        />
-      </Container>
-    </SingleColumnLayout>
-  )
-}
-
-export default EventsList
+export default MarketplaceEventsList

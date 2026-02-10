@@ -1,23 +1,33 @@
-import { Copy, Badge, Text } from "@medusajs/ui"
 import {
   LoaderFunctionArgs,
   UIMatch,
   useLoaderData,
-  Link
 } from "react-router-dom"
 import type {
-  AdminEventResponse
+  AdminMarketplaceEventResponse
 } from "@gorgo/medusa-marketplace/types"
+
 import { sdk } from "../../../../../lib/sdk"
-import { Container } from "../../../../../components/common/container"
-import { Header } from "../../../../../components/common/header"
-import { SectionRow } from "../../../../../components/common/section-row"
+import { SingleColumnLayout } from "../../../../../components/layout"
 import { OpenJsonSection } from "../../../../../components/common/open-json-section"
 import { JsonViewSection } from "../../../../../components/common/json-view-section"
-import { MarketplaceEventDetailPage } from "../../../../../components/routes/marketplaces/marketplace-list/marketplace-event-detail"
+import { MarketplaceEventGeneralSection } from "../../../../../components/routes/marketplaces/marketplace-events-detail"
+
+const MarketplaceEventDetail = () => {
+  const { event } = useLoaderData() as AdminMarketplaceEventResponse
+
+  return (
+    <SingleColumnLayout>
+      <MarketplaceEventGeneralSection />
+      <OpenJsonSection title="Request" data={event.request_data} />
+      <OpenJsonSection title="Response" data={event.response_data} />
+      <JsonViewSection data={event} />
+    </SingleColumnLayout>
+  )
+}
 
 const Breadcrumb = (
-  props: UIMatch<AdminEventResponse>
+  props: UIMatch<AdminMarketplaceEventResponse>
 ) => {
   const { event } = props.data || {}
   if (!event)
@@ -28,25 +38,13 @@ const Breadcrumb = (
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params
-
   const response = await sdk.client.fetch(`/admin/marketplaces/events/${id}`)
 
   return response
 }
 
 export const handle = {
-  breadcrumb: (match: UIMatch<AdminEventResponse>) => <Breadcrumb {...match} />,
-}
-
-const MarketplaceEventDetail = () => {
-  return (
-      <Container>
-        <Container className="p-0">
-          <MarketplaceEventDetailPage
-          />
-        </Container>
-      </Container>
-    )
+  breadcrumb: (match: UIMatch<AdminMarketplaceEventResponse>) => <Breadcrumb {...match} />,
 }
 
 export default MarketplaceEventDetail

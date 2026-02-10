@@ -1,11 +1,15 @@
 import {
   createDataTableColumnHelper,
+  Container,
   DataTable,
   DataTablePaginationState,
   useDataTable,
   StatusBadge,
   Badge
 } from "@medusajs/ui"
+import type {
+  SalesChannelDTO
+} from "@medusajs/types"
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
@@ -15,7 +19,7 @@ import type {
   AdminMarketplaceListResponse,
 } from "@gorgo/medusa-marketplace/types"
 import { MarketplaceActionMenu } from "./marketplace-action-menu"
-import { MarketplaceEdit } from "./marketplace-edit"
+import { MarketplaceEditModal } from "../marketplace-detail/marketplace-edit-modal"
 
 const PAGE_SIZE = 20
 
@@ -53,21 +57,9 @@ export const MarketplaceListTable = ({
   })
 
   const columns = [
-    columnHelper.accessor("id", {
-      header: "ID",
-      cell: ({ getValue }) => {
-        const id = getValue() as string
-
-        return (
-          <Badge size="xsmall">
-            {id}
-          </Badge>
-        )
-      },
-    }),
     columnHelper.accessor("title", { header: "Title" }),
-    columnHelper.accessor("provider_id", { 
-      header: "Provider ID" ,
+    columnHelper.accessor("provider_id", {
+      header: "Provider ID",
       cell: ({ getValue }) => {
         const provider_id = getValue() as string
 
@@ -76,6 +68,13 @@ export const MarketplaceListTable = ({
             {provider_id}
           </Badge>
         )
+      },
+    }),
+    columnHelper.accessor("sales_channel", {
+      header: "Sales Channel",
+      cell: ({ getValue }) => {
+        const sales_channel = getValue() as SalesChannelDTO
+        return (sales_channel ? sales_channel.name : "-")
       },
     }),
     columnHelper.accessor("is_enabled", {
@@ -120,40 +119,42 @@ export const MarketplaceListTable = ({
   })
 
   return (
-    <DataTable instance={table}>
-      <Header
-        key={stateModal ? "create-open" : "create-closed"}
-        title="Marketplaces"
-        actions={[
-          {
-            type: "button",
-            props: {
-              children: "Events",
-              variant: "secondary",
-              onClick: () => navigate("events"),
+    <Container className="p-0">
+      <DataTable instance={table}>
+        <Header
+          key={stateModal ? "create-open" : "create-closed"}
+          title="Marketplaces"
+          actions={[
+            {
+              type: "button",
+              props: {
+                children: "Events",
+                variant: "secondary",
+                onClick: () => navigate("events"),
+              },
             },
-          },
-          {
-            type: "button",
-            props: {
-              children: "Add marketplace",
-              variant: "secondary",
-              onClick: () => openModal(),
+            {
+              type: "button",
+              props: {
+                children: "Add marketplace",
+                variant: "secondary",
+                onClick: () => openModal(),
+              },
             },
-          },
-        ]}
-      />
-
-      <DataTable.Table />
-      <DataTable.Pagination />
-
-      {editingMarketplace && (
-        <MarketplaceEdit
-          response={{ marketplace: editingMarketplace }}
-          open={editOpen}
-          setOpen={setEditOpen}
+          ]}
         />
-      )}
-    </DataTable>
+
+        <DataTable.Table />
+        <DataTable.Pagination />
+
+        {editingMarketplace && (
+          <MarketplaceEditModal
+            response={{ marketplace: editingMarketplace }}
+            open={editOpen}
+            setOpen={setEditOpen}
+          />
+        )}
+      </DataTable>
+    </Container>
   )
 }

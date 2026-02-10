@@ -11,21 +11,20 @@ import {
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect } from "react"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query"
 import { useRevalidator } from "react-router-dom"
 import { sdk } from "../../../../lib/sdk"
 import type { AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/types"
-import type { HttpTypes } from "@medusajs/framework/types"
 
 const MarketplaceEditSchema = z.object({
   title: z.string().trim().min(1, "Min 1 chars").max(20, "Max 20 chars"),
   is_enabled: z.boolean(),
-  //sales_channel_id: z.string().optional(),
+  sales_channel_id: z.string().optional(),
 })
 
 type MarketplaceEditValues = z.infer<typeof MarketplaceEditSchema>
 
-export const MarketplaceEdit = ({
+export const MarketplaceEditModal = ({
   response,
   open,
   setOpen,
@@ -38,21 +37,21 @@ export const MarketplaceEdit = ({
   const queryClient = useQueryClient()
   const { revalidate } = useRevalidator()
 
-  // const { data: salesChannelsData, isLoading: isSalesChannelsLoading } =
-  //   useQuery<HttpTypes.AdminSalesChannelListResponse>({
-  //     queryKey: ["admin-sales-channels"],
-  //     queryFn: () => sdk.admin.salesChannel.list({ limit: 50 }),
-  //     enabled: open,
-  //     staleTime: 5 * 60 * 1000,
-  //   })
+  const { data: salesChannelsData, isLoading: isSalesChannelsLoading } =
+    useQuery<HttpTypes.AdminSalesChannelListResponse>({
+      queryKey: ["admin-sales-channels"],
+      queryFn: () => sdk.admin.salesChannel.list({ limit: 50 }),
+      enabled: open,
+      staleTime: 5 * 60 * 1000,
+    })
 
-  // const salesChannels = salesChannelsData?.sales_channels ?? []
+  const salesChannels = salesChannelsData?.sales_channels ?? []
 
   const form = useForm<MarketplaceEditValues>({
     defaultValues: {
       title: String(marketplace.title),
       is_enabled: Boolean(marketplace.is_enabled),
-      //sales_channel_id: marketplace.sales_channel_id ?? "",
+      sales_channel_id: marketplace.sales_channel_id ?? "",
     },
     resolver: zodResolver(MarketplaceEditSchema),
     mode: "onSubmit",
@@ -62,7 +61,7 @@ export const MarketplaceEdit = ({
     form.reset({
       title: String(marketplace.title),
       is_enabled: Boolean(marketplace.is_enabled),
-      //sales_channel_id: marketplace.sales_channel_id ?? "",
+      sales_channel_id: marketplace.sales_channel_id ?? "",
     })
 
   useEffect(() => {
@@ -79,7 +78,7 @@ export const MarketplaceEdit = ({
           is_enabled: values.is_enabled,
           credentials: marketplace.credentials ?? {},
           settings: marketplace.settings ?? {},
-          // sales_channel_id: values.sales_channel_id || null,
+          sales_channel_id: values.sales_channel_id || null,
         },
       })
     },
@@ -127,7 +126,7 @@ export const MarketplaceEdit = ({
                 )}
               </div>
 
-              {/* <div className="flex flex-col gap-y-2">
+              <div className="flex flex-col gap-y-2">
                 <Label htmlFor="sales_channel_id" size="small">
                   Sales Channel
                 </Label>
@@ -161,7 +160,7 @@ export const MarketplaceEdit = ({
                     {form.formState.errors.sales_channel_id.message}
                   </Text>
                 )}
-              </div> */}
+              </div>
 
               <div className="flex items-center justify-between">
                 <div className="flex flex-col">

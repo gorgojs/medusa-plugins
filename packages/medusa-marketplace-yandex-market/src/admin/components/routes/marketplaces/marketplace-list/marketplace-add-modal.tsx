@@ -16,7 +16,7 @@ const MarketplaceAddSchema = zod.object({
 
 type MarketplaceAddValues = zod.infer<typeof MarketplaceAddSchema>
 
-export const MarketplaceAdd = ({
+export const MarketplaceAddModal = ({
   stateModal,
   closeModal,
 }: {
@@ -52,7 +52,6 @@ export const MarketplaceAdd = ({
     })
 
   const salesChannels = salesChannelsData?.sales_channels ?? []
-
 
   const createMarketplace = useMutation<
     AdminMarketplaceResponse,

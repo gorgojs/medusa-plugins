@@ -4,9 +4,25 @@ import {
 } from "react-router-dom"
 import { sdk } from "../../../../lib/sdk"
 import type { AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/types"
-import { Container } from "../../../../components/common/container"
-import { MarketplaceDetailPage } from "../../../../components/routes/marketplaces/marketplace-list/marketplace-detail"
-import { SingleColumnLayout } from "../../../../components/layout"
+import {
+  MarketplaceGeneralSection,
+  MarketplaceEventsSection
+ } from "../../../../components/routes/marketplaces/marketplace-detail"
+import { TwoColumnLayout } from "../../../../components/layout"
+
+const MarketplaceDetail = () => {
+  return (
+    <TwoColumnLayout
+      firstCol={
+        <MarketplaceGeneralSection />
+      }
+      secondCol={
+        <MarketplaceEventsSection />
+      }
+    >
+    </TwoColumnLayout>
+  )
+}
 
 const Breadcrumb = (
   props: UIMatch<AdminMarketplaceResponse>
@@ -28,16 +44,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 export const handle = {
   breadcrumb: (match: UIMatch<AdminMarketplaceResponse>) => <Breadcrumb {...match} />,
-}
-
-const MarketplaceDetail = () => {
-  return (
-    <SingleColumnLayout>
-      <Container className="p-0">
-        <MarketplaceDetailPage />
-      </Container>
-    </SingleColumnLayout>
-  )
 }
 
 export default MarketplaceDetail
