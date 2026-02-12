@@ -32,6 +32,9 @@ export const POST = async (
     ...req.validatedBody
   })
 
+  console.log("marketplace", marketplace)
+  console.log("marketplaceContext", req["marketplaceContext"])
+
   if (req.validatedBody.sales_channel_id) {
     const link = req.scope.resolve(ContainerRegistrationKeys.LINK)
     // TODO: how to correctly update the link
@@ -40,7 +43,7 @@ export const POST = async (
         marketplace_id: marketplace.id
       },
       [Modules.SALES_CHANNEL]: {
-        sales_channel_id: marketplace.sales_channel_id  // TODO: fix types
+        sales_channel_id: req["marketplaceContext"].sales_channel.id // TODO: not sure to pass sales_channel_id throug marketplaceContext, need to think about it
       }
     })
     await link.create({

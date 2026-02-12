@@ -1,3 +1,5 @@
+import { SalesChannelDTO } from "@medusajs/framework/types"
+
 export type EventDirectionType = "MEDUSA_TO_MARKETPLACE" | "MARKETPLACE_TO_MEDUSA"
 
 export type EventEntityType = "PRODUCT" | "PRODUCT_MEDIA" | "PRODUCT_PRICE" | "PRODUCT_STOCK" | "ORDER"
@@ -15,6 +17,8 @@ export type MarketplaceDTO = {
   credentials: MarketplaceCredentialsType
   settings: MarketplaceSettingsType
   is_enabled: boolean
+  sales_channel_id?: string
+  sales_channel?: SalesChannelDTO
 }
 
 export type MarketplaceEventDTO = {
