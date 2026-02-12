@@ -4,28 +4,6 @@ export const isOzonCategory = (node: OzonNode): node is OzonCategoryNode => "des
 export const isOzonType = (node: OzonNode): node is OzonTypeNode => "type_id" in node
 export const getEnabledOzonNodes = (nodes: OzonNode[] = []) => nodes.filter((node) => !node.disabled)
 
-export const buildOzonCategorySelectOptionsDeep = (nodes: OzonNode[] = [], parentPathSegments: string[] = []): SelectOption[] => {
-  return getEnabledOzonNodes(nodes).flatMap((node) => {
-    if (!isOzonCategory(node)) return []
-
-    const nextPathSegments = [...parentPathSegments, node.category_name].filter(Boolean)
-
-    const enabledChildren = getEnabledOzonNodes(node.children ?? [])
-    const hasChildCategories = enabledChildren.some(isOzonCategory)
-
-    const childrenOptions = buildOzonCategorySelectOptionsDeep(enabledChildren, nextPathSegments)
-
-    if (hasChildCategories) return childrenOptions
-
-    const currentOption: SelectOption = {
-      value: String(node.description_category_id),
-      label: nextPathSegments.join(" / "),
-    }
-
-    return [currentOption, ...childrenOptions]
-  })
-}
-
 export const buildOzonCategoryTypeSelectOptionsDeep = (
   nodes: OzonNode[] = [],
   parentPathSegments: string[] = []
@@ -51,20 +29,6 @@ export const buildOzonCategoryTypeSelectOptionsDeep = (
   })
 }
 
-export const findEnabledOzonCategoryByDescriptionId = (nodes: OzonNode[], descriptionCategoryId: number): OzonCategoryNode | null => {
-  for (const node of nodes) {
-    if (!isOzonCategory(node) || node.disabled) continue
-    if (node.description_category_id === descriptionCategoryId) return node
-
-    const found = findEnabledOzonCategoryByDescriptionId(
-      getEnabledOzonNodes(node.children ?? []),
-      descriptionCategoryId
-    )
-    if (found) return found
-  }
-  return null
-}
-
 export const buildOzonTypeSelectOptionsFromCategory = (categoryNode: OzonCategoryNode | null): SelectOption[] => {
   if (!categoryNode) return []
   const typeOptions: SelectOption[] = []
@@ -76,11 +40,6 @@ export const buildOzonTypeSelectOptionsFromCategory = (categoryNode: OzonCategor
   }
   walk(categoryNode.children ?? [])
   return typeOptions
-}
-
-export const buildMedusaCategorySelectOptions = (medusaCategoriesResponse: any): SelectOption[] => {
-  const categories: Array<{ id: string; name: string }> = medusaCategoriesResponse?.product_categories ?? []
-  return categories.map((category) => ({ value: String(category.id), label: category.name }))
 }
 
 export const aggregateMedusaProductOptionsByTitle = (products: any[] = []): AggregatedMedusaOption[] => {

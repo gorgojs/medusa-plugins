@@ -1,15 +1,26 @@
-import { Heading } from "@medusajs/ui"
-import { Container } from "../../../../components/common/container"
+import { Button } from "@medusajs/ui"
+import { useForm } from "react-hook-form"
+import { Form } from "../../../common/form"
+import { MappingFormValues } from "../../../../types"
 import { MappingRow } from "./components/mapping-row"
 
 
 export const MarketplaceMappingSection = () => {
+  const form = useForm<MappingFormValues>({
+    defaultValues: { mappings: [] },
+    mode: "onChange",
+  })
+
+  const onSubmit = (values: MappingFormValues) => {
+    console.log(values)
+  }
+
   return (
-    <Container>
-      <div className="px-6 py-4 flex items-center justify-between gap-x-4">
-        <Heading>Mapping</Heading>
-      </div>
-      <MappingRow />
-    </Container>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 space-y-6">
+        <MappingRow form={form} />
+        <Button type="submit">Save</Button>
+      </form>
+    </Form>
   )
 }
