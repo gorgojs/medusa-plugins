@@ -4,10 +4,9 @@ import {
   Drawer,
   Input,
   Label,
-  Switch,
   Text,
 } from "@medusajs/ui"
-import { Controller, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -16,9 +15,8 @@ import { sdk } from "../../../../lib/sdk"
 import type { AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/types"
 
 const MarketplaceEditSchema = z.object({
-  title: z.string().trim().min(1, "Min 1 chars").max(20, "Max 20 chars"),
-  is_enabled: z.boolean(),
-  //sales_channel_id: z.string().optional(),
+  api_key: z.string().trim().min(1, "Min 1 chars"),
+  business_id: z.string().trim().min(1, "Min 1 chars"),
 })
 
 type MarketplaceEditValues = z.infer<typeof MarketplaceEditSchema>
@@ -36,21 +34,10 @@ export const MarketplaceCredentialsEditModal = ({
   const queryClient = useQueryClient()
   const { revalidate } = useRevalidator()
 
-  // const { data: salesChannelsData, isLoading: isSalesChannelsLoading } =
-  //   useQuery<HttpTypes.AdminSalesChannelListResponse>({
-  //     queryKey: ["admin-sales-channels"],
-  //     queryFn: () => sdk.admin.salesChannel.list({ limit: 50 }),
-  //     enabled: open,
-  //     staleTime: 5 * 60 * 1000,
-  //   })
-
-  // const salesChannels = salesChannelsData?.sales_channels ?? []
-
   const form = useForm<MarketplaceEditValues>({
     defaultValues: {
-      title: String(marketplace.title),
-      is_enabled: Boolean(marketplace.is_enabled),
-      //sales_channel_id: marketplace.sales_channel_id ?? "",
+      api_key: String(marketplace.credentials?.api_key ?? ""),
+      business_id: String(marketplace.credentials?.business_id ?? "")
     },
     resolver: zodResolver(MarketplaceEditSchema),
     mode: "onSubmit",
@@ -58,9 +45,8 @@ export const MarketplaceCredentialsEditModal = ({
 
   const resetForm = () =>
     form.reset({
-      title: String(marketplace.title),
-      is_enabled: Boolean(marketplace.is_enabled),
-      //sales_channel_id: marketplace.sales_channel_id ?? "",
+      api_key: String(marketplace.credentials?.api_key ?? ""),
+      business_id: String(marketplace.credentials?.business_id ?? "")
     })
 
   useEffect(() => {
@@ -72,12 +58,15 @@ export const MarketplaceCredentialsEditModal = ({
       return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`, {
         method: "POST",
         body: {
-          title: values.title.trim(),
+          title: marketplace.title,
           provider_id: marketplace.provider_id,
-          is_enabled: values.is_enabled,
-          credentials: marketplace.credentials ?? {},
+          is_enabled: marketplace.is_enabled,
           settings: marketplace.settings ?? {},
-          // sales_channel_id: values.sales_channel_id || null,
+          credentials: {
+            ...(marketplace.credentials ?? {}),
+            api_key: values.api_key.trim(),
+            business_id: values.business_id.trim(),
+          },
         },
       })
     },
@@ -101,87 +90,36 @@ export const MarketplaceCredentialsEditModal = ({
       <Drawer.Content>
         <form onSubmit={onSubmit}>
           <Drawer.Header>
-            <Drawer.Title>Edit Marketplace</Drawer.Title>
+            <Drawer.Title>Edit Credentials</Drawer.Title>
           </Drawer.Header>
 
-          <Drawer.Body>
-            <div className="flex flex-col gap-y-6">
-              <div className="flex flex-col gap-y-2">
-                <Label size="small">Provider ID</Label>
-                <Text size="small" className="text-ui-fg-subtle">
-                  {marketplace.provider_id}
+          <Drawer.Body className="flex max-w-full flex-1 flex-col gap-y-6 overflow-y-auto">
+            <div className="flex flex-col gap-y-2">
+              <Label htmlFor="api_key" size="small">
+                API Key
+              </Label>
+              <Input id="api_key" autoComplete="off" {...form.register("api_key")} />
+              {form.formState.errors.api_key?.message && (
+                <Text size="small" className="text-ui-fg-error">
+                  {form.formState.errors.api_key.message}
                 </Text>
-              </div>
+              )}
+            </div>
 
-              <div className="flex flex-col gap-y-2">
-                <Label htmlFor="title" size="small">
-                  Title
-                </Label>
-                <Input id="title" autoComplete="off" {...form.register("title")} />
-                {form.formState.errors.title?.message && (
-                  <Text size="small" className="text-ui-fg-error">
-                    {form.formState.errors.title.message}
-                  </Text>
-                )}
-              </div>
-
-              {/* <div className="flex flex-col gap-y-2">
-                <Label htmlFor="sales_channel_id" size="small">
-                  Sales Channel
-                </Label>
-
-                <Controller
-                  control={form.control}
-                  name="sales_channel_id"
-                  render={({ field }) => (
-                    <Select
-                      value={field.value || undefined}
-                      onValueChange={(v: string) => field.onChange(v)}
-                      disabled={isSalesChannelsLoading || salesChannels.length === 0}
-                    >
-                      <Select.Trigger>
-                        <Select.Value placeholder="Select sales channel" />
-                      </Select.Trigger>
-
-                      <Select.Content>
-                        {salesChannels.map((sc) => (
-                          <Select.Item key={sc.id} value={sc.id}>
-                            {sc.name}
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select>
-                  )}
-                />
-
-                {form.formState.errors.sales_channel_id?.message && (
-                  <Text size="small" className="text-ui-fg-error">
-                    {form.formState.errors.sales_channel_id.message}
-                  </Text>
-                )}
-              </div> */}
-
-              <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                  <Text size="small" className="text-ui-fg-subtle">
-                    Enabled
-                  </Text>
-                  <Text size="small">
-                    Specify whether the marketplace is enabled.
-                  </Text>
-                </div>
-
-                <Controller
-                  control={form.control}
-                  name="is_enabled"
-                  render={({ field }) => (
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={(v: boolean) => field.onChange(Boolean(v))}
-                    />
-                  )}
-                />
-              </div>
+            <div className="flex flex-col gap-y-2">
+              <Label htmlFor="business_id" size="small">
+                Business ID
+              </Label>
+              <Input
+                id="business_id"
+                autoComplete="off"
+                {...form.register("business_id")}
+              />
+              {form.formState.errors.business_id?.message && (
+                <Text size="small" className="text-ui-fg-error">
+                  {form.formState.errors.business_id.message}
+                </Text>
+              )}
             </div>
           </Drawer.Body>
 

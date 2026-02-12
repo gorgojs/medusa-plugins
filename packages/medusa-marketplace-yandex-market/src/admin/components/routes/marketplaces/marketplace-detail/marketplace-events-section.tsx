@@ -2,15 +2,23 @@ import { PropsWithChildren } from "react"
 import {
   Text,
   Tooltip,
-  clx
+  clx,
+  Button,
+  DropdownMenu
 } from "@medusajs/ui"
+import {
+  ArrowPath,
+  CubeSolid,
+  CurrencyDollar,
+  HandTruck
+} from "@medusajs/icons"
 import type {
   AdminMarketplaceEventListResponse,
   MarketplaceEventDTO
 } from "@gorgo/medusa-marketplace/types"
 import { useLoaderData } from "react-router-dom"
 import type { AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/types"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation } from "@tanstack/react-query"
 import { sdk } from "../../../../lib/sdk"
 import { getFullDate, getRelativeDate } from "../../../../utils"
 import { Container } from "../../../common/container"
@@ -36,11 +44,26 @@ export const MarketplaceEventsSection = () => {
         query: {
           limit,
           offset: 0,
-          marketplace_id: marketplace.id
+          marketplace_id: marketplace.id,
         },
       }),
   })
+
+  const syncProducts = useMutation({
+    mutationFn: async () => {
+      return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}/products/sync`, {
+        method: "POST",
+        body: {
+          ids: [],
+        },
+      })
+    },
+  })
+
   const events = (data?.events ?? []) as MarketplaceEventDTO[]
+  const total = data?.count ?? 0
+  const shown = events.length
+
   const items = events.map((event: MarketplaceEventDTO) => ({
     title: String((event as any).marketplace_id ?? "-"),
     timestamp:
@@ -52,7 +75,50 @@ export const MarketplaceEventsSection = () => {
 
   return (
     <Container>
-      <Header title="Events" />
+      <Header
+        title="Events"
+        actions={[
+          {
+            type: "custom",
+            children: (
+              <DropdownMenu>
+                <DropdownMenu.Trigger asChild>
+                  <Button size="small" variant="secondary">
+                    <ArrowPath className="mr-1" />
+                    Synchronize
+                  </Button>
+                </DropdownMenu.Trigger>
+
+                <DropdownMenu.Content>
+                  <DropdownMenu.Group>
+                    <DropdownMenu.Item onClick={() => {
+                      syncProducts.mutate()
+                    }}>
+                      <CubeSolid className="mr-1 text-ui-fg-subtle" />
+                      Products
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item onClick={() => { }}>
+                      <CurrencyDollar className="mr-1 text-ui-fg-subtle" />
+                      Prices
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item onClick={() => { }}>
+                      <HandTruck className="mr-1 text-ui-fg-subtle" />
+                      Inventory
+                    </DropdownMenu.Item>
+                  </DropdownMenu.Group>
+
+                  <DropdownMenu.Separator />
+
+                  <DropdownMenu.Item onClick={() => { }}>
+                    <ArrowPath className="mr-1 text-ui-fg-subtle" />
+                    All
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu>
+            ),
+          },
+        ]}
+      />
       {items.length === 0 ?
         (
           <Text size="small" className="text-ui-fg-subtle">
@@ -72,7 +138,13 @@ export const MarketplaceEventsSection = () => {
           ))}
         </div>)
       }
-      {/* TODO: add footer like in Figma */}
+      {total > 0 && (
+        <div className="flex items-center justify-between px-6 py-3 border-t border-ui-border-subtle">
+          <Text size="small" className="text-ui-fg-subtle">
+            {shown} of {total} events
+          </Text>
+        </div>
+      )}
     </Container>
   )
 }
