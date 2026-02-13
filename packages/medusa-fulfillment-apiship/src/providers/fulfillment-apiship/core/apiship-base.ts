@@ -25,7 +25,8 @@ import {
   getCheapestTariff,
   mapToApishipOrderRequest,
   mapToApishipCalculatorRequest,
-  registerApishipClient
+  registerApishipClient,
+  hashObject
 } from "../utils"
 import {
   getShippingOptionWorkflow,
@@ -89,7 +90,12 @@ class ApishipBase extends AbstractFulfillmentProviderService {
 
     const shippingOptionId = optionData.id as string
     const cartId = context.id as string
-    const key = `apiship:calc:${cartId}:${shippingOptionId}`
+    const hash = hashObject({
+      cartId,
+      ...calculatorRequest
+    })
+    console.log("hash", hash)
+    const key = `apiship:calc:${hash}:${shippingOptionId}`
 
     const { result: cache } = await getCalculationWorkflow().run({
       input: { key },

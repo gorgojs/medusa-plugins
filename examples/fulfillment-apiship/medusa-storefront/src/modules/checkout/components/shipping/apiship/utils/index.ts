@@ -1,7 +1,7 @@
 import {
   ApishipCalculation,
   ApishipTariff,
-} from "../apiship-types"
+} from "../types"
 import { useEffect, useRef } from "react"
 
 export function days(tariff: ApishipTariff) {
