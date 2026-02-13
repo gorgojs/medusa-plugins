@@ -68,6 +68,7 @@ export const CategoryMappingRow = ({
   })
 
   const attributesByCategoryQuery = useQuery({
+    // TODO: add IDs of all the products in the selected categories to the query key to avoid issues when products are added/removed from categories
     queryKey: ["medusa-category-attributes-by-category", selectedMedusaCategoryIds],
     enabled: selectedMedusaCategoryIds.length > 0,
     queryFn: async () => {

@@ -2,8 +2,25 @@
   "mapping": [
     {
       "ozon_category": {
-        "description_category_id": 200001517,
-        "type_id": 93228
+        "description_category_id": 88976462,
+        "category_name": "Фермерское хозяйство",
+        "disabled": false,
+        "children": {
+          "description_category_id": 88979652,
+          "category_name": "Вывод пчелиных маток",
+          "disabled": false,
+          "children": {
+            "type_name": "Мисочка для вывода маток",
+            "type_id": 970861191,
+            "disabled": false
+          }
+        },
+        "attributes": {
+          "total": 50,
+          "required": 10,
+          "mapped": 15,
+          "mappedWithErrors": 3
+        }
       },
       "medusa_categories": [
         "pcat_01KCP70X23QSZN9QS0CJCF9R3R"
@@ -32,7 +49,8 @@
         {
           "from": "prices.currency_code",
           "to": "currency_code",
-          "default": "RUB"
+          "default": "RUB",
+          "transform": { "name": "centsToRub" }
         },
         {
           "from": "sku",
@@ -81,55 +99,29 @@
         {
           "from": "attributes",
           "to": "attributes",
-          "default": [
-            {
-              "id": 8229,
-              "values": [
-                {
-                  "value": "Термофутболка"
-                }
-              ]
-            },
-            {
-              "id": 9163,
-              "values": [
-                {
-                  "value": "Мужской"
-                }
-              ]
-            },
-            {
-              "id": 31,
-              "values": [
-                {
-                  "value": "Нет бренда"
-                }
-              ]
-            },
-            {
-              "id": 8292,
-              "values": [
-                {
-                  "value": "prod_01KBHXW41JG2DVDQXQESNFRT85"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "from": "attributes",
-          "to": "attributes",
           "optionRules": {
-            "opt_01KC3R4AH6EYX1SKZ1MK074875": {
+            "Size": {
               "attributeId": 4295,
+              "is_error": false,
+              "transform": { "name": "centsToRub" },
               "default": [
                 "48",
                 "54",
                 "58"
               ]
             },
-            "opt_01KC3R4AH64XYH46RRWQ49S1VB": {
+            "Size Legacy": {
+              "attributeId": 4295,
+              "is_error": true,
+              "default": [
+                "48",
+                "54",
+                "58"
+              ]
+            },
+            "Color": {
               "attributeId": 10096,
+              "is_error": false,
               "default": [
                 "белый"
               ]
