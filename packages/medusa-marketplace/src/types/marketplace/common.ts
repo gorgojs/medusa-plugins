@@ -24,14 +24,15 @@ export type MarketplaceDTO = {
 export type MarketplaceEventDTO = {
   id: string
   marketplace: MarketplaceDTO
-  correlationId?: string
+  marketplace_id: string
+  correlation_id?: string | null
   direction: EventDirectionType
   entity_type: EventEntityType
   action: EventActionType
-  startedAt?: Date
-  finishedAt?: Date
-  requestData?: Record<string, unknown>
-  responseData?: Record<string, unknown>
+  started_at?: Date | null
+  finished_at?: Date | null
+  request_data?: Record<string, unknown> | null
+  response_data?: Record<string, unknown> | null
 }
 
 export type MarketplaceProductDTO = Record<string, unknown>

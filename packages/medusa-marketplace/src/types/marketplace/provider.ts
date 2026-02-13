@@ -1,8 +1,15 @@
 import { MedusaContainer } from "@medusajs/framework"
 import { ProductDTO } from "@medusajs/types"
-import {MarketplaceDTO, MarketplaceProductDTO} from "../../types"
+import { MarketplaceDTO, MarketplaceProductDTO } from "../../types"
 
-const MARKETPLACE_INJECTION_ZONES = ["marketplaces.list.before", "marketplaces.list.after"]
+const MARKETPLACE_INJECTION_ZONES = [
+  "marketplace.list.before",
+  "marketplace.list.after",
+  "marketplace.list.before",
+  "marketplace.list.after",
+  "marketplace.details.side.before",
+  "marketplace.details.side.after"
+]
 
 export type MarketplaceInjectionZone = (typeof MARKETPLACE_INJECTION_ZONES)[number]
 
@@ -47,7 +54,7 @@ export type GetProductsInput = MarketplaceProviderInput & Record<string, unknown
 
 export type GetProductsOutput = ProductDTO[]
 
-export type GetMarketplaceProductsInput  = MarketplaceProviderInput & Record<string, unknown>
+export type GetMarketplaceProductsInput = MarketplaceProviderInput & Record<string, unknown>
 
 export type GetMarketplaceProductsOutput = MarketplaceProductDTO[]
 
