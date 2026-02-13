@@ -1,12 +1,17 @@
 import { Configuration, ProductCardsApi, CreatingProductCardsApi } from "./wildberries-products-client"
+import { FBSAssemblyOrdersApi } from "./wildberries-orders-fbs-client"
 import axios, { AxiosError } from "axios"
 import rateLimit from "axios-rate-limit"
 import axiosRetry from "axios-retry"
 import { MarketplaceWildberriesCredentialsType } from "../providers/marketplace-wildberries/types"
 
-const BASE_URL = "https://content-api-sandbox.wildberries.ru"
 const TIMEOUT = 30_000
 const MAX_RPS = 10
+
+const BASE_URLS = {
+  content: "https://content-api-sandbox.wildberries.ru",
+  marketplace: "https://marketplace-api-sandbox.wildberries.ru"
+}
 
 const axiosInst = axios.create({
   timeout: TIMEOUT,
@@ -32,14 +37,22 @@ export function getProductCardsApi(credentials: MarketplaceWildberriesCredential
   return new ProductCardsApi(new Configuration({
       apiKey: credentials.apiKey,
       accessToken: credentials.apiKey,
-      basePath: BASE_URL
-    }), BASE_URL, limitedAxiosInst)
+      basePath: BASE_URLS['content']
+    }), BASE_URLS['content'], limitedAxiosInst)
 }
 
 export function getCreatingProductCardsApi(credentials: MarketplaceWildberriesCredentialsType) {
   return new CreatingProductCardsApi(new Configuration({
       apiKey: credentials.apiKey,
       accessToken: credentials.apiKey,
-      basePath: BASE_URL
-    }), BASE_URL, limitedAxiosInst)
+      basePath: BASE_URLS['content']
+    }), BASE_URLS['content'], limitedAxiosInst)
+}
+
+export function getFBSAssemblyOrdersApi(credentials: MarketplaceWildberriesCredentialsType) {
+  return new FBSAssemblyOrdersApi(new Configuration({
+    apiKey: credentials.apiKey,
+    accessToken: credentials.apiKey,
+    basePath: BASE_URLS['marketplace']
+  }), BASE_URLS['marketplace'], limitedAxiosInst)
 }

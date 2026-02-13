@@ -2,7 +2,14 @@ openapi: 3.0.1
 info:
   title: Product Management
   version: products
-  description: Manage content, prices and inventory
+  description: |
+    Use the methods in this section to:
+      - [create](/openapi/work-with-products#tag/Creating-Product-Cards) and [edit](/openapi/work-with-products#tag/Product-Cards) product cards
+      - get [product categories, subjects, characteristics, and brands](/openapi/work-with-products#tag/Categories-Subjects-and-Characteristics)
+      - upload [media files](/openapi/work-with-products#tag/Media-Files) for product cards
+      - set up [tags](/openapi/work-with-products#tag/Tags) for product search
+      - set [prices and discounts](/openapi/work-with-products#tag/Prices-and-Discounts)
+      - manage [product inventory](/openapi/work-with-products#tag/Seller-Warehouses-Inventory) and [warehouses](/openapi/work-with-products#tag/Seller-Warehouses), if you work with the sales model from the seller's warehouse
   x-file-name: products
 security:
   - HeaderApiKey: []
@@ -21,7 +28,7 @@ tags:
     description: ''
   - name: Seller Warehouses
     description: ''
-  - name: Inventory
+  - name: Seller Warehouses Inventory
     description: ''
 paths:
   /content/v2/object/parent/all:
@@ -32,7 +39,7 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Products parent categories
+      summary: Products Parent Categories
       description: |
         Returns the list of all products parent categories
 
@@ -41,7 +48,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -127,7 +134,7 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Subjects list
+      summary: Subjects List
       description: |
         Returns the list of all available subjects, subjects parent categories and their IDs
 
@@ -136,7 +143,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -248,7 +255,7 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Subject characteristics
+      summary: Subject Characteristics
       description: |
         Returns list of the subject characteristics by its ID
 
@@ -257,7 +264,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -337,9 +344,9 @@ paths:
                         charcType:
                           type: integer
                           description: |
-                            Сharacteristic data type that should be used when [creating](./work-with-products#tag/Creating-Product-Cards) or [editing](./work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1update/post) product cards:
+                            Characteristic data type that should be used when [creating](./work-with-products#tag/Creating-Product-Cards) or [editing](./work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1update/post) product cards:
                               -  `1` — array of strings
-                              -  `4` — integer
+                              -  `4` — number
                               -  `0` — characteristic is not used
                   error:
                     type: boolean
@@ -398,7 +405,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -489,7 +496,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -565,7 +572,7 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Country of origin
+      summary: Country of Origin
       description: |
         Provides value of characteristic country of origin.
 
@@ -574,7 +581,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -611,6 +618,10 @@ paths:
                     items:
                       type: object
                       properties:
+                        id:
+                          description: Country ID
+                          type: integer
+                          example: 15000170
                         name:
                           description: Value of characteristic country of origin
                           type: string
@@ -665,7 +676,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -741,7 +752,7 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: VAT rate
+      summary: VAT Rate
       description: |
         Returns a list of values for the **VAT rate** characteristic
 
@@ -750,7 +761,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -840,7 +851,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -934,6 +945,72 @@ paths:
                 $ref: '#/components/schemas/responseBodyContentError403'
         '429':
           $ref: '#/components/responses/429'
+  /api/content/v1/brands:
+    servers:
+      - url: https://content-api.wildberries.ru
+    get:
+      x-readonly-method: true
+      x-category: content
+      security:
+        - HeaderApiKey: []
+      summary: Brands
+      description: |
+        The method returns list of brands by subject ID.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account:
+
+        | Period | Limit | Interval | Burst |
+        | --- | --- | --- | --- |
+        | 1 s | 1 request | 1 s | 5 requests |
+        </div>
+      tags:
+        - Categories, Subjects, and Characteristics
+      parameters:
+        - name: subjectId
+          in: query
+          schema:
+            type: integer
+            example: 1234
+          description: Subject ID
+          required: true
+        - name: next
+          in: query
+          schema:
+            type: integer
+            example: 1234
+          description: Pagination parameter. Use the `next` value from the response to get the next data batch
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandsResponse'
+        '400':
+          description: Bad request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/BrandsResponseError'
+              examples:
+                BrandsResponseBadRequest1:
+                  $ref: '#/components/examples/BrandsResponseBadRequest1'
+                BrandsResponseBadRequest2:
+                  $ref: '#/components/examples/BrandsResponseBadRequest2'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/BrandsResponseError'
+              examples:
+                BrandsResponseNotFound:
+                  $ref: '#/components/examples/BrandsResponseNotFound'
+        '429':
+          $ref: '#/components/responses/429'
   /content/v2/tags:
     servers:
       - url: https://content-api.wildberries.ru
@@ -942,7 +1019,7 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Tags list
+      summary: Tags List
       description: |
         Returns seller's tags list
 
@@ -951,7 +1028,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -1021,7 +1098,7 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Create a tag
+      summary: Create a Tag
       description: |
         Creates a tag.
 
@@ -1034,7 +1111,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -1110,7 +1187,7 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Update the tag
+      summary: Update the Tag
       description: |
         Changes tag data: name and color
 
@@ -1119,7 +1196,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -1191,7 +1268,7 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Delete the tag
+      summary: Delete the Tag
       description: |
         Deletes the tag
 
@@ -1200,7 +1277,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -1259,7 +1336,7 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Tag management in the product card
+      summary: Tag Management in the Product Card
       description: |
         The method allows to add tags to the product card and remove tags from the product card.<br>
         When removing a tag from a product card, the tag itself is not removed.<br>
@@ -1270,7 +1347,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -1336,27 +1413,31 @@ paths:
       - url: https://content-api.wildberries.ru
     post:
       x-readonly-method: true
-      x-category:
-        - advert
-        - content
+      x-category: content
       security:
         - HeaderApiKey: []
       tags:
         - Product Cards
-      summary: Product cards list
+      summary: Product Cards List
       description: |
         <div class="description_auth">
-          The method is available with the <a href="/openapi/api-information#tag/Authorization/How-to-create-a-token">token</a> of the <strong>Promotion</strong> category
+          The method is available with the <a href="/openapi/api-information#tag/Authorization/How-to-create-a-personal-access-base-or-test-token">token</a> of the <strong>Promotion</strong> category
         </div>
 
         Returns the list of created product cards.<br>
 
-        To get **more than 100** product cards, use pagination:
+        <div class="description_important">
+          Product cards from the trash are not provided in the method response. You can get these product cards via <a href="/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1get~1cards~1trash/post">different method</a>
+        </div>
 
-          1. Make the first request (all listed params are required):
+        To get **more than 100** product cards, use pagination:
+          1. Make the first request:
               <pre>
                 {
                   "settings": {
+                    "sort": {
+                      "ascending": true
+                    },
                     "cursor": {
                       "limit": 100
                     },
@@ -1365,20 +1446,22 @@ paths:
                     }
                   }
                 }</pre>
-          2. Copy "updatedAt": "***" and "nmID": *** from the `cursor` in the response and insert into the `cursor` of your next request.
+             To get only new or updated product cards after data export, use ascending sorting: `"sort":{"ascending":true}`.
+          2. Copy `"updatedAt": "***","nmID":"***"` from the `cursor` in the response and insert into the `cursor` of your next request.
           3. Make the next request.
           4. Repeat 2 and 3 until `total` value in the response is less than the `limit` value in the request. This will mean you got all cards.
 
-          <div class="description_important">
-          Product cards from the trash are not provided in the method response. You can get these product cards via <a href="/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1get~1cards~1trash/post">different method</a>.
-        </div>
+        To get only product cards that were created or updated after the previous data export:
+          1. Save the `"cursor":{"updatedAt":"***","nmID":"***"}` fields from the last response of the previous data export. When exporting the data, use ascending sorting: `"sort":{"ascending":true}`.
+          2. Specify the saved `"cursor":{"updatedAt":"***","nmID":"***"}` fields in the first request. Keep using ascending sorting.
+          3. Save the `"cursor":{"updatedAt":"***","nmID":"***"}` fields from the last response of the current data export.
 
         <div class="description_limit">
         <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for all methods in the <strong>Content</strong> category:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -1434,7 +1517,7 @@ paths:
                           default: 0
                         textSearch:
                           type: string
-                          description: Seller's article, Wildberries article or barcode search
+                          description: Seller's article, Wildberries article or SKU search
                         tagIDs:
                           type: array
                           description: Tags ID search
@@ -1455,7 +1538,7 @@ paths:
                           items:
                             type: string
                         imtID:
-                          description: Merged product card ID search
+                          description: Merged product cards ID search
                           type: integer
                     cursor:
                       description: |
@@ -1464,6 +1547,8 @@ paths:
                       properties:
                         limit:
                           type: integer
+                          maximum: 100
+                          default: 10
                           description: Number of cards in response
                         updatedAt:
                           type: string
@@ -1513,9 +1598,9 @@ paths:
                         imtID:
                           type: integer
                           description: |
-                            Merged product card ID.<br>
-                            The same for all WB article of a merged product card.<br>
-                            The product card has it, even if one is not merged with any other card
+                            Merged product cards ID.<br>
+                            The same for all WB article of group of merged product cards.<br>
+                            Every product card has `imtID`, even if is not merged with any other card
                         nmUUID:
                           type: string
                           format: UUID
@@ -1636,7 +1721,7 @@ paths:
                                 description: Russian size
                               skus:
                                 type: array
-                                description: Barcode
+                                description: SKU
                                 items:
                                   type: string
                                   example: 12345Ejf5
@@ -1656,7 +1741,6 @@ paths:
                                 type: string
                                 description: |
                                   Tag color:
-
                                     - `D1CFD7` — grey
                                     - `FEE0E0` — red
                                     - `ECDAFF` — purple
@@ -1756,12 +1840,12 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: List of failed product cards with errors
+      summary: List of Failed Product Cards with Errors
       description: |
         Returns the list of product cards ([drafts](https://seller.wildberries.ru/new-goods/error-cards)) and the list of errors encountered during product card creation or editing.
         <br><br>
         The data is returned in batches. One batch contains:
-          - all errors for one merged product card `imtID` in one request during product cards [creation](/openapi/work-with-products#tag/Creating-Product-Cards/paths/~1content~1v2~1cards~1upload/post)
+          - all errors for one `variants` array in one request during product cards [creation](/openapi/work-with-products#tag/Creating-Product-Cards/paths/~1content~1v2~1cards~1upload/post)
           - all errors in one request during product cards [creation with merge](/openapi/work-with-products#tag/Creating-Product-Cards/paths/~1content~1v2~1cards~1upload~1add/post) or [editing](/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1update/post).
         <br><br>
         To get more than 100 batches, use pagination:
@@ -1776,9 +1860,9 @@ paths:
                     "ascending": true
                   }
                 }</pre>
-          2. Copy `"updatedAt": "***","batchUUID": "***"` from the response `cursor` and paste into the request `cursor`.
+          2. Copy `"updatedAt":"***","batchUUID":"***"` from the response `cursor` and paste into the request `cursor`.
           3. Repeat the request.
-          4. Repeat 2 and 3, until you receive in the response `"next": false`. This will mean that you have received all the batches.
+          4. Repeat 2 and 3, until you receive in the response `"next":false`. This will mean that you have received all the batches.
 
         <div class="description_important">
           To delete product card from the errors list, repeat the request for creating or creating with merge and updating request with fixed errors
@@ -1789,7 +1873,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 10 requests | 6 seconds | 5 requests |
+        | 1 min | 10 requests | 6 s | 5 requests |
         </div>
       tags:
         - Product Cards
@@ -1905,28 +1989,36 @@ paths:
       x-category: content
       tags:
         - Product Cards
-      summary: Update product cards
+      summary: Update Product Cards
       description: |
-        Edits product cards. If you need some product data, get it using [product cards list](/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1get~1cards~1list/post).
+        Edits product cards. Also use it to add new sizes.
 
         <div class="description_important">
-          The product card is overwritten during an update. Therefore, you need to include <strong>all</strong> parameters of the product card in the request, including those you do not intend to update.
+          The product card is overwritten when updated. So the request must also include those card parameters that you are not going to update. To get their values, use <a href="/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1get~1cards~1list/post">Product Cards List</a> and <a href="/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1get~1cards~1trash/post">Product Cards in Trash List</a>.
         </div>
 
+        You cannot use this method to update or delete:
+          - product size barcodes. You can only add additional barcodes
+          - the `photos`, `video` and `tags` parameters
+          - prices of goods. The price can only be set if you add new sizes
+
+        When adding a new size, specify its price using the `price` parameter. If no `price` is specified in the request, the size price will be `0`. In this case, you can update it using the methods:
+          - [Set Prices and Discounts](/openapi/work-with-products#tag/Prices-and-Discounts/paths/~1api~1v2~1upload~1task/post), if [product](/openapi/work-with-products#tag/Prices-and-Discounts/paths/~1api~1v2~1list~1goods~1filter/get) has `"editablePriceSize":false`
+          - [Set Size Prices](/openapi/work-with-products#tag/Prices-and-Discounts/paths/~1api~1v2~1upload~1task~1size/post), if [product](/openapi/work-with-products#tag/Prices-and-Discounts/paths/~1api~1v2~1list~1goods~1filter/get) has `"editablePriceSize":true`
+
         The dimensions of the products can only be specified in `centimeters`, and the weight of packed products must be specified in `kilograms`.
+        <br><br>
+        If this method response is Success (`200`) but product card was not updated, check errors using [list of failed product cards with errors](/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1error~1list/post).<br>
+        With one request you can edit maximum 3000 product cards (`nmID`). Maximum request size is 10 Mb.<br>
+        The process of synchronizing data with services may take up to 30 minutes. During this time, you can't add inventory to warehouses and set prices.
 
-        You can not edit or delete barcodes but you can add new ones. You have not to send `photos`, `video` and `tags` and can not edit them.
-
-        If this method response is Success (`200`) but product card was not updated, check errors using [list of failed product cards with errors](/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1error~1list/post).
-
-        With one request you can edit maximum 3000 product cards (`nmID`). Maximum request size is 10 Mb.
 
         <div class="description_limit">
         <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 10 requests | 6 seconds | 5 requests |
+        | 1 min | 10 requests | 6 s | 5 requests |
         </div>
       requestBody:
         content:
@@ -1939,6 +2031,8 @@ paths:
                   - nmID
                   - vendorCode
                   - sizes
+                minimum: 1
+                maximum: 3000
                 properties:
                   nmID:
                     type: integer
@@ -1958,11 +2052,13 @@ paths:
                     description: |
                       Product description<br>
                       The maximum number of characters depends on the product category<br>
-                      Standard - 2000, minimum - 1000, maximum - 5000<br>
-                      More details about description rules in **Product card filling rules** in [Instructions](https://seller.wildberries.ru/help-center/article/A-113#описание) category of sellers portal
+                      Standard — 2000, minimum — 1000, maximum — 5000<br>
+                      More details about description rules in **Product card filling rules** in [Instructions](https://seller.wildberries.ru/help-center/article/A-113) category of sellers portal
                   dimensions:
                     description: |
-                      Dimensions and weight of the product `with packaging`. <br>Specify in `centimeters` and `kilogramms` for any product
+                      Dimensions and weight of the product `with packaging`. <br>
+                      Specify in `centimeters` and `kilograms` for any product. <br>
+                      The process of synchronizing new data with service may take up to 30 minutes
                     type: object
                     properties:
                       length:
@@ -1996,14 +2092,14 @@ paths:
                           description: |
                             Characteristic values.
                             <br>
-                            Data type — array of strings or number — depends on the characteristic data type. For more details see the description of the `charcType` field in the **Subject characteristics** method.
+                            Data type — array of strings or number — depends on the characteristic data type. For more details see the description of the `charcType` field in the [Subject characteristics](./work-with-products#tag//paths/~1content~1v2~1object~1charcs~1%7BsubjectId%7D/get) method.
                             <br>
-                            The allowed number of values is specified in the maxCount field of the **Subject characteristics** method
+                            The allowed number of values is specified in the `maxCount` field of the [Subject characteristics](./work-with-products#tag//paths/~1content~1v2~1object~1charcs~1%7BsubjectId%7D/get) method
                   sizes:
                     type: array
                     description: |
                       Product sizes<br>
-                      If product has no sizes, send only barcodes
+                      If product has no sizes, send only SKUs
                     items:
                       type: object
                       properties:
@@ -2019,11 +2115,16 @@ paths:
                         wbSize:
                           type: string
                           description: Russian size
+                        price:
+                          type: integer
+                          description: |
+                            Price, ₽<br>
+                            Specified when adding the size
                         skus:
                           type: array
                           items:
                             type: string
-                          description: Barcodes
+                          description: SKUs
               example:
                 - nmID: 11111111
                   vendorCode: wbiz72wmro
@@ -2031,7 +2132,7 @@ paths:
                   title: Свитер женский оверсайз с горлом
                   description: '12345'
                   dimensions:
-                    length: 55
+                    length: 35
                     width: 40
                     height: 15
                     weightBrutto: 3
@@ -2120,9 +2221,9 @@ paths:
       x-category: content
       tags:
         - Product Cards
-      summary: Merging or separating of product cards
+      summary: Merging or Separating of Product Cards
       description: |
-        The method merges and separates product cards. Product cards are considered merged if they have the same `imtID`.<br><br>
+        The method merges and separates product cards. Product cards are merged if they have the same `imtID`.<br><br>
 
         To merge product cards, make a request **specifying** the `imtID`. You can merge up to 30 product cards at a time.<br>
 
@@ -2135,7 +2236,7 @@ paths:
         The maximum request size is 10 MB.
 
         <div class="description_important">
-          It is possible to merge product cards containing only the same subjects.
+          It is possible to merge product cards containing only the same subjects
         </div>
 
         <div class="description_limit">
@@ -2143,7 +2244,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -2228,23 +2329,25 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Transfer product card to trash
+      summary: Transfer Product Card to Trash
       description: |
-        Transfers the product card to trash. In doing so, the product card would not be deleted.
+        Transfers the product card to the trash. In doing so, the product card would not be deleted.
 
         <div class="description_important">
-          When transferring product cards to the trash, this product card is removed from the product card, meaning it is assigned a new <code>imtID</code>.
+          When transferring product cards to the trash, this product card is removed from the product card, meaning it is assigned a new <code>imtID</code> — merged product cards ID
         </div>
 
         After 30 days in the trash the product card would be deleted automatically. The trash is cleared every night according to Moscow time.<br>
         The product card can be deleted at any time in [personal account](https://seller.wildberries.ru/new-goods/basket-cards).
+        <br><br>
+        A card will remain for sale as long as there is any inventory left, even if moved to the trash. To completely remove the card from sale, set its inventory to zero.
 
         <div class="description_limit">
         <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for all methods in the <strong>Content</strong> category:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -2264,7 +2367,9 @@ paths:
               type: object
               properties:
                 nmIDs:
-                  description: WB article (max. 1000)
+                  description: Wildberries articles
+                  minimum: 1
+                  maximum: 1000
                   type: array
                   items:
                     type: integer
@@ -2322,12 +2427,12 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Recover product card from trash
+      summary: Recover Product Card from Trash
       description: |
         Returns the product card from trash
 
         <div class="description_important">
-          When restoring the product card from the trash, its <code>imtID</code> doesn't remain the same as it was for the product card in the trash.
+          When restoring the product card from the trash, its <code>imtID</code>  — merged product cards ID — doesn't remain the same as it was for the product card in the trash
         </div>
 
         <div class="description_limit">
@@ -2335,7 +2440,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -2355,8 +2460,10 @@ paths:
               type: object
               properties:
                 nmIDs:
-                  description: WB article (max. 1000)
+                  description: Wildberries articles
                   type: array
+                  minimum: 1
+                  maximum: 1000
                   items:
                     type: integer
             example:
@@ -2410,15 +2517,13 @@ paths:
       - url: https://content-api.wildberries.ru
     post:
       x-readonly-method: true
-      x-category:
-        - advert
-        - content
+      x-category: content
       security:
         - HeaderApiKey: []
-      summary: Product cards in trash list
+      summary: Product Cards in Trash List
       description: |
         <div class="description_auth">
-          The method is available with the <a href="/openapi/api-information#tag/Authorization/How-to-create-a-token">token</a> of the <strong>Promotion</strong> category
+          The method is available with the <a href="/openapi/api-information#tag/Authorization/How-to-create-a-personal-access-base-or-test-token">token</a> of the <strong>Promotion</strong> category
         </div>
 
         Returns list of product cards in trash.
@@ -2428,22 +2533,30 @@ paths:
               <pre>
                 {
                   "settings": {
+                    "sort": {
+                      "ascending": true
+                    },
                     "cursor": {
                       "limit": 100
                     }
                   }
                 }</pre>
-          2. Copy `"trashedAt": "***"` and `"nmID": ***` from the `cursor` in the response and insert into the `cursor` of your next request.
+             To get only product cards that were transferred to the trash after data export, use ascending sorting: `"sort":{"ascending":true}`.
+          2. Copy `"trashedAt":"***","nmID":***` from the `cursor` in the response and insert into the `cursor` of your next request.
           3. Make the next request.
           4. Repeat 2 and 3 until `total` value in the response is less than the `limit` value in the request. This will mean you got all cards.
 
+        To get only product cards that were transferred to the trash after the previous data export:
+          1. Save `"trashedAt":"***","nmID":***` from the `cursor` of the previous data export. When data export, use ascending sorting: `"sort":{"ascending":true}`.
+          2. Specify the `"cursor":{"trashedAt":"***","nmID":"***"}` saved fields in the first request. Keep using ascending sorting.
+          3. Save the `"cursor":{"trashedAt":"***","nmID":"***"}` fields from the last response of the current data export.
 
         <div class="description_limit">
         <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for all methods in the <strong>Content</strong> category:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -2496,6 +2609,8 @@ paths:
                       properties:
                         limit:
                           type: integer
+                          maximum: 100
+                          default: 10
                           description: Number of cards in response
                         trashedAt:
                           type: string
@@ -2509,7 +2624,7 @@ paths:
                       properties:
                         textSearch:
                           type: string
-                          description: Seller's article, Wildberries article or barcode to search
+                          description: Seller's article, Wildberries article or SKU to search
             example:
               settings:
                 sort:
@@ -2598,7 +2713,7 @@ paths:
                                 description: Russian product size
                               skus:
                                 type: array
-                                description: Array of barcodes
+                                description: Array of SKUs
                                 items:
                                   type: string
                                   example: 12345Ejf5
@@ -2719,7 +2834,7 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Limits for the product cards
+      summary: Limits for the Product Cards
       description: |
         The method allows to get separately free and paid vendor limits for creating product cards.<br>
         To calculate the number of cards that can be created, use the formula: (freeLimits + paidLimits) - Number of cards created.<br>
@@ -2730,7 +2845,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -2794,16 +2909,16 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Generation of barcodes
+      summary: Generation of SKUs
       description: |
-        Generates array of unique barcodes to create size of the product card
+        Generates array of unique SKUs to create size of the product card
 
         <div class="description_limit">
         <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account for all methods in the <strong>Content</strong> category:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 100 requests | 600 milliseconds | 5 requests |
+        | 1 min | 100 requests | 600 ms | 5 requests |
 
         Exceptions are the methods:
         <ul>
@@ -2823,7 +2938,7 @@ paths:
               type: object
               properties:
                 count:
-                  description: Number of barcodes to be generated, maximum 5,000
+                  description: Number of SKUs to be generated, maximum 5,000
                   type: integer
                   example: 100
       responses:
@@ -2835,7 +2950,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    description: An array of generated barcodes
+                    description: An array of generated SKUs
                     type: array
                     items:
                       type: string
@@ -2871,29 +2986,34 @@ paths:
       x-category: content
       tags:
         - Creating Product Cards
-      summary: Create product cards
-      description: "Creates products cards. You can specify product description and characteristics.<br>\n\nHow to create a card:\n\n  1. Get [parent categories list](/openapi/work-with-products#tag/Categories-Subjects-and-Characteristics/paths/~1content~1v2~1object~1parent~1all/get)\n  2. Get [the category and get all subjects](/openapi/work-with-products#tag/Categories-Subjects-and-Characteristics/paths/~1content~1v2~1object~1all/get)\n  3. Choose [the subject and get all available characteristics](/openapi/work-with-products#tag/Categories-Subjects-and-Characteristics/paths/~1content~1v2~1object~1charcs~1%7BsubjectId%7D/get). For `Color`, `Gender`, `Country of origin`, `Season`, `VAT rate`, `HS-code` characteristics use values from [category](/openapi/work-with-products#tag/Categories-Subjects-and-Characteristics).\n  4. Send the request. If the response is Success (`200`) but the card was not created, check errors using [list of failed product card with errors](/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1error~1list/post).\n\nThe dimensions of the products can only be specified in `centimeters`, and the weight of packed products must be specified in `kilograms`.<br>\n\nWith one request you can create maximum 100\_merged product cards (`imtID`), 30\_product cards (`nmID`) in\_each. Maximum request size is 10 Mb.<br>\n\nCreating a card is asynchronous, after sending the request is put in a queue for processing.\n\n<div class=\"description_important\">\n  If there were errors during queue processing, the product card is considered invalid.\n</div>\n\n<div class=\"description_limit\">\n<a href=\"/openapi/api-information#tag/Introduction/Rate-Limits\">Request limit</a> per one seller's account:\n\n| Period | Limit | Interval | Burst |\n| --- | --- | --- | --- |\n| 1 minute | 10 requests | 6 seconds | 5 requests |\n</div>\n"
+      summary: Create Product Cards
+      description: "Creates products cards. You can specify product description and characteristics.<br>\n\nHow to create a card:\n\n  1. Get [parent categories list](/openapi/work-with-products#tag/Categories-Subjects-and-Characteristics/paths/~1content~1v2~1object~1parent~1all/get)\n  2. Get [the category and get all subjects](/openapi/work-with-products#tag/Categories-Subjects-and-Characteristics/paths/~1content~1v2~1object~1all/get)\n  3. Choose [the subject and get all available characteristics](/openapi/work-with-products#tag/Categories-Subjects-and-Characteristics/paths/~1content~1v2~1object~1charcs~1%7BsubjectId%7D/get). For `Color`, `Gender`, `Country of origin`, `Season`, `VAT rate`, `HS-code` characteristics use values from [category](/openapi/work-with-products#tag/Categories-Subjects-and-Characteristics).\n  4. Send the request. If the response is Success (`200`) but the card was not created, check errors using [list of failed product card with errors](/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1error~1list/post).\n\nThe dimensions of the products can only be specified in `centimeters`, and the weight of packed products must be specified in `kilograms`.<br>\n\nWith one request you can create maximum 100\_individual product cards or 100 groups of merged product cards, 30\_product cards (`nmID`) in\_each. Maximum request size is 10 Mb.<br>\n\nProduct cards are created asynchronously. The process of synchronizing a new card with services may take up to 30 minutes. During this time, you can't add inventory to warehouses and set prices.\n\n<div class=\"description_important\">\n  If there were errors during queue processing, the product card is considered invalid\n</div>\n\n<div class=\"description_limit\">\n<a href=\"/openapi/api-information#tag/Introduction/Rate-Limits\">Request limit</a> per one seller's account:\n\n| Period | Limit | Interval | Burst |\n| --- | --- | --- | --- |\n| 1 min | 10 requests | 6 s | 5 requests |\n</div>\n"
       requestBody:
         content:
           application/json:
             schema:
+              description: Отдельные карточки товаров или группы объединённых карточек товаров
               type: array
               items:
                 type: object
                 required:
                   - subjectID
                   - variants
+                minimum: 1
+                maximum: 100
                 properties:
                   subjectID:
                     type: integer
                     description: Subject ID
                   variants:
-                    description: Product variants, maximum 30 in one merged card
+                    description: Merged product cards.<br>To create individual card, pass only one object.
                     type: array
                     items:
                       type: object
                       required:
                         - vendorCode
+                      minimum: 1
+                      maximum: 30
                       properties:
                         brand:
                           type: string
@@ -2908,7 +3028,7 @@ paths:
                             Product description.<br>
                             The maximum number of characters depends on the product category<br>
                             Standard - 2000, minimum - 1000, maximum - 5000<br>
-                            More details about description rules in **Product card filling rules** in [Instructions](https://seller.wildberries.ru/help-center/article/A-113#описание) category of sellers portal
+                            More details about description rules in **Product card filling rules** in [Instructions](https://seller.wildberries.ru/help-center/article/A-113) category of sellers portal
                         vendorCode:
                           type: string
                           description: Seller's article
@@ -2926,8 +3046,9 @@ paths:
                               description: Number of product units per package
                         dimensions:
                           description: |
-                            Dimensions and weight of the product `with packaging`. <br>Specify in `centimeters` and `kilogramms` for any product.<br>
-                            If the data is not specified, zero values ​​for length, width, height and weight will be automatically generated
+                            Dimensions and weight of the product `with packaging`. <br>Specify in `centimeters` and `kilograms` for any product.<br>
+                            If the data is not specified, zero values ​​for length, width, height and weight will be automatically generated. <br>
+                            The process of synchronizing new data with service may take up to 30 minutes
                           type: object
                           properties:
                             length:
@@ -2946,7 +3067,7 @@ paths:
                           type: array
                           description: |
                             Product sizes.<br>
-                            If the product has sizes but you send empty parameter, it is generated automatically with values: `techSize` = "A", `wbSize` = "1" and some random barcode
+                            If the product has sizes but you send empty parameter, it is generated automatically with values: `techSize` = "A", `wbSize` = "1" and some random SKU
                           items:
                             type: object
                             properties:
@@ -2963,7 +3084,10 @@ paths:
                                 type: array
                                 items:
                                   type: string
-                                description: Barcode. If not specified, the barcode is generated automatically
+                                description: |
+                                  Array of SKUs for the size. <br>
+                                  If not specified, SKU is generated automatically. <br>
+                                  Allows linking multiple SKUs to one size, for example, for different batches of the product
                         characteristics:
                           type: array
                           description: |
@@ -2983,9 +3107,9 @@ paths:
                                 description: |
                                   Characteristic values.
                                   <br>
-                                  Data type — array of strings or number — depends on the characteristic data type. For more details see the description of the `charcType` field in the **Subject characteristics** method.
+                                  Data type — array of strings or number — depends on the characteristic data type. For more details see the description of the `charcType` field in the [Subject characteristics](./work-with-products#tag//paths/~1content~1v2~1object~1charcs~1%7BsubjectId%7D/get) method.
                                   <br>
-                                  The allowed number of values is specified in the maxCount field of the **Subject characteristics** method
+                                  The allowed number of values is specified in the `maxCount` field of the [Subject characteristics](./work-with-products#tag//paths/~1content~1v2~1object~1charcs~1%7BsubjectId%7D/get) method
             examples:
               creatingOneCard:
                 $ref: '#/components/examples/creatingOneCard'
@@ -3068,20 +3192,20 @@ paths:
       x-category: content
       tags:
         - Creating Product Cards
-      summary: Create product cards with merge
+      summary: Create Product Cards with Merge
       description: |
-        The method creates new product cards by merging them with existing ones.
+        The method creates product cards by merging it with existing individual cards and groups of merged cards. There can be no more than 30 cards in one group of merged product cards, respectively, you can create no more than 29 product cards in one request.
         <br><br>
-        The dimensions of the products can only be specified in `centimeters`, and the weight of packed products must be specified in `kilograms`.
-        Creating a card is asynchronous, after sending the request is put in a queue for processing. Maximum request size is 10 Mb.<br>
-        If this method response is Success (`200`) but product card was not updated, check errors using [list of failed nomenclature with errors](/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1error~1list/post).
+        The dimensions of the products can only be specified in `centimeters`, and the weight of packed products must be specified in `kilograms`.<br>
+        If this method response is Success (`200`) but product card was not updated, check errors using [list of failed nomenclature with errors](/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1error~1list/post).<br>
+        Product cards are created asynchronously. The process of synchronizing a new card with services may take up to 30 minutes. During this time, you can't add inventory to warehouses and set prices.
 
         <div class="description_limit">
         <a href="/openapi/api-information#tag/Introduction/Rate-Limits">Request limit</a> per one seller's account:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 10 requests | 6 seconds | 5 requests |
+        | 1 min | 10 requests | 6 s | 5 requests |
         </div>
       requestBody:
         content:
@@ -3092,14 +3216,16 @@ paths:
                 imtID:
                   type: integer
                   description: |
-                    `imtID` of product card, to which the product card added
+                    `imtID` of an individual product card or group of merged product cards to which the created cards are added
                 cardsToAdd:
-                  description: The structure of the added product card
+                  description: Added product cards
                   type: array
                   items:
                     type: object
                     required:
                       - vendorCode
+                    minimum: 1
+                    maximum: 29
                     properties:
                       brand:
                         type: string
@@ -3129,11 +3255,12 @@ paths:
                           Product description.<br>
                           The maximum number of characters depends on the product category<br>
                           Standard - 2000, minimum - 1000, maximum - 5000<br>
-                          More details about description rules in **Product card filling rules** in [Instructions](https://seller.wildberries.ru/help-center/article/A-113#описание) category of sellers portal
+                          More details about description rules in **Product card filling rules** in [Instructions](https://seller.wildberries.ru/help-center/article/A-113) category of sellers portal
                       dimensions:
                         description: |
-                          Dimensions and weight of the product `with packaging`. <br>Specify in `centimeters` and `kilogramms` for any product. <br>
-                          If the data is not specified, zero values ​​for length, width, height and weight will be automatically generated
+                          Dimensions and weight of the product `with packaging`. <br>Specify in `centimeters` and `kilograms` for any product. <br>
+                          If the data is not specified, zero values ​​for length, width, height and weight will be automatically generated. <br>
+                          The process of synchronizing new data with service may take up to 30 minutes
                         type: object
                         properties:
                           length:
@@ -3152,7 +3279,7 @@ paths:
                         type: array
                         description: |
                           Product sizes.<br>
-                          If the product has sizes but you send empty parameter, it is generated automatically with values: `techSize` = "A", `wbSize` = "1" and some random barcode
+                          If the product has sizes but you send empty parameter, it is generated automatically with values: `techSize` = "A", `wbSize` = "1" and some random SKU
                         items:
                           type: object
                           properties:
@@ -3169,7 +3296,7 @@ paths:
                               type: array
                               items:
                                 type: string
-                              description: Barcode. If not specified, the barcode is generated automatically
+                              description: SKU. If not specified, the SKU is generated automatically
                       characteristics:
                         type: array
                         description: |
@@ -3189,9 +3316,9 @@ paths:
                               description: |
                                 Characteristic values.
                                 <br>
-                                Data type — array of strings or number — depends on the characteristic data type. For more details see the description of the `charcType` field in the **Subject characteristics** method.
+                                Data type — array of strings or number — depends on the characteristic data type. For more details see the description of the `charcType` field in the [Subject characteristics](./work-with-products#tag//paths/~1content~1v2~1object~1charcs~1%7BsubjectId%7D/get) method.
                                 <br>
-                                The allowed number of values is specified in the maxCount field of the **Subject characteristics** method
+                                The allowed number of values is specified in the `maxCount` field of the [Subject characteristics](./work-with-products#tag//paths/~1content~1v2~1object~1charcs~1%7BsubjectId%7D/get) method
             example:
               imtID: 987654321
               cardsToAdd:
@@ -3315,8 +3442,8 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Upload media file
-      description: "Uploads and adds one media file for the product card.\n\nRequirements for images:\n\n  * maximum images for\_each product card \_— 30,\n  * minimal resolution – 700\_×\_900 pixels,\n  * maximum size\_— 32\_МB,\n  * minimal quality\_— 65%,\n  * formats\_— JPG, PNG, BMP, GIF (static), WebP.\n\nRequirements for video:\n\n  * maximum one video for\_each product card\n  * maximum size\_— 50\_MB\n  * formats\_— MOV, MP4\n\n<div class=\"description_limit\">\n<a href=\"/openapi/api-information#tag/Introduction/Rate-Limits\">Request limit</a> per one seller's account for all methods in the <strong>Content</strong> category:\n\n| Period | Limit | Interval | Burst |\n| --- | --- | --- | --- |\n| 1 minute | 100 requests | 600 milliseconds | 5 requests |\n\nExceptions are the methods:\n<ul>\n    <li><a href=\"/openapi/work-with-products#tag/Creating-Product-Cards/paths/~1content~1v2~1cards~1upload/post\">creating product cards</a></li>\n    <li><a href=\"/openapi/work-with-products#tag/Creating-Product-Cards/paths/~1content~1v2~1cards~1upload~1add/post\">creating product cards with merge</a></li>\n    <li><a href=\"/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1update/post\">editing product cards</a></li>\n    <li><a href=\"/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1error~1list/post\">getting failed product cards with errors</a></li>\n</ul>\n</div>\n"
+      summary: Upload Media File
+      description: "Uploads and adds one media file for the product card.\n\nRequirements for images:\n\n  * maximum images for\_each product card \_— 30,\n  * minimal resolution – 700\_×\_900 pixels,\n  * maximum size\_— 32\_МB,\n  * minimal quality\_— 65%,\n  * formats\_— JPG, PNG, BMP, GIF (static), WebP.\n\nRequirements for video:\n\n  * maximum one video for\_each product card\n  * maximum size\_— 50\_MB\n  * formats\_— MOV, MP4\n\n<div class=\"description_limit\">\n<a href=\"/openapi/api-information#tag/Introduction/Rate-Limits\">Request limit</a> per one seller's account for all methods in the <strong>Content</strong> category:\n\n| Period | Limit | Interval | Burst |\n| --- | --- | --- | --- |\n| 1 min | 100 requests | 600 ms | 5 requests |\n\nExceptions are the methods:\n<ul>\n    <li><a href=\"/openapi/work-with-products#tag/Creating-Product-Cards/paths/~1content~1v2~1cards~1upload/post\">creating product cards</a></li>\n    <li><a href=\"/openapi/work-with-products#tag/Creating-Product-Cards/paths/~1content~1v2~1cards~1upload~1add/post\">creating product cards with merge</a></li>\n    <li><a href=\"/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1update/post\">editing product cards</a></li>\n    <li><a href=\"/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1error~1list/post\">getting failed product cards with errors</a></li>\n</ul>\n</div>\n"
       tags:
         - Media Files
       parameters:
@@ -3395,8 +3522,8 @@ paths:
       x-category: content
       security:
         - HeaderApiKey: []
-      summary: Upload media files via links
-      description: "The method uploads a set of media files to a product card by specifying links in the request.\n\n<div class=\"description_important\">\n  New media files (<code>data</code>) replace old ones (<code>mediaFiles</code>). To add new files, set links both to\_new and old files.\n</div>\n\nRequirements for links:\n  * the link must directly lead to the file. Ensure the link does not lead to a preview or authorization page. If the link leads to TXT or HTML page, it is considered incorrect\n  * no authorization is required to access the file via the link\n\nRequirements for images:\n  * maximum images for\_each product card\_— 30\n  * minimal resolution – 700\_×\_900 pixels\n  * maximum size\_— 32\_MB\n  * minimal quality\_— 65%\n  * formats\_— JPG, PNG, BMP, GIF (static), WebP\n\n\nRequirements for video:\n  * maximum one video for\_each product card\n  * maximum size\_— 50\_MB\n  * formats\_— MOV, MP4\n\n\nIf one or several images or a video do not meet the requirements, no images and a video will be uploaded even if you have the success response\_(`200`)\n\n<div class=\"description_limit\">\n<a href=\"/openapi/api-information#tag/Introduction/Rate-Limits\">Request limit</a> per one seller's account for all methods in the <strong>Content</strong> category:\n\n| Period | Limit | Interval | Burst |\n| --- | --- | --- | --- |\n| 1 minute | 100 requests | 600 milliseconds | 5 requests |\n\nExceptions are the methods:\n<ul>\n    <li><a href=\"/openapi/work-with-products#tag/Creating-Product-Cards/paths/~1content~1v2~1cards~1upload/post\">creating product cards</a></li>\n    <li><a href=\"/openapi/work-with-products#tag/Creating-Product-Cards/paths/~1content~1v2~1cards~1upload~1add/post\">creating product cards with merge</a></li>\n    <li><a href=\"/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1update/post\">editing product cards</a></li>\n    <li><a href=\"/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1error~1list/post\">getting failed product cards with errors</a></li>\n</ul>\n</div>\n"
+      summary: Upload Media Files via Links
+      description: "The method uploads a set of media files to a product card by specifying links in the request.\n\n<div class=\"description_important\">\n  New media files (<code>data</code>) replace old ones (<code>mediaFiles</code>). To add new files, set links both to\_new and old files.\n</div>\n\nRequirements for links:\n  * the link must directly lead to the file. Ensure the link does not lead to a preview or authorization page. If the link leads to TXT or HTML page, it is considered incorrect\n  * no authorization is required to access the file via the link\n\nRequirements for images:\n  * maximum images for\_each product card\_— 30\n  * minimal resolution – 700\_×\_900 pixels\n  * maximum size\_— 32\_MB\n  * minimal quality\_— 65%\n  * formats\_— JPG, PNG, BMP, GIF (static), WebP\n\n\nRequirements for video:\n  * maximum one video for\_each product card\n  * maximum size\_— 50\_MB\n  * formats\_— MOV, MP4\n\n\nIf one or several images or a video do not meet the requirements, no images and a video will be uploaded even if you have the success response\_(`200`)\n\n<div class=\"description_limit\">\n<a href=\"/openapi/api-information#tag/Introduction/Rate-Limits\">Request limit</a> per one seller's account for all methods in the <strong>Content</strong> category:\n\n| Period | Limit | Interval | Burst |\n| --- | --- | --- | --- |\n| 1 min | 100 requests | 600 ms | 5 requests |\n\nExceptions are the methods:\n<ul>\n    <li><a href=\"/openapi/work-with-products#tag/Creating-Product-Cards/paths/~1content~1v2~1cards~1upload/post\">creating product cards</a></li>\n    <li><a href=\"/openapi/work-with-products#tag/Creating-Product-Cards/paths/~1content~1v2~1cards~1upload~1add/post\">creating product cards with merge</a></li>\n    <li><a href=\"/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1update/post\">editing product cards</a></li>\n    <li><a href=\"/openapi/work-with-products#tag/Product-Cards/paths/~1content~1v2~1cards~1error~1list/post\">getting failed product cards with errors</a></li>\n</ul>\n</div>\n"
       tags:
         - Media Files
       requestBody:
@@ -3482,7 +3609,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Prices and Discounts
-      summary: Set prices and discounts
+      summary: Set Prices and Discounts
       description: |
         Sets prices and discounts.
 
@@ -3491,7 +3618,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 6 seconds | 10 requests | 600 milliseconds | 5 requests |
+        | 6 s | 10 requests | 600 ms | 5 requests |
 
         </div>
       requestBody:
@@ -3562,7 +3689,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Prices and Discounts
-      summary: Sets size prices
+      summary: Set Size Prices
       description: |
         Sets different prices for different sizes.
 
@@ -3573,7 +3700,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 6 seconds | 10 requests | 600 milliseconds | 5 requests |
+        | 6 s | 10 requests | 600 ms | 5 requests |
 
         </div>
       requestBody:
@@ -3646,7 +3773,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Prices and Discounts
-      summary: Set WB Club discounts
+      summary: Set WB Club Discounts
       description: |
         Sets WB Club subscription discounts.
 
@@ -3655,7 +3782,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 6 seconds | 10 requests | 600 milliseconds | 5 requests |
+        | 6 s | 10 requests | 600 ms | 5 requests |
 
         </div>
       requestBody:
@@ -3712,7 +3839,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Prices and Discounts
-      summary: Processed upload state
+      summary: Processed Upload State
       description: |
         Returns the processed upload data.
 
@@ -3721,7 +3848,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 6 seconds | 10 requests | 600 milliseconds | 5 requests |
+        | 6 s | 10 requests | 600 ms | 5 requests |
 
         </div>
       parameters:
@@ -3761,7 +3888,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Prices and Discounts
-      summary: Processed upload details
+      summary: Processed Upload Details
       description: |
         Returns products in processed upload including product errors.
 
@@ -3770,7 +3897,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 6 seconds | 10 requests | 600 milliseconds | 5 requests |
+        | 6 s | 10 requests | 600 ms | 5 requests |
 
         </div>
       parameters:
@@ -3812,7 +3939,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Prices and Discounts
-      summary: Unprocessed upload state
+      summary: Unprocessed Upload State
       description: |
         Returns the processing upload data.
 
@@ -3821,7 +3948,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 6 seconds | 10 requests | 600 milliseconds | 5 requests |
+        | 6 s | 10 requests | 600 ms | 5 requests |
 
         </div>
       parameters:
@@ -3861,7 +3988,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Prices and Discounts
-      summary: Unprocessed upload details
+      summary: Unprocessed Upload Details
       description: |
         Returns products in processing upload including product errors.
 
@@ -3870,7 +3997,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 6 seconds | 10 requests | 600 milliseconds | 5 requests |
+        | 6 s | 10 requests | 600 ms | 5 requests |
 
         </div>
       parameters:
@@ -3912,7 +4039,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Prices and Discounts
-      summary: Get products with prices
+      summary: Get Products with Prices
       description: |
         Returns product data.
         <br><br>
@@ -3928,7 +4055,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 6 seconds | 10 requests | 600 milliseconds | 5 requests |
+        | 6 s | 10 requests | 600 ms | 5 requests |
 
         </div>
       parameters:
@@ -3969,7 +4096,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Prices and Discounts
-      summary: Get products with prices by articles
+      summary: Get Products with Prices by Articles
       description: |
         Returns product data by its article.
         <br><br>
@@ -3984,7 +4111,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 6 seconds | 10 requests | 600 milliseconds | 5 requests |
+        | 6 s | 10 requests | 600 ms | 5 requests |
 
         </div>
       requestBody:
@@ -4024,7 +4151,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Prices and Discounts
-      summary: Get product sizes with prices
+      summary: Get Product Sizes with Prices
       description: |
         Returns sizes data for the product. Only for products from categories where size price setting is available. For these products `"editableSizePrice":true`.
 
@@ -4033,7 +4160,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 6 seconds | 10 requests | 600 milliseconds | 5 requests |
+        | 6 s | 10 requests | 600 ms | 5 requests |
 
         </div>
       parameters:
@@ -4075,7 +4202,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Prices and Discounts
-      summary: Get products in quarantine
+      summary: Get Products in Quarantine
       description: |
         Returns information about products in quarantine.
         <br><br>
@@ -4090,7 +4217,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 6 seconds | 10 requests | 600 milliseconds | 5 requests |
+        | 6 s | 10 requests | 600 ms | 5 requests |
 
         </div>
       parameters:
@@ -4139,8 +4266,8 @@ paths:
       security:
         - HeaderApiKey: []
       tags:
-        - Inventory
-      summary: Update inventory
+        - Seller Warehouses Inventory
+      summary: Update Inventory
       description: |
         Updates product inventory.
 
@@ -4153,7 +4280,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 300 requests | 200 milliseconds | 20 requests |
+        | 1 min | 300 requests | 200 ms | 20 requests |
 
         One request with a response code of <code>409</code> is counted as 10 requests
         </div>
@@ -4175,9 +4302,14 @@ paths:
                   items:
                     type: object
                     properties:
+                      chrtId:
+                        type: integer
+                        description: Size ID
+                        example: 12345678
                       sku:
                         type: string
-                        description: SKU
+                        description: SKU. The parameter will be disabled on [February 9th](https://dev.wildberries.ru/en/release-notes?id=386)
+                        deprecated: true
                         example: SkuTest123
                       amount:
                         type: integer
@@ -4241,8 +4373,8 @@ paths:
       security:
         - HeaderApiKey: []
       tags:
-        - Inventory
-      summary: Delete inventory
+        - Seller Warehouses Inventory
+      summary: Delete Inventory
       description: |
         Deletes product inventory.
 
@@ -4255,7 +4387,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 300 requests | 200 milliseconds | 20 requests |
+        | 1 min | 10 requests | 6 s | 2 requests |
 
         One request with a response code of <code>409</code> is counted as 10 requests
         </div>
@@ -4268,16 +4400,29 @@ paths:
             schema:
               type: object
               properties:
+                chrtIds:
+                  type: array
+                  nullable: false
+                  minItems: 1
+                  maxItems: 1000
+                  description: Size IDs array
+                  items:
+                    type: integer
+                    nullable: false
+                    example: 123456789
                 skus:
                   type: array
                   nullable: false
                   minItems: 1
                   maxItems: 1000
-                  description: SKUs array
+                  description: SKUs array. The parameter will be disabled on [February 9th](https://dev.wildberries.ru/en/release-notes?id=386)
+                  deprecated: true
                   items:
                     type: string
                     nullable: false
-                    example: BarcodeTest123
+                    example: SKUTest123
+              required:
+                - chrtIds
       responses:
         '204':
           description: Deleted
@@ -4323,8 +4468,8 @@ paths:
       security:
         - HeaderApiKey: []
       tags:
-        - Inventory
-      summary: Get inventory
+        - Seller Warehouses Inventory
+      summary: Get Inventory
       description: |
         Returns product inventory.
 
@@ -4333,7 +4478,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 300 requests | 200 milliseconds | 20 requests |
+        | 1 min | 300 requests | 200 ms | 20 requests |
 
         One request with a response code of <code>409</code> is counted as 10 requests
         </div>
@@ -4347,16 +4492,23 @@ paths:
               type: object
               nullable: false
               properties:
+                chrtIds:
+                  type: array
+                  description: Size IDs array
+                  items:
+                    type: integer
+                    example: 12345678
                 skus:
                   type: array
-                  description: SKUs array
+                  description: SKUs array. The parameter will be disabled on [February 9th](https://dev.wildberries.ru/en/release-notes?id=386)
+                  deprecated: true
                   minItems: 1
                   maxItems: 1000
                   items:
                     type: string
-                    example: BarcodeTest123
+                    example: SKUTest123
               required:
-                - skus
+                - chrtIds
       responses:
         '200':
           description: Success
@@ -4371,10 +4523,15 @@ paths:
                     items:
                       type: object
                       properties:
+                        chrtId:
+                          type: integer
+                          description: Size ID
+                          example: 12345678
                         sku:
                           type: string
                           nullable: false
-                          description: SKU
+                          description: SKU. The field will be disabled on [February 9th](https://dev.wildberries.ru/en/release-notes?id=386)
+                          deprecated: true
                           example: SkuTest123
                         amount:
                           type: integer
@@ -4412,7 +4569,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Seller Warehouses
-      summary: Get offices
+      summary: Get Offices
       description: |
         Returns a list of all offices to link to seller warehouse.
 
@@ -4421,7 +4578,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 300 requests | 200 milliseconds | 20 requests |
+        | 1 min | 300 requests | 200 ms | 20 requests |
 
         One request with a response code of <code>409</code> is counted as 10 requests
         </div>
@@ -4452,7 +4609,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Seller Warehouses
-      summary: Get warehouses
+      summary: Get Warehouses
       description: |
         Returns a list of all seller's warehouses.
 
@@ -4461,7 +4618,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 300 requests | 200 milliseconds | 20 requests |
+        | 1 min | 300 requests | 200 ms | 20 requests |
 
         One request with a response code of <code>409</code> is counted as 10 requests
         </div>
@@ -4489,7 +4646,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Seller Warehouses
-      summary: Create warehouse
+      summary: Create Warehouse
       description: |
         Creates a seller's warehouse. You cannot link an office that is already in use.
 
@@ -4498,7 +4655,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 300 requests | 200 milliseconds | 20 requests |
+        | 1 min | 300 requests | 200 ms | 20 requests |
 
         One request with a response code of <code>409</code> is counted as 10 requests
         </div>
@@ -4573,7 +4730,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Seller Warehouses
-      summary: Update warehouse
+      summary: Update Warehouse
       description: |
         Updates the seller's warehouse details. Changing the linked office is allowed once per day. You cannot link an office that is already in use.
 
@@ -4582,7 +4739,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 300 requests | 200 milliseconds | 20 requests |
+        | 1 min | 300 requests | 200 ms | 20 requests |
 
         One request with a response code of <code>409</code> is counted as 10 requests
         </div>
@@ -4646,7 +4803,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Seller Warehouses
-      summary: Delete warehouse
+      summary: Delete Warehouse
       description: |
         Deletes the seller's warehouse.
 
@@ -4655,7 +4812,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 300 requests | 200 milliseconds | 20 requests |
+        | 1 min | 300 requests | 200 ms | 20 requests |
 
         One request with a response code of <code>409</code> is counted as 10 requests
         </div>
@@ -4682,7 +4839,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Seller Warehouses
-      summary: Contacts list
+      summary: Contacts List
       description: |
         Returns a list of contacts linked to the seller's warehouse.
         <br>
@@ -4699,7 +4856,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 300 requests | 200 milliseconds | 20 requests |
+        | 1 min | 300 requests | 200 ms | 20 requests |
 
         </div>
       parameters:
@@ -4752,7 +4909,7 @@ paths:
         - HeaderApiKey: []
       tags:
         - Seller Warehouses
-      summary: Update contacts list
+      summary: Update Contacts List
       parameters:
         - $ref: '#/components/parameters/Warehouse'
       description: |
@@ -4778,7 +4935,7 @@ paths:
 
         | Period | Limit | Interval | Burst |
         | --- | --- | --- | --- |
-        | 1 minute | 300 requests | 200 milliseconds | 20 requests |
+        | 1 min | 300 requests | 200 ms | 20 requests |
 
         </div>
       requestBody:
@@ -4813,6 +4970,73 @@ paths:
           $ref: '#/components/responses/429'
 components:
   schemas:
+    BrandsResponse:
+      type: object
+      required:
+        - brands
+        - total
+      properties:
+        brands:
+          type: array
+          items:
+            type: object
+            required:
+              - id
+              - logoUrl
+              - name
+            properties:
+              id:
+                description: Brand ID
+                example: 9007199254
+                type: integer
+              logoUrl:
+                description: Brand logo URL
+                type: string
+              name:
+                description: Brand name
+                type: string
+                example: Brand
+        next:
+          type: integer
+          description: Pagination parameter. Specify this value in the request to get the next batch. If the field is missing, you received all the data
+          example: 1212
+        total:
+          type: integer
+          description: Total number of brands of the subject
+          example: 344534
+    BrandsResponseError:
+      type: object
+      required:
+        - title
+        - detail
+        - origin
+        - requestId
+      properties:
+        title:
+          type: string
+          description: Error title
+        detail:
+          type: string
+          description: Error details
+        origin:
+          type: string
+          description: WB internal service ID
+        requestId:
+          type: string
+          description: Unique request ID
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Error text
+              location:
+                type: string
+                description: Parameter where the error occurred
+              value:
+                description: Value of the parameter where the error occurred
     StoreContactRequestBody:
       type: object
       description: Seller's warehouse contacts
@@ -4877,12 +5101,14 @@ components:
         - nmIDs
       properties:
         targetIMT:
-          description: Seller's existing `imtID`, in which product cards have to be merged
+          description: Existing `imtID`, in which product cards have to be merged
           type: integer
           example: 123
         nmIDs:
           description: |
-            `nmID` to be merged, maximum 30
+            `nmID` to be merged
+          minimum: 1
+          maximum: 30
           type: array
           items:
             type: integer
@@ -4896,7 +5122,9 @@ components:
       properties:
         nmIDs:
           description: |
-            `nmID` to be separated, maximum 30
+            `nmID` to be separated
+          minimum: 1
+          maximum: 30
           type: array
           items:
             type: integer
@@ -5039,7 +5267,7 @@ components:
               properties:
                 sku:
                   type: string
-                  description: Barcode
+                  description: SKU
                 amount:
                   type: integer
                   description: Stock
@@ -5310,6 +5538,7 @@ components:
           type: string
           example: null
           description: Error text
+          nullable: true
     GoodHistory:
       type: object
       properties:
@@ -5453,6 +5682,7 @@ components:
           description: Not used
           type: integer
           example: null
+          nullable: true
         techSizeName:
           description: Not used
           type: string
@@ -5886,7 +6116,7 @@ components:
     '401':
       description: Unauthorized
       content:
-        application/json:
+        application/problem+json:
           schema:
             type: object
             properties:
@@ -5927,7 +6157,7 @@ components:
     '429':
       description: Too many requests
       content:
-        application/json:
+        application/problem+json:
           schema:
             type: object
             properties:
@@ -6719,6 +6949,32 @@ components:
         data: null
         error: true
         errorText: Access denied
+    BrandsResponseBadRequest1:
+      value:
+        title: Bad Request
+        detail: validation failed
+        origin: brands-api
+        requestId: 102d2641a932d61bed60649d6c99d80a
+        errors:
+          - message: invalid integer
+            location: query.next
+            value: MTkxOTAzMQ==
+    BrandsResponseBadRequest2:
+      value:
+        title: Bad Request
+        detail: validation failed
+        origin: brands-api
+        requestId: 102d2641a932d61bed60649d6c99d80a
+        errors:
+          - message: expected number >= 0
+            location: query.subjectId
+            value: '-1'
+    BrandsResponseNotFound:
+      value:
+        title: Not Found
+        detail: Brands not found
+        origin: brands-api
+        requestId: 102d2641a932d61bed60649d6c99d80a
   securitySchemes:
     HeaderApiKey:
       type: apiKey

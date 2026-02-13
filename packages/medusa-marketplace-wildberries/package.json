@@ -33,8 +33,9 @@
   "scripts": {
     "build": "medusa plugin:build",
     "dev": "yarn predev && medusa plugin:develop",
-    "openapi:gen": "OAC_PATH=src/lib/wildberries-products-client && rm -rf $OAC_PATH && openapi-generator-cli generate -i /local/openapi/wildberries-api/02-products.yaml -g typescript-axios -o /local/$OAC_PATH --skip-validate-spec",
-    "openapi:pull": "OAS_PATH=openapi/wildberries-api && curl -L -o \"$OAS_PATH/02-products.yaml\" \"https://dev.wildberries.ru/yaml/en/02-products.yaml\"",
+    "openapi:pull": "node scripts/openapi.js pull",
+    "openapi:gen": "node scripts/openapi.js generate",
+    "openapi:all": "node scripts/openapi.js all",
     "prepublishOnly": "yarn openapi:gen && medusa plugin:build",
     "predev": "medusa plugin:publish"
   },

@@ -25,6 +25,7 @@ build
 
 .medusa
 src/lib/wildberries-products-client
+src/lib/wildberries-orders-fbs-client
 
 .yalc
 yalc.lock
