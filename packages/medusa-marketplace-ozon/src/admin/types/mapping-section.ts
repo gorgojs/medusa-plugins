@@ -1,4 +1,11 @@
-import { UseFormReturn } from "react-hook-form"
+import type {
+  FieldArrayWithId,
+  UseFieldArrayAppend,
+  UseFieldArrayRemove,
+  UseFieldArrayReplace,
+  UseFormReturn,
+} from "react-hook-form"
+import { useComboboxData } from "../hooks/use-combobox-data"
 
 export type SelectOption = { value: string; label: string }
 
@@ -32,7 +39,11 @@ export type MappingRule = {
 }
 
 export type MappingFormValues = {
-  mappings: MappingRule[]
+  category_mappings: {
+    medusa_category_ids: string[]
+    ozon_category_type_value: string
+    mappings: MappingRule[]
+  }[]
 }
 
 export type Option = { label: string; value: string }
@@ -48,4 +59,47 @@ export const transformOptions: Option[] = [
 ]
 export type MappingRowFormFieldProps = {
   form: UseFormReturn<MappingFormValues>
+}
+
+export type CategoryMappingRowProps = {
+  form: UseFormReturn<MappingFormValues>
+  index: number
+  onRemove: () => void
+  productCategoriesCombobox: ReturnType<typeof useComboboxData>
+  ozonCategoriesCombobox: ReturnType<typeof useComboboxData<any, any>>
+  ozonGroupsWithIds: { label: string; options: { label: string; value: string }[] }[]
+}
+
+export type CategorySelectorsProps = {
+  index: number
+  productCategoriesCombobox: ReturnType<typeof useComboboxData>
+  ozonCategoriesCombobox: ReturnType<typeof useComboboxData<any, any>>
+  ozonGroupsWithIds: { label: string; options: { label: string; value: string }[] }[]
+  isOzonDisabled: boolean
+}
+
+export type AttributeMappingProps = {
+  index: number
+  attrFields: FieldArrayWithId<MappingFormValues, `category_mappings.${number}.mappings`, "id">[]
+  appendAttr: UseFieldArrayAppend<MappingFormValues, `category_mappings.${number}.mappings`>
+  removeAttr: UseFieldArrayRemove
+  replaceAttr: UseFieldArrayReplace<MappingFormValues, `category_mappings.${number}.mappings`>
+  canAdd: boolean
+  getMedusaGroupsForRow: (rowIndex: number) => { label: string; options: { label: string; value: string }[] }[]
+  getOzonOptionsForRow: (rowIndex: number) => { value: string; label: string }[]
+}
+
+export type AttributeMappingRowProps = {
+  categoryIndex: number
+  attrIndex: number
+  medusaGroups: { label: string; options: { label: string; value: string }[] }[]
+  ozonOptions: { value: string; label: string }[]
+  onRemove: () => void
+}
+
+export type CategoryMappingCardProps = {
+  title: string
+  onRemove: () => void
+  categories: React.ReactNode
+  attributes: React.ReactNode
 }

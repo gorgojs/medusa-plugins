@@ -7,7 +7,9 @@ import { MappingRow } from "./components/mapping-row"
 
 export const MarketplaceMappingSection = () => {
   const form = useForm<MappingFormValues>({
-    defaultValues: { mappings: [] },
+    defaultValues: {
+      category_mappings: [],
+    },
     mode: "onChange",
   })
 
