@@ -10,7 +10,6 @@ import {
   MapToMarketplaceProductsOutput,
   MapToMedusaProductsInput,
   MapToMedusaProductsOutput,
-  MAX_VARIANTS_TO_CREATE,
 } from "@gorgo/medusa-marketplace/types"
 import {
     ProductDTO,

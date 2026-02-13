@@ -1,4 +1,4 @@
-export { SingleColumnLayout } from "./single-column"
-export { TwoColumnLayout } from "./two-column"
-export { SingleColumnLayoutWithWidgets } from "./single-column-with-widgets"
-export { TwoColumnLayoutWithWidgets } from "./two-column-with-widgets"
+export { SingleColumnPage } from "./single-column-page"
+export { TwoColumnPage } from "./two-column-page"
+export { SingleColumnPageWithWidgets } from "./single-column-page-with-widgets"
+export { TwoColumnPageWithWidgets } from "./two-column-page-with-widgets"

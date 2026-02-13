@@ -55,7 +55,7 @@ export default class MarketplaceModuleService extends MedusaService({
       started_at: input.startedAt,
       finished_at: input.finishedAt,
       request_data: input.requestData,
-      response_data: input.responseData
+      response_data: input.responseData 
     })
     return result.id
   }

@@ -39,10 +39,10 @@
     "prepublishOnly": "medusa plugin:build"
   },
   "dependencies": {
+    "@gorgo/medusa-vite-plugin": "file:.yalc/@gorgo/medusa-vite-plugin",
     "awilix": "^8.0.1"
   },
   "devDependencies": {
-    "@gorgo/medusa-vite-plugin": "file:.yalc/@gorgo/medusa-vite-plugin",
     "@medusajs/admin-sdk": "^2.11.2",
     "@medusajs/cli": "^2.11.2",
     "@medusajs/framework": "^2.11.2",
