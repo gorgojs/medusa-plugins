@@ -16,7 +16,7 @@ The pickup point selector uses [Yandex Maps JS API v3](https://yandex.com/maps-a
 
 Add the following to your storefront’s `.env` file:
 
-```
+```bash
 NEXT_PUBLIC_YANDEX_MAPS_API_KEY=supersecret
 ```
 
@@ -44,9 +44,9 @@ Open [`src/modules/checkout/components/shipping-address/index.tsx`](https://gith
 
 By marking the phone input as `required`, the checkout always collects the recipient phone number early in the flow, ensuring the ApiShip shipping calculation and shipment creation requests have the necessary data available.
 
-## 2. Cart Data Handling for ApiShip Integration
+## 2. Cart Data Handling
 
-To integrate ApiShip into checkout, the storefront needs a way to save the customer’s delivery choice into the cart and read it back later. This makes the flow stable across refreshes and navigation: if a customer already picked a tariff and a pickup point, the storefront can restore that selection instead of asking them to choose again. The integration also needs a proper remove action that clears the selection not only visually, but in the cart itself.
+To integrate ApiShip into checkout, the storefront needs a way to save the customer’s delivery choice in the cart and retrieve it later. This makes the flow stable across refreshes and navigation. If a customer has already selected a tariff and a pickup point, the storefront can restore that selection instead of asking them to choose again. The integration also needs a proper removal action that clears the selection not only visually, but in the cart itself.
 
 Open [`src/lib/data/cart.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/lib/data/cart.ts#L217-L242) and add the following:
 
@@ -61,33 +61,23 @@ export async function retrieveCart(cartId?: string, fields?: string) {
 }
 
 export async function setShippingMethod({
-  cartId,
-  shippingMethodId,
+  // ...
   data,
 }: {
-  cartId: string
-  shippingMethodId: string
-  data?: Record<string, any>
+  // ...
+  data?: Record<string, unknown>
 }) {
-    const headers = {
-    ...(await getAuthHeaders()),
-  }
-
+  // ...
   return sdk.store.cart
     .addShippingMethod(
       cartId,
       {
-        option_id: shippingMethodId,
+        // ...
         data // ApiShip selection data
       },
-      {},
-      headers
+      // ...
     )
-    .then(async () => {
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
-    })
-    .catch(medusaError)
+    // ...
 }
 
 export async function removeShippingMethodFromCart(shippingMethodId: string) {
@@ -116,7 +106,11 @@ export async function removeShippingMethodFromCart(shippingMethodId: string) {
 }
 ```
 
-These changes enable three core behaviors: the storefront can attach ApiShip-specific selection data when applying a shipping method, it can read that saved selection back from the cart when the page is reloaded, and it can fully clear the selection by removing the shipping method from the cart when the customer decides to reset their choice.
+These changes enable three core behaviors:
+
+- The storefront can attach ApiShip-specific selection data when applying a shipping method.
+- It can read the saved data back from the cart when the page is reloaded.
+- It can fully clear the selection by removing the shipping method from the cart when the customer decides to reset their choice.
 
 ## 3. ApiShip Data Fetching
 
@@ -227,13 +221,13 @@ The `retrieveCalculation` request returns available delivery tariffs together wi
 
 In addition, the storefront fetches the list of ApiShip providers to display human-friendly carrier names in the UI.
 
-## 4. Types
+## 4. Type Definitions
 
-The storefront integration relies on a small set of shared types that describe the data returned by the ApiShip calculation endpoint and the data persisted into the cart as the user’s selection. These types are used across the map UI, courier and pickup points modals, and the chosen component to keep the flow consistent and type-safe.
+The storefront integration relies on a small set of shared types that describe the data returned by the ApiShip calculation endpoint and the data persisted in the cart as the user’s delivery selection. These types are used across the map UI, courier and pickup points modal windows, and the chosen component to keep the flow consistent and type-safe.
 
 Open [`src/modules/checkout/components/shipping/apiship/types/index.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) and add the following types:
 
-![Directory structure in the Medusa Storefront after creating the file for apiship types](https://github.com/user-attachments/assets/759f8e54-1f6b-4371-a518-78bddcdcf0f1)
+![Directory structure in the Medusa Storefront after creating the file for ApiShip types](https://github.com/user-attachments/assets/759f8e54-1f6b-4371-a518-78bddcdcf0f1)
 
 ```ts
 export type ApishipCalculation = {
@@ -293,15 +287,15 @@ export type Chosen = {
 }
 ```
 
-`ApishipCalculation` represents the calculated delivery options returned by the backend, separated into `to door` and `to point` groups by provider. `Chosen` is the normalized payload that the storefront saves into the cart once the user picks a tariff and a pickup point.
+`ApishipCalculation` represents the calculated delivery options returned by the store API, separated into `to door` and `to point` groups by provider. `Chosen` is the normalized payload that the storefront saves in the cart once the user picks a tariff and a pickup point.
 
 ## 5. Utilities
 
-The storefront integration uses a set of shared utilities to keep the UI consistent and to avoid duplicating logic across the components. These helpers handle delivery time formatting, stable callback references for async effects, deterministic tariff keys for selection, scroll locking for modals, and mapping pickup point tariffs into a structure that is easy to render.
+The storefront integration uses a set of shared utilities to keep the UI consistent and to avoid duplicating logic across the components. These helpers handle delivery time formatting, stable callback references for async effects, deterministic tariff keys for selection, scroll locking for modal windows, and mapping pickup point tariffs into a structure that is easy to render.
 
 Open [`src/modules/checkout/components/shipping/apiship/utils/index.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) and add the following helpers:
 
-![Directory structure in the Medusa Storefront after creating the file for apiship utilities](https://github.com/user-attachments/assets/a59ef69b-72e1-4dba-b094-793e39d978ef)
+![Directory structure in the Medusa Storefront after creating the file for ApiShip utilities](https://github.com/user-attachments/assets/a59ef69b-72e1-4dba-b094-793e39d978ef)
 
 ```ts
 import {
@@ -391,7 +385,7 @@ export function extractPointIds(map: Record<string, ApishipTariff[]>) {
 }
 ```
 
-These utilities are referenced by the modals and the map to format delivery times, keep selection keys stable between renders, safely run async effects without state updates after unmount, and correctly prepare the pickup point data model used to render tariffs per point.
+These utilities are referenced by the modal windows and the map for formatting delivery times, keeping selection keys stable between renders, safely running async effects without state updates after unmount, and correctly preparing the pickup point data model used to render tariffs per point.
 
 ## 6. Pickup Point Map
 
@@ -604,7 +598,7 @@ export const ApishipMap: React.FC<ApishipMapProps> = ({
   }, [destroyMap])
 
   useEffect(() => {
-    ; (async () => {
+    (async () => {
       if (!initPromiseRef.current) return
       await initPromiseRef.current
       try {
@@ -614,65 +608,65 @@ export const ApishipMap: React.FC<ApishipMapProps> = ({
   }, [center])
 
   useEffect(() => {
-    let cancelled = false
-      ; (async () => {
-        if (!initPromiseRef.current) return
-        await initPromiseRef.current
-        if (cancelled) return
+    let cancelled = false;
+    (async () => {
+      if (!initPromiseRef.current) return
+      await initPromiseRef.current
+      if (cancelled) return
 
-        const map = mapRef.current
-        const ymaps3 = window.ymaps3
-        if (!map || !ymaps3) return
+      const map = mapRef.current
+      const ymaps3 = window.ymaps3
+      if (!map || !ymaps3) return
 
-        const { YMapMarker } = ymaps3
+      const { YMapMarker } = ymaps3
 
-        clearMarkers()
+      clearMarkers()
 
-        for (const p of points) {
-          const el = document.createElement("div")
+      for (const p of points) {
+        const el = document.createElement("div")
 
-          const SIZE = 18
+        const SIZE = 18
 
-          el.style.width = `${SIZE}px`
-          el.style.height = `${SIZE}px`
+        el.style.width = `${SIZE}px`
+        el.style.height = `${SIZE}px`
 
-          el.style.background = "white"
-          el.style.border = "2px solid rgba(0,0,0,0.25)"
-          el.style.borderRadius = "50% 50% 50% 0"
-          el.style.transform = "rotate(-45deg)"
-          el.style.boxShadow = "0 2px 2px rgba(0,0,0,0.18)"
-          el.style.cursor = "pointer"
-          el.style.position = "relative"
-          el.style.transformOrigin = "50% 50%"
+        el.style.background = "white"
+        el.style.border = "2px solid rgba(0,0,0,0.25)"
+        el.style.borderRadius = "50% 50% 50% 0"
+        el.style.transform = "rotate(-45deg)"
+        el.style.boxShadow = "0 2px 2px rgba(0,0,0,0.18)"
+        el.style.cursor = "pointer"
+        el.style.position = "relative"
+        el.style.transformOrigin = "50% 50%"
 
-          const dot = document.createElement("div")
-          dot.style.width = "8px"
-          dot.style.height = "8px"
-          dot.style.background = "white"
-          dot.style.border = "2px solid rgba(0,0,0,0.25)"
-          dot.style.borderRadius = "9999px"
-          dot.style.position = "absolute"
-          dot.style.left = "50%"
-          dot.style.top = "50%"
-          dot.style.transform = "translate(-50%, -50%) rotate(45deg)"
-          dot.style.boxSizing = "border-box"
+        const dot = document.createElement("div")
+        dot.style.width = "8px"
+        dot.style.height = "8px"
+        dot.style.background = "white"
+        dot.style.border = "2px solid rgba(0,0,0,0.25)"
+        dot.style.borderRadius = "9999px"
+        dot.style.position = "absolute"
+        dot.style.left = "50%"
+        dot.style.top = "50%"
+        dot.style.transform = "translate(-50%, -50%) rotate(45deg)"
+        dot.style.boxSizing = "border-box"
 
-          el.appendChild(dot)
+        el.appendChild(dot)
 
-          el.title = p.name ?? p.address ?? `Point ${p.id}`
+        el.title = p.name ?? p.address ?? `Point ${p.id}`
 
-          el.addEventListener("click", (e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            onSelectPointRef.current(p.id)
-          })
+        el.addEventListener("click", (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          onSelectPointRef.current(p.id)
+        })
 
-          const marker = new YMapMarker({ coordinates: [p.lng, p.lat] }, el)
-          map.addChild(marker)
-          markersRef.current.set(p.id, { marker, el })
-        }
-        applySelectionStyles()
-      })()
+        const marker = new YMapMarker({ coordinates: [p.lng, p.lat] }, el)
+        map.addChild(marker)
+        markersRef.current.set(p.id, { marker, el })
+      }
+      applySelectionStyles()
+    })()
 
     return () => {
       cancelled = true
@@ -830,15 +824,15 @@ export const ApishipMap: React.FC<ApishipMapProps> = ({
 }
 ```
 
-This component initializes Yandex Maps v3 once, re-centers the map when the pickup point list changes, and renders clickable markers for each available point. When the user selects a point, the storefront shows a side panel where tariffs are displayed and can be chosen. The map UI also respects the previously saved selection: if the user opens the modal again, the component highlights the already chosen pickup point and tariff and prevents re-selecting the same option.
+This component initializes Yandex Maps v3 once, re-centers the map when the pickup point list changes, and renders clickable markers for each available point. When the user selects a point, the storefront shows a side panel where tariffs are displayed and can be chosen. The map UI also respects the previously saved selection. If the user opens the modal again, the component highlights the already chosen pickup point and tariff and prevents re-selecting the same option.
 
-## 7. Selected ApiShip Delivery Summary
+## 7. ApiShip Delivery Summary
 
 This component renders a compact summary of the shipping option the customer has already selected. It is shown after the user selects a pickup point or courier tariff, so the checkout can clearly display what is currently saved in the cart.
 
 Open [`src/modules/checkout/components/shipping/apiship/apiship-chosen.tsx`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) and add the following:
 
-![Directory structure in the Medusa Storefront after creating the file for apiship chosen](https://github.com/user-attachments/assets/898bba01-7197-461c-89fe-ce97682b834c)
+![Directory structure in the Medusa Storefront after creating the file for ApiShip chosen](https://github.com/user-attachments/assets/898bba01-7197-461c-89fe-ce97682b834c)
 
 ```tsx
 "use client"
@@ -934,15 +928,15 @@ export const ApishipChosen: React.FC<ApishipChosenProps> = ({
 }
 ```
 
-With this in place, the storefront can show the previously saved selection directly in the delivery step, including pickup point and tariff details when applicable, and let the user either remove it or reopen the modal to change it.
+With this in place, the storefront can show the previously saved selection directly in the delivery step, including pickup point and tariff details when applicable, and let the user either remove it or reopen the modal window to change it.
 
-## 8. Pickup Point Modal
+## 8. Pickup Point Modal Window
 
 This component implements a dedicated modal window that allows the customer to select an ApiShip pickup point and an associated tariff directly on the map. The modal is responsible for loading pickup points for the selected shipping option, restoring the previously saved selection (if any), and persisting the new selection back to the cart once the customer confirms it.
 
 Open [`src/modules/checkout/components/shipping/apiship/apiship-pickup-point-modal.tsx`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) and add the following:
 
-![Directory structure in the Medusa Storefront after creating the file for apiship pickup point modal](https://github.com/user-attachments/assets/ffb59344-83e4-4b02-a437-58d4660e2e63)
+![Directory structure in the Medusa Storefront after creating the file for ApiShip pickup point modal window](https://github.com/user-attachments/assets/ffb59344-83e4-4b02-a437-58d4660e2e63)
 
 ```tsx
 "use client"
@@ -1154,17 +1148,17 @@ export const ApishipPickupPointModal: React.FC<ApishipPickupPointModalProps> = (
 }
 ```
 
-This modal keeps the body scroll locked while it is open, fetches pickup points using the shipping calculation results, and passes the previously saved selection into the map so the UI can reflect what the customer already picked. When the user confirms a point and tariff, the selection is saved into the cart shipping method data and the updated price is recalculated.
+This modal window keeps the body scroll locked while it is open, fetches pickup points using the shipping calculation results, and passes the previously saved selection into the map so the UI can reflect what the customer already picked. When the user confirms a point and tariff, the selection is saved into the cart shipping method data and the updated price is recalculated.
 
-## 9. Courier Tariff Selection Modal
+## 9. Courier Tariff Selection Modal Window
 
 This component implements a dedicated modal window for selecting courier delivery tariffs. It opens when the customer chooses courier delivery and allows them to select one of the available tariffs.
 
-When the modal is opened, it restores the previously selected tariff (if one was already saved in the cart), so the user sees their earlier choice immediately. All available courier tariffs are displayed in a grouped layout, and the customer can select one using radio buttons.
+When the modal window is open, it restores the previously selected tariff (if one was already saved in the cart), so the user sees their earlier choice immediately. All available courier tariffs are displayed in a grouped layout, and the customer can select one using radio buttons.
 
 Open [`src/modules/checkout/components/shipping/apiship/apiship-courier-modal.tsx`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) and add the following:
 
-![Directory structure in the Medusa Storefront after creating the file for apiship courier modal](https://github.com/user-attachments/assets/cbe90ee1-11af-46ce-bdb3-5eee32617c34)
+![Directory structure in the Medusa Storefront after creating the file for ApiShip courier modal window](https://github.com/user-attachments/assets/cbe90ee1-11af-46ce-bdb3-5eee32617c34)
 
 ```tsx
 "use client"
@@ -1444,7 +1438,7 @@ Once the customer confirms their choice by clicking `Choose`, the selected tarif
 
 ## 10. Public Exports
 
-All ApiShip storefront components and helpers are exposed through a shared file that acts as a single entry point for the integration. It re-exports the main UI building blocks, along with shared types and utility helpers, so other parts of the storefront can import everything from one place instead of referencing internal file paths.
+All ApiShip storefront components and helpers are exported through a shared file that acts as a single entry point for the integration. It re-exports the main UI building blocks, along with shared types and utility helpers, so other parts of the storefront can import everything from one place instead of referencing internal file paths.
 
 Open [`src/modules/checkout/components/shipping/apiship/index.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) and add the following:
 
@@ -1461,9 +1455,9 @@ export * from "./utils"
 
 This keeps imports clean and consistent, and makes the integration easier to maintain or refactor later without changing import paths across the storefront.
 
-## 11. Delivery Step
+## 11. Delivery Step Integration
 
-To support ApiShip calculated delivery methods, the shipping step needs an extra UI flow where the customer chooses a concrete tariff, and optionally a pickup point. This update adds ApiShip-specific state and modals, loads provider names for display, and saves the final selection into the cart so the checkout can proceed only after the customer has made a valid choice.
+To support ApiShip calculated delivery methods, the delivery step needs an extra UI flow where the customer chooses a specific tariff, and optionally a pickup point. This update adds ApiShip-specific state and modal windows, loads provider names for displaying, and saves the final selection in the cart so the checkout can proceed only after the customer has made a valid choice.
 
 Open [`src/modules/checkout/components/shipping/index.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) and add the following:
 
@@ -1779,16 +1773,19 @@ const Shipping: React.FC<ShippingProps> = ({
 export default Shipping
 ```
 
-This change adds two dedicated modals for ApiShip (pickup point selection and courier tariff selection) and a small summary block that shows the currently saved choice with `Edit` and `Remove` actions. It also ensures that the customer can’t continue to payment for an ApiShip shipping option until a valid ApiShip selection has been saved into the cart, and that ApiShip calculated prices are displayed as `from X` to reflect that the final amount depends on the selected tariff.
+This change adds two dedicated modal windows for ApiShip (pickup point selection and courier tariff selection) and a small summary block that shows the currently saved choice with `Edit` and `Remove` actions. It also ensures:
+
+- The customer can’t continue to payment for an ApiShip shipping option until a valid ApiShip selection has been saved in the cart.
+- The ApiShip calculated prices are displayed as `from X` to reflect that the final amount depends on the selected tariff.
 
 ## Example
 
 You can refer to the modifications made in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-plugins/tree/main/examples/fulfillment-apiship/medusa-storefront) directory.
 
-The complete integration diff can be viewed in the [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-fulfillment-apiship%400.0.1...main), open the `Files changed` tab, and explore the differences under the `examples/fulfillment-apiship/medusa-storefront` directory. Or run diff in the terminal:
+The complete integration diff can be viewed in the [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-fulfillment-apiship%400.0.1...main), and explore the differences under the `examples/fulfillment-apiship/medusa-storefront` directory. Or run diff in the terminal:
 
 ```bash
 git clone https://github.com/gorgojs/medusa-plugins
 cd medusa-plugins
-git diff @gorgo/medusa-fulfillment-apiship@0.1.0...main -- examples/fulfillment-apiship/medusa-storefront
+git diff @gorgo/medusa-fulfillment-apiship@0.0.1...main -- examples/fulfillment-apiship/medusa-storefront
 ```

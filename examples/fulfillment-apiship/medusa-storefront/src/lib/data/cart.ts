@@ -221,7 +221,7 @@ export async function setShippingMethod({
 }: {
   cartId: string
   shippingMethodId: string
-  data?: Record<string, any>
+  data?: Record<string, unknown>
 }) {
   const headers = { ...(await getAuthHeaders()) }
   return sdk.store.cart

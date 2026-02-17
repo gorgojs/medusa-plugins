@@ -200,7 +200,7 @@ export const ApishipMap: React.FC<ApishipMapProps> = ({
   }, [destroyMap])
 
   useEffect(() => {
-    ; (async () => {
+    (async () => {
       if (!initPromiseRef.current) return
       await initPromiseRef.current
       try {
@@ -210,65 +210,65 @@ export const ApishipMap: React.FC<ApishipMapProps> = ({
   }, [center])
 
   useEffect(() => {
-    let cancelled = false
-      ; (async () => {
-        if (!initPromiseRef.current) return
-        await initPromiseRef.current
-        if (cancelled) return
+    let cancelled = false;
+    (async () => {
+      if (!initPromiseRef.current) return
+      await initPromiseRef.current
+      if (cancelled) return
 
-        const map = mapRef.current
-        const ymaps3 = window.ymaps3
-        if (!map || !ymaps3) return
+      const map = mapRef.current
+      const ymaps3 = window.ymaps3
+      if (!map || !ymaps3) return
 
-        const { YMapMarker } = ymaps3
+      const { YMapMarker } = ymaps3
 
-        clearMarkers()
+      clearMarkers()
 
-        for (const p of points) {
-          const el = document.createElement("div")
+      for (const p of points) {
+        const el = document.createElement("div")
 
-          const SIZE = 18
+        const SIZE = 18
 
-          el.style.width = `${SIZE}px`
-          el.style.height = `${SIZE}px`
+        el.style.width = `${SIZE}px`
+        el.style.height = `${SIZE}px`
 
-          el.style.background = "white"
-          el.style.border = "2px solid rgba(0,0,0,0.25)"
-          el.style.borderRadius = "50% 50% 50% 0"
-          el.style.transform = "rotate(-45deg)"
-          el.style.boxShadow = "0 2px 2px rgba(0,0,0,0.18)"
-          el.style.cursor = "pointer"
-          el.style.position = "relative"
-          el.style.transformOrigin = "50% 50%"
+        el.style.background = "white"
+        el.style.border = "2px solid rgba(0,0,0,0.25)"
+        el.style.borderRadius = "50% 50% 50% 0"
+        el.style.transform = "rotate(-45deg)"
+        el.style.boxShadow = "0 2px 2px rgba(0,0,0,0.18)"
+        el.style.cursor = "pointer"
+        el.style.position = "relative"
+        el.style.transformOrigin = "50% 50%"
 
-          const dot = document.createElement("div")
-          dot.style.width = "8px"
-          dot.style.height = "8px"
-          dot.style.background = "white"
-          dot.style.border = "2px solid rgba(0,0,0,0.25)"
-          dot.style.borderRadius = "9999px"
-          dot.style.position = "absolute"
-          dot.style.left = "50%"
-          dot.style.top = "50%"
-          dot.style.transform = "translate(-50%, -50%) rotate(45deg)"
-          dot.style.boxSizing = "border-box"
+        const dot = document.createElement("div")
+        dot.style.width = "8px"
+        dot.style.height = "8px"
+        dot.style.background = "white"
+        dot.style.border = "2px solid rgba(0,0,0,0.25)"
+        dot.style.borderRadius = "9999px"
+        dot.style.position = "absolute"
+        dot.style.left = "50%"
+        dot.style.top = "50%"
+        dot.style.transform = "translate(-50%, -50%) rotate(45deg)"
+        dot.style.boxSizing = "border-box"
 
-          el.appendChild(dot)
+        el.appendChild(dot)
 
-          el.title = p.name ?? p.address ?? `Point ${p.id}`
+        el.title = p.name ?? p.address ?? `Point ${p.id}`
 
-          el.addEventListener("click", (e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            onSelectPointRef.current(p.id)
-          })
+        el.addEventListener("click", (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          onSelectPointRef.current(p.id)
+        })
 
-          const marker = new YMapMarker({ coordinates: [p.lng, p.lat] }, el)
-          map.addChild(marker)
-          markersRef.current.set(p.id, { marker, el })
-        }
-        applySelectionStyles()
-      })()
+        const marker = new YMapMarker({ coordinates: [p.lng, p.lat] }, el)
+        map.addChild(marker)
+        markersRef.current.set(p.id, { marker, el })
+      }
+      applySelectionStyles()
+    })()
 
     return () => {
       cancelled = true
