@@ -1,6 +1,6 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { batchProductsWorkflow, batchProductVariantsWorkflow } from "@medusajs/medusa/core-flows"
-import { getProductCardsApi } from "../../../lib/wildberries-client"
+import { getWbApi } from "../../../lib/wildberries-client"
 import { MarketplaceWildberriesCredentialsType } from "../../../providers/marketplace-wildberries/types"
 
 export type ImportProductsStepInput = {
@@ -30,7 +30,7 @@ export const importProductsStep = createStep(
     }
     let total: number
     do {
-      const productApi = getProductCardsApi(input.credentials)
+      const productApi = getWbApi("ProductCards", input.credentials)
 
       const { status, data: {cards, cursor} } = await productApi.contentV2GetCardsListPost(body)
       total = cursor!.total!
@@ -40,6 +40,7 @@ export const importProductsStep = createStep(
       const nmIDs: Record<string, number> = {}
       const imtIDs: Record<string, number> = {}
       const sizeSkus: Record<string, Array<string>> = {}
+      const sizeID: Record<string, number> = {}
       const skus: string[] = []
       const updateVariants: any[] = []
       const updateProducts: any[] = []
@@ -49,6 +50,7 @@ export const importProductsStep = createStep(
         nmIDs[card.vendorCode!] = card.nmID!
         imtIDs[card.vendorCode!] = card.imtID!
         sizeSkus[card.vendorCode!] = card.sizes![0].skus!
+        sizeID[card.vendorCode!] = card.sizes![0].chrtID!
       })
 
       const { data: variants } = await query.graph({
@@ -64,6 +66,7 @@ export const importProductsStep = createStep(
           let variantMetadata = variant.metadata ?? {}
           variantMetadata.wildberries_nmID = nmIDs[variant.sku]
           variantMetadata.wildberries_sizeSkus = sizeSkus[variant.sku]
+          variantMetadata.wildberries_sizeID = sizeID[variant.sku]
     
           updateVariants.push({
             id: variant.id,

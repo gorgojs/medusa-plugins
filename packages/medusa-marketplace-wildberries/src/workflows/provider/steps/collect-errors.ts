@@ -1,6 +1,6 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { RequestPublicViewerPublicErrorsTableListV2 } from "../../../lib/wildberries-products-client"
-import { getProductCardsApi } from "../../../lib/wildberries-client"
+import { getWbApi } from "../../../lib/wildberries-client"
 import { batchProductVariantsWorkflow } from "@medusajs/medusa/core-flows"
 import { MarketplaceWildberriesCredentialsType } from "../../../providers/marketplace-wildberries/types"
 
@@ -15,7 +15,7 @@ export const collectErrorsStep = createStep(
   async (input: CollectErrorsStepInput, { container }) => {
     const query = await container.resolve("query")
 
-    const productApi = getProductCardsApi(input.credentials)
+    const productApi = getWbApi("ProductCards", input.credentials)
 
     const result: any[] = []
 

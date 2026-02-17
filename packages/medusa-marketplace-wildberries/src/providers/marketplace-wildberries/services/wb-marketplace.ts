@@ -4,14 +4,19 @@ import {
   ExportProductsOutput,
   GetMarketplaceProductsInput,
   GetMarketplaceProductsOutput,
+  GetNewOrdersInput,
+  GetNewOrdersOutput,
   GetProductsInput,
   GetProductsOutput,
+  GetWarehousesInput,
+  GetWarehousesOutput,
   ImportProductsInput,
   ImportProductsOutput,
   MapToMarketplaceProductsInput,
   MapToMarketplaceProductsOutput,
   MapToMedusaProductsInput,
   MapToMedusaProductsOutput,
+  MarketplaceCredentialsType,
 } from "@gorgo/medusa-marketplace/types"
 import {
   exportMarketplaceProductsWbWorkflow,
@@ -22,9 +27,11 @@ import {
   ContentV2CardsUpdatePostRequestInner,
   ContentV2CardsUploadAddPostRequest,
   ContentV2CardsUploadAddPostRequestCardsToAddInner,
-  ContentV2CardsUploadPostRequestInner
+  ContentV2CardsUploadPostRequestInner,
+  SellerWarehousesApi
 } from "../../../lib/wildberries-products-client"
 import { MarketplaceWildberriesCredentialsType, MAX_VARIANTS_TO_CREATE } from "../types"
+import { getWbApi } from "../../../lib/wildberries-client"
 
 export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider {
   static identifier = "wildberries"
@@ -84,14 +91,13 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
 
     const logger = await container!.resolve("logger")
 
-    const dummyMap = (vendorCode: string, title: string, sizeSkus?: any) => {
+    const dummyMap = (vendorCode: string, title: string, sizeSkus?: any, sizeID?: number) => {
       return {
         vendorCode: vendorCode,
         title: title,
         sizes: [
           {
-            // techSize: "A",
-            // wbSize: "1",
+            chrtID: sizeID,
             skus: sizeSkus
           }
         ]
@@ -128,12 +134,13 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
             variantsToMerge.push(dummyMap(variant.sku!, product.title + variant.title))
           } else { // to update 
             const sizeSkus = variant.metadata?.wildberries_sizeSkus
-            if (sizeSkus == null) {
-              logger.error(`Failed to update variant with nmID=${nmID} (vendorCode=${variant.sku}): sizeSkus is none`)
+            const sizeID = variant.metadata?.wildberries_sizeID
+            if (sizeSkus == null || sizeID == null) {
+              logger.error(`Failed to update variant with nmID=${nmID} (vendorCode=${variant.sku}): sizeSkus/sizeID is none`)
             } else {
               productCardsToUpdate.push({
                 nmID: nmID as number,
-                ...dummyMap(variant.sku!, product.title + variant.title, sizeSkus)
+                ...dummyMap(variant.sku!, product.title + variant.title, sizeSkus, sizeID as number)
               })
             }
           }
@@ -161,5 +168,14 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
     const { container, marketplace, marketplaceProducts } = data
 
     return marketplaceProducts as any
+  }
+
+  async getWarehouses(data: GetWarehousesInput): Promise<GetWarehousesOutput> {
+    const { container, marketplace } = data
+
+    const api: SellerWarehousesApi = getWbApi("SellerWarehouses", marketplace.credentials as MarketplaceWildberriesCredentialsType)
+    const {status, data: warehouses } = await api.apiV3WarehousesGet()
+
+    return warehouses
   }
 }

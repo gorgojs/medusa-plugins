@@ -1,5 +1,5 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
-import { getCreatingProductCardsApi } from "../../../lib/wildberries-client"
+import { getWbApi } from "../../../lib/wildberries-client"
 import { ContentV2CardsUploadAddPostRequest } from "../../../lib/wildberries-products-client"
 import { MarketplaceWildberriesCredentialsType } from "../../../providers/marketplace-wildberries/types"
 
@@ -16,7 +16,7 @@ export const mergeProductCardsStep = createStep(
     const logger = container.resolve("logger")
     const productCards = input.productCards
 
-    const creatingProductsApi = getCreatingProductCardsApi(input.credentials)
+    const creatingProductsApi = getWbApi("CreatingProductCards", input.credentials)
 
     if (productCards.length === 0) {
       logger.info("Nothing to merge. Skipping...")

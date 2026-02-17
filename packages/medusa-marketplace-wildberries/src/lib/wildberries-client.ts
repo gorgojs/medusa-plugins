@@ -1,4 +1,9 @@
-import { Configuration, ProductCardsApi, CreatingProductCardsApi } from "./wildberries-products-client"
+import { 
+  Configuration,
+  ProductCardsApi,
+  CreatingProductCardsApi,
+  SellerWarehousesApi,
+} from "./wildberries-products-client"
 import { FBSAssemblyOrdersApi } from "./wildberries-orders-fbs-client"
 import axios, { AxiosError } from "axios"
 import rateLimit from "axios-rate-limit"
@@ -33,26 +38,33 @@ axiosRetry(limitedAxiosInst, {
   }
 })
 
-export function getProductCardsApi(credentials: MarketplaceWildberriesCredentialsType) {
-  return new ProductCardsApi(new Configuration({
-      apiKey: credentials.apiKey,
-      accessToken: credentials.apiKey,
-      basePath: BASE_URLS['content']
-    }), BASE_URLS['content'], limitedAxiosInst)
-}
+export type WildberriesApi = "ProductCards" | "CreatingProductCards" | "FBSAssemblyOrders" | "SellerWarehouses"
 
-export function getCreatingProductCardsApi(credentials: MarketplaceWildberriesCredentialsType) {
-  return new CreatingProductCardsApi(new Configuration({
-      apiKey: credentials.apiKey,
-      accessToken: credentials.apiKey,
-      basePath: BASE_URLS['content']
-    }), BASE_URLS['content'], limitedAxiosInst)
-}
+export function getWbApi(apiName: WildberriesApi, credentials: MarketplaceWildberriesCredentialsType) {
+  const APIS = {
+    ProductCards: { 
+      api: ProductCardsApi,
+      baseUrl: BASE_URLS['content']
+    },
+    CreatingProductCardsApi: { 
+      api: CreatingProductCardsApi,
+      baseUrl: BASE_URLS['content']
+    },
+    FBSAssemblyOrders: { 
+      api: FBSAssemblyOrdersApi,
+      baseUrl: BASE_URLS['marketplace']
+    },
+    SellerWarehouses: { 
+      api: SellerWarehousesApi,
+      baseUrl: BASE_URLS['marketplace']
+    },
+  }
 
-export function getFBSAssemblyOrdersApi(credentials: MarketplaceWildberriesCredentialsType) {
-  return new FBSAssemblyOrdersApi(new Configuration({
+  const api = APIS[apiName]
+
+  return new api.api(new Configuration({
     apiKey: credentials.apiKey,
     accessToken: credentials.apiKey,
-    basePath: BASE_URLS['marketplace']
-  }), BASE_URLS['marketplace'], limitedAxiosInst)
+    basePath: api.baseUrl
+  }), api.baseUrl, limitedAxiosInst)
 }

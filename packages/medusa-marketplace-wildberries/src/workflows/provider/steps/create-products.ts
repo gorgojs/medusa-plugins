@@ -1,5 +1,5 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
-import { getCreatingProductCardsApi } from "../../../lib/wildberries-client"
+import { getWbApi } from "../../../lib/wildberries-client"
 import { ContentV2CardsUploadPostRequestInner } from "../../../lib/wildberries-products-client"
 import { MarketplaceWildberriesCredentialsType } from "../../../providers/marketplace-wildberries/types"
 
@@ -18,7 +18,7 @@ export const createProductsStep = createStep(
     const logger = container.resolve("logger")
     const products = input.products
 
-    const creatingProductsApi = getCreatingProductCardsApi(input.credentials)
+    const creatingProductsApi = getWbApi("CreatingProductCards", input.credentials)
 
     if (products.length === 0) {
       logger.info("Nothing to create. Skipping...")
