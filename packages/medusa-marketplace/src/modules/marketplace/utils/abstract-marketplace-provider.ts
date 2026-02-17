@@ -11,7 +11,9 @@ import {
   MapToMarketplaceProductsInput,
   MapToMarketplaceProductsOutput,
   MapToMedusaProductsInput,
-  MapToMedusaProductsOutput
+  MapToMedusaProductsOutput,
+  GetWarehousesInput,
+  GetWarehousesOutput
 } from "../../../types"
 
 export class AbstractMarketplaceProvider implements IMarketplaceProvider {
@@ -20,6 +22,10 @@ export class AbstractMarketplaceProvider implements IMarketplaceProvider {
 
   getIdentifier() {
     return (this.constructor as any).identifier
+  }
+
+  async getWarehouses(data: GetWarehousesInput): Promise<GetWarehousesOutput> {
+    throw Error("getWarehouses must be overridden by the child class")
   }
 
   async exportProducts(data: ExportProductsInput): Promise<ExportProductsOutput> {

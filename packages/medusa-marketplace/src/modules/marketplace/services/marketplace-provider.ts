@@ -13,7 +13,9 @@ import {
   MapToMarketplaceProductsInput,
   MapToMarketplaceProductsOutput,
   MapToMedusaProductsInput,
-  MapToMedusaProductsOutput
+  MapToMedusaProductsOutput,
+  GetWarehousesInput,
+  GetWarehousesOutput
 } from "../../../types"
 import { MarketplaceProviderRegistrationPrefix } from "../types"
 
@@ -82,6 +84,15 @@ Please make sure that the provider is registered in the container and it is conf
     const provider = this.retrieveProvider(providerId)
 
     return provider.getMarketplaceProducts(input)
+  }
+
+  async getWarehouses(
+    providerId: string,
+    input: GetWarehousesInput
+  ): Promise<GetWarehousesOutput> {
+    const provider = this.retrieveProvider(providerId)
+
+    return provider.getWarehouses(input)
   }
 
   async importProducts(

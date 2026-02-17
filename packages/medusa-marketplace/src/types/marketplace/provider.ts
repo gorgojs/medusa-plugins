@@ -33,6 +33,7 @@ export interface IMarketplaceProvider {
 
   mapToMedusaProducts(data: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput>
 
+  getWarehouses(data: GetWarehousesInput): Promise<GetWarehousesOutput>
 }
 
 export type MarketplaceProviderInput = {
@@ -65,6 +66,8 @@ export type MapToMedusaProductsInput = MarketplaceProviderInput & {
   marketplaceProducts: any
 }
 
+export type GetWarehousesInput = MarketplaceProviderInput
+
 export type ExportProductsOutput = Record<string, unknown>
 
 export type GetProductsOutput = ProductDTO[]
@@ -76,3 +79,5 @@ export type ImportProductsOutput = Record<string, unknown>
 export type MapToMarketplaceProductsOutput = Record<string, unknown>
 
 export type MapToMedusaProductsOutput = ProductDTO[] 
+
+export type GetWarehousesOutput = unknown[]

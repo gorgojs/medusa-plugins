@@ -39,11 +39,16 @@ export const adminMarketplaceRoutesMiddlewares: MiddlewareRoute[] = [
     ]
   },
   {
+    matcher: "/admin/marketplaces/:id/*",
+    middlewares: [
+      setMarketplaceContext()
+    ]
+  },
+  {
     methods: ["POST"],
     matcher: "/admin/marketplaces/:id/products/sync",
     middlewares: [
       validateAndTransformBody(AdminMarketplaceSyncProducts),
-      setMarketplaceContext()
     ]
   },
   {
