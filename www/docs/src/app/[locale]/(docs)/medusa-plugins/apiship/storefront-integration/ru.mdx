@@ -1,61 +1,61 @@
 ---
 title: "Интеграция Фулфилмент ApiShip с витриной магазина (Storefront)"
-description: "Узнайте, как интегрировать провайдер фулфилмента ApiShip в витрину магазина на Next.js для Medusa."
+description: "Узнайте, как интегрировать провайдер фулфилмента ApiShip в витрину магазина (Storefront) на Next.js для Medusa."
 ---
 
 # {frontmatter.title}
 
-Чтобы интегрировать провайдер фулфилмента ApiShip в магазин Next.js, необходимо расширить этап оформления заказа, чтобы обеспечить поддержку доставки в пункт выдачи закаков.
+Чтобы интегрировать провайдер фулфилмента ApiShip в витрину магазина (Storefront) Next.js, необходимо расширить этап оформления заказа, чтобы обеспечить поддержку доставки в пункт выдачи закаков.
 
 Доставка ApiShip отличается от обычных способов доставки тем, что требует сбора дополнительных данных во время оформления заказа, таких как выбранный пункт выдачи и тариф доставки.
-Эти данные должны динамически загружаться из бэкэнда, представляться клиенту в удобной форме, а затем сохраняться в корзине, чтобы их можно было использовать позже провайдером фулфилмента при создании заказа в ApiShip.
+Эти данные должны динамически загружаться из бэкэнда, представляться клиенту в удобной форме, а затем сохраняться в корзине, чтобы их можно было использовать позже провайдером фулфилмент при создании заказа в ApiShip.
 
 ## Переменные окружения
 
-Выбора пункта выдачи заказов использует [JS API Яндекс Карт v3](https://yandex.ru/maps-api/docs/js-api/index.html?lang=ru). Чтобы включить карту в storefront, необходимо задать публичный ключ API через переменные окружения.
+Выбора пункта выдачи заказов использует [Yandex Maps JS API v3](https://yandex.ru/maps-api/docs/js-api/index.html?lang=ru). Чтобы включить карту в витрине, необходимо задать публичный ключ API через переменные окружения.
 
-Добавьте следующее в файл `.env` вашего storefront:
+Добавьте следующее в файл `.env` вашей витрины:
 
 ```bash
 NEXT_PUBLIC_YANDEX_MAPS_API_KEY=supersecret
 ```
 
-Далее, в Storefront на Next.js необходимо внести следующие изменения:
+Для витрины на Next.js необходимо внести следующие изменения:
 
 ## 1. Требовать номер телефона получателя
 
-ApiShip требует номер телефона получателя для расчета стоимости доставки и создания заказа в ApiShip. По этой причине storefront должен требовать указания номера телефона в форме адреса доставки.
+ApiShip требует номер телефона получателя для расчета стоимости доставки и создания заказа в ApiShip. По этой причине витрина должна требовать указания номера телефона в форме адреса доставки.
 
-Откройте [`src/modules/checkout/components/shipping-address/index.tsx`](https://github.com/ gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и отметьте поле для ввода номера телефона как обязательное:
+Откройте [`src/modules/checkout/components/shipping-address/index.tsx`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и отметьте поле для ввода номера телефона как обязательное:
 
-![Структура каталога в Medusa Storefront после обновления файла для компонента адреса доставки](https://github.com/user-attachments/assets/08552cbd-f3f3-4526-a334-b86b66f48e37)
+![Структура проекта Medusa Storefront после обновления файла для компонента адреса доставки](https://github.com/user-attachments/assets/08552cbd-f3f3-4526-a334-b86b66f48e37)
 
 ```tsx
 <Input
   label="Phone"
   name="shipping_address.phone"
   autoComplete="tel"
-  value={formData[«shipping_address.phone»]}
+  value={formData["shipping_address.phone"]}
   onChange={handleChange}
   required // Обязательно для ApiShip
-  data-testid=«shipping-phone-input»
+  data-testid="shipping-phone-input"
 />
 ```
 
-Пометив поле ввода номера телефона как `required`, система оформления заказа всегда собирает номер телефона получателя в начале процесса, обеспечивая наличие необходимых данных для расчета стоимости доставки ApiShip и запросов на создание отправления.
+Пометив поле ввода номера телефона как `required`, система оформления заказа всегда собирает его в начале процесса, обеспечивая наличие необходимых данных для расчета стоимости доставки ApiShip и запросов на создание отправления.
 
 ## 2. Обработка данных корзины
 
-Для интеграции ApiShip в процесс оформления заказа, storefront должен иметь возможность сохранять выбор клиента по доставке в корзине и извлекать его позже. Это обеспечивает стабильность процесса при обновлении страницы и навигации. Если клиент уже выбрал тариф и пункт самовывоза, storefront может восстановить этот выбор, вместо того чтобы просить его выбрать заново. Интеграция также требует надлежащего действия по удалению, которое очищает выбор не только визуально, но и в самой корзине.
+Для интеграции ApiShip в процесс оформления заказа, витрина должна иметь возможность сохранять выбор клиента по доставке в корзине и извлекать его позже. Это обеспечивает стабильность процесса при обновлении страницы и навигации. Если клиент уже выбрал тариф и пункт самовывоза, витрина сможет восстановить этот выбор, вместо того чтобы просить его выбрать заново. Для интеграция также необходимо действие по удалению данных, которое очищает выбор не только визуально, но и в самой корзине.
 
-Откройте [`src/lib/data/cart.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/lib/data/cart.ts# L217-L242) и добавьте следующее:
+Откройте [`src/lib/data/cart.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/lib/data/cart.ts#L217-L242) и измените следующее:
 
-![Структура каталога в Medusa Storefront после обновления файла для корзины](https://github.com/user-attachments/assets/f2563a45-53bd-4e28-8d25-8b612d0bb8ba)
+![Структура проекта Medusa Storefront после обновления файла для корзины](https://github.com/user-attachments/assets/f2563a45-53bd-4e28-8d25-8b612d0bb8ba)
 
 ```ts
 export async function retrieveCart(cartId?: string, fields?: string) {
   // ...
-  // Добавьте +shipping_methods.data parameter
+  // Добавьте параметр +shipping_methods.data
   fields ??= "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name, +shipping_methods.data"
   // ...
 }
@@ -79,7 +79,11 @@ export async function setShippingMethod({
     )
     // ...
 }
+```
 
+Также добавьте следующую вспомогательную функцию:
+
+```ts
 export async function removeShippingMethodFromCart(shippingMethodId: string) {
   const headers = {
     ...(await getAuthHeaders()),
@@ -108,20 +112,20 @@ export async function removeShippingMethodFromCart(shippingMethodId: string) {
 
 Эти изменения обеспечивают три основных функции:
 
-- Storefront может прикреплять данные выбора, специфичные для ApiShip, при применении способа доставки.
-- Он может считывать сохраненные данные из корзины при перезагрузке страницы.
-- Он может полностью очистить выбор, удалив способ доставки из корзины, когда клиент решает сбросить свой выбор.
+- Витрина может прикреплять данные выбора, специфичные для ApiShip, при применении способа доставки.
+- Она может считывать сохраненные данные из корзины при перезагрузке страницы.
+- Она может полностью очистить выбор, удалив способ доставки из корзины, когда клиент решает сбросить свой выбор.
 
 ## 3. Получение данных ApiShip
 
-Для правильного отображения вариантов доставки ApiShip на этапе доставки, storefront должен иметь доступ к динамическим данным калькульляции, информации о пунктах самовывоза и списку доступных поставщиков. Помимо тарифов и пунктов самовывоза, storefront также получает метаданные поставщиков, чтобы отображать в интерфейсе оформления заказа понятные для человека названия перевозчиков вместо внутренних идентификаторов.
+Для правильного отображения вариантов доставки ApiShip на этапе доставки, витрина должна иметь доступ к динамическим данным калькульляций, информации о пунктах самовывоза и списку доступных поставщиков. Помимо тарифов и пунктов самовывоза, витрина также получает метаданные поставщиков, чтобы отображать в интерфейсе оформления заказа понятные для человека названия перевозчиков вместо внутренних идентификаторов.
 
-Откройте [`src/lib/data/fulfillment.ts`] (https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/lib/data/fulfillment. ts#L70-L134) и добавьте следующие вспомогательные функции:
+Откройте [`src/lib/data/fulfillment.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/lib/data/fulfillment.ts#L70-L134) и добавьте следующие вспомогательные функции:
 
-![Структура каталога в Medusa Storefront после обновления файла для выполнения заказов](https://github.com/user-attachments/assets/c37d99e7-403a-4fef-84dc-ed351087a4dc)
+![Структура проекта Medusa Storefront после обновления файла для фулфилмента](https://github.com/user-attachments/assets/c37d99e7-403a-4fef-84dc-ed351087a4dc)
 
 ```ts
-// ... другие помощники
+// ... другие вспомогательные функции
 
 export const retrieveCalculation = async (
   cartId: string,
@@ -219,15 +223,15 @@ export const retrieveProviders = async () => {
 
 Запрос `retrieveCalculation` возвращает доступные тарифы доставки вместе с идентификаторами пунктов самовывоза, к которым они относятся. Запрос `getPointAddresses` преобразует эти идентификаторы в полные данные о пунктах самовывоза, такие как адреса и координаты, которые затем могут быть отображены в интерфейсе оформления заказа.
 
-Кроме того, storefront загружает список поставщиков ApiShip, чтобы отображать в интерфейсе удобные для человека названия перевозчиков.
+Кроме того, витрина загружает список поставщиков ApiShip, чтобы отображать в интерфейсе удобные для человека названия перевозчиков.
 
 ## 4. Определения типов
 
-Интеграция со storefront основана на небольшом наборе общих типов, которые описывают данные, возвращаемые конечной точкой вычисления ApiShip, и данные, сохраняемые в корзине в качестве выбора пользователя по доставке. Эти типы используются в интерфейсе карты, модальных окнах курьеров и пунктов самовывоза, а также в выбранном компоненте для обеспечения согласованности потока и типовой безопасности.
+Интеграция с витриной основана на небольшом наборе общих типов, которые описывают данные, возвращаемые конечной точкой вычисления ApiShip, и данные, сохраняемые в корзине в качестве выбора пользователя по доставке. Эти типы используются в интерфейсе карты, модальных окнах курьеров и пунктов самовывоза, а также в компоненте выбранного тарифа для обеспечения согласованности потока и типовой безопасности.
 
-Откройте [`src/modules/checkout/components/shipping/apiship/types/index.ts`](https://github.com/ gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующие типы:
+Откройте [`src/modules/checkout/components/shipping/apiship/types/index.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующие типы:
 
-![Структура каталогов в Medusa Storefront после создания файла для типов ApiShip](https://github.com/user-attachments/assets/759f8e54-1f6b-4371-a518-78bddcdcf0f1)
+![Структура проекта Medusa Storefront после создания файла для типов ApiShip](https://github.com/user-attachments/assets/759f8e54-1f6b-4371-a518-78bddcdcf0f1)
 
 ```ts
 export type ApishipCalculation = {
@@ -287,15 +291,15 @@ export type Chosen = {
 }
 ```
 
-`ApishipCalculation` представляет рассчитанные варианты доставки, возвращаемые API store, разделенные на группы `to door` и `to point` по поставщикам. `Chosen` — это нормализованная полезная нагрузка, которую storefront сохраняет в корзине после того, как пользователь выбирает тариф и пункт самовывоза.
+`ApishipCalculation` представляет рассчитанные варианты доставки, возвращаемые API store, разделенные на группы `to door` и `to point` по поставщикам. `Chosen` — это нормализованная полезная нагрузка, которую витрина сохраняет в корзине после того, как пользователь выбирает тариф и пункт самовывоза.
 
 ## 5. Утилиты
 
-Интеграция со storefront использует набор общих утилит для обеспечения единообразия пользовательского интерфейса и предотвращения дублирования логики в компонентах. Эти утилиты обрабатывают форматирование времени доставки, стабильные ссылки обратного вызова для асинхронных эффектов, детерминированные ключи тарифов для выбора, блокировку прокрутки для модальных окон и отображение тарифов пунктов самовывоза в структуре, которую легко визуализировать.
+Интеграция с витриной использует набор общих утилит для обеспечения единообразия пользовательского интерфейса и предотвращения дублирования логики в компонентах. Эти утилиты обрабатывают форматирование времени доставки, стабильные ссылки обратного вызова для асинхронных эффектов, детерминированные ключи тарифов для выбора, блокировку прокрутки для модальных окон и отображение тарифов пунктов самовывоза в структуре, которую легко визуализировать.
 
-Откройте [`src/modules/checkout/components/shipping/apiship/utils/index.ts`](https://github.com/ gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующие помощники:
+Откройте [`src/modules/checkout/components/shipping/apiship/utils/index.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующие помощники:
 
-![Структура каталогов в Medusa Storefront после создания файла для утилит](https://github.com/user-attachments/assets/a59ef69b-72e1-4dba-b094-793e39d978ef)
+![Структура проекта Medusa Storefront после создания файла для утилит](https://github.com/user-attachments/assets/a59ef69b-72e1-4dba-b094-793e39d978ef)
 
 ```ts
 import {
@@ -389,11 +393,11 @@ export function extractPointIds(map: Record<string, ApishipTariff[]>) {
 
 ## 6. Карта пунктов самовывоза
 
-Этот компонент отвечает за отображение карты Яндекса, размещение на ней маркеров пунктов самовывоза и показ панели с подробной информацией о доступных тарифах при выборе пункта.
+Этот компонент отвечает за отображение карты, размещение на ней маркеров пунктов самовывоза и показ панели с подробной информацией о доступных тарифах при выборе пункта.
 
-Откройте [`src/modules/checkout/components/shipping/apiship/apiship-map.tsx`](https://github.com/ gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующее:
+Откройте [`src/modules/checkout/components/shipping/apiship/apiship-map.tsx`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующее:
 
-![Структура каталогов в Medusa Storefront после создания файла карты пунктов самовывоза](https://github.com/user-attachments/assets/bffa1d01-eaf7-4c54-93bb-927b34a139a7)
+![Структура проекта Medusa Storefront после создания файла карты пунктов самовывоза](https://github.com/user-attachments/assets/bffa1d01-eaf7-4c54-93bb-927b34a139a7)
 
 ```tsx
 "use client"
@@ -824,15 +828,15 @@ export const ApishipMap: React.FC<ApishipMapProps> = ({
 }
 ```
 
-Этот компонент инициализирует Yandex Maps v3 один раз, перецентрирует карту при изменении списка пунктов самовывоза и отображает кликабельные маркеры для каждого доступного пункта. Когда пользователь выбирает пункт, в storefront появляется боковая панель, на которой отображаются тарифы и можно выбрать один из них. Пользовательский интерфейс карты также учитывает ранее сохраненный выбор. Если пользователь снова открывает модальное окно, компонент выделяет уже выбранный пункт самовывоза и тариф и не позволяет повторно выбрать тот же вариант.
+Этот компонент инициализирует Yandex Maps один раз, перецентрирует карту при изменении списка пунктов самовывоза и отображает кликабельные маркеры для каждого доступного пункта. Когда пользователь выбирает пункт, в витрине появляется боковая панель, на которой отображаются тарифы и можно выбрать один из них. Пользовательский интерфейс карты также учитывает ранее сохраненный выбор. Если пользователь снова открывает модальное окно, компонент выделяет уже выбранный пункт самовывоза и тариф и не позволяет повторно выбрать тот же вариант.
 
 ## 7. Сводка доставки ApiShip
 
 Этот компонент отображает краткую сводку вариантов доставки, которые уже выбрал клиент. Она отображается после того, как пользователь выбрал пункт самовывоза или тариф курьера, чтобы на странице оформления заказа было четко видно, что в данный момент находится в корзине.
 
-Откройте [`src/modules/checkout/components/shipping/apiship/apiship-chosen.tsx`](https://github.com/ gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующее:
+Откройте [`src/modules/checkout/components/shipping/apiship/apiship-chosen.tsx`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующее:
 
-![Структура каталогов в Medusa Storefront после создания файла для ApiShip](https://github.com/user-attachments/assets/898bba01-7197-461c-89fe-ce97682b834c)
+![Структура проекта Medusa Storefront после создания файла для выбранного тарифа и пункта самовывоза](https://github.com/user-attachments/assets/898bba01-7197-461c-89fe-ce97682b834c)
 
 ```tsx
 "use client"
@@ -928,15 +932,15 @@ export const ApishipChosen: React.FC<ApishipChosenProps> = ({
 }
 ```
 
-После этого storefront может отображать ранее сохраненный выбор непосредственно на этапе доставки, включая пункт самовывоза и тарифные детали, если применимо, и позволить пользователю либо удалить его, либо вновь открыть модальное окно, чтобы изменить его.
+После этого витрина может отображать ранее сохраненный выбор непосредственно на этапе доставки, включая пункт самовывоза и тарифные детали, если применимо, и позволить пользователю либо удалить его, либо вновь открыть модальное окно, чтобы изменить его.
 
 ## 8. Модальное окно «Пункт самовывоза»
 
 Этот компонент реализует специальное модальное окно, которое позволяет клиенту выбрать пункт самовывоза ApiShip и соответствующий тариф прямо на карте. Модальное окно отвечает за загрузку пунктов самовывоза для выбранного варианта доставки, восстановление ранее сохраненного выбора (если таковой имеется) и сохранение нового выбора в корзине после его подтверждения клиентом.
 
-Откройте [`src/modules/checkout/components/shipping/apiship/apiship-pickup-point-modal.tsx`](https://github.com/ gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующее:
+Откройте [`src/modules/checkout/components/shipping/apiship/apiship-pickup-point-modal.tsx`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующее:
 
-![Структура каталогов в Medusa Storefront после создания файла для модального окна пункта самовывоза ApiShip](https://github.com/user-attachments/assets/ffb59344-83e4-4b02-a437-58d4660e2e63)
+![Структура проекта Medusa Storefront после создания файла для модального окна пункта самовывоза ApiShip](https://github.com/user-attachments/assets/ffb59344-83e4-4b02-a437-58d4660e2e63)
 
 ```tsx
 "use client"
@@ -1156,9 +1160,9 @@ export const ApishipPickupPointModal: React.FC<ApishipPickupPointModalProps> = (
 
 Когда модальное окно открыто, оно восстанавливает ранее выбранный тариф (если он уже был сохранен в корзине), поэтому пользователь сразу видит свой предыдущий выбор. Все доступные тарифы курьерской доставки отображаются в сгруппированном виде, и клиент может выбрать один из них с помощью переключателей.
 
-Открыть [`src/modules/checkout/components/shipping/apiship/apiship-courier-modal.tsx`](https://github.com/ gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующее:
+Открыть [`src/modules/checkout/components/shipping/apiship/apiship-courier-modal.tsx`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующее:
 
-![Структура каталогов в Medusa Storefront после создания файла для модального окна курьера ApiShip](https://github.com/user-attachments/assets/cbe90ee1-11af-46ce-bdb3-5eee32617c34)
+![Структура проекта Medusa Storefront после создания файла для модального окна курьера ApiShip](https://github.com/user-attachments/assets/cbe90ee1-11af-46ce-bdb3-5eee32617c34)
 
 ```tsx
 "use client"
@@ -1438,11 +1442,11 @@ export const ApishipCourierModal: React.FC<ApishipCourierModalProps> = ({
 
 ## 10. Публичный экспорт
 
-Все компоненты и вспомогательные утилиты ApiShip экспортируются через общий файл, который действует как единая точка входа для интеграции. Он повторно экспортирует основные строительные блоки пользовательского интерфейса вместе с общими типами и вспомогательными утилитами, чтобы другие части storefront могли импортировать все из одного места, а не ссылаться на внутренние пути к файлам.
+Все компоненты и вспомогательные утилиты ApiShip экспортируются через общий файл, который действует как единая точка входа для интеграции. Он повторно экспортирует основные строительные блоки пользовательского интерфейса вместе с общими типами и вспомогательными утилитами, чтобы другие части витрины могли импортировать все из одного места, а не ссылаться на внутренние пути к файлам.
 
-Откройте [`src/modules/checkout/components/shipping/apiship/index.ts`](https://github.com/ gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующее:
+Откройте [`src/modules/checkout/components/shipping/apiship/index.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующее:
 
-![Структура каталогов в Medusa Storefront после создания файла для единой точки входа для интеграции](https://github.com/user-attachments/assets/39d446d4-2708-49ce-9f51-d40b6eeed470)
+![Структура проекта Medusa Storefront после создания файла для единой точки входа для интеграции](https://github.com/user-attachments/assets/39d446d4-2708-49ce-9f51-d40b6eeed470)
 
 ```ts
 export * from «./apiship-courier-modal»
@@ -1453,15 +1457,15 @@ export * from «./types»
 export * from «./utils»
 ```
 
-Это позволяет сохранить чистоту и согласованность импортов, а также упрощает обслуживание и рефакторинг интеграции в будущем без изменения путей импорта в storefront.
+Это позволяет сохранить чистоту и согласованность импортов, а также упрощает обслуживание и рефакторинг интеграции в будущем без изменения путей импорта в витрине.
 
 ## 11. Интеграция этапа доставки
 
 Для поддержки методов доставки, рассчитанных ApiShip, на этапе доставки требуется дополнительный интерфейс, в котором клиент выбирает конкретный тариф и, при желании, пункт самовывоза. Это обновление добавляет специфические для ApiShip состояния и модальные окна, загружает названия поставщиков для отображения и сохраняет окончательный выбор в корзине, чтобы оформление заказа могло быть продолжено только после того, как клиент сделал действительный выбор.
 
-Откройте [`src/modules/checkout/components/shipping/index.ts`](https://github.com/ gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующее:
+Откройте [`src/modules/checkout/components/shipping/index.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) и добавьте следующее:
 
-![Структура каталогов в Medusa Storefront после обновления файла для компонента доставки](https://github.com/user-attachments/assets/b526af99-7356-4bb6-ba42-12f2442aac99)
+![Структура проекта Medusa Storefront после обновления файла для компонента доставки](https://github.com/user-attachments/assets/b526af99-7356-4bb6-ba42-12f2442aac99)
 
 ```tsx
 // ... другие imports
@@ -1782,7 +1786,7 @@ export default Shipping
 
 Вы можете ознакомиться с изменениями, внесенными в стартовый шаблон [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), в директории [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-plugins/tree/main/examples/fulfillment-apiship/medusa-storefront).
 
-Полный код интеграции можно посмотреть в разделе [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-fulfillment-apiship%400.0.1...main), и изучите различия в каталоге `examples/fulfillment-apiship/medusa-storefront`. Или запустите `diff` в терминале:
+Полный код интеграции можно посмотреть в разделе [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-fulfillment-apiship%400.0.1...main) и изучите различия в каталоге `examples/fulfillment-apiship/medusa-storefront`. Или запустите `diff` в терминале:
 
 ```bash
 git clone https://github.com/gorgojs/medusa-plugins

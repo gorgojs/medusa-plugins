@@ -79,7 +79,11 @@ export async function setShippingMethod({
     )
     // ...
 }
+```
 
+Also add the following function:
+
+```ts
 export async function removeShippingMethodFromCart(shippingMethodId: string) {
   const headers = {
     ...(await getAuthHeaders()),
