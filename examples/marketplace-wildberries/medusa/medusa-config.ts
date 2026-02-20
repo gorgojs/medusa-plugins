@@ -1,5 +1,6 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
-import gorgoPluginsInject from '@gorgo/medusa-marketplace/admin-vite-plugin'
+import { gorgoPluginsInject } from '@gorgo/medusa-marketplace/exports'
+import path from "path"
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -18,8 +19,9 @@ module.exports = defineConfig({
     backend_hmr: true,
   },
   admin: {
-    vite: () => {
+    vite: (config) => {
       return {
+        ...config,
         // Used only during testing, do not enable in production
         plugins: [
           gorgoPluginsInject({
@@ -30,6 +32,22 @@ module.exports = defineConfig({
             pluginMode: true
           }),
         ],
+        optimizeDeps: {
+          exclude: [
+            "@gorgo/medusa-marketplace"
+          ]
+        },
+        resolve: {
+          alias: [
+            { find: /^react$/, replacement: require.resolve("react") },
+            { find: /^react-dom$/, replacement: require.resolve("react-dom") },
+            // Добавляем эту строку:
+            { find: /^@tanstack\/react-query$/, replacement: require.resolve("@tanstack/react-query") },
+            { find: /^react-router-dom$/, replacement: require.resolve("react-router-dom") },
+          ],
+          dedupe: ["react", "react-dom", "@tanstack/react-query", "react-router-dom"],
+          preserveSymlinks: false,
+        }
       }
     },
   },

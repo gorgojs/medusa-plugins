@@ -14,8 +14,8 @@ const MarketplaceList = () => {
   return (
     <WidgetProvider>
       <SingleColumnLayout widgetsZone={{
-          before: "marketplaces.list.before",
-          after: "marketplaces.list.after"
+          before: "marketplace.list.before",
+          after: "marketplace.list.after"
       }}>
         <Container className="p-0">
           <MarketplaceListTable

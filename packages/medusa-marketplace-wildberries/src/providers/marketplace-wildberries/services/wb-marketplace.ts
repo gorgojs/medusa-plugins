@@ -4,8 +4,6 @@ import {
   ExportProductsOutput,
   GetMarketplaceProductsInput,
   GetMarketplaceProductsOutput,
-  GetNewOrdersInput,
-  GetNewOrdersOutput,
   GetProductsInput,
   GetProductsOutput,
   GetWarehousesInput,

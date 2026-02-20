@@ -32,6 +32,7 @@
     ".medusa/server",
     ".medusa/admin",
     "src/admin",
-    ".cache"
+    ".cache",
+    "vite.config.mts"
   ]
 }

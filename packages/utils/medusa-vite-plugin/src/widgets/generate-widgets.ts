@@ -1,4 +1,4 @@
-import { MarketplaceInjectionZone, isValidInjectionZone } from "@gorgo/medusa-marketplace/types"
+import { MarketplaceInjectionZone, isValidInjectionZone } from "./marketplace"
 import fs from "fs/promises"
 import {
   File,

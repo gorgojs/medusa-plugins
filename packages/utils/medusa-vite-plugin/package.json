@@ -25,8 +25,7 @@
   "scripts": {
     "build": "tsup",
     "watch": "tsup --watch",
-    "dev": "yarn predev && yarn build && yalc publish",
-    "predev": "yalc add @gorgo/medusa-marketplace --dev"
+    "dev": "yarn build && yalc publish"
   },
   "devDependencies": {
     "tsup": "^8.5.1",

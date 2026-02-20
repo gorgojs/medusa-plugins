@@ -11,7 +11,7 @@ const WbTestWidget = () => {
 }
 
 export const config = {
-  zone: ["marketplaces.list.before",]
+  zone: ["marketplace.list.before",]
 }
 
 export default WbTestWidget
