@@ -19,6 +19,7 @@ export const MarketplaceMappingSection = ({ marketplace }: MarketplaceMappingSec
         openModal={openModal}
         onEdit={onEdit}
         onDelete={onDelete}
+        marketplace={marketplace}
       />
       <CategoryMappingRuleAddModal
         stateModal={stateModal}

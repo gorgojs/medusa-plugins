@@ -8,38 +8,25 @@ import {
 } from "@medusajs/ui"
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { Header } from "../../../../common/header"
-import {CategoryMappingRule, AdminCategoryMappingListResponse} from "../../../../../types"
+import { CategoryMappingRule } from "../../../../../types"
+import { sdk } from "../../../../../lib/sdk"
 
 const PAGE_SIZE = 20
-
-const MOCK_RULES: CategoryMappingRule[] = Array.from({ length: 10 }).map((_, i) => {
-  const idx = i + 1
-  const required = 6
-  const filled = (idx * 3) % 10
-  const total = 50 + ((idx * 7) % 5)
-
-  return {
-    id: `rule_${idx}`,
-    ozon_category_name: `Одежда > Категория ${idx}`,
-    medusa_category_name: `Medusa Category ${idx}`,
-    attributes_total: total,
-    attributes_required: required,
-    attributes_filled: filled,
-  }
-})
 
 export const CategoryMappingRulesTable = ({
   stateModal,
   openModal,
   onEdit,
   onDelete,
+  marketplace,
 }: {
   stateModal: boolean
   openModal: () => void
   onEdit: (id: string) => void
   onDelete: (id: string) => void
+  marketplace: any
 }) => {
   const navigate = useNavigate()
   const limit = PAGE_SIZE
@@ -51,16 +38,56 @@ export const CategoryMappingRulesTable = ({
 
   const offset = useMemo(() => pagination.pageIndex * limit, [pagination.pageIndex, limit])
 
-  const { data, isLoading } = useQuery<AdminCategoryMappingListResponse>({
-    queryKey: ["category-mapping-rules", limit, offset],
-    queryFn: async () => {
-      return {
-        rules: MOCK_RULES.slice(offset, offset + limit),
-        count: MOCK_RULES.length,
+  const mapping = useMemo(() => marketplace?.settings?.mapping ?? {}, [marketplace])
+
+  const categoryIds = useMemo(() => {
+    const ids = new Set<string>()
+    for (const rule of Object.values<any>(mapping)) {
+      for (const id of rule?.medusa_categories ?? []) {
+        if (typeof id === "string" && id) ids.add(id)
       }
+    }
+    return Array.from(ids)
+  }, [mapping])
+
+  const idsKey = useMemo(() => categoryIds.slice().sort().join(","), [categoryIds])
+
+  const { data: categoriesRes, isLoading: isLoadingCategories } = useQuery({
+    queryKey: ["product_categories", idsKey],
+    enabled: categoryIds.length > 0,
+    queryFn: async () => {
+      return sdk.admin.productCategory.list({
+        id: categoryIds as any,
+        fields: "id,name"
+      } as any)
     },
-    placeholderData: keepPreviousData,
   })
+
+  const categoryMap = useMemo(() => {
+    const rows = categoriesRes?.product_categories ?? []
+    return Object.fromEntries(rows.map((c: any) => [c.id, c.name]))
+  }, [categoriesRes])
+
+  const allRules = useMemo(() => {
+    return Object.entries<any>(mapping).map(([ruleId, rule]) => {
+      const attrs = rule?.ozon_category?.attributes ?? {}
+      const medusaIds: string[] = rule?.medusa_categories ?? []
+
+      return {
+        id: ruleId,
+        ozon_category_name: `${rule?.ozon_category?.children[0].category_name} -> ${rule?.ozon_category?.children[0].children[0].type_name}`,
+        medusa_category_name: medusaIds.map((id) => categoryMap[id] ?? id).join(", "),
+        attributes_total: attrs.total ?? 0,
+        attributes_required: attrs.required ?? 0,
+        attributes_filled: attrs.mapped ?? 0,
+      }
+    })
+  }, [mapping, categoryMap])
+
+  const pageRules = useMemo(
+    () => allRules.slice(offset, offset + limit),
+    [allRules, offset, limit]
+  )
 
   const columnHelper = createDataTableColumnHelper<CategoryMappingRule>()
 
@@ -80,9 +107,7 @@ export const CategoryMappingRulesTable = ({
           <div className="flex items-center gap-2">
             <StatusBadge color="blue">Всего: {total}</StatusBadge>
             <StatusBadge color="orange">Обязательные: {req}</StatusBadge>
-            <StatusBadge color={filled >= req ? "green" : "red"}>
-              Заполнены: {filled}
-            </StatusBadge>
+            <StatusBadge color={filled >= req ? "green" : "red"}>Заполнены: {filled}</StatusBadge>
           </div>
         )
       },
@@ -94,12 +119,7 @@ export const CategoryMappingRulesTable = ({
         const id = row.original.id
         return (
           <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="secondary"
-              size="small"
-              onClick={() => onEdit(id)}
-            >
+            <Button type="button" variant="secondary" size="small" onClick={() => onEdit(id)}>
               Редактировать
             </Button>
             <Button type="button" variant="danger" size="small" onClick={() => onDelete(id)}>
@@ -113,10 +133,10 @@ export const CategoryMappingRulesTable = ({
 
   const table = useDataTable({
     columns,
-    data: data?.rules ?? [],
+    data: pageRules,
     getRowId: (row) => row.id,
-    rowCount: data?.count ?? 0,
-    isLoading,
+    rowCount: allRules.length,
+    isLoading: isLoadingCategories,
     pagination: { state: pagination, onPaginationChange: setPagination },
     onRowClick: (_e, row) => {
       navigate(row.id)
