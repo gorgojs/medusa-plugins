@@ -35,5 +35,15 @@
   },
   "peerDependencies": {
     "vite": "^5.2.11"
+  },
+  "dependencies": {
+    "@babel/parser": "7.25.6",
+    "@babel/traverse": "7.25.6",
+    "@babel/types": "7.25.6",
+    "chokidar": "^3.5.3",
+    "fdir": "6.1.1",
+    "magic-string": "0.30.5",
+    "outdent": "^0.8.0",
+    "picocolors": "^1.1.0"
   }
 }

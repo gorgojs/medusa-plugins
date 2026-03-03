@@ -1,5 +1,5 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
-import gorgoPluginsInject from '@gorgo/medusa-vite-plugin'
+import { gorgoPluginsInject } from '@gorgo/medusa-marketplace/exports'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -17,7 +17,7 @@ module.exports = defineConfig({
   featureFlags: {
     backend_hmr: true,
   },
-  admin: {
+ admin: {
     vite: (config) => {
       return {
         ...config,
@@ -35,14 +35,15 @@ module.exports = defineConfig({
           exclude: [
             "@gorgo/medusa-marketplace"
           ]
-        }
+        },
       }
     },
   },
   plugins: [
     {
       resolve: "@gorgo/medusa-marketplace-yandex-market",
-      options: {},
+      options: {
+      }
     },
     {
       resolve: "@gorgo/medusa-marketplace",
@@ -52,6 +53,7 @@ module.exports = defineConfig({
             resolve: "@gorgo/medusa-marketplace-yandex-market/providers/marketplace-yandex-market",
             id: "test",
             options: {
+
             }
           }
         ]

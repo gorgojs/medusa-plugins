@@ -1,1 +1,1 @@
-export { default as MarketplaceDetailCredentialsWidget } from "./marketplace-detail-credentials-widget"
+export { default as WbTestWidgetConfig } from "./wb-test"

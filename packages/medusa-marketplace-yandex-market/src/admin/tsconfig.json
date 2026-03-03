@@ -20,5 +20,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [".", "src/**/*.d.ts", "../gorgo-widgets/lib", "../gorgo-widgets/components"]
+  "include": ["."]
 }

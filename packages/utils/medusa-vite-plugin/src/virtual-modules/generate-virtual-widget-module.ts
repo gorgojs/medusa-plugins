@@ -1,4 +1,3 @@
-import outdent from "outdent"
 import { generateModule } from "../utils"
 import { generateWidgets } from "../widgets"
 
