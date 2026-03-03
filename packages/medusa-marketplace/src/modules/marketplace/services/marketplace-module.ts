@@ -18,10 +18,9 @@ import {
   GetWarehousesInput,
   GetWarehousesOutput
 } from "../../../types"
-import { Logger } from "@medusajs/medusa"
 import MarketplaceProviderService from "./marketplace-provider"
 import { joinerConfig } from "../joiner-config"
-import { ModuleJoinerConfig } from "@medusajs/framework/types"
+import { Logger, ModuleJoinerConfig } from "@medusajs/framework/types"
 
 type InjectedDependencies = {
   logger?: Logger

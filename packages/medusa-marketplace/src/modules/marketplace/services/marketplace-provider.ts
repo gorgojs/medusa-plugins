@@ -1,4 +1,3 @@
-import { Logger } from "@medusajs/medusa"
 import { AwilixResolutionError } from "awilix"
 import {
   ExportProductsInput,
@@ -18,6 +17,7 @@ import {
   GetWarehousesOutput
 } from "../../../types"
 import { MarketplaceProviderRegistrationPrefix } from "../types"
+import { Logger } from "@medusajs/framework/types"
 
 type InjectedDependencies = {
   logger?: Logger

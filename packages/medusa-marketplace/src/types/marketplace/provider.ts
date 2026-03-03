@@ -1,5 +1,5 @@
 import { MedusaContainer } from "@medusajs/framework"
-import { ProductDTO } from "@medusajs/types"
+import { ProductDTO } from "@medusajs/framework/types"
 import {MarketplaceDTO, MarketplaceProductDTO} from "../../types"
 
 const MARKETPLACE_INJECTION_ZONES = ["marketplaces.list.before", "marketplaces.list.after"]

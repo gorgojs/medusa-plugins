@@ -43,12 +43,12 @@
     "predev": "medusa plugin:publish"
   },
   "devDependencies": {
-    "@medusajs/admin-sdk": "^2.11.2",
-    "@medusajs/cli": "^2.11.2",
-    "@medusajs/framework": "^2.11.2",
-    "@medusajs/icons": "^2.11.2",
-    "@medusajs/medusa": "^2.11.2",
-    "@medusajs/test-utils": "^2.11.2",
+    "@medusajs/admin-sdk": "^2.13.3",
+    "@medusajs/cli": "^2.13.3",
+    "@medusajs/framework": "^2.13.3",
+    "@medusajs/icons": "^2.13.3",
+    "@medusajs/medusa": "^2.13.3",
+    "@medusajs/test-utils": "^2.13.3",
     "@medusajs/ui": "^4.0.25",
     "@openapitools/openapi-generator-cli": "^2.25.0",
     "@redocly/cli": "^2.11.1",
@@ -67,12 +67,12 @@
   },
   "peerDependencies": {
     "@gorgo/medusa-marketplace": "*",
-    "@medusajs/admin-sdk": "^2.11.2",
-    "@medusajs/cli": "^2.11.2",
-    "@medusajs/framework": "^2.11.2",
-    "@medusajs/icons": "^2.11.2",
-    "@medusajs/medusa": "^2.11.2",
-    "@medusajs/test-utils": "^2.11.2",
+    "@medusajs/admin-sdk": "^2.13.3",
+    "@medusajs/cli": "^2.13.3",
+    "@medusajs/framework": "^2.13.3",
+    "@medusajs/icons": "^2.13.3",
+    "@medusajs/medusa": "^2.13.3",
+    "@medusajs/test-utils": "^2.13.3",
     "@medusajs/ui": "^4.0.25"
   },
   "engines": {
