@@ -1,4 +1,5 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import gorgoPluginsInject from '@gorgo/medusa-vite-plugin'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -13,15 +14,48 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
   },
-  plugins: [
-
-    {
-
-      resolve: "@gorgo/medusa-marketplace-yandex-market",
-
-      options: {},
-
+  featureFlags: {
+    backend_hmr: true,
+  },
+  admin: {
+    vite: (config) => {
+      return {
+        ...config,
+        // Used only during testing, do not enable in production
+        plugins: [
+          gorgoPluginsInject({
+            sources: [
+              "@gorgo/medusa-marketplace",
+              "@gorgo/medusa-marketplace-yandex-market",
+            ],
+            pluginMode: true
+          }),
+        ],
+        optimizeDeps: {
+          exclude: [
+            "@gorgo/medusa-marketplace"
+          ]
+        }
+      }
     },
-
+  },
+  plugins: [
+    {
+      resolve: "@gorgo/medusa-marketplace-yandex-market",
+      options: {},
+    },
+    {
+      resolve: "@gorgo/medusa-marketplace",
+      options: {
+        providers: [
+          {
+            resolve: "@gorgo/medusa-marketplace-yandex-market/providers/marketplace-yandex-market",
+            id: "test",
+            options: {
+            }
+          }
+        ]
+      }
+    }
   ],
 })

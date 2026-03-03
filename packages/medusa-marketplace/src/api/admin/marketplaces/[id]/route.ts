@@ -3,14 +3,14 @@ import { MarketplaceModuleService } from "../../../../modules/marketplace/servic
 import { MARKETPLACE_MODULE } from "../../../../modules/marketplace"
 import { AdminUpdateMarketplaceType } from "../validators"
 import { AdminMarketplaceResponse, AdminMarketplaceDeleteResponse } from "../../../../types"
-import { ContainerRegistrationKeys } from "@medusajs/utils"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/utils"
 
 export const GET = async (
   req: MedusaRequest,
   res: MedusaResponse<AdminMarketplaceResponse>
 ) => {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
-  
+
   const { data } = await query.graph({
     entity: "marketplace",
     filters: { id: req.params.id },
@@ -27,6 +27,31 @@ export const POST = async (
   res: MedusaResponse<AdminMarketplaceResponse>
 ) => {
   const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
+
+  if (
+    req.validatedBody.sales_channel_id &&
+    req["marketplaceContext"] && // TODO: better way to handle this?
+    req["marketplaceContext"].sales_channel.id !== req.validatedBody.sales_channel_id
+  ) {
+    const link = req.scope.resolve(ContainerRegistrationKeys.LINK)
+    await link.dismiss({
+      marketplace: {
+        marketplace_id: req.params.id
+      },
+      [Modules.SALES_CHANNEL]: {
+        sales_channel_id: req["marketplaceContext"].sales_channel.id
+      }
+    })
+    await link.create({
+      marketplace: {
+        marketplace_id: req.params.id
+      },
+      [Modules.SALES_CHANNEL]: {
+        sales_channel_id: req.validatedBody.sales_channel_id
+      }
+    })
+  }
+
   const marketplace = await marketplaceService.updateMarketplaces({
     id: req.params.id,
     ...req.validatedBody

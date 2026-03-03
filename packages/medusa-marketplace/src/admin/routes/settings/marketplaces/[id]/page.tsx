@@ -1,52 +1,58 @@
-import { Container, Heading, Text, StatusBadge } from "@medusajs/ui"
-import { useQuery } from "@tanstack/react-query"
-import { sdk } from "../../../../lib/sdk"
-import { MarketplaceEditDrawer } from "../../../../components/routes/marketplaces/marketplace-list"
-import { AdminMarketplaceResponse } from "../../../../../types"
 
-type Marketplace = {
-  id: string
-  provider_id: string
-  credentials: Record<string, unknown>
-  settings: Record<string, unknown>
-  is_enabled: boolean
-}
+import {
+  LoaderFunctionArgs,
+  UIMatch,
+} from "react-router-dom"
+import { sdk } from "../../../../lib/sdk"
+import type { AdminMarketplaceResponse } from "../../../../../types"
+import {
+  MarketplaceGeneralSection,
+  MarketplaceEventsSection
+} from "../../../../components/routes/marketplaces/marketplace-detail"
+import { TwoColumnPageWithWidgets } from "../../../../components/layout"
+import { WidgetProvider } from "../../../../providers/widget-provider"
 
 const MarketplaceDetail = () => {
-
-  const id = window.location.pathname.split("/").pop() || ""
-
-  const { data, isLoading, isError } = useQuery<AdminMarketplaceResponse>({
-    queryKey: ["admin-marketplace", id],
-    enabled: Boolean(id),
-    queryFn: async () => sdk.client.fetch(`/admin/marketplaces/${id}`),
-  })
-
-  const marketplace: Marketplace | undefined = data?.marketplace
-
-  if (isLoading) return <Container className="p-6">Loading…</Container>
-  if (isError || !marketplace) return <Container className="p-6">Not found</Container>
-
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <div>
-          <Text size="small" className="text-ui-fg-subtle">Marketplace provider</Text>
-          <Heading level="h1">{marketplace.provider_id}</Heading>
-        </div>
-
-        <div className="flex items-center gap-x-2">
-          <StatusBadge color={marketplace.is_enabled ? "green" : "red"}>
-            {marketplace.is_enabled ? "Active" : "Inactive"}
-          </StatusBadge>
-
-          <MarketplaceEditDrawer
-            marketplace={marketplace}
-          />
-        </div>
-      </div>
-    </Container>
+    <WidgetProvider>
+      <TwoColumnPageWithWidgets
+        widgets={{
+          before: "marketplace.details.before",
+          after: "marketplace.details.after",
+          sideBefore: "marketplace.details.side.before",
+          sideAfter: "marketplace.details.side.after",
+        }}
+        firstCol={
+          <MarketplaceGeneralSection />
+        }
+        secondCol={
+          <MarketplaceEventsSection />
+        }
+      />
+    </WidgetProvider>
   )
+}
+
+const Breadcrumb = (
+  props: UIMatch<AdminMarketplaceResponse>
+) => {
+  const { marketplace } = props.data || {}
+  if (!marketplace)
+    return null
+
+  return <span>{marketplace.title}</span>
+}
+
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+  const { id } = params
+
+  const response = await sdk.client.fetch(`/admin/marketplaces/${id}`)
+
+  return response
+}
+
+export const handle = {
+  breadcrumb: (match: UIMatch<AdminMarketplaceResponse>) => <Breadcrumb {...match} />,
 }
 
 export default MarketplaceDetail

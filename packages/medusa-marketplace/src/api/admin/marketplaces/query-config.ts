@@ -21,6 +21,7 @@ export const listMarketplaceQueryConfig = {
 
 export const defaultAdminMarketplaceEventFields = [
   "id",
+  "marketplace.*",
   "marketplace_id",
   "correlation_id",
   "direction",

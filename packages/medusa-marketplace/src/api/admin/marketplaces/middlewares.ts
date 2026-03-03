@@ -35,7 +35,8 @@ export const adminMarketplaceRoutesMiddlewares: MiddlewareRoute[] = [
     methods: ["POST"],
     matcher: "/admin/marketplaces/:id",
     middlewares: [
-      validateAndTransformBody(AdminUpdateMarketplace)
+      validateAndTransformBody(AdminUpdateMarketplace),
+      setMarketplaceContext()
     ]
   },
   {
