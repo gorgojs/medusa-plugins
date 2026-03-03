@@ -9,7 +9,8 @@ import {
   OutputMappingRow,
   OutputFieldRule,
   OutputAttributesRule,
-  TransformConfig
+  TransformConfig,
+  AttrsSummary
 } from "../types"
 
 export const isOzonCategory = (node: OzonNode): node is OzonCategoryNode => "description_category_id" in node
@@ -18,8 +19,8 @@ export const getEnabledOzonNodes = (nodes: OzonNode[] = []) => nodes.filter((nod
 
 export const buildOzonCategoryTypeSelectOptionsDeep = (
   nodes: OzonNode[] = [],
-  parentPathSegments: string[] = [],
   treeByValue?: Map<string, OzonCategoryNode>,
+  parentPathSegments: string[] = [],
   parentPathNodes: OzonCategoryNode[] = []
 ): SelectOption[] => {
   const cloneCategoryNode = (node: OzonCategoryNode): OzonCategoryNode => ({
@@ -74,7 +75,7 @@ export const buildOzonCategoryTypeSelectOptionsDeep = (
     const hasChildCategories = enabledChildren.some(isOzonCategory)
 
     if (hasChildCategories) {
-      return buildOzonCategoryTypeSelectOptionsDeep(enabledChildren, nextPathSegments, treeByValue, nextPathNodes)
+      return buildOzonCategoryTypeSelectOptionsDeep(enabledChildren, treeByValue, nextPathSegments, nextPathNodes)
     }
 
     const typeOptions = collectTypeNodes(node)
@@ -149,7 +150,7 @@ export const ozonOptionsToGroups = (options: ComboboxOption[]): ComboboxGroupOpt
 export const buildOzonMappingPayload = (
   formValues: MappingFormValues,
   treeByValue: Map<string, OzonCategoryNode>,
-  attrsSummaryByValue: Map<string, { total: number; required: number }>
+  attrsSummaryByValue: Map<string, AttrsSummary>
 ) => {
   const categoryMappings = formValues.category_mappings ?? []
   const makeMappingId = () => `mpmap_${crypto.randomUUID().slice(0, 10)}`

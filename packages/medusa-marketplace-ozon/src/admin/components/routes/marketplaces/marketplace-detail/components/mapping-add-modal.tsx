@@ -4,7 +4,7 @@ import { DefaultValues, useForm } from "react-hook-form"
 import { useQueryClient } from "@tanstack/react-query"
 import { Form } from "../../../../common/form"
 import { MappingRow } from "./mapping-row"
-import { MappingFormValues, OzonCategoryNode } from "../../../../../types"
+import { AttrsSummary, MappingFormValues, OzonCategoryNode } from "../../../../../types"
 import { buildOzonMappingPayload } from "../../../../../utils"
 import { sdk } from "../../../../../lib/sdk"
 import { OzonAttributesResponse } from "../../../../../types"
@@ -30,10 +30,10 @@ export const CategoryMappingRuleAddModal = ({
 }) => {
   const form = useForm<MappingFormValues>({ defaultValues: makeDefaults(), mode: "onChange" })
   const queryClient = useQueryClient()
-  const ozonTreeByValueRef = useRef<Map<string, OzonCategoryNode>>(new Map())
+  const ozonTreeByValueRef = useRef(new Map<string, OzonCategoryNode>())
 
   const onSubmit = form.handleSubmit(async (values) => {
-    const attrsSummaryByValue = new Map<string, { total: number; required: number }>()
+    const attrsSummaryByValue = new Map<string, AttrsSummary>()
 
     for (const categoryMapping of values.category_mappings ?? []) {
       const selectedValue = categoryMapping.ozon_category_type_value
@@ -42,7 +42,7 @@ export const CategoryMappingRuleAddModal = ({
       const [descriptionCategoryId, typeId] = selectedValue.split(":").map(Number)
       if (!descriptionCategoryId || !typeId) continue
 
-      const queryKey = ["ozon-attributes", marketplaceId, descriptionCategoryId, typeId] as const
+      const queryKey = ["ozon-attributes", marketplaceId, descriptionCategoryId, typeId]
 
       const data = await queryClient.ensureQueryData<OzonAttributesResponse>({
         queryKey,

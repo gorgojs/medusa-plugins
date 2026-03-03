@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { Heading } from "@medusajs/ui"
 import { useFieldArray, useWatch } from "react-hook-form"
-import { MappingFormValues, CategoryMappingRowProps } from "../../../../../types"
+import { CategoryMappingRowProps } from "../../../../../types"
 import { CategorySelectors } from "./category-selectors"
 import { AttributesMapping } from "./attributes-mapping"
 import { Container } from "../../../../common/container"
@@ -38,7 +38,7 @@ export const CategoryMappingRow = ({
     control: form.control,
     name: `category_mappings.${index}.mappings`,
     defaultValue: [],
-  }) as MappingFormValues["category_mappings"][number]["mappings"]
+  })
 
   const ozonIds = useMemo(() => {
     const [description_category_id, type_id] = (selectedOzonCategoryTypeValue || "").split(":")
@@ -49,7 +49,7 @@ export const CategoryMappingRow = ({
     return new Map(productCategoriesCombobox.options.map((o) => [String(o.value), o.label]))
   }, [productCategoriesCombobox.options])
 
-  const isOzonDisabled = productCategoriesCombobox.disabled || selectedMedusaCategoryIds.length === 0
+  const isOzonDisabled = productCategoriesCombobox.disabled || selectedMedusaCategoryIds?.length === 0
   const selectedMedusaValues = (watchedRules ?? []).map((r) => r?.medusa_attribute).filter(Boolean)
   const selectedOzonValues = (watchedRules ?? []).map((r) => r?.ozon_attribute_id).filter(Boolean)
 
@@ -74,10 +74,10 @@ export const CategoryMappingRow = ({
         <AttributesMapping
           form={form}
           categoryIndex={index}
-          attrFields={attrFields as any}
-          appendAttr={appendAttr as any}
+          attrFields={attrFields}
+          appendAttr={appendAttr}
           removeAttr={removeAttr}
-          canAdd={Boolean(selectedMedusaCategoryIds.length && selectedOzonCategoryTypeValue)}
+          canAdd={Boolean(selectedMedusaCategoryIds?.length && selectedOzonCategoryTypeValue)}
           selectedMedusaCategoryIds={selectedMedusaCategoryIds}
           ozonIds={ozonIds}
           medusaCategoryNameById={medusaCategoryNameById}

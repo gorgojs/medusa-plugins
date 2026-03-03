@@ -154,4 +154,15 @@ export type OutputMappingRow = {
   fields: Array<OutputFieldRule | OutputAttributesRule>
 }
 
-export type OzonAttributesResponse = { result: Array<{ is_required?: boolean }> }
+export type OzonRequiredAttribute = {
+  is_required?: boolean
+}
+
+export type OzonAttributesResponse = {
+  result: OzonRequiredAttribute[]
+}
+
+export type AttrsSummary = { total: number; required: number }
+
+
+

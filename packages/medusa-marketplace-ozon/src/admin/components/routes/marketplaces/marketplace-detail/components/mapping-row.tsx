@@ -1,6 +1,5 @@
 import { useMemo } from "react"
 import { useFieldArray } from "react-hook-form"
-import { OzonNode } from "../../../../../types"
 import { buildOzonCategoryTypeSelectOptionsDeep, ozonOptionsToGroups } from "../../../../../utils"
 import { sdk } from "../../../../../lib/sdk"
 import { useComboboxData } from "../../../../../hooks/use-combobox-data"
@@ -95,17 +94,14 @@ export const MappingRow = ({
     getOptions: (data) => {
       ozonTreeByValueRef.current.clear()
 
-      const opts = buildOzonCategoryTypeSelectOptionsDeep((data?.result ?? []) as OzonNode[], [], ozonTreeByValueRef.current)
+      const opts = buildOzonCategoryTypeSelectOptionsDeep(data?.result, ozonTreeByValueRef.current)
 
       return opts.map((o) => ({ label: o.label, value: String(o.value) }))
     },
     enabled: true,
   })
 
-  const ozonGroupsWithIds = useMemo(
-    () => ozonOptionsToGroups(ozonCategoriesCombobox.options),
-    [ozonCategoriesCombobox.options]
-  )
+  const ozonGroupsWithIds = useMemo(() => ozonOptionsToGroups(ozonCategoriesCombobox.options), [ozonCategoriesCombobox.options])
 
   const row = fields[0]
 
