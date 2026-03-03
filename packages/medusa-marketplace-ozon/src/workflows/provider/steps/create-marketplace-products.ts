@@ -12,10 +12,12 @@ export type CreateMarketplaceProductsStepInput = {
 export const createMarketplaceProductsStep = createStep(
   "create-ozon-products",
   async (input: CreateMarketplaceProductsStepInput, { container }) => {
+    const rawProducts: any = input.products
+    const products: V3ImportProductsRequestItem[] = Array.isArray(rawProducts?.create) ? rawProducts.create : rawProducts
     const createdProducts = await productApi.productAPIImportProductsV3(
       withAuth(input!.credentials as MarketplaceOzonCredentialsType,{
         v3ImportProductsRequest: {
-          items: input.products
+          items: products
         }
       })
     )

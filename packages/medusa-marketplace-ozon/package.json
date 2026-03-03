@@ -24,7 +24,6 @@
     "medusa-plugin-other",
     "medusa-plugin",
     "medusa-v2",
-    "medusa-plugin-integration",
     "ozon",
     "ozon-seller",
     "ozon-marketplace",
@@ -42,7 +41,12 @@
     "prepublishOnly": "yarn openapi:gen && medusa plugin:build",
     "predev": "medusa plugin:publish"
   },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "lodash.debounce": "^4.0.8"
+  },
   "devDependencies": {
+    "@gorgo/medusa-marketplace": "*",
     "@medusajs/admin-sdk": "^2.13.3",
     "@medusajs/cli": "^2.13.3",
     "@medusajs/framework": "^2.13.3",
@@ -77,9 +81,5 @@
   },
   "engines": {
     "node": ">=20"
-  },
-  "dependencies": {
-    "axios": "^1.13.2",
-    "lodash.debounce": "^4.0.8"
   }
 }

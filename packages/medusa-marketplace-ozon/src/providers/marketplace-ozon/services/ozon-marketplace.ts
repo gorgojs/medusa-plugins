@@ -105,192 +105,157 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
     return products
   }
 
-  async mapToMarketplaceProducts(data: MapToMarketplaceProductsInput, container?: MedusaContainer): Promise<MapToMarketplaceProductsOutput> {
-    // This is a mock implementation. Replace with actual mapping logic.
-    const settings = {
-      "medusaToMarketplaceMappingSchema": {
-        "ozon_category": {
-          "description_category_id": 200001517,
-          "type_id": 93228
-        },
-        "medusa_categories": [
-          "pcat_01KCP70X23QSZN9QS0CJCF9R3R"
-        ],
-        "fields": [
+  async mapToMarketplaceProducts(data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput> {
+    const marketplace = data.marketplace
+    const rawSettings = marketplace?.settings || {}
+    const mapping: Record<string, any> = rawSettings.mapping || {}
+
+    const marketplaceProducts: V3ImportProductsRequestItem[] = []
+    const products = data.products
+
+    for (const ruleId of Object.keys(mapping)) {
+      const mappingRule = mapping[ruleId]
+
+      if (!mappingRule) continue
+
+      const medusaCategories: string[] = mappingRule.medusa_categories || []
+      const dbFields = mappingRule.fields || []
+      const ozonCategory = mappingRule.ozon_category
+
+      const descriptionCategoryId = ozonCategory.children?.[0]
+      const typeId = descriptionCategoryId.children?.[0]
+      if (!descriptionCategoryId || !typeId) continue
+
+      const schema = {
+        fields: [
           {
+            isRequired: true,
             "from": "id",
             "to": "offer_id"
           },
           {
-            "from": "combined_name",
-            "to": "name"
+            isRequired: true,
+            from: "combined_name",
+            to: "name",
           },
           {
-            "from": "description",
-            "to": "description"
+            isRequired: true,
+            from: "description",
+            to: "description",
           },
           {
-            "from": "prices.0.amount",
-            "to": "price"
+            isRequired: true,
+            from: "prices.0.amount",
+            to: "price",
           },
           {
-            "from": "prices.1.amount",
-            "to": "old_price"
+            isRequired: true,
+            from: "prices.1.amount",
+            to: "old_price",
           },
           {
-            "from": "prices.currency_code",
-            "to": "currency_code",
-            "default": "RUB"
+            isRequired: true,
+            from: "prices.currency_code",
+            to: "currency_code",
+            default: "RUB",
           },
           {
-            "from": "sku",
-            "to": "barcode"
+            isRequired: true,
+            from: "barcode",
+            to: "barcode",
           },
           {
-            "from": "dimension_unit",
-            "to": "dimension_unit",
-            "default": "mm"
+            isRequired: true,
+            from: "dimension_unit",
+            to: "dimension_unit",
+            default: "mm",
           },
           {
-            "from": "weight_unit",
-            "to": "weight_unit",
-            "default": "g"
+            isRequired: true,
+            from: "weight_unit",
+            to: "weight_unit",
+            default: "g",
           },
           {
-            "from": "weight",
-            "to": "weight",
-            "default": 100
+            isRequired: true,
+            from: "weight",
+            to: "weight",
+            default: 100,
           },
           {
-            "from": "length",
-            "to": "depth",
-            "default": 10
+            isRequired: true,
+            from: "length",
+            to: "depth",
+            default: 10,
           },
           {
-            "from": "height",
-            "to": "height",
-            "default": 10
+            isRequired: true,
+            from: "height",
+            to: "height",
+            default: 10,
           },
           {
-            "from": "width",
-            "to": "width",
-            "default": 10
+            isRequired: true,
+            from: "width",
+            to: "width",
+            default: 10,
           },
           {
-            "from": "images",
-            "to": "images",
-            "default": []
+            isRequired: true,
+            from: "images",
+            to: "images",
+            default: [],
           },
           {
-            "from": "vat",
-            "to": "vat",
-            "default": "0"
+            isRequired: true,
+            from: "vat",
+            to: "vat",
+            default: "0",
           },
-          {
-            "from": "attributes",
-            "to": "attributes",
-            // "when": { "path": "categories", "contain": "pcat_2332r23" },
-            "default": [
-              {
-                "id": 8229,
-                "values": [
-                  {
-                    "value": "Термофутболка"
-                  }
-                ]
-              },
-              {
-                "id": 9163,
-                "values": [
-                  {
-                    "value": "Мужской"
-                  }
-                ]
-              },
-              {
-                "id": 31,
-                "values": [
-                  {
-                    "value": "Нет бренда"
-                  }
-                ]
-              },
-              {
-                "id": 8292,
-                "values": [
-                  {
-                    "value": "prod_01KBHXW41JG2DVDQXQESNFRT85"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "from": "attributes",
-            "to": "attributes",
-            "optionRules": {
-              "opt_01KC3R4AH6EYX1SKZ1MK074875": {
-                "attributeId": 4295,
-                "default": [
-                  "48",
-                  "54",
-                  "58"
-                ]
-              },
-              "opt_01KC3R4AH64XYH46RRWQ49S1VB": {
-                "attributeId": 10096,
-                "default": [
-                  "белый"
-                ]
-              }
-            }
-          }
-        ]
+          ...dbFields,
+        ],
       }
+
+      products.forEach((product) => {
+        // TODO: use when close condition for multiple categories
+        const productCategories = product.categories || []
+        const intersect = productCategories.filter((c) => medusaCategories.includes(c.id)).map((c) => c.id)
+
+        if (!intersect.length) {
+          return
+        }
+
+        product.variants.forEach((variant) => {
+          const { variants: _ignored, ...productWithoutVariants } = product
+          const images = (variant.images && variant.images.length ? variant.images : product.images || []).map((img) => img.url)
+          const mergedProductVariant = {
+            product: productWithoutVariants,
+            ...variant,
+            images,
+          }
+
+          const combinedName = `${mergedProductVariant.product?.title ?? ""} ${variant.title ?? ""}`.trim()
+
+          const mergedForMapping = {
+            ...mergedProductVariant,
+            combined_name: combinedName,
+          }
+          const ozonItem = mapObject(
+            mergedForMapping,
+            schema
+          ) as V3ImportProductsRequestItem
+
+          ozonItem.price = String(ozonItem.price ?? 0)
+          ozonItem.old_price = String(ozonItem.old_price ?? ozonItem.price)
+
+          ozonItem.type_id = typeId.type_id
+          ozonItem.description_category_id = descriptionCategoryId.description_category_id
+          marketplaceProducts.push(ozonItem)
+        })
+      })
     }
 
-    let marketplaceProducts: V3ImportProductsRequestItem[] = []
-    const products = data.products
-    const schema = settings.medusaToMarketplaceMappingSchema
-
-    products.forEach((product) => {
-      // TODO: use when close condition for multiple categories
-      const intersect = product.categories?.filter(value => schema.medusa_categories.includes(value.id)).map(c => c.id) || []
-      if (intersect.length == 0) return
-
-      product.variants.forEach(variant => {
-        const { variants: _ignored, ...productWithoutVariants } = product
-        const images = (variant.images && variant.images.length ? variant.images : product.images || []).map((img) => img.url)
-        const mergedProductVariant = {
-          product: productWithoutVariants,
-          ...variant,
-          images,
-        }
-
-        const combinedName = `${mergedProductVariant.product?.title ?? ""} ${variant.title ?? ""} ${mergedProductVariant.product?.description ?? ""}`.trim()
-
-        const mergedForMapping = {
-          ...mergedProductVariant,
-          combined_name: combinedName,
-        }
-        const ozonItem = mapObject(
-          mergedForMapping,
-          schema
-        ) as V3ImportProductsRequestItem
-
-        ozonItem.price = String(ozonItem.price ?? 0)
-        ozonItem.old_price = String(ozonItem.old_price ?? ozonItem.price)
-
-        if (schema.ozon_category) {
-          ozonItem.type_id = schema.ozon_category.type_id
-          ozonItem.description_category_id = schema.ozon_category.description_category_id
-        }
-
-        marketplaceProducts.push(ozonItem)
-      })
-    })
-
-    return {create: marketplaceProducts}
+    return { create: marketplaceProducts }
   }
 
   async mapToMedusaProducts(input: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput> {
