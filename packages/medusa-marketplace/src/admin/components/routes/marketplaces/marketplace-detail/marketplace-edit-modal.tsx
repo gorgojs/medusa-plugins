@@ -52,7 +52,7 @@ export const MarketplaceEditModal = ({
     defaultValues: {
       title: String(marketplace.title),
       is_enabled: Boolean(marketplace.is_enabled),
-      sales_channel_id: marketplace.sales_channel_id ?? "",
+      sales_channel_id: marketplace.sales_channel?.id ?? "",
     },
     resolver: zodResolver(MarketplaceEditSchema),
     mode: "onSubmit",
@@ -62,7 +62,7 @@ export const MarketplaceEditModal = ({
     form.reset({
       title: String(marketplace.title),
       is_enabled: Boolean(marketplace.is_enabled),
-      sales_channel_id: marketplace.sales_channel_id ?? "",
+      sales_channel_id: marketplace.sales_channel?.id ?? "",
     })
 
   useEffect(() => {
