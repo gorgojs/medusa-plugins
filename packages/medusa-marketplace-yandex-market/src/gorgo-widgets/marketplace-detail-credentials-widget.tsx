@@ -4,27 +4,26 @@ import type { DetailWidgetProps } from "@medusajs/framework/types"
 import {
   MarketplaceDetailCredentialsSection,
   MarketplaceDetailCredentialsEditModal,
-} from "./components/gorgo-widgets"
+} from "../admin/components/gorgo-widgets"
 
 const MarketplaceDetailCredentialsWidget = ({
-  data: marketplace,
+  // data: marketplace,
 }: DetailWidgetProps<any>) => {
   const [editOpen, setEditOpen] = useState(false)
 
   return (
     <>
       <MarketplaceDetailCredentialsSection />
-      <MarketplaceDetailCredentialsEditModal
+      {/* <MarketplaceDetailCredentialsEditModal
         response={{ marketplace }}
         open={editOpen}
         setOpen={setEditOpen}
-      />
+      /> */}
     </>
   )
 }
 
 export const config = {
-  zone: "marketplace.details.after",
+  zone: ["marketplace.details.after"]
 }
-
 export default MarketplaceDetailCredentialsWidget
