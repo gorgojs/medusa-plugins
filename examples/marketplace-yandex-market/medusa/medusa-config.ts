@@ -17,7 +17,7 @@ module.exports = defineConfig({
   featureFlags: {
     backend_hmr: true,
   },
- admin: {
+  admin: {
     vite: (config) => {
       return {
         ...config,

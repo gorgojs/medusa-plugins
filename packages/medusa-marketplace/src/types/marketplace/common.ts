@@ -29,6 +29,9 @@ export type MarketplaceEventDTO = {
   direction: EventDirectionType
   entity_type: EventEntityType
   action: EventActionType
+  created_at: Date | string
+  updated_at: Date | string
+  deleted_at: Date | null
   started_at?: Date | null
   finished_at?: Date | null
   request_data?: Record<string, unknown> | null

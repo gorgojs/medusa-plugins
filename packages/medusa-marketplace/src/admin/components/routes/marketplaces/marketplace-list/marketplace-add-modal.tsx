@@ -7,7 +7,6 @@ import {
   Select,
   Input,
   Heading,
-  Toaster,
   toast
 } from "@medusajs/ui"
 import { Controller, useForm } from "react-hook-form"
@@ -235,7 +234,6 @@ export const MarketplaceAddModal = ({
 
           <FocusModal.Footer>
             <div className="flex items-center gap-x-2">
-              <Toaster />
               <Button
                 size="small"
                 variant="secondary"
