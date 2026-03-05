@@ -2,6 +2,7 @@
 import {
   LoaderFunctionArgs,
   UIMatch,
+  useLoaderData
 } from "react-router-dom"
 import { sdk } from "../../../../lib/sdk"
 import type { AdminMarketplaceResponse } from "../../../../../types"
@@ -13,6 +14,8 @@ import { TwoColumnPageWithWidgets } from "../../../../components/layout"
 import { WidgetProvider } from "../../../../providers/widget-provider"
 
 const MarketplaceDetail = () => {
+  const { marketplace } = useLoaderData() as AdminMarketplaceResponse
+
   return (
     <WidgetProvider>
       <TwoColumnPageWithWidgets
@@ -22,6 +25,7 @@ const MarketplaceDetail = () => {
           sideBefore: "marketplace.details.side.before",
           sideAfter: "marketplace.details.side.after",
         }}
+        data={marketplace}
         firstCol={
           <MarketplaceGeneralSection />
         }

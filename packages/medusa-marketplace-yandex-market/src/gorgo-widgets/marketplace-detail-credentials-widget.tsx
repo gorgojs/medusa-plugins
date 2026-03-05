@@ -7,18 +7,18 @@ import {
 } from "../admin/components/gorgo-widgets"
 
 const MarketplaceDetailCredentialsWidget = ({
-  // data: marketplace,
+  data: marketplace,
 }: DetailWidgetProps<any>) => {
   const [editOpen, setEditOpen] = useState(false)
 
   return (
     <>
-      <MarketplaceDetailCredentialsSection />
-      {/* <MarketplaceDetailCredentialsEditModal
+      <MarketplaceDetailCredentialsSection onEditClick={() => setEditOpen(true)} />
+      <MarketplaceDetailCredentialsEditModal
         response={{ marketplace }}
         open={editOpen}
         setOpen={setEditOpen}
-      /> */}
+      />
     </>
   )
 }

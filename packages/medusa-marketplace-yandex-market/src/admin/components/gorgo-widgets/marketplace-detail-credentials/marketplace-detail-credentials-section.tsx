@@ -10,7 +10,7 @@ import { Container } from "../../common/container"
 import { Header } from "../../common/header"
 import { SectionRow } from "../../common/section-row"
 
-export const MarketplaceDetailCredentialsSection = () => {
+export const MarketplaceDetailCredentialsSection = ({ onEditClick }: { onEditClick?: () => void }) => {
 
   const [editOpen, setEditOpen] = useState(false)
   const location = useLocation()
@@ -40,9 +40,7 @@ export const MarketplaceDetailCredentialsSection = () => {
                       {
                         icon: <Pencil />,
                         label: "Edit",
-                        onClick: () => {
-                          setEditOpen(true)
-                        },
+                        onClick: onEditClick || (() => {}),
                       },
                     ],
                   },
