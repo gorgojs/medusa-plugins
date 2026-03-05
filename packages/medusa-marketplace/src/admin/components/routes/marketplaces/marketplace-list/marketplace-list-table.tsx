@@ -150,7 +150,7 @@ export const MarketplaceListTable = ({
 
         {editingMarketplace && (
           <MarketplaceEditModal
-            response={{ marketplace: editingMarketplace }}
+            marketplace={editingMarketplace}
             open={editOpen}
             setOpen={setEditOpen}
           />

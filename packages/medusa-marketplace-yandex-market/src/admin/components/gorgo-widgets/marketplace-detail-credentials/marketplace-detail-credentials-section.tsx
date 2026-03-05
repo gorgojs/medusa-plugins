@@ -1,24 +1,22 @@
 import { Badge } from "@medusajs/ui"
-import {
-  useLoaderData
-} from "react-router-dom"
 import { useState, useEffect } from "react"
 import { useLocation } from "react-router-dom"
-import type { AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/types"
+import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
 import { Pencil } from "@medusajs/icons"
 import { Container } from "../../common/container"
 import { Header } from "../../common/header"
 import { SectionRow } from "../../common/section-row"
+import { MarketplaceDetailCredentialsEditModal } from "./marketplace-detail-credentials-edit-modal"
 
-export const MarketplaceDetailCredentialsSection = ({ onEditClick }: { onEditClick?: () => void }) => {
+type MarketplaceDetailCredentialsSectionProps = {
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
+}
 
+export const MarketplaceDetailCredentialsSection = ({
+  marketplace,
+}: MarketplaceDetailCredentialsSectionProps) => {
   const [editOpen, setEditOpen] = useState(false)
   const location = useLocation()
-  const { marketplace } = useLoaderData() as AdminMarketplaceResponse
-
-  if (!marketplace) {
-    return <Container className="p-6">Not found</Container>
-  }
 
   useEffect(() => {
     if ((location.state as any)?.openEdit) {
@@ -27,6 +25,7 @@ export const MarketplaceDetailCredentialsSection = ({ onEditClick }: { onEditCli
   }, [location.state])
 
   return (
+    <>
       <Container>
         <Header
           title="Credentials"
@@ -40,7 +39,9 @@ export const MarketplaceDetailCredentialsSection = ({ onEditClick }: { onEditCli
                       {
                         icon: <Pencil />,
                         label: "Edit",
-                        onClick: onEditClick || (() => {}),
+                        onClick: () => {
+                          setEditOpen(true)
+                        },
                       },
                     ],
                   },
@@ -74,5 +75,12 @@ export const MarketplaceDetailCredentialsSection = ({ onEditClick }: { onEditCli
           }
         />
       </Container>
+
+      <MarketplaceDetailCredentialsEditModal
+        marketplace={ marketplace }
+        open={editOpen}
+        setOpen={setEditOpen}
+      />
+    </>
   )
 }

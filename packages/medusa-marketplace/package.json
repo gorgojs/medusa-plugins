@@ -29,7 +29,6 @@
     "medusa-plugin-other",
     "medusa-plugin",
     "medusa-v2",
-    "medusa-plugin-integration",
     "marketplace"
   ],
   "scripts": {

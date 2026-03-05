@@ -8,9 +8,9 @@ export const GET = async (
   res: MedusaResponse<AdminMarketplaceEventResponse>
 ) => {
   const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
-  const event = await marketplaceService.retrieveMarketplaceEvent(req.params.id, {
+  const marketplace_event = await marketplaceService.retrieveMarketplaceEvent(req.params.id, {
     select: req.queryConfig.fields
   })
 
-  return res.status(200).json({ event })
+  return res.status(200).json({ marketplace_event })
 }

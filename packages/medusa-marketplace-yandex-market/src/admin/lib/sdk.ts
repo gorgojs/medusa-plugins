@@ -1,8 +1,8 @@
 import Medusa from "@medusajs/js-sdk"
 
 export const sdk = new Medusa({
-    baseUrl: "http://localhost:9000/", // TODO: change hardcode 
-    auth: {
-        type: "session",
-    },
+  baseUrl: process.env.BACKEND_URL || "/", // TODO: not sure how to set it correctly
+  auth: {
+    type: "session",
+  },
 })

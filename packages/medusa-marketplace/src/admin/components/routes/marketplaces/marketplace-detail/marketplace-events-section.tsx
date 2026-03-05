@@ -12,17 +12,12 @@ import {
   CurrencyDollar,
   HandTruck
 } from "@medusajs/icons"
-import type {
-  AdminMarketplaceEventListResponse,
-  MarketplaceEventDTO,
-  AdminMarketplaceResponse
-} from "../../../../../types"
-import { useLoaderData } from "react-router-dom"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { sdk } from "../../../../lib/sdk"
 import { getFullDate, getRelativeDate } from "../../../../utils"
 import { Container } from "../../../common/container"
 import { Header } from "../../../common/header"
+import { MarketplaceHttpTypes } from "../../../../../types"
 
 const PAGE_SIZE = 5
 
@@ -31,13 +26,17 @@ const useLocalDate = () => {
   return { getFullDate, getRelativeDate }
 }
 
-export const MarketplaceEventsSection = () => {
+type MarketplaceEventsSectionProps = {
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
+}
+
+export const MarketplaceEventsSection = ({
+  marketplace
+}: MarketplaceEventsSectionProps) => {
   const limit = PAGE_SIZE
 
-  const { marketplace } = useLoaderData() as AdminMarketplaceResponse
-
   // TODO: reactor to listAndCount service factory method
-  const { data } = useQuery<AdminMarketplaceEventListResponse>({
+  const { data } = useQuery<MarketplaceHttpTypes.AdminMarketplaceEventListResponse>({
     queryKey: ["admin-marketplace-events", { limit, marketplace_id: marketplace.id }],
     queryFn: () =>
       sdk.client.fetch(`/admin/marketplaces/events`, {
@@ -60,11 +59,11 @@ export const MarketplaceEventsSection = () => {
     },
   })
 
-  const events = (data?.events ?? []) as MarketplaceEventDTO[]
+  const events = (data?.marketplace_events ?? []) as MarketplaceHttpTypes.AdminMarketplaceEvent[]
   const total = data?.count ?? 0
   const shown = events.length
 
-  const items = events.map((event: MarketplaceEventDTO) => ({
+  const items = events.map((event: MarketplaceHttpTypes.AdminMarketplaceEvent) => ({
     title: String((event as any).marketplace_id ?? "-"),
     timestamp:
       (event).finished_at ??
@@ -121,9 +120,11 @@ export const MarketplaceEventsSection = () => {
       />
       {items.length === 0 ?
         (
-          <Text size="small" className="text-ui-fg-subtle">
-            No events yet
-          </Text>
+          <div className="flex items-center justify-between px-6 py-3 border-t border-ui-border-subtle">
+            <Text size="small" className="text-ui-fg-subtle">
+              No events yet
+            </Text>
+          </div>
         )
         : (<div className="flex flex-col gap-y-0.5  px-6 py-4">
           {items.map((item, index) => (

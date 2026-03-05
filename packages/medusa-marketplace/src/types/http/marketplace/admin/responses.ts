@@ -1,13 +1,13 @@
 import { DeleteResponse, PaginatedResponse } from "@medusajs/framework/types";
-import { MarketplaceDTO, MarketplaceEventDTO } from "../../../../types";
+import { AdminMarketplace, AdminMarketplaceEvent } from "./entities";
 
 export interface AdminMarketplaceListResponse
   extends PaginatedResponse<{
-    marketplaces: MarketplaceDTO[]
+    marketplaces: AdminMarketplace[]
   }> {}
 
 export interface AdminMarketplaceResponse {
-  marketplace: MarketplaceDTO
+  marketplace: AdminMarketplace
 }
 
 export interface AdminMarketplaceDeleteResponse extends DeleteResponse<"marketplace"> {}
@@ -18,11 +18,11 @@ export interface AdminMarketplaceProductSyncResponse {
 
 export interface AdminMarketplaceEventListResponse
   extends PaginatedResponse<{
-    events: MarketplaceEventDTO[]
+    marketplace_events: AdminMarketplaceEvent[]
   }> {}
 
 export interface AdminMarketplaceEventResponse {
-  event: MarketplaceEventDTO
+  marketplace_event: AdminMarketplaceEvent
 }
 
 export interface AdminMarketplaceProviderList {

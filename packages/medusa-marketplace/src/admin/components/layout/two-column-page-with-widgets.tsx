@@ -55,6 +55,7 @@ export const TwoColumnPageWithWidgets = <TData,>({
           {getWidgets(after).map((Component, i) => (
             <Component {...widgetProps} key={`after-${i}`} />
           ))}
+          {showJSON && <JsonViewSection data={data!} />}
         </div>
 
         <div className="flex w-full max-w-[100%] flex-col gap-y-3 xl:mt-0 xl:max-w-[440px]">
@@ -67,7 +68,6 @@ export const TwoColumnPageWithWidgets = <TData,>({
           ))}
         </div>
       </div>
-      {showJSON && <JsonViewSection data={data!} />}
     </div>
   )
 }

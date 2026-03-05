@@ -1,23 +1,22 @@
 import { Heading, Badge, StatusBadge } from "@medusajs/ui"
-import { useLoaderData } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { useLocation } from "react-router-dom"
 import { MarketplaceActionMenu } from "../marketplace-list/marketplace-action-menu"
 import { MarketplaceEditModal } from "./marketplace-edit-modal"
-import type { AdminMarketplaceResponse } from "../../../../../types"
+import { MarketplaceHttpTypes } from "../../../../../types"
 import { Container } from "../../../common/container"
 import { SectionRow } from "../../../common/section-row"
-import { JsonViewSection } from "../../../common/json-view-section"
 
-export const MarketplaceGeneralSection = () => {
+type MarketplaceGeneralSectionProps = {
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
+}
+
+export const MarketplaceGeneralSection = ({
+  marketplace
+}: MarketplaceGeneralSectionProps) => {
 
   const [editOpen, setEditOpen] = useState(false)
   const location = useLocation()
-  const { marketplace } = useLoaderData() as AdminMarketplaceResponse
-
-  if (!marketplace) {
-    return <Container className="p-6">Not found</Container>
-  }
 
   useEffect(() => {
 
@@ -72,10 +71,8 @@ export const MarketplaceGeneralSection = () => {
         />
       </Container>
 
-      <JsonViewSection data={marketplace} />
-
       <MarketplaceEditModal
-        response={{ marketplace }}
+        marketplace={marketplace}
         open={editOpen}
         setOpen={setEditOpen}
       />

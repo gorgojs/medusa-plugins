@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@medusajs/framework/zod"
 import {
   Button,
   Drawer,
@@ -11,35 +11,36 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRevalidator } from "react-router-dom"
+import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
 import { sdk } from "../../../lib/sdk"
-import type { AdminMarketplaceResponse } from "@gorgo/medusa-marketplace/types"
 
-const MarketplaceEditSchema = z.object({
+type MarketplaceDetailCredentialsEditModalProps = {
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
+  open: boolean
+  setOpen: (open: boolean) => void
+}
+
+const MarketplaceDetailCredentialsEditSchema = z.object({
   api_key: z.string().trim(),
   business_id: z.string().trim(),
 })
 
-type MarketplaceEditValues = z.infer<typeof MarketplaceEditSchema>
+type MarketplaceDetailCredentialsEditValues = z.infer<typeof MarketplaceDetailCredentialsEditSchema>
 
 export const MarketplaceDetailCredentialsEditModal = ({
-  response,
+  marketplace,
   open,
   setOpen,
-}: {
-  response: AdminMarketplaceResponse
-  open: boolean
-  setOpen: (open: boolean) => void
-}) => {
-  const marketplace = response.marketplace
+}: MarketplaceDetailCredentialsEditModalProps) => {
   const queryClient = useQueryClient()
   const { revalidate } = useRevalidator()
 
-  const form = useForm<MarketplaceEditValues>({
+  const form = useForm<MarketplaceDetailCredentialsEditValues>({
     defaultValues: {
       api_key: String(marketplace.credentials?.api_key ?? ""),
       business_id: String(marketplace.credentials?.business_id ?? "")
     },
-    resolver: zodResolver(MarketplaceEditSchema),
+    resolver: zodResolver(MarketplaceDetailCredentialsEditSchema),
     mode: "onSubmit",
   })
 
@@ -54,7 +55,7 @@ export const MarketplaceDetailCredentialsEditModal = ({
   }, [open, marketplace.id, marketplace.title, marketplace.is_enabled])
 
   const updateMarketplace = useMutation({
-    mutationFn: async (values: MarketplaceEditValues) => {
+    mutationFn: async (values: MarketplaceDetailCredentialsEditValues) => {
       return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`, {
         method: "POST",
         body: {

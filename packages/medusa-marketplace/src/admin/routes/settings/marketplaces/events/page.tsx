@@ -4,7 +4,6 @@ import { SingleColumnPageWithWidgets } from "../../../../components/layout"
 import { WidgetProvider } from "../../../../providers/widget-provider"
 
 const MarketplaceEventsList = () => {
-
   return (
     <WidgetProvider>
       <SingleColumnPageWithWidgets

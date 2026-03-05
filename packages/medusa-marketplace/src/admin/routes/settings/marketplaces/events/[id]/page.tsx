@@ -10,11 +10,10 @@ import type {
 } from "../../../../../../types"
 import { sdk } from "../../../../../lib/sdk"
 import { OpenJsonSection } from "../../../../../components/common/open-json-section"
-import { JsonViewSection } from "../../../../../components/common/json-view-section"
 import { MarketplaceEventGeneralSection } from "../../../../../components/routes/marketplaces/marketplace-events-detail"
 
 const MarketplaceEventDetail = () => {
-  const { event } = useLoaderData() as AdminMarketplaceEventResponse
+  const { marketplace_event } = useLoaderData() as AdminMarketplaceEventResponse
 
   return (
     <WidgetProvider>
@@ -23,11 +22,12 @@ const MarketplaceEventDetail = () => {
           before: "marketplace_event.list.before",
           after: "marketplace_event.list.after"
         }}
+        data={marketplace_event}
+        showJSON={true}
       >
-        <MarketplaceEventGeneralSection />
-        <OpenJsonSection title="Request" data={event.request_data ?? {}} />
-        <OpenJsonSection title="Response" data={event.response_data ?? {}} />
-        <JsonViewSection data={event} />
+        <MarketplaceEventGeneralSection marketplace_event={marketplace_event} />
+        <OpenJsonSection title="Request" data={marketplace_event.request_data ?? {}} />
+        <OpenJsonSection title="Response" data={marketplace_event.response_data ?? {}} />
       </SingleColumnPageWithWidgets>
     </WidgetProvider>
   )
@@ -36,11 +36,11 @@ const MarketplaceEventDetail = () => {
 const Breadcrumb = (
   props: UIMatch<AdminMarketplaceEventResponse>
 ) => {
-  const { event } = props.data || {}
-  if (!event)
+  const { marketplace_event } = props.data || {}
+  if (!marketplace_event)
     return null
 
-  return <span>{event.id}</span>
+  return <span>{marketplace_event.id}</span>
 }
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {

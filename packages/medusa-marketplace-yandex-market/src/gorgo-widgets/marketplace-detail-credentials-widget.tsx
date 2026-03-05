@@ -1,29 +1,22 @@
-import { useState } from "react"
 import type { DetailWidgetProps } from "@medusajs/framework/types"
 
 import {
-  MarketplaceDetailCredentialsSection,
-  MarketplaceDetailCredentialsEditModal,
+  MarketplaceDetailCredentialsSection
 } from "../admin/components/gorgo-widgets"
 
 const MarketplaceDetailCredentialsWidget = ({
   data: marketplace,
 }: DetailWidgetProps<any>) => {
-  const [editOpen, setEditOpen] = useState(false)
 
   return (
-    <>
-      <MarketplaceDetailCredentialsSection onEditClick={() => setEditOpen(true)} />
-      <MarketplaceDetailCredentialsEditModal
-        response={{ marketplace }}
-        open={editOpen}
-        setOpen={setEditOpen}
-      />
-    </>
+    <MarketplaceDetailCredentialsSection
+      marketplace={marketplace}
+    />
   )
 }
 
 export const config = {
   zone: ["marketplace.details.after"]
 }
+
 export default MarketplaceDetailCredentialsWidget

@@ -1,20 +1,31 @@
-import { Button, FocusModal, Label, Switch, Text, Select, Input, Heading, Toaster, toast } from "@medusajs/ui"
+import {
+  Button,
+  FocusModal,
+  Label,
+  Switch,
+  Text,
+  Select,
+  Input,
+  Heading,
+  Toaster,
+  toast
+} from "@medusajs/ui"
 import { Controller, useForm } from "react-hook-form"
-import * as zod from "zod"
+import { z } from "@medusajs/framework/zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { sdk } from "../../../../lib/sdk"
 import type { AdminMarketplaceProviderList, AdminMarketplaceResponse } from "../../../../../types"
 import type { HttpTypes } from "@medusajs/framework/types"
 
-const MarketplaceAddSchema = zod.object({
-  provider_id: zod.string().min(1, "Provider is required"),
-  sales_channel_id: zod.string().min(1, "Provider is required"),
-  title: zod.string().trim().min(1, "Title is required").max(20, "Max 20 chars"),
-  is_enabled: zod.boolean().default(true),
+const MarketplaceAddSchema = z.object({
+  provider_id: z.string().min(1, "Provider is required"),
+  sales_channel_id: z.string().min(1, "Provider is required"),
+  title: z.string().trim().min(1, "Title is required").max(20, "Max 20 chars"),
+  is_enabled: z.boolean().default(true),
 })
 
-type MarketplaceAddValues = zod.infer<typeof MarketplaceAddSchema>
+type MarketplaceAddValues = z.infer<typeof MarketplaceAddSchema>
 
 export const MarketplaceAddModal = ({
   stateModal,

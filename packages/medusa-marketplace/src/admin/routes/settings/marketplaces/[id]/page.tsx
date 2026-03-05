@@ -26,11 +26,12 @@ const MarketplaceDetail = () => {
           sideAfter: "marketplace.details.side.after",
         }}
         data={marketplace}
+        showJSON={true}
         firstCol={
-          <MarketplaceGeneralSection />
+          <MarketplaceGeneralSection marketplace={marketplace} />
         }
         secondCol={
-          <MarketplaceEventsSection />
+          <MarketplaceEventsSection marketplace={marketplace}/>
         }
       />
     </WidgetProvider>

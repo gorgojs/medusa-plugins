@@ -10,7 +10,7 @@ export const GET = async (
 ) => {
   const marketplaceService: MarketplaceModuleService = req.scope.resolve(MARKETPLACE_MODULE)
   const { marketplace_id } = req.validatedQuery
-  const [events, count] = await marketplaceService.listAndCountMarketplaceEvents({
+  const [marketplace_events, count] = await marketplaceService.listAndCountMarketplaceEvents({
     marketplace_id: marketplace_id ? [marketplace_id] : undefined
   }, {
     select: req.queryConfig.fields,
@@ -18,7 +18,7 @@ export const GET = async (
   })
 
   res.status(200).json({
-    events,
+    marketplace_events,
     count,
     limit: req.queryConfig.pagination.take ?? AdminMarketplaceDefaultFindParams.limit,
     offset: req.queryConfig.pagination.skip
@@ -30,8 +30,8 @@ export const POST = async (
   res: MedusaResponse<AdminMarketplaceEventResponse>
 ) => {
   const marketplaceService: MarketplaceModuleService = req.scope.resolve(MARKETPLACE_MODULE)
-  const event = await marketplaceService.createMarketplaceEvents(req.validatedBody)
+  const marketplace_event = await marketplaceService.createMarketplaceEvents(req.validatedBody)
 
-  res.status(200).json({ event })
+  res.status(200).json({ marketplace_event })
 }
 

@@ -38,55 +38,60 @@ const columns = [
     header: "Marketplace ID",
     cell: ({ getValue }) => {
       const marketplace_id = getValue() as string
-      return (
+      return marketplace_id ? (
         <Badge size="xsmall">
           {marketplace_id}
         </Badge>
       )
+        : "-"
     },
   }),
   columnHelper.accessor("correlation_id", {
     header: "Correlation ID",
     cell: ({ getValue }) => {
       const correlation_id = getValue() as string
-      return (
-        <Badge size="xsmall">
+      return correlation_id ? (
+        <Badge size="xsmall" >
           {correlation_id}
-        </Badge>
+        </Badge >
       )
+        : "-"
     },
   }),
   columnHelper.accessor("direction", {
     header: "Direction",
     cell: ({ getValue }) => {
       const direction = getValue() as string
-      return (
+      return direction ? (
         <Badge size="xsmall">
           {direction}
         </Badge>
       )
+        : "-"
     },
   }),
   columnHelper.accessor("entity_type", {
     header: "Entity Type",
     cell: ({ getValue }) => {
       const entity_type = getValue() as string
-      return (
+      return entity_type ? (
         <Badge size="xsmall">
           {entity_type}
         </Badge>
       )
+        : "-"
     },
   }),
   columnHelper.accessor("action", {
     header: "Action",
     cell: ({ getValue }) => {
       const action = getValue() as string
-      return (
+      return action ? (
         <Badge size="2xsmall">
           {action}
         </Badge>
       )
+        : "-"
     },
   }),
   columnHelper.accessor("started_at" as any, {
@@ -134,12 +139,12 @@ export const MarketplaceEventsTable = () => {
       }),
   })
 
-  const events = data?.events ?? []
+  const marketplace_events = data?.marketplace_events ?? []
   const rowCount = data?.count ?? 0
 
   const table = useDataTable({
     columns,
-    data: events,
+    data: marketplace_events,
     getRowId: (row) => row.id,
     rowCount: rowCount || 0,
     isLoading,

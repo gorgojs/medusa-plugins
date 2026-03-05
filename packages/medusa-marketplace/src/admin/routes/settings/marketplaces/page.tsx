@@ -1,5 +1,4 @@
 import { useToggleState } from "@medusajs/ui"
-import { Shopping } from "@medusajs/icons"
 import { defineRouteConfig } from "@medusajs/admin-sdk"
 import {
   MarketplaceAddModal,
@@ -18,7 +17,6 @@ const MarketplaceList = () => {
           before: "marketplace.list.before",
           after: "marketplace.list.after"
         }}
-        showJSON={true}
       >
         <MarketplaceListTable
           stateModal={stateModal}
@@ -34,8 +32,7 @@ const MarketplaceList = () => {
 }
 
 export const config = defineRouteConfig({
-  label: "Marketplaces",
-  icon: Shopping,
+  label: "Marketplaces"
 })
 
 export const handle = {

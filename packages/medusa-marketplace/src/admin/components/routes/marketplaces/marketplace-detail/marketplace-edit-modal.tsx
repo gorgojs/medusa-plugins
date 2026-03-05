@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@medusajs/framework/zod"
 import {
   Button,
   Drawer,
@@ -14,8 +14,14 @@ import { useEffect } from "react"
 import type { HttpTypes } from "@medusajs/framework/types"
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query"
 import { useRevalidator } from "react-router-dom"
+import { MarketplaceHttpTypes } from "../../../../../types"
 import { sdk } from "../../../../lib/sdk"
-import type { AdminMarketplaceResponse } from "../../../../../types"
+
+type MarketplaceEditModalProps = {
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
+  open: boolean
+  setOpen: (open: boolean) => void
+}
 
 const MarketplaceEditSchema = z.object({
   title: z.string().trim().min(1, "Min 1 chars").max(20, "Max 20 chars"),
@@ -26,15 +32,10 @@ const MarketplaceEditSchema = z.object({
 type MarketplaceEditValues = z.infer<typeof MarketplaceEditSchema>
 
 export const MarketplaceEditModal = ({
-  response,
+  marketplace,
   open,
   setOpen,
-}: {
-  response: AdminMarketplaceResponse
-  open: boolean
-  setOpen: (open: boolean) => void
-}) => {
-  const marketplace = response.marketplace
+}: MarketplaceEditModalProps) => {
   const queryClient = useQueryClient()
   const { revalidate } = useRevalidator()
 

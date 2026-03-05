@@ -2315,6 +2315,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@gorgo/medusa-marketplace@workspace:packages/medusa-marketplace"
   dependencies:
+    "@gorgo/medusa-vite-plugin": "file:.yalc/@gorgo/medusa-vite-plugin"
     "@medusajs/admin-sdk": "npm:^2.13.3"
     "@medusajs/cli": "npm:^2.13.3"
     "@medusajs/framework": "npm:^2.13.3"
@@ -2442,6 +2443,24 @@ __metadata:
     pg: ^8.14.1
   languageName: unknown
   linkType: soft
+
+"@gorgo/medusa-vite-plugin@file:.yalc/@gorgo/medusa-vite-plugin::locator=%40gorgo%2Fmedusa-marketplace%40workspace%3Apackages%2Fmedusa-marketplace":
+  version: 0.0.1
+  resolution: "@gorgo/medusa-vite-plugin@file:.yalc/@gorgo/medusa-vite-plugin#.yalc/@gorgo/medusa-vite-plugin::hash=fc6bae&locator=%40gorgo%2Fmedusa-marketplace%40workspace%3Apackages%2Fmedusa-marketplace"
+  dependencies:
+    "@babel/parser": "npm:7.25.6"
+    "@babel/traverse": "npm:7.25.6"
+    "@babel/types": "npm:7.25.6"
+    chokidar: "npm:^3.5.3"
+    fdir: "npm:6.1.1"
+    magic-string: "npm:0.30.5"
+    outdent: "npm:^0.8.0"
+    picocolors: "npm:^1.1.0"
+  peerDependencies:
+    vite: ^5.2.11
+  checksum: 10c0/be7680c21acab06cee18f7b8e2e0ecbfdb7888066244bde1c2d012e45ebdf02dea797d890e3d0cb67f1c746c419f64943aea6387771c802f11c11e1ab34df29e
+  languageName: node
+  linkType: hard
 
 "@gorgo/medusa-vite-plugin@workspace:packages/utils/medusa-vite-plugin":
   version: 0.0.0-use.local
