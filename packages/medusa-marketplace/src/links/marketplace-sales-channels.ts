@@ -3,6 +3,9 @@ import SalesChannelModule from "@medusajs/medusa/sales-channel"
 import { defineLink } from "@medusajs/framework/utils"
 
 export default defineLink(
-  MarketplaceModule.linkable.marketplace,
+  {
+    linkable: MarketplaceModule.linkable.marketplace,
+    isList: true
+  },
   SalesChannelModule.linkable.salesChannel
 )

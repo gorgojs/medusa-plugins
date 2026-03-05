@@ -28,34 +28,31 @@ export const POST = async (
 ) => {
   const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
 
-  if (
-    req.validatedBody.sales_channel_id &&
-    req["marketplaceContext"] && // TODO: better way to handle this?
-    req["marketplaceContext"].sales_channel.id !== req.validatedBody.sales_channel_id
-  ) {
-    const link = req.scope.resolve(ContainerRegistrationKeys.LINK)
-    await link.dismiss({
-      marketplace: {
-        marketplace_id: req.params.id
-      },
-      [Modules.SALES_CHANNEL]: {
-        sales_channel_id: req["marketplaceContext"].sales_channel.id
-      }
-    })
-    await link.create({
-      marketplace: {
-        marketplace_id: req.params.id
-      },
-      [Modules.SALES_CHANNEL]: {
-        sales_channel_id: req.validatedBody.sales_channel_id
-      }
-    })
-  }
-
   const marketplace = await marketplaceService.updateMarketplaces({
     id: req.params.id,
     ...req.validatedBody
   })
+
+  if (req.validatedBody.sales_channel_id) {
+    const link = req.scope.resolve(ContainerRegistrationKeys.LINK)
+
+    const current = req["marketplaceContext"]?.sales_channel?.id
+    const next = req.validatedBody.sales_channel_id
+
+    if (current !== next) {
+      if (current) {
+        await link.delete({
+          marketplace: { marketplace_id: req.params.id },
+          [Modules.SALES_CHANNEL]: { sales_channel_id: current }
+        })
+      }
+
+      await link.create({
+        marketplace: { marketplace_id: req.params.id },
+        [Modules.SALES_CHANNEL]: { sales_channel_id: next }
+      })
+    }
+  }
 
   res.status(200).json({ marketplace })
 }
