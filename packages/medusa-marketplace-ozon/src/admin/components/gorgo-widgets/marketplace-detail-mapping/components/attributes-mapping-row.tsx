@@ -37,6 +37,7 @@ export const AttributeMappingRow = ({
   selectedMedusaValues,
   selectedOzonValues,
   onRemove,
+  marketplace
 }: AttributeMappingRowProps) => {
   const currentMedusaValue = useWatch({
     control: form.control,
@@ -51,14 +52,14 @@ export const AttributeMappingRow = ({
   }) as string
 
   const ozonAttributesComboboxData = useComboboxData<any, any>({
-    queryKey: ["ozon-attributes", OZON_MARKETPLACE_ID, ozonIds.description_category_id, ozonIds.type_id],
+    queryKey: ["ozon-attributes", marketplace.id, ozonIds.description_category_id, ozonIds.type_id],
     enabled: Boolean(ozonIds.description_category_id && ozonIds.type_id),
     queryFn: async () => {
       const params = new URLSearchParams({
         description_category_id: ozonIds.description_category_id,
         type_id: ozonIds.type_id,
       })
-      const res = await sdk.client.fetch<any>(`/admin/ozon/${OZON_MARKETPLACE_ID}/attributes?${params.toString()}`)
+      const res = await sdk.client.fetch<any>(`/admin/ozon/${marketplace.id}/attributes?${params.toString()}`)
       const result = res?.result ?? []
       return { offset: 0, limit: result.length, count: result.length, result }
     },

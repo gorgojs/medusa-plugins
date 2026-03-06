@@ -13,6 +13,7 @@ export const CategoryMappingRow = ({
   rootOzonCategoriesCombobox,
   ozonCategoriesCombobox,
   ozonGroupsWithIds,
+  marketplace
 }: CategoryMappingRowProps) => {
   const selectedMedusaCategoryIds = useWatch({
     control: form.control,
@@ -86,6 +87,7 @@ export const CategoryMappingRow = ({
           medusaCategoryNameById={medusaCategoryNameById}
           selectedMedusaValues={selectedMedusaValues}
           selectedOzonValues={selectedOzonValues}
+          marketplace = {marketplace}
         />
       </div>
     </Container>

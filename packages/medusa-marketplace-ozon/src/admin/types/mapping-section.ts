@@ -89,6 +89,7 @@ export type CategoryMappingRowProps = {
   ozonCategoriesCombobox: Record<any, any>
   rootOzonCategoriesCombobox: Record<any, any>
   ozonGroupsWithIds: OzonComboboxGroupWithIds[]
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
 }
 
 export type CategorySelectorsProps = {
@@ -113,6 +114,7 @@ export type AttributeMappingProps = {
   medusaCategoryNameById: Map<string, string>
   selectedMedusaValues: string[]
   selectedOzonValues: string[]
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
 }
 
 export type AttributeMappingRowProps = {
@@ -126,6 +128,7 @@ export type AttributeMappingRowProps = {
   selectedMedusaValues: string[]
   selectedOzonValues: string[]
   onRemove: () => void
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
 }
 
 export type CategoryMappingRule = {

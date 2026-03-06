@@ -15,6 +15,7 @@ export const AttributesMapping = ({
   medusaCategoryNameById,
   selectedMedusaValues,
   selectedOzonValues,
+  marketplace
 }: AttributeMappingProps) => {
   return (
     <div className="flex flex-col">
@@ -39,6 +40,7 @@ export const AttributesMapping = ({
             selectedMedusaValues={selectedMedusaValues}
             selectedOzonValues={selectedOzonValues}
             onRemove={() => removeAttr(attrIndex)}
+            marketplace = {marketplace}
           />
 
           {attrIndex < attrFields.length - 1 && (

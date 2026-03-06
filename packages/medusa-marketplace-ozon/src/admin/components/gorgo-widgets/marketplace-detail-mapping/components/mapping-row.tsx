@@ -91,6 +91,7 @@ export const MappingRow = ({
         rootOzonCategoriesCombobox={rootOzonCategoriesCombobox}
         ozonCategoriesCombobox={ozonCategoriesCombobox}
         ozonGroupsWithIds={ozonGroupsWithIds}
+        marketplace = {marketplace}
       />
     </div>
   )
