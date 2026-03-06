@@ -112,7 +112,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     return (
       <>
         <Button
-          className="flex justify-start text-start w-full text-sm"
+          className="flex justify-start text-start w-full txt-compact-small-plus"
           variant={isActive ? "secondary" : "transparent"}
           size="small"
           asChild
@@ -154,7 +154,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       <Collapsible defaultOpen={true}>
         <CollapsibleTrigger asChild>
           <Button
-            className="flex justify-start text-start w-full text-sm"
+            className="flex justify-start text-start w-full txt-compact-small-plus"
             variant={isActive ? "secondary" : "transparent"}
             size="small"
           >
@@ -198,7 +198,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     <Collapsible defaultOpen={true} className="py-px">
       <CollapsibleTrigger asChild>
         <Button
-          className="flex justify-start text-start w-full text-sm"
+          className="flex justify-start text-start w-full txt-compact-small-plus"
           variant={isActive ? "secondary" : "transparent"}
           size="small"
           asChild

@@ -49,7 +49,7 @@ function PluginLink({
     <Button
       variant="secondary"
       size="large"
-      className="w-full truncate"
+      className="w-full truncate txt-small"
       asChild
     >
       <a key={url} href={url} target="_blank" rel="noopener noreferrer">

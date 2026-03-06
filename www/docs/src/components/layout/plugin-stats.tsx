@@ -94,15 +94,15 @@ export default async function PluginStats({
   return (
     <div className={cn(`flex w-full`, className)}>
       <div className="flex flex-col items-start flex-1 gap-y-1.5">
-        <div className="text-sm text-ui-fg-subtle ">Latest</div>
-        <div className="text-sm font-medium">
+        <div className="txt-xsmall text-ui-fg-subtle ">Latest</div>
+        <div className="txt-small font-medium">
           v{version ?? (error ? "—" : "Loading…")}
         </div>
       </div>
 
       <div className="flex flex-col items-start flex-1 gap-y-1.5">
-        <div className="text-sm text-ui-fg-subtle">Downloads</div>
-        <div className="text-sm font-medium flex items-center gap-x-1.5">
+        <div className="txt-xsmall text-ui-fg-subtle">Downloads</div>
+        <div className="txt-small font-medium flex items-center gap-x-1.5">
           <CloudArrowDown />
           {downloads == null ? (error ? "—" : "Loading…") : formattedDownloads}
         </div>

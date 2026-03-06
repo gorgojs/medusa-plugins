@@ -38,7 +38,7 @@ export default function Breadcrumbs({
   return (
     <nav
       aria-label="breadcrumb"
-      className={cn("text-sm text-ui-fg-muted", className)}
+      className={cn("txt-compact-small-plus text-ui-fg-muted", className)}
     >
       {section?.children && (
         <ol className="flex flex-row items-center gap-x-1">

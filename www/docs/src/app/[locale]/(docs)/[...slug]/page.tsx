@@ -122,7 +122,7 @@ export default async function DynamicDocsPage({ params }: PageProps) {
             baseSlugs={baseSlugs}
             className="hidden xl:flex lg:mb-3"
           />
-          <div className="prose text-sm" suppressHydrationWarning={true}>
+          <div className="prose txt-medium" suppressHydrationWarning={true}>
             <Post />
           </div>
           <PaginationCards section={section} baseSlugs={baseSlugs} />

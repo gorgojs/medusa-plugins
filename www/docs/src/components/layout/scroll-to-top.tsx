@@ -11,7 +11,7 @@ export default function ScrollToTop() {
     <Button
       variant="transparent"
       size="large"
-      className="self-start flex items-center gap-1 w-full text-ui-fg-subtle hover:text-ui-fg-base"
+      className="self-start flex items-center gap-1 w-full text-ui-fg-subtle hover:text-ui-fg-base txt-small"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
     >
       {t("backToTop")}

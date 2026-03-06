@@ -218,7 +218,7 @@ function TableOfContents({ toc }: { toc: Toc }) {
             itemRefs.current[`toc-${item.id}`] = el;
           }
         }}
-        className={cn("text-sm text-ui-fg-subtle", {
+        className={cn("txt-xsmall text-ui-fg-subtle", {
           "pl-4": item.depth > 2,
         })}
       >
