@@ -13,7 +13,7 @@ Once the payment is completed, Robokassa will concurrently send a webhook and re
 
 For the storefront on Next.js, you need to make the following changes:
 
-## 1. Payment Provider Configuration
+## Step 1: Configure Payment Provider
 
 To make Robokassa available as a payment method on the storefront checkout page, you must add its configuration to the payment provider mapping in your storefront's constants file. This mapping determines how each payment provider is displayed in the UI.
 
@@ -43,7 +43,7 @@ You extend the `paymentInfoMap` object to include a `pp_robokassa_robokassa` ent
 
 The helper function `isRobokassa` checks whether a given `providerId` belongs to Robokassa. This is useful when rendering provider-specific UI-components.
 
-## 2. Cookie Settings Update
+## Step 2: Update Cookie Settings
 
 When integrating Robokassa, you need to adjust your cookie policy to allow cross-domain payment redirects. Some payment providers require more permissive cookie settings so the payment session can be preserved when the customer is redirected back to the storefront.
 
@@ -64,7 +64,7 @@ This helper function stores the cart ID in a cookie named `_medusa_cart_id`.
 
 The `sameSite` option is set to `lax` instead of `strict`. This change ensures the cookie is sent with cross-site requests during the Robokassa redirect flow, preventing the payment session from being lost.
 
-## 3. Payment Session Initialization
+## Step 3: Initialize Payment Session
 
 To redirect a customer to Robokassa, the payment session must be properly initialized with the required parameters, including the return URLs for both success and failure outcomes, the language, the customer's email address, and the shopping cart for generating receipts.
 
@@ -91,7 +91,7 @@ When initiating the payment session for Robokassa, the `SuccessUrl2` and `FailUr
 
 The `cart` object is included in the initialization data to build a receipt in accordance with Federal Law No. 54.
 
-## 4. Payment Button Component
+## Step 4: Create Payment Button
 
 Medusa storefront requires a dedicated payment button component for each payment provider to handle the checkout flow after the customer confirms his order. This component leverages the payment session data and navigates the customer to the Robokassa payment page.
 
@@ -179,7 +179,7 @@ If `paymentUrl` is missing, the component displays an error message instead of p
 
 The parent `PaymentButton` uses `isRobokassa` to determine whether to render the `RobokassaPaymentButton` for the current session; otherwise, it shows a disabled Select a payment method button.
 
-## 5. Payment Capture API Route
+## Step 5: Create Payment Capture API Route
 
 After the customer completes payment on the Robokassa page, he is redirected back to the storefront. You need an API route to handle this callback, verify the payment status, and complete the cart.
 

@@ -13,7 +13,7 @@ Once the payment is completed, T-Kassa will concurrently send a webhook and redi
 
 For the storefront on Next.js, you need to make the following changes:
 
-## 1. Payment Provider Configuration
+## Step 1: Configure Payment Provider
 
 To make T-Kassa available as a payment method on the storefront checkout page, you must add its configuration to the payment provider mapping in your storefront’s constants file. This mapping determines how each payment provider is displayed in the UI.
 
@@ -43,7 +43,7 @@ You extend the `paymentInfoMap` object to include a `pp_tkassa_tkassa` entry. Th
 
 The helper function `isTkassa` checks whether a given `providerId` belongs to T-Kassa. This is useful when rendering provider-specific UI-components.
 
-## 2. Cookie Settings Update
+## Step 2: Update Cookie Settings
 
 When integrating T-Kassa, you need to adjust your cookie policy to allow cross-domain payment redirects. Some payment providers require more permissive cookie settings so the payment session can be preserved when the customer is redirected back to the storefront.
 
@@ -64,7 +64,7 @@ This helper function stores the cart ID in a cookie named `_medusa_cart_id`.
 
 The `sameSite` option is set to `lax` instead of `strict`. This change ensures the cookie is sent with cross-site requests during the T-Kassa redirect flow, preventing the payment session from being lost.
 
-### 3. Payment Session Initialization
+## Step 3: Initialize Payment Session
 
 To redirect a customer to T-Kassa, the payment session must be properly initialized with the required parameters, including the return URLs for both success and failure outcomes.
 
@@ -87,7 +87,7 @@ When initiating the payment session for T-Kassa, the `SuccessURL` and `FailURL` 
 
 The `cart` object is included in the initialization data to build a receipt in accordance with Federal Law No. 54.
 
-## 4. Payment Button Component
+## Step 4: Create Payment Button
 
 Medusa storefront requires a dedicated payment button component for each payment provider to handle the checkout flow after the customer confirms his order. This component leverages the payment session data and navigates the customer to the T-Kassa payment page.
 
@@ -176,7 +176,7 @@ The `PaymentButton` component determines whether the current payment session bel
 
 Integrating this component ensures that T-Kassa’s payment process is seamlessly triggered from the checkout flow.
 
-## 5. Payment Capture API Route
+## Step 5: Create Payment Capture API Route
 
 After the customer completes payment on the T-Kassa page, he is redirected back to the storefront. You need an API route to handle this callback, verify the payment status, and complete the cart.
 
