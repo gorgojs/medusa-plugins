@@ -229,7 +229,7 @@ const CmdK = () => {
     <>
       <Button
         variant="secondary"
-        className="relative w-full justify-start text-sm text-ui-subtle flex items-center text-ui-fg-muted cursor-pointer"
+        className="relative w-full justify-start txt-compact-small text-ui-subtle flex items-center text-ui-fg-muted cursor-pointer"
         onClick={() => setOpen(true)}
       >
         <SearchIcon className="mr-2 h-4 w-4" />
