@@ -4,13 +4,15 @@ import type {
   UseFieldArrayRemove,
   UseFormReturn,
 } from "react-hook-form"
-import { useComboboxData } from "../hooks/use-combobox-data"
 
 export type MarketplaceMappingSectionProps = {
   marketplace: any
 }
 
-export type SelectOption = { value: string; label: string }
+export type SelectOption = {
+  value: string;
+  label: string 
+}
 
 export type OzonCategoryNode = {
   description_category_id: number
@@ -28,19 +30,34 @@ export type OzonTypeNode = {
 
 export type OzonNode = OzonCategoryNode | OzonTypeNode
 
-export type AggregatedMedusaOption = { title: string; values: string[] }
+export type AggregatedMedusaOption = {
+  title: string
+  values: string[]
+}
 
-export type ComboboxOption = { value: string; label: string; disabled?: boolean }
-export type ComboboxGroupOption = { label: string; options: ComboboxOption[] }
+export type ComboboxOption = {
+  value: string
+  label: string
+  disabled?: boolean
+}
+export type ComboboxGroupOption = {
+  label: string
+  options: ComboboxOption[]
+}
 
 export type TransformName = "none" | "centsToRub" | "rubToCents" | "gramsToKg" | "trim" | "fallback"
-export type TransformConfig = { name: TransformName }
+export type TransformConfig = {
+  name: TransformName
+}
 
 export type MappingFormValues = {
   category_mappings: CategoryMappingValue[]
 }
 
-export type OzonIds = { description_category_id: string; type_id: string }
+export type OzonIds = {
+  description_category_id: string
+  type_id: string
+}
 
 export const transformOptions: Array<{ label: string; value: TransformName }> = [
   { label: "None", value: "none" },
@@ -56,27 +73,40 @@ export type MappingRowFormFieldProps = {
   ozonTreeByValueRef: any
 }
 
+export type OzonComboboxOption = {
+  label: string
+  value: string
+}
+
+export type OzonComboboxGroupWithIds = {
+  label: string
+  options: OzonComboboxOption[]
+}
+
 export type CategoryMappingRowProps = {
   form: UseFormReturn<MappingFormValues>
   index: number
-  productCategoriesCombobox: ReturnType<typeof useComboboxData>
-  ozonCategoriesCombobox: ReturnType<typeof useComboboxData<any, any>>
-  ozonGroupsWithIds: { label: string; options: { label: string; value: string }[] }[]
+  productCategoriesCombobox: Record<any, any>
+  ozonCategoriesCombobox: Record<any, any>
+  rootOzonCategoriesCombobox: Record<any, any>
+  ozonGroupsWithIds: OzonComboboxGroupWithIds[]
 }
 
 export type CategorySelectorsProps = {
   index: number
-  productCategoriesCombobox: ReturnType<typeof useComboboxData>
-  ozonCategoriesCombobox: ReturnType<typeof useComboboxData<any, any>>
-  ozonGroupsWithIds: { label: string; options: { label: string; value: string }[] }[]
+  form: UseFormReturn<MappingFormValues>
+  productCategoriesCombobox: Record<any, any>
+  ozonCategoriesCombobox: Record<any, any>
+  rootOzonCategoriesCombobox: Record<any, any>
+  ozonGroupsWithIds: OzonComboboxGroupWithIds[]
   isOzonDisabled: boolean
 }
 
 export type AttributeMappingProps = {
   form: UseFormReturn<MappingFormValues>
   categoryIndex: number
-  attrFields: FieldArrayWithId<MappingFormValues, `category_mappings.${number}.mappings`, "id">[]
-  appendAttr: UseFieldArrayAppend<MappingFormValues, `category_mappings.${number}.mappings`>
+  attrFields: FieldArrayWithId[]
+  appendAttr: UseFieldArrayAppend<MappingFormValues>
   removeAttr: UseFieldArrayRemove
   canAdd: boolean
   selectedMedusaCategoryIds: string[]
@@ -123,6 +153,7 @@ export type MappingRowValue = {
 export type CategoryMappingValue = {
   mapping_id: string
   medusa_category_ids?: string[]
+  root_ozon_category_id: string
   ozon_category_type_value?: string
   mappings?: MappingRowValue[]
 }
@@ -134,24 +165,23 @@ export type OutputFieldRule = {
   transform?: TransformConfig
 }
 
+export type OutputAttributeOptionRule = {
+  attributeId: number
+  is_error: boolean
+  default?: unknown[]
+  transform?: TransformConfig
+}
+
 export type OutputAttributesRule = {
   from: "attributes"
   to: "attributes"
-  optionRules: Record<
-    string,
-    {
-      attributeId: number
-      is_error: boolean
-      default?: unknown[]
-      transform?: TransformConfig
-    }
-  >
+  optionRules: Record<string, OutputAttributeOptionRule>
 }
-
+export type OutputRule = OutputFieldRule | OutputAttributesRule
 export type OutputMappingRow = {
   ozon_category: OzonCategoryNode | null
   medusa_categories: string[]
-  fields: Array<OutputFieldRule | OutputAttributesRule>
+  fields: OutputRule[]
 }
 
 export type OzonRequiredAttribute = {
@@ -162,7 +192,7 @@ export type OzonAttributesResponse = {
   result: OzonRequiredAttribute[]
 }
 
-export type AttrsSummary = { total: number; required: number }
-
-
-
+export type AttrsSummary = {
+  total: number
+  required: number
+}

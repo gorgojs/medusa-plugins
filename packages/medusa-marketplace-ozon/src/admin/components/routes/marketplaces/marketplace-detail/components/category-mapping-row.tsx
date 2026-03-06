@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { Heading } from "@medusajs/ui"
 import { useFieldArray, useWatch } from "react-hook-form"
-import { CategoryMappingRowProps } from "../../../../../types"
+import { CategoryMappingRowProps, ComboboxOption } from "../../../../../types"
 import { CategorySelectors } from "./category-selectors"
 import { AttributesMapping } from "./attributes-mapping"
 import { Container } from "../../../../common/container"
@@ -10,6 +10,7 @@ export const CategoryMappingRow = ({
   form,
   index,
   productCategoriesCombobox,
+  rootOzonCategoriesCombobox,
   ozonCategoriesCombobox,
   ozonGroupsWithIds,
 }: CategoryMappingRowProps) => {
@@ -46,7 +47,7 @@ export const CategoryMappingRow = ({
   }, [selectedOzonCategoryTypeValue])
 
   const medusaCategoryNameById = useMemo(() => {
-    return new Map(productCategoriesCombobox.options.map((o) => [String(o.value), o.label]))
+    return new Map<string, string>(productCategoriesCombobox.options.map((o: ComboboxOption) => [String(o.value), o.label]))
   }, [productCategoriesCombobox.options])
 
   const isOzonDisabled = productCategoriesCombobox.disabled || selectedMedusaCategoryIds?.length === 0
@@ -61,7 +62,9 @@ export const CategoryMappingRow = ({
       <div className="px-6 py-4">
         <CategorySelectors
           index={index}
+          form={form}
           productCategoriesCombobox={productCategoriesCombobox}
+          rootOzonCategoriesCombobox={rootOzonCategoriesCombobox}
           ozonCategoriesCombobox={ozonCategoriesCombobox}
           ozonGroupsWithIds={ozonGroupsWithIds}
           isOzonDisabled={isOzonDisabled}

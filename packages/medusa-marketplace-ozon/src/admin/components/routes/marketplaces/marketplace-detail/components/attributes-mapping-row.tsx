@@ -8,9 +8,9 @@ import { useComboboxData } from "../../../../../hooks/use-combobox-data"
 import { extractMedusaAttributeTitles } from "../../../../../utils"
 import { sdk } from "../../../../../lib/sdk"
 import { OZON_MARKETPLACE_ID } from "./constants"
-import { transformOptions, AttributeMappingRowProps } from "../../../../../types"
+import { transformOptions, AttributeMappingRowProps, OzonComboboxOption } from "../../../../../types"
 
-const profileFieldOptions: { value: string; label: string }[] = [
+const profileFieldOptions: OzonComboboxOption[] = [
   { value: "field:offer_id", label: "offer_id" },
   { value: "field:name", label: "name" },
   { value: "field:barcode", label: "barcode" },

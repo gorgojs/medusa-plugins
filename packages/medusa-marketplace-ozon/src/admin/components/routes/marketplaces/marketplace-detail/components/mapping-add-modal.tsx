@@ -13,6 +13,7 @@ const makeDefaults = (): DefaultValues<MappingFormValues> => ({
   category_mappings: [
     {
       medusa_category_ids: [],
+      root_ozon_category_id: "",
       ozon_category_type_value: "",
       mappings: [],
     },

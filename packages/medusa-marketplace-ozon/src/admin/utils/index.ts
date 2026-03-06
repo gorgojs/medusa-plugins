@@ -147,6 +147,19 @@ export const ozonOptionsToGroups = (options: ComboboxOption[]): ComboboxGroupOpt
   return order.map((label) => ({ label, options: map.get(label)! }))
 }
 
+export const findCategoryNodeById = (list: OzonNode[], id: number): OzonCategoryNode | null => {
+  for (const node of getEnabledOzonNodes(list)) {
+    if (isOzonCategory(node) && node.description_category_id === id) {
+      return node
+    }
+
+    const child = findCategoryNodeById(node.children ?? [], id)
+    if (child) return child
+  }
+
+  return null
+}
+
 export const buildOzonMappingPayload = (
   formValues: MappingFormValues,
   treeByValue: Map<string, OzonCategoryNode>,
