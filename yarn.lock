@@ -2199,6 +2199,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@gorgo/medusa-marketplace-ozon@workspace:packages/medusa-marketplace-ozon"
   dependencies:
+    "@gorgo/medusa-marketplace": "npm:*"
     "@medusajs/admin-sdk": "npm:^2.13.3"
     "@medusajs/cli": "npm:^2.13.3"
     "@medusajs/framework": "npm:^2.13.3"

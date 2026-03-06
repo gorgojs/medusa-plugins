@@ -21,7 +21,6 @@ module.exports = defineConfig({
     vite: (config) => {
       return {
         ...config,
-        // Used only during testing, do not enable in production
         plugins: [
           gorgoPluginsInject({
             sources: [

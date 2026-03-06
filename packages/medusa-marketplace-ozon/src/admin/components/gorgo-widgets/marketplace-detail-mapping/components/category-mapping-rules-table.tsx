@@ -9,9 +9,10 @@ import {
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
-import { Header } from "../../../../common/header"
-import { CategoryMappingRule } from "../../../../../types"
-import { sdk } from "../../../../../lib/sdk"
+import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
+import { Header } from "../../../common/header"
+import { CategoryMappingRule } from "../../../../types"
+import { sdk } from "../../../../lib/sdk"
 
 const PAGE_SIZE = 20
 
@@ -26,7 +27,7 @@ export const CategoryMappingRulesTable = ({
   openModal: () => void
   onEdit: (id: string) => void
   onDelete: (id: string) => void
-  marketplace: any
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
 }) => {
   const navigate = useNavigate()
   const limit = PAGE_SIZE

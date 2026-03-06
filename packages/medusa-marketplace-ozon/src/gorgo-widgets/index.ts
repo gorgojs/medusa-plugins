@@ -1,1 +1,1 @@
-export { default as ozonTestWidgetConfig } from "./ozon-test"
+export { default as MarketplaceDetailMappingWidget } from "./marketplace-detail-mapping-widget"

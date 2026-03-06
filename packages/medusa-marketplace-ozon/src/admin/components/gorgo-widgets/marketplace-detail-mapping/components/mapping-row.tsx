@@ -1,16 +1,16 @@
 import { useMemo } from "react"
 import { useFieldArray } from "react-hook-form"
-import { buildOzonCategoryTypeSelectOptionsDeep, findCategoryNodeById, ozonOptionsToGroups } from "../../../../../utils"
-import { sdk } from "../../../../../lib/sdk"
-import { useComboboxData } from "../../../../../hooks/use-combobox-data"
-import { MappingRowFormFieldProps } from "../../../../../types"
+import { buildOzonCategoryTypeSelectOptionsDeep, findCategoryNodeById, ozonOptionsToGroups } from "../../../../utils"
+import { sdk } from "../../../../lib/sdk"
+import { useComboboxData } from "../../../../hooks/use-combobox-data"
+import { MappingRowFormFieldProps } from "../../../../types"
 import { CategoryMappingRow } from "./category-mapping-row"
-import { OZON_MARKETPLACE_ID } from "./constants"
 import { useWatch } from "react-hook-form"
 
 export const MappingRow = ({
   form,
   ozonTreeByValueRef,
+  marketplace
 }: MappingRowFormFieldProps) => {
   const { fields } = useFieldArray({
     control: form.control,
@@ -32,10 +32,10 @@ export const MappingRow = ({
   })
 
   const rootOzonCategoriesCombobox = useComboboxData<any, any>({
-    queryKey: ["ozon_root_categories", OZON_MARKETPLACE_ID],
+    queryKey: ["ozon_root_categories", marketplace.id],
     enabled: true,
     queryFn: async () => {
-      const res = await sdk.client.fetch(`/admin/ozon/${OZON_MARKETPLACE_ID}/categories`)
+      const res = await sdk.client.fetch(`/admin/ozon/${marketplace.id}/categories`)
       return res
     },
     defaultValue: undefined,
@@ -49,10 +49,10 @@ export const MappingRow = ({
   })
 
   const ozonCategoriesCombobox = useComboboxData<any, any>({
-    queryKey: ["ozon_categories", OZON_MARKETPLACE_ID, rootOzonCategoryId],
+    queryKey: ["ozon_categories", marketplace.id, rootOzonCategoryId],
     enabled: Boolean(rootOzonCategoryId),
     queryFn: async () => {
-      const res = await sdk.client.fetch(`/admin/ozon/${OZON_MARKETPLACE_ID}/categories`)
+      const res = await sdk.client.fetch(`/admin/ozon/${marketplace.id}/categories`)
       return res
     },
     defaultValue: undefined,

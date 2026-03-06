@@ -1,10 +1,10 @@
 import { useMemo } from "react"
 import { Heading } from "@medusajs/ui"
 import { useFieldArray, useWatch } from "react-hook-form"
-import { CategoryMappingRowProps, ComboboxOption } from "../../../../../types"
+import { CategoryMappingRowProps, ComboboxOption } from "../../../../types"
 import { CategorySelectors } from "./category-selectors"
 import { AttributesMapping } from "./attributes-mapping"
-import { Container } from "../../../../common/container"
+import { Container } from "../../../common/container"
 
 export const CategoryMappingRow = ({
   form,

@@ -1,6 +1,6 @@
 import { Fragment } from "react"
 import { Button, Heading, Text } from "@medusajs/ui"
-import { AttributeMappingProps } from "../../../../../types"
+import { AttributeMappingProps } from "../../../../types"
 import { AttributeMappingRow } from "./attributes-mapping-row"
 
 export const AttributesMapping = ({

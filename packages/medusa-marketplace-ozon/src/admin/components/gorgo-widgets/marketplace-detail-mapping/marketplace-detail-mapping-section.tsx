@@ -1,16 +1,22 @@
 import { useToggleState, Container } from "@medusajs/ui"
-import { CategoryMappingRulesTable } from "./components/mapping-list-table"
-import { CategoryMappingRuleAddModal } from "./components/mapping-add-modal"
-import { MarketplaceMappingSectionProps } from "../../../../types"
+import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
+import { CategoryMappingRulesTable } from "./components/category-mapping-rules-table"
+import { CategoryMappingRuleAddModal } from "./components/category-mapping-rule-add-modal"
 
-export const MarketplaceMappingSection = ({ marketplace }: MarketplaceMappingSectionProps) => {
+export type MarketplaceDetailMappingSectionProps = {
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
+}
+
+export const MarketplaceDetailMappingSection = ({
+  marketplace
+}: MarketplaceDetailMappingSectionProps) => {
   const [stateModal, openModal, closeModal] = useToggleState()
 
   const onEdit = () => {
     openModal()
   }
 
-  const onDelete = () => {}
+  const onDelete = () => { }
 
   return (
     <Container className="p-0">
@@ -24,7 +30,7 @@ export const MarketplaceMappingSection = ({ marketplace }: MarketplaceMappingSec
       <CategoryMappingRuleAddModal
         stateModal={stateModal}
         closeModal={closeModal}
-        marketplaceId={marketplace.id} 
+        marketplace={marketplace}
       />
     </Container>
   )

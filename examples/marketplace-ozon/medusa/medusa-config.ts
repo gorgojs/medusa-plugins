@@ -1,6 +1,5 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
 import { gorgoPluginsInject } from '@gorgo/medusa-marketplace/exports'
-import { resolve } from 'path'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -26,7 +25,6 @@ module.exports = defineConfig({
     vite: (config) => {
       return {
         ...config,
-        // Used only during testing, do not enable in production
         plugins: [
           gorgoPluginsInject({
             sources: [
@@ -41,6 +39,16 @@ module.exports = defineConfig({
             "@gorgo/medusa-marketplace"
           ]
         },
+        resolve: {
+          alias: [
+            { find: /^react$/, replacement: require.resolve("react") },
+            { find: /^react-dom$/, replacement: require.resolve("react-dom") },
+            { find: /^@tanstack\/react-query$/, replacement: require.resolve("@tanstack/react-query") },
+            { find: /^react-router-dom$/, replacement: require.resolve("react-router-dom") },
+          ],
+          dedupe: ["react", "react-dom", "@tanstack/react-query", "react-router-dom"],
+          preserveSymlinks: false,
+        }
       }
     },
   },

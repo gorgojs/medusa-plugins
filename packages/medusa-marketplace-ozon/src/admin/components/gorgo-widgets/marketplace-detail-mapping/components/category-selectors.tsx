@@ -1,6 +1,6 @@
-import { Form } from "../../../../../components/common/form"
-import { Combobox } from "../../../../../components/common/combobox"
-import { CategorySelectorsProps } from "../../../../../types"
+import { Form } from "../../../common/form"
+import { Combobox } from "../../../common/combobox"
+import { CategorySelectorsProps } from "../../../../types"
 
 export const CategorySelectors = ({
   index,

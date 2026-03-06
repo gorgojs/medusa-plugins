@@ -1,13 +1,11 @@
+import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
+
 import type {
   FieldArrayWithId,
   UseFieldArrayAppend,
   UseFieldArrayRemove,
   UseFormReturn,
 } from "react-hook-form"
-
-export type MarketplaceMappingSectionProps = {
-  marketplace: any
-}
 
 export type SelectOption = {
   value: string;
@@ -71,6 +69,7 @@ export const transformOptions: Array<{ label: string; value: TransformName }> = 
 export type MappingRowFormFieldProps = {
   form: UseFormReturn<MappingFormValues>
   ozonTreeByValueRef: any
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
 }
 
 export type OzonComboboxOption = {
