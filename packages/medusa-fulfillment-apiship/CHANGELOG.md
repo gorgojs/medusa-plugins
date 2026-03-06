@@ -1,5 +1,11 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 0.2.3
+
+### Patch Changes
+
+- Improve storefront integration
+
 ## 0.2.2
 
 ### Patch Changes
