@@ -22,11 +22,11 @@ export const pluginCategories: PluginCategory[] = [
         id: "t-kassa",
         name: {
           en: "T-Kassa",
-          ru: "T-Kassa",
+          ru: "Т-Касса",
         },
         description: {
-          en: "Enable payments with TKassa",
-          ru: "Подключите платежи с помощью TKassa",
+          en: "Enable payments with T-Kassa by T-Bank",
+          ru: "Подключите платежи с помощью Т-Касса от Т-Банка",
         },
         icon: <TbankIcon />,
       },

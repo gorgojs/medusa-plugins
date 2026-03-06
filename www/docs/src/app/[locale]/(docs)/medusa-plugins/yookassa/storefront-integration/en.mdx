@@ -1,5 +1,5 @@
 ---
-title: "Integrate YooKassa Payment to Storefront"
+title: "Integrate YooKassa Payment into Storefront"
 description: "Learn how to integrate the YooKassa payment provider into a Next.js storefront built with Medusa."
 ---
 
@@ -237,7 +237,7 @@ If the cart does not contain an associated order ID, the route tries to place an
 
 When the payment is successful, the route revalidates the cached cart and order data, removes the cart cookie, and redirects the customer to the order confirmation page. This ensures a consistent post-payment experience while keeping storefront data up to date.
 
-## Example
+## Full Storefront Integration Code Example
 
 You can refer to the modifications made in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/sergkoudi/medusa-payment-yookassa/tree/main/examples/medusa-storefront) directory.
 

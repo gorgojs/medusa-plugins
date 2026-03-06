@@ -1,5 +1,5 @@
 ---
-title: "Integrate ApiShip Fulfillment to Storefront"
+title: "Integrate ApiShip to Storefront"
 description: "Learn how to integrate the ApiShip Fulfillment provider into a Next.js storefront for Medusa."
 ---
 
@@ -12,7 +12,7 @@ This data must be loaded dynamically from the backend, presented to the customer
 
 ## Environment Variables
 
-The pickup point selector uses [Yandex Maps JS API v3](https://yandex.com/maps-api/docs/js-api/index.html). To enable the map in the storefront, you must provide a public API key through environment variables.
+The pickup point selector uses [Yandex Maps JavaScript API v3](https://yandex.com/maps-api/docs/js-api/index.html). To enable the map in the storefront, you must provide a public API key through environment variables.
 
 Add the following to your storefront’s `.env` file:
 
@@ -46,7 +46,7 @@ By marking the phone input as `required`, the checkout always collects the recip
 
 ## 2. Cart Data Handling
 
-To integrate ApiShip into checkout, the storefront needs a way to save the customer’s delivery choice in the cart and retrieve it later. This makes the flow stable across refreshes and navigation. If a customer has already selected a tariff and a pickup point, the storefront can restore that selection instead of asking them to choose again. The integration also needs a proper removal action that clears the selection not only visually, but in the cart itself.
+To integrate ApiShip into checkout, the storefront needs a way to save the customer’s delivery choice in the cart and retrieve it later. This makes the flow stable across refreshes and navigation. If a customer has already selected a tariff and a pickup point, the storefront can restore that selection instead of asking them to choose again. It also needs a proper removal action that clears the selection not only visually, but in the cart itself.
 
 Open [`src/lib/data/cart.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/lib/data/cart.ts#L217-L242) and add the following:
 
@@ -828,7 +828,7 @@ export const ApishipMap: React.FC<ApishipMapProps> = ({
 }
 ```
 
-This component initializes Yandex Maps v3 once, re-centers the map when the pickup point list changes, and renders clickable markers for each available point. When the user selects a point, the storefront shows a side panel where tariffs are displayed and can be chosen. The map UI also respects the previously saved selection. If the user opens the modal again, the component highlights the already chosen pickup point and tariff and prevents re-selecting the same option.
+This component initializes Yandex Maps once, re-centers the map when the pickup point list changes, and renders clickable markers for each available point. When the user selects a point, it shows a side panel where tariffs are displayed and can be chosen. The map UI also respects the previously saved selection. If the user opens the modal again, the component highlights the already chosen pickup point and tariff and prevents re-selecting the same option.
 
 ## 7. ApiShip Delivery Summary
 
@@ -932,7 +932,7 @@ export const ApishipChosen: React.FC<ApishipChosenProps> = ({
 }
 ```
 
-With this in place, the storefront can show the previously saved selection directly in the delivery step, including pickup point and tariff details when applicable, and let the user either remove it or reopen the modal window to change it.
+With this in place, the storefront can show the previously saved selection directly in the delivery step, including pickup point and tariff details. It also allows the user to either remove it or reopen the modal window to change it.
 
 ## 8. Pickup Point Modal Window
 
@@ -1438,11 +1438,11 @@ export const ApishipCourierModal: React.FC<ApishipCourierModalProps> = ({
 }
 ```
 
-Once the customer confirms their choice by clicking `Choose`, the selected tariff is saved to the cart, the shipping price is recalculated, and the modal closes. If the previously selected tariff is already active, the interface reflects that state accordingly, so the user clearly sees their current selection.
+Once the customer confirms their choice by clicking `Choose`, the selected tariff is saved to the cart, the shipping price is recalculated, and the modal closes.
 
-## 10. Public Exports
+## 10. Barrel File
 
-All ApiShip storefront components and helpers are exported through a shared file that acts as a single entry point for the integration. It re-exports the main UI building blocks, along with shared types and utility helpers, so other parts of the storefront can import everything from one place instead of referencing internal file paths.
+All ApiShip storefront components and helpers are exported through a barrel file that acts as a single entry point for the integration. It re-exports the main UI building blocks, along with shared types and utility helpers, so other parts of the storefront can import everything from one place instead of referencing internal file paths.
 
 Open [`src/modules/checkout/components/shipping/apiship/index.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa21a2d0331f60495ad85be74fcaa1aa86dd2a5/examples/fulfillment-apiship/medusa-storefront/src/modules/checkout/components/shipping-address/index.tsx#L212) and add the following:
 
@@ -1782,7 +1782,7 @@ This change adds two dedicated modal windows for ApiShip (pickup point selection
 - The customer can’t continue to payment for an ApiShip shipping option until a valid ApiShip selection has been saved in the cart.
 - The ApiShip calculated prices are displayed as `from X` to reflect that the final amount depends on the selected tariff.
 
-## Example
+## Full Storefront Integration Code Example
 
 You can refer to the modifications made in the [Medusa Next.js Starter Template](https://github.com/medusajs/nextjs-starter-medusa), which are located in the [`examples/medusa-storefront`](https://github.com/gorgojs/medusa-plugins/tree/main/examples/fulfillment-apiship/medusa-storefront) directory.
 

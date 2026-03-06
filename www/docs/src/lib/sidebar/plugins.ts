@@ -36,7 +36,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Getting Started",
-            ru: "Быстрый старт",
+            ru: "Начало работы",
           },
           slug: "getting-started",
           children: [],
@@ -44,7 +44,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Storefront Integration",
-            ru: "Интеграция с Storefront",
+            ru: "Интеграция в витрину",
           },
           slug: "storefront-integration",
           children: [],
@@ -79,7 +79,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Getting Started",
-            ru: "Быстрый старт",
+            ru: "Начало работы",
           },
           slug: "getting-started",
           children: [],
@@ -87,7 +87,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Storefront Integration",
-            ru: "Интеграция с Storefront",
+            ru: "Интеграция в витрину",
           },
           slug: "storefront-integration",
           children: [],
@@ -97,7 +97,7 @@ export const pluginsSidebar: SidebarType = {
     {
       title: {
         en: "YooKassa",
-        ru: "YooKassa",
+        ru: "ЮKassa",
       },
       slug: "yookassa",
       icon: "yookassa",
@@ -122,7 +122,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Getting Started",
-            ru: "Быстрый старт",
+            ru: "Начало работы",
           },
           slug: "getting-started",
           children: [],
@@ -130,7 +130,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Storefront Integration",
-            ru: "Интеграция с Storefront",
+            ru: "Интеграция в витрину",
           },
           slug: "storefront-integration",
           children: [],
@@ -165,7 +165,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Getting Started",
-            ru: "Быстрый старт",
+            ru: "Начало работы",
           },
           slug: "getting-started",
           children: [],
@@ -173,7 +173,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Storefront Integration",
-            ru: "Интеграция с Storefront",
+            ru: "Интеграция в витрину",
           },
           slug: "storefront-integration",
           children: [],
@@ -208,7 +208,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Getting Started",
-            ru: "Быстрый старт",
+            ru: "Начало работы",
           },
           slug: "getting-started",
           children: [],
@@ -243,7 +243,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Getting Started",
-            ru: "Быстрый старт",
+            ru: "Начало работы",
           },
           slug: "getting-started",
           children: [],

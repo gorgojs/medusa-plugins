@@ -10,11 +10,11 @@
 </p>
 
 <h1 align="center">
-T-Kassa Payments for Medusa
+T-Kassa Payments by T-Bank for Medusa
 </h1>
 
 <p align="center">
-  A Medusa plugin that provides T-Kassa payments.
+  A Medusa plugin that provides T-Kassa payments by T-Bank.
   <br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/t-kassa">Documentation ↗</a>
   <br/>
