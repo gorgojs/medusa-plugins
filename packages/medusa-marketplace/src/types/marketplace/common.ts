@@ -1,4 +1,5 @@
 import { SalesChannelDTO } from "@medusajs/framework/types"
+import { OrderType } from "../../modules/marketplace/models/marketplace-exchange-profile"
 
 export type EventDirectionType = "MEDUSA_TO_MARKETPLACE" | "MARKETPLACE_TO_MEDUSA"
 
@@ -39,3 +40,11 @@ export type MarketplaceEventDTO = {
 }
 
 export type MarketplaceProductDTO = Record<string, unknown>
+
+export type MarketplaceExchangeProfileDTO = {
+  id: string
+  marketplace_id: string
+  stock_location_id?: string
+  warehouse_id: string
+  order_type: OrderType
+}

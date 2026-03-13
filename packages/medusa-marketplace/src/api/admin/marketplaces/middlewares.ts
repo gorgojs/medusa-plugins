@@ -3,7 +3,9 @@ import {
   AdminCreateMarketplace,
   AdminGetMarketplaceParams,
   AdminMarketplaceCreateEvents,
+  AdminMarketplaceCreateExchangeProfile,
   AdminMarketplaceGetEventsParams,
+  AdminMarketplaceListExchangeProfileParams,
   AdminMarketplaceSyncProducts,
   AdminUpdateMarketplace
 } from "./validators"
@@ -50,6 +52,23 @@ export const adminMarketplaceRoutesMiddlewares: MiddlewareRoute[] = [
     matcher: "/admin/marketplaces/:id/*",
     middlewares: [
       setMarketplaceContext()
+    ]
+  },
+  {
+    matcher: "/admin/marketplaces/:id/exchange-profiles",
+    methods: ["GET"],
+    middlewares: [
+      validateAndTransformQuery(
+        AdminMarketplaceListExchangeProfileParams,
+        QueryConfig.listExchangeProfileQueryConfig
+      )
+    ]
+  },
+  {
+    matcher: "/admin/marketplaces/:id/exchange-profiles",
+    methods: ["POST"],
+    middlewares: [
+      validateAndTransformBody(AdminMarketplaceCreateExchangeProfile)
     ]
   },
   {

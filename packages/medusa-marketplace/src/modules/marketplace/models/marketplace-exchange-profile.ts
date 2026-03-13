@@ -1,7 +1,7 @@
 import { model } from "@medusajs/framework/utils"
 import Marketplace from "./marketplace"
 
-const ORDER_TYPES = ["FBS", "FBO", "DBS"] as const
+export const ORDER_TYPES = ["FBS", "FBO", "DBS"] as const
 
 export type OrderType = (typeof ORDER_TYPES)[number]
 

@@ -43,3 +43,22 @@ export const listEventQueryConfig = {
   defaultLimit: 20,
   isList: true,
 }
+
+export const defaultAdminMarketplaceExchangeProfileFields = [
+  "id",
+  "marketplace_id",
+  "stock_location_id",
+  "warehouse_id",
+  "order_type"
+]
+
+export const retrieveExchangeProfileQueryConfig = {
+  defaults: defaultAdminMarketplaceExchangeProfileFields,
+  isList: false
+}
+
+export const listExchangeProfileQueryConfig = {
+  ...retrieveExchangeProfileQueryConfig,
+  defaultLimit: 20,
+  isList: true,
+}

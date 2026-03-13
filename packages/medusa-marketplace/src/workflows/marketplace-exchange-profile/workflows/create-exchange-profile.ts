@@ -15,7 +15,7 @@ export const createExchangeProfileWorkflow = createWorkflow(
         marketplace_exchange_profile_id: result.id
       },
       [Modules.STOCK_LOCATION]: {
-        stock_location_id: input.stockLocationId
+        stock_location_id: input.stock_location_id
       },
     }])
 

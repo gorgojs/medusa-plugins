@@ -1,5 +1,5 @@
 import { DeleteResponse, PaginatedResponse } from "@medusajs/framework/types";
-import { AdminMarketplace, AdminMarketplaceEvent } from "./entities";
+import { AdminMarketplace, AdminMarketplaceEvent, AdminMarketplaceExchangeProfile } from "./entities";
 
 export interface AdminMarketplaceListResponse
   extends PaginatedResponse<{
@@ -27,4 +27,13 @@ export interface AdminMarketplaceEventResponse {
 
 export interface AdminMarketplaceProviderList {
   providers: string[]
+}
+
+export interface AdminMarketplaceExchangeProfileListResponse
+  extends PaginatedResponse<{
+    exchange_profiles: AdminMarketplaceExchangeProfile[]
+  }> {}
+
+export interface AdminMarketplaceExchangeProfileResponse {
+  exchange_profile: AdminMarketplaceExchangeProfile
 }
