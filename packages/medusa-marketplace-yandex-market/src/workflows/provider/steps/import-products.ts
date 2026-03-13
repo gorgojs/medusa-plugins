@@ -1,86 +1,60 @@
+import { ProductDTO } from "@medusajs/framework/types"
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
-import {
-  ApiResponseStatusType,
-  GetOfferMappingsRequest,
-  GetOfferMappingDTO,
-} from "../../../lib/yandex-market-client/api"
-import { MarketplaceYandexMarketCredentialsType } from "../../../providers/marketplace-yandex-market/types"
-import { withBusinessId, businessOfferMappingsApi } from "../../../lib/ym-client"
+import { updateProductsWorkflow, updateProductVariantsWorkflow } from "@medusajs/medusa/core-flows"
+import { dedupeById } from "../../../providers/marketplace-yandex-market/utils"
 
-const PAGE_LIMIT = 100
-
-export type ImportProductsStepInput = {
-  credentials: MarketplaceYandexMarketCredentialsType
-  request?: GetOfferMappingsRequest
+export type ImportProductsToMedusaStepInput = {
+  products: ProductDTO[]
 }
 
-export const importProductsStepId = "import-products"
+export const importProductsToMedusaStepId = "import-products-to-medusa-ym"
 
-export const importProductsStep = createStep(
-  importProductsStepId,
-  async (input: ImportProductsStepInput, { container }) => {
-    const query = container.resolve("query")
+export const importProductsToMedusaStep = createStep(
+  importProductsToMedusaStepId,
+  async (input: ImportProductsToMedusaStepInput, { container }) => {
+    const { products } = input
 
-    const updatedVariantsIds: {
-      yandex_market_imtID?: string
-      yandex_market_needToSync?: string
-      yandex_market_sizeSkus?: Set<string> | null
-    }[] = []
+    if (!products?.length) {
+      return new StepResponse({
+        updatedProductsIds: [],
+        updatedVariantsIds: [],
+      })
+    }
 
-    const updatedProductsIds: {
-      yandex_market_imtID?: string
-      yandex_market_needToSync?: string
-      yandex_market_sizeSkus?: Set<string> | null
-    }[] = []
+    const productsToUpdate = dedupeById(
+      products
+        .filter((product) => product?.id)
+        .map((product) => ({
+          id: product.id,
+          metadata: product.metadata ?? {},
+        }))
+    )
 
-    const pages: {
-      status: ApiResponseStatusType
-      offerMappings: GetOfferMappingDTO[]
-      nextPageToken?: string | null
-    }[] = []
+    const variantsToUpdate = dedupeById(
+      products
+        .flatMap((product: any) => product?.variants ?? [])
+        .filter((variant: any) => variant?.id)
+        .map((variant: any) => ({
+          id: variant.id,
+          metadata: variant.metadata ?? {},
+        }))
+    )
 
-    let pageToken: string | undefined
-    const api = businessOfferMappingsApi(input.credentials)
+    if (productsToUpdate.length) {
+      await updateProductsWorkflow(container).run({
+        input: { products: productsToUpdate },
+      })
+    }
 
-    do {
-      const response = await api.getOfferMappings(
-        withBusinessId(input.credentials, {
-          pageToken,
-          limit: PAGE_LIMIT,
-          getOfferMappingsRequest: input.request,
-        })
-      )
-
-      const { status, result } = response.data
-      const offerMappings: GetOfferMappingDTO[] = result?.offerMappings ?? []
-      const nextPageToken = result?.paging?.nextPageToken ?? null
-
-      pages.push({ status, offerMappings, nextPageToken })
-      pageToken = nextPageToken || undefined
-    } while (pageToken)
-
-    for (const page of pages) {
-      const offerMappings = page.offerMappings ?? []
-
-      for (const mapping of offerMappings) {
-        const yandex_market_imtID = mapping.offer?.offerId
-        const yandex_market_needToSync = mapping.offer?.cardStatus
-        const yandex_market_sizeSkus = mapping.offer?.barcodes
-
-        updatedVariantsIds.push({
-          yandex_market_imtID,
-          yandex_market_needToSync,
-        })
-
-        updatedProductsIds.push({
-          yandex_market_sizeSkus,
-        })
-      }
+    if (variantsToUpdate.length) {
+      await updateProductVariantsWorkflow(container).run({
+        input: { product_variants: variantsToUpdate },
+      })
     }
 
     return new StepResponse({
-      updatedProductsIds,
-      updatedVariantsIds,
+      updatedProductsIds: productsToUpdate.map((product) => product.id),
+      updatedVariantsIds: variantsToUpdate.map((variant) => variant.id),
     })
   }
 )
