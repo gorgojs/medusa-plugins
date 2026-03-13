@@ -1,5 +1,4 @@
 import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
-
 import type {
   FieldArrayWithId,
   UseFieldArrayAppend,
@@ -89,6 +88,7 @@ export type CategoryMappingRowProps = {
   ozonCategoriesCombobox: Record<any, any>
   rootOzonCategoriesCombobox: Record<any, any>
   ozonGroupsWithIds: OzonComboboxGroupWithIds[]
+  selectedOzonRootCategoryValue: string
   marketplace: MarketplaceHttpTypes.AdminMarketplace
 }
 
@@ -100,6 +100,8 @@ export type CategorySelectorsProps = {
   rootOzonCategoriesCombobox: Record<any, any>
   ozonGroupsWithIds: OzonComboboxGroupWithIds[]
   isOzonDisabled: boolean
+  selectedMedusaCategoryIds: string[]
+  selectedOzonRootCategoryValue: string
 }
 
 export type AttributeMappingProps = {
@@ -114,6 +116,8 @@ export type AttributeMappingProps = {
   medusaCategoryNameById: Map<string, string>
   selectedMedusaValues: string[]
   selectedOzonValues: string[]
+  ozonAttributes: any
+  profileOptions: ComboboxOption[]
   marketplace: MarketplaceHttpTypes.AdminMarketplace
 }
 
@@ -128,6 +132,8 @@ export type AttributeMappingRowProps = {
   selectedMedusaValues: string[]
   selectedOzonValues: string[]
   onRemove: () => void
+  ozonAttributes: any
+  profileOptions: ComboboxOption[]
   marketplace: MarketplaceHttpTypes.AdminMarketplace
 }
 

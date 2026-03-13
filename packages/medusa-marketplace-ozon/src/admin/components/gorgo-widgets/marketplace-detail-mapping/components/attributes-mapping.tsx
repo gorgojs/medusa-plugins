@@ -1,5 +1,4 @@
-import { Fragment } from "react"
-import { Button, Heading, Text } from "@medusajs/ui"
+import { Button, Text } from "@medusajs/ui"
 import { AttributeMappingProps } from "../../../../types"
 import { AttributeMappingRow } from "./attributes-mapping-row"
 
@@ -15,21 +14,24 @@ export const AttributesMapping = ({
   medusaCategoryNameById,
   selectedMedusaValues,
   selectedOzonValues,
-  marketplace
+  marketplace,
+  ozonAttributes,
+  profileOptions
 }: AttributeMappingProps) => {
   return (
     <div className="flex flex-col">
-      <Heading level="h2" className="mb-2">
-        Attributes mapping
-      </Heading>
-
-      <Text className="text-ui-fg-subtle txt-small mb-6">
-        Add rules to map Medusa attributes to Ozon attributes.
+      <Text size="base" weight="plus">
+        Attributes Mapping
       </Text>
 
-      {attrFields.map((row, attrIndex) => (
-        <Fragment key={row.id}>
+      <Text size="small" className="text-ui-fg-subtle mb-6">
+        Add mapping rules between Ozon and Medusa attributes.
+      </Text>
+
+      <div className="flex flex-col space-y-3">
+        {attrFields.map((row, attrIndex) => (
           <AttributeMappingRow
+            key={row.id}
             form={form}
             rowId={row.id}
             categoryIndex={categoryIndex}
@@ -40,16 +42,12 @@ export const AttributesMapping = ({
             selectedMedusaValues={selectedMedusaValues}
             selectedOzonValues={selectedOzonValues}
             onRemove={() => removeAttr(attrIndex)}
-            marketplace = {marketplace}
+            marketplace={marketplace}
+            ozonAttributes={ozonAttributes}
+            profileOptions={profileOptions}
           />
-
-          {attrIndex < attrFields.length - 1 && (
-            <div className="relative px-6 py-3">
-              <div className="border-ui-border-strong absolute bottom-0 left-[40px] top-0 z-[-1] w-px bg-[linear-gradient(var(--border-strong)_33%,rgba(255,255,255,0)_0%)] bg-[length:1px_3px] bg-repeat-y" />
-            </div>
-          )}
-        </Fragment>
-      ))}
+        ))}
+      </div>
 
       <div className={attrFields.length ? "mt-6" : ""}>
         <Button
@@ -66,7 +64,7 @@ export const AttributesMapping = ({
           }
           disabled={!canAdd}
         >
-          Add Attributes mapping
+          Add rule
         </Button>
       </div>
     </div>
