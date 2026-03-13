@@ -25,7 +25,7 @@ build
 
 .medusa
 src/lib/yandex-market-client
-yandex-market-partner-api
+openapi/yandex-market-partner-api
 
 .yalc
 yalc.lock

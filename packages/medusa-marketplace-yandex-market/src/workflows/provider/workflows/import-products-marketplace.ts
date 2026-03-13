@@ -1,25 +1,17 @@
-import {
-  createWorkflow,
-  WorkflowResponse
-} from "@medusajs/workflows-sdk"
-import { importProductsStep } from "../steps"
-import { MarketplaceYandexMarketCredentialsType } from "../../../providers/marketplace-yandex-market/types"
+import { createWorkflow, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
+import { ProductDTO } from "@medusajs/framework/types"
+import { importProductsToMedusaStep } from "../steps"
 
-export type ImportMarketplaceProductsYmWorkflowInput = {
-  credentials: MarketplaceYandexMarketCredentialsType
+export type ImportProductsToMedusaYmWorkflowInput = {
+  products: ProductDTO[]
 }
 
-export const importMarketplaceProductsYmWorkflowId = "import-marketplace-products-ym"
+export const importProductsToMedusaYmWorkflowId = "import-products-to-medusa-ym"
 
-export const importMarketplaceProductsYmWorkflow = createWorkflow(
-  importMarketplaceProductsYmWorkflowId,
-  (input: ImportMarketplaceProductsYmWorkflowInput) => {
-    const importResult = importProductsStep({ credentials: input.credentials })
-
-    const result = {
-      importResult
-    }
-
-    return new WorkflowResponse(result)
+export const importProductsToMedusaYmWorkflow = createWorkflow(
+  importProductsToMedusaYmWorkflowId,
+  (input: ImportProductsToMedusaYmWorkflowInput) => {
+    const importResult = importProductsToMedusaStep({ products: input.products })
+    return new WorkflowResponse(importResult)
   }
 )

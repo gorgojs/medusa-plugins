@@ -109,6 +109,18 @@ export const MarketplaceDetailCredentialsSection = ({
             )
           }
         />
+        <SectionRow
+          title="Campaign ID"
+          value={
+            marketplace.credentials.campaign_id ? (
+              <Badge size="xsmall" color="grey">
+                {marketplace.credentials.campaign_id as React.ReactNode}
+              </Badge>
+            ) : (
+              "-" 
+            )
+          }
+        />
       </Container>
 
       <MarketplaceDetailCredentialsEditModal

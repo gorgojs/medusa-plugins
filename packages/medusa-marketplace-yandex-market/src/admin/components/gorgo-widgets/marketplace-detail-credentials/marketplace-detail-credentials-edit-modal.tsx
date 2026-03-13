@@ -23,6 +23,7 @@ type MarketplaceDetailCredentialsEditModalProps = {
 const MarketplaceDetailCredentialsEditSchema = z.object({
   api_key: z.string().trim(),
   business_id: z.string().trim(),
+  campaign_id: z.string().trim(),
 })
 
 type MarketplaceDetailCredentialsEditValues = z.infer<typeof MarketplaceDetailCredentialsEditSchema>
@@ -38,7 +39,8 @@ export const MarketplaceDetailCredentialsEditModal = ({
   const form = useForm<MarketplaceDetailCredentialsEditValues>({
     defaultValues: {
       api_key: String(marketplace.credentials?.api_key ?? ""),
-      business_id: String(marketplace.credentials?.business_id ?? "")
+      business_id: String(marketplace.credentials?.business_id ?? ""),
+      campaign_id: String(marketplace.credentials?.campaign_id ?? "")
     },
     resolver: zodResolver(MarketplaceDetailCredentialsEditSchema),
     mode: "onSubmit",
@@ -47,7 +49,8 @@ export const MarketplaceDetailCredentialsEditModal = ({
   const resetForm = () =>
     form.reset({
       api_key: String(marketplace.credentials?.api_key ?? ""),
-      business_id: String(marketplace.credentials?.business_id ?? "")
+      business_id: String(marketplace.credentials?.business_id ?? ""),
+      campaign_id: String(marketplace.credentials?.campaign_id ?? "")
     })
 
   useEffect(() => {
@@ -67,6 +70,7 @@ export const MarketplaceDetailCredentialsEditModal = ({
             ...(marketplace.credentials ?? {}),
             api_key: values.api_key.trim(),
             business_id: values.business_id.trim(),
+            campaign_id: values.campaign_id.trim()
           },
         },
       })
@@ -122,6 +126,17 @@ export const MarketplaceDetailCredentialsEditModal = ({
                 </Text>
               )}
             </div>
+            <div className="flex flex-col gap-y-2">
+              <Label htmlFor="campaign_id" size="small">
+                Campaign ID
+              </Label>
+              <Input id="campaign_id" autoComplete="off" {...form.register("campaign_id")} />
+            </div>
+            {form.formState.errors.campaign_id?.message && (
+              <Text size="small" className="text-ui-fg-error">
+                {form.formState.errors.campaign_id.message}
+              </Text>
+            )}
           </Drawer.Body>
 
           <Drawer.Footer className="flex justify-end gap-x-2">

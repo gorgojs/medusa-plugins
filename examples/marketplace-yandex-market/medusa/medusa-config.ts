@@ -60,7 +60,7 @@ module.exports = defineConfig({
         providers: [
           {
             resolve: "@gorgo/medusa-marketplace-yandex-market/providers/marketplace-yandex-market",
-            id: "test",
+            id: "ym",
             options: {
 
             }
