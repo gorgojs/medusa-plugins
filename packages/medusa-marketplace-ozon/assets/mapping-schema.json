@@ -27,26 +27,27 @@
       ],
       "fields": [
         {
-          "from": "id",
-          "to": "offer_id"
-        },
-        {
+          "isRequired": true,
           "from": "combined_name",
           "to": "name"
         },
         {
+          "isRequired": true,
           "from": "description",
           "to": "description"
         },
         {
+          "isRequired": true,
           "from": "prices.0.amount",
           "to": "price"
         },
         {
+          "isRequired": true,
           "from": "prices.1.amount",
           "to": "old_price"
         },
         {
+          "isRequired": true,
           "from": "prices.currency_code",
           "to": "currency_code",
           "default": "RUB",
@@ -55,45 +56,54 @@
           }
         },
         {
+          "isRequired": true,
           "from": "sku",
           "to": "barcode"
         },
         {
+          "isRequired": true,
           "from": "dimension_unit",
           "to": "dimension_unit",
           "default": "mm"
         },
         {
+          "isRequired": true,
           "from": "weight_unit",
           "to": "weight_unit",
           "default": "g"
         },
         {
+          "isRequired": true,
           "from": "weight",
           "to": "weight",
           "default": 100
         },
         {
+          "isRequired": true, 
           "from": "length",
           "to": "depth",
           "default": 10
         },
         {
+          "isRequired": true,
           "from": "height",
           "to": "height",
           "default": 10
         },
         {
+          "isRequired": true,
           "from": "width",
           "to": "width",
           "default": 10
         },
         {
+          "isRequired": true,
           "from": "images",
           "to": "images",
           "default": []
         },
         {
+          "isRequired": true,
           "from": "vat",
           "to": "vat",
           "default": "0"
@@ -124,6 +134,7 @@
               ]
             },
             "Color": {
+              "isRequired": true,
               "attributeId": 10096,
               "is_error": false,
               "default": [
