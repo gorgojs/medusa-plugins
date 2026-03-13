@@ -4,8 +4,8 @@ import {
   DataTablePaginationState,
   useDataTable,
   StatusBadge,
-  Button,
 } from "@medusajs/ui"
+import { Pencil, Trash } from "@medusajs/icons"
 import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
@@ -13,6 +13,7 @@ import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
 import { Header } from "../../../common/header"
 import { CategoryMappingRule } from "../../../../types"
 import { sdk } from "../../../../lib/sdk"
+import { ActionMenu } from "../../../common/action-menu"
 
 const PAGE_SIZE = 20
 
@@ -119,13 +120,25 @@ export const CategoryMappingRulesTable = ({
       cell: ({ row }) => {
         const id = row.original.id
         return (
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="secondary" size="small" onClick={() => onEdit(id)}>
-              Редактировать
-            </Button>
-            <Button type="button" variant="danger" size="small" onClick={() => onDelete(id)}>
-              Удалить
-            </Button>
+          <div className="flex justify-end">
+            <ActionMenu
+              groups={[
+                {
+                  actions: [
+                    {
+                      icon: <Pencil />,
+                      label: "Edit",
+                      onClick: () => onEdit(id),
+                    },
+                    {
+                      icon: <Trash />,
+                      label: "Delete",
+                      onClick: () => onDelete(id),
+                    },
+                  ],
+                },
+              ]}
+            />
           </div>
         )
       },

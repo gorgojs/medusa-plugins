@@ -18,10 +18,12 @@ export const AttributeMappingRow = ({
   categoryIndex,
   attrIndex,
   selectedMedusaCategoryIds,
+  ozonIds,
   medusaCategoryNameById,
   selectedMedusaValues,
   selectedOzonValues,
   onRemove,
+  marketplace,
   ozonAttributes,
   profileOptions,
 }: AttributeMappingRowProps) => {
@@ -37,20 +39,38 @@ export const AttributeMappingRow = ({
     defaultValue: "",
   }) as string
 
+  const ozonAttributesComboboxData = useComboboxData<any, any>({
+    queryKey: ["ozon-attributes", marketplace.id, ozonIds.description_category_id, ozonIds.type_id],
+    enabled: Boolean(ozonIds.description_category_id && ozonIds.type_id),
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        description_category_id: ozonIds.description_category_id,
+        type_id: ozonIds.type_id,
+      })
+      const res = await sdk.client.fetch<any>(`/admin/ozon/${marketplace.id}/attributes?${params.toString()}`)
+      const result = res?.result ?? []
+      return { offset: 0, limit: result.length, count: result.length, result }
+    },
+    defaultValue: undefined,
+    getOptions: (data) => {
+      const ozonAttributes = data?.result ?? []
+      const options: { value: string; label: string }[] = []
+      for (const attribute of ozonAttributes as any[]) {
+        const id = attribute?.id
+        const value = `attr:${String(id)}`
+        const label = attribute?.is_required ? `${String(attribute?.name)}*` : String(attribute?.name)
+        options.push({ value, label })
+      }
+      return options
+    },
+  })
+
   const isRequiredRow = useMemo(() => {
     if (!currentOzonValue) return false
-  
-    const idStr = currentOzonValue.startsWith("attr:")
-      ? currentOzonValue.slice(5)
-      : currentOzonValue
-  
-    const attrFromApi = (ozonAttributes ?? []).find(
-      (a: any) => String(a.id) === idStr
-    )
-  
-    const fromProfile = profileOptions.some(
-      (o: ComboboxOption) => o.value === currentOzonValue
-    )
+
+    const idStr = currentOzonValue.startsWith("attr:") ? currentOzonValue.slice(5) : currentOzonValue
+    const attrFromApi = (ozonAttributes ?? []).find((a: any) => String(a.id) === idStr)
+    const fromProfile = profileOptions.some((o: ComboboxOption) => o.value === currentOzonValue)
   
     return Boolean(attrFromApi?.is_required || fromProfile)
   }, [currentOzonValue, ozonAttributes])
@@ -153,9 +173,7 @@ export const AttributeMappingRow = ({
     return (ozonAttributes ?? []).map((attribute: any) => {
       const id = attribute?.id
       const value = `attr:${String(id)}`
-      const label = attribute?.is_required
-        ? `${String(attribute?.name)}*`
-        : String(attribute?.name)
+      const label = attribute?.is_required ? `${String(attribute?.name)}*` : String(attribute?.name)
       return { value, label }
     })
   }, [ozonAttributes])
@@ -193,9 +211,9 @@ export const AttributeMappingRow = ({
                     onChange={field.onChange}
                     options={ozonOptions}
                     groups={ozonGroups}
-                    searchValue={""}
-                    onSearchValueChange={() => { }}
-                    disabled={!ozonOptions.length}
+                    searchValue={ozonAttributesComboboxData.searchValue}
+                    onSearchValueChange={ozonAttributesComboboxData.onSearchValueChange}
+                    disabled={ozonAttributesComboboxData.disabled || !ozonOptions.length}
                     placeholder="Select Ozon"
                   />
                 </Form.Control>
