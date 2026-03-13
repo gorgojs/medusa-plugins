@@ -1,4 +1,4 @@
-import { model } from "@medusajs/framework/utils";
+import { model } from "@medusajs/framework/utils"
 
 const Marketplace = model.define("marketplace", {
   id: model.id({

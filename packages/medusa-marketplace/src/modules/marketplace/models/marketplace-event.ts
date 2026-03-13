@@ -1,5 +1,5 @@
-import { model } from "@medusajs/framework/utils";
-import Marketplace from "./marketplace";
+import { model } from "@medusajs/framework/utils"
+import Marketplace from "./marketplace"
 
 const MarketplaceEvent = model.define("marketplace_event", {
   id: model.id({

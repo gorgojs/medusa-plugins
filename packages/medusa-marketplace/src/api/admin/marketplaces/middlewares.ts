@@ -1,5 +1,12 @@
 import { MiddlewareRoute, validateAndTransformBody, validateAndTransformQuery } from "@medusajs/framework/http"
-import { AdminCreateMarketplace, AdminGetMarketplaceParams, AdminMarketplaceCreateEvents, AdminMarketplaceGetEventsParams, AdminMarketplaceSyncProducts, AdminUpdateMarketplace } from "./validators"
+import { 
+  AdminCreateMarketplace,
+  AdminGetMarketplaceParams,
+  AdminMarketplaceCreateEvents,
+  AdminMarketplaceGetEventsParams,
+  AdminMarketplaceSyncProducts,
+  AdminUpdateMarketplace
+} from "./validators"
 import * as QueryConfig from "./query-config"
 import { setMarketplaceContext } from "../../utils/middlewares/marketplaces/set-marketplace-context"
 

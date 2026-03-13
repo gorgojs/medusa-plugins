@@ -21,6 +21,7 @@ import {
 import MarketplaceProviderService from "./marketplace-provider"
 import { joinerConfig } from "../joiner-config"
 import { Logger, ModuleJoinerConfig } from "@medusajs/framework/types"
+import MarketplaceExchangeProfile from "../models/marketplace-exchange-profile"
 
 type InjectedDependencies = {
   logger?: Logger
@@ -28,7 +29,7 @@ type InjectedDependencies = {
 }
 
 export default class MarketplaceModuleService extends MedusaService({
-  Marketplace, MarketplaceEvent
+  Marketplace, MarketplaceEvent, MarketplaceExchangeProfile
 }) {
   protected marketplaceProviderService_: MarketplaceProviderService
 
