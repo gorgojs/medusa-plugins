@@ -19,8 +19,7 @@ export const MappingRow = ({
 
   const rootOzonCategoryId = useWatch({
     control: form.control,
-    name: "category_mappings.0.root_ozon_category_id",
-    defaultValue: "",
+    name: "category_mappings.0.root_ozon_category_id"
   })
 
   const productCategoriesCombobox = useComboboxData({

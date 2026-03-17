@@ -71,9 +71,9 @@ export const AttributeMappingRow = ({
     const idStr = currentOzonValue.startsWith("attr:") ? currentOzonValue.slice(5) : currentOzonValue
     const attrFromApi = (ozonAttributes ?? []).find((a: any) => String(a.id) === idStr)
     const fromProfile = profileOptions.some((o: ComboboxOption) => o.value === currentOzonValue)
-  
+
     return Boolean(attrFromApi?.is_required || fromProfile)
-  }, [currentOzonValue, ozonAttributes])
+  }, [currentOzonValue, ozonAttributes, profileOptions])
 
   const attributesByCategoryComboboxData = useComboboxData<any, any>({
     queryKey: ["medusa-category-attributes-by-category", selectedMedusaCategoryIds],
@@ -189,7 +189,7 @@ export const AttributeMappingRow = ({
         options: g.options.filter((o: ComboboxOption) => !blockedOzon.has(o.value) || o.value === currentOzonValue),
       }))
       .filter((g) => g.options.length > 0)
-  }, [ozonAttributesOptions, blockedOzon, currentOzonValue])
+  }, [ozonAttributesOptions, blockedOzon, currentOzonValue, profileOptions])
 
   const ozonOptions = useMemo(() => ozonGroups.flatMap((g) => g.options), [ozonGroups])
 
@@ -214,16 +214,17 @@ export const AttributeMappingRow = ({
                     searchValue={ozonAttributesComboboxData.searchValue}
                     onSearchValueChange={ozonAttributesComboboxData.onSearchValueChange}
                     disabled={ozonAttributesComboboxData.disabled || !ozonOptions.length}
-                    placeholder="Select Ozon"
+                    placeholder="Select Ozon Attribute"
                   />
                 </Form.Control>
-                <Form.ErrorMessage />
               </Form.Item>
             )}
           />
 
           <Form.Field
+            control={form.control}
             name={`category_mappings.${categoryIndex}.mappings.${attrIndex}.medusa_attribute`}
+            rules={isRequiredRow ? { required: "Select a Medusa attribute" }: {}}
             render={({ field }) => (
               <Form.Item>
                 <Form.Control>
@@ -235,7 +236,7 @@ export const AttributeMappingRow = ({
                     searchValue={attributesByCategoryComboboxData.searchValue}
                     onSearchValueChange={attributesByCategoryComboboxData.onSearchValueChange}
                     disabled={attributesByCategoryComboboxData.disabled}
-                    placeholder="Select Medusa"
+                    placeholder="Select Medusa Attribute"
                   />
                 </Form.Control>
                 <Form.ErrorMessage />

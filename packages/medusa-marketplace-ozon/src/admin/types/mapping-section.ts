@@ -175,6 +175,7 @@ export type OutputFieldRule = {
 
 export type OutputAttributeOptionRule = {
   attributeId: number
+  medusa_attribute: string | undefined
   is_error: boolean
   default?: unknown[]
   transform?: TransformConfig

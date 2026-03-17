@@ -208,13 +208,18 @@ export const buildOzonMappingPayload = (
       if (ozonTargetRaw.startsWith("attr:")) {
         const attributeId = Number(ozonTargetRaw.slice("attr:".length))
         const optionKey = from || `attr_${attributeId}`
-        const rule: OutputAttributesRule["optionRules"][string] = { attributeId, is_error: false }
-
+      
+        const rule: OutputAttributesRule["optionRules"][string] = {
+          attributeId,
+          is_error: false,
+          medusa_attribute: medusaSourceRaw || undefined,
+        }
+      
         if (defaultValue !== undefined && defaultValue !== "") {
           rule.default = Array.isArray(defaultValue) ? defaultValue : [defaultValue]
         }
         if (transform) rule.transform = transform
-
+      
         categoryAttributeRules[optionKey] = rule
         continue
       }

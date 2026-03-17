@@ -12,16 +12,6 @@ const profileFieldOptions: OzonComboboxOption[] = [
   { value: "field:barcode", label: "barcode" },
   { value: "field:price", label: "price" },
   { value: "field:old_price", label: "old_price" },
-  { value: "field:vat", label: "vat" },
-  { value: "field:currency_code", label: "currency_code" },
-  { value: "field:images", label: "images" },
-  { value: "field:primary_image", label: "primary_image" },
-  { value: "field:dimension_unit", label: "dimension_unit" },
-  { value: "field:depth", label: "depth" },
-  { value: "field:width", label: "width" },
-  { value: "field:height", label: "height" },
-  { value: "field:weight_unit", label: "weight_unit" },
-  { value: "field:weight", label: "weight" },
 ]
 
 export const CategoryMappingRow = ({
@@ -43,7 +33,6 @@ export const CategoryMappingRow = ({
   const selectedOzonCategoryTypeValue = useWatch({
     control: form.control,
     name: `category_mappings.${index}.ozon_category_type_value`,
-    defaultValue: "",
   }) as string
 
   const {
@@ -60,7 +49,7 @@ export const CategoryMappingRow = ({
     name: `category_mappings.${index}.mappings`,
     defaultValue: [],
   })
-
+  const { resetField } = form
   const ozonIds = useMemo(() => {
     const [description_category_id, type_id] = (selectedOzonCategoryTypeValue || "").split(":")
     return { description_category_id: description_category_id || "", type_id: type_id || "" }
@@ -77,30 +66,37 @@ export const CategoryMappingRow = ({
   const [ozonAttributes, setOzonAttributes] = useState<any[]>([])
 
   useEffect(() => {
+    const hasExisting = (attrFields ?? []).length > 0
+  
     const load = async () => {
       if (!selectedOzonCategoryTypeValue) {
-        setOzonAttributes([])
-        if (attrFields.length) {
+        if (!hasExisting) {
+          setOzonAttributes([])
           removeAttr()
         }
         return
       }
-
+  
       const { description_category_id, type_id } = ozonIds
       if (!description_category_id || !type_id) {
-        setOzonAttributes([])
-        if (attrFields.length) {
+        if (!hasExisting) {
+          setOzonAttributes([])
           removeAttr()
         }
         return
       }
-
+  
       const params = new URLSearchParams({ description_category_id, type_id })
       const res = await sdk.client.fetch<any>(`/admin/ozon/${marketplace.id}/attributes?${params.toString()}`)
       const result = (res?.result ?? []) as any[]
       setOzonAttributes(result)
+  
+      if (hasExisting) {
+        return
+      }
+  
       removeAttr()
-
+  
       result
         .filter((a) => a?.is_required)
         .forEach((a) =>
@@ -111,7 +107,7 @@ export const CategoryMappingRow = ({
             transform: "none",
           })
         )
-
+  
       profileFieldOptions.forEach((p) =>
         appendAttr({
           medusa_attribute: "",
@@ -121,7 +117,7 @@ export const CategoryMappingRow = ({
         })
       )
     }
-
+  
     load()
   }, [
     selectedOzonCategoryTypeValue,
@@ -130,7 +126,16 @@ export const CategoryMappingRow = ({
     marketplace.id,
     appendAttr,
     removeAttr,
+    attrFields,
   ])
+  useEffect(() => {
+    if (!selectedMedusaCategoryIds?.length) {
+      resetField("category_mappings.0.root_ozon_category_id")
+      resetField(`category_mappings.${index}.ozon_category_type_value`)
+      removeAttr()
+      setOzonAttributes([])
+    }
+  }, [selectedMedusaCategoryIds, resetField, removeAttr, setOzonAttributes])
 
   return (
     <div>

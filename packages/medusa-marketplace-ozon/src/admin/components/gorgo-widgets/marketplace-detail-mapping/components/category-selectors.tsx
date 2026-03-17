@@ -26,6 +26,7 @@ export const CategorySelectors = ({
               <Form.Item>
                 <Form.Control>
                   <Combobox
+                    placeholder="Select Categories"
                     value={(field.value ?? []) as string[]}
                     onChange={field.onChange}
                     options={productCategoriesCombobox.options}
@@ -47,6 +48,7 @@ export const CategorySelectors = ({
               <Form.Item>
                 <Form.Control>
                   <Combobox
+                    placeholder="Select Category"
                     value={(field.value ?? "") as string}
                     onChange={field.onChange}
                     options={rootOzonCategoriesCombobox.options}
@@ -70,6 +72,7 @@ export const CategorySelectors = ({
               <Form.Item>
                 <Form.Control>
                   <Combobox
+                    placeholder="Select Subcategory"
                     value={(field.value ?? "") as string}
                     onChange={field.onChange}
                     options={ozonCategoriesCombobox.options}

@@ -161,12 +161,12 @@ export const CategoryMappingRulesTable = ({
     <DataTable instance={table}>
       <Header
         key={stateModal ? "mapping-open" : "mapping-closed"}
-        title="Category mapping rules"
+        title="Category mapping"
         actions={[
           {
             type: "button",
             props: {
-              children: "Add mapping rules",
+              children: "Add",
               variant: "secondary",
               onClick: openModal,
             },
