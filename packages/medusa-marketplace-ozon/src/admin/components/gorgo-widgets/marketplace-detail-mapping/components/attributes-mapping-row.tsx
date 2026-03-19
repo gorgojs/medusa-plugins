@@ -1,70 +1,41 @@
 import { IconButton, Select, Text } from "@medusajs/ui"
 import { XMarkMini } from "@medusajs/icons"
 import { useMemo } from "react"
-import { useWatch } from "react-hook-form"
 import { Form } from "../../../common/form"
 import { Combobox } from "../../../common/combobox"
-import { useComboboxData } from "../../../../hooks/use-combobox-data"
-import { extractMedusaAttributeTitles } from "../../../../utils"
-import { sdk } from "../../../../lib/sdk"
-import {
-  transformOptions,
-  AttributeMappingRowProps,
-  ComboboxOption
-} from "../../../../types"
+import { ChipInput } from "../../../common/chip-input/chip-input"
+import { transformOptions, ComboboxOption, MappingFormValues } from "../../../../types"
+import { UseFormReturn } from "react-hook-form"
+
+type AttributeMappingRowProps = {
+  form: UseFormReturn<MappingFormValues>
+  categoryIndex: number
+  attrIndex: number
+  onRemove: () => void
+  ozonAttributes: any
+  profileOptions: ComboboxOption[]
+  currentMedusaValue: string | undefined
+  currentOzonValue: string | undefined
+  blockedMedusaValues: Set<string>
+  blockedOzonValues: Set<string>
+  ozonAttributesComboboxData: Record<any, any>
+  attributesByCategoryComboboxData: Record<any, any>
+}
 
 export const AttributeMappingRow = ({
   form,
   categoryIndex,
   attrIndex,
-  selectedMedusaCategoryIds,
-  ozonIds,
-  medusaCategoryNameById,
-  selectedMedusaValues,
-  selectedOzonValues,
   onRemove,
-  marketplace,
   ozonAttributes,
   profileOptions,
+  currentMedusaValue,
+  currentOzonValue,
+  blockedMedusaValues,
+  blockedOzonValues,
+  ozonAttributesComboboxData,
+  attributesByCategoryComboboxData
 }: AttributeMappingRowProps) => {
-  const currentMedusaValue = useWatch({
-    control: form.control,
-    name: `category_mappings.${categoryIndex}.mappings.${attrIndex}.medusa_attribute`,
-    defaultValue: "",
-  }) as string
-
-  const currentOzonValue = useWatch({
-    control: form.control,
-    name: `category_mappings.${categoryIndex}.mappings.${attrIndex}.ozon_attribute_id`,
-    defaultValue: "",
-  }) as string
-
-  const ozonAttributesComboboxData = useComboboxData<any, any>({
-    queryKey: ["ozon-attributes", marketplace.id, ozonIds.description_category_id, ozonIds.type_id],
-    enabled: Boolean(ozonIds.description_category_id && ozonIds.type_id),
-    queryFn: async () => {
-      const params = new URLSearchParams({
-        description_category_id: ozonIds.description_category_id,
-        type_id: ozonIds.type_id,
-      })
-      const res = await sdk.client.fetch<any>(`/admin/ozon/${marketplace.id}/attributes?${params.toString()}`)
-      const result = res?.result ?? []
-      return { offset: 0, limit: result.length, count: result.length, result }
-    },
-    defaultValue: undefined,
-    getOptions: (data) => {
-      const ozonAttributes = data?.result ?? []
-      const options: { value: string; label: string }[] = []
-      for (const attribute of ozonAttributes as any[]) {
-        const id = attribute?.id
-        const value = `attr:${String(id)}`
-        const label = attribute?.is_required ? `${String(attribute?.name)}*` : String(attribute?.name)
-        options.push({ value, label })
-      }
-      return options
-    },
-  })
-
   const isRequiredRow = useMemo(() => {
     if (!currentOzonValue) return false
 
@@ -75,74 +46,9 @@ export const AttributeMappingRow = ({
     return Boolean(attrFromApi?.is_required || fromProfile)
   }, [currentOzonValue, ozonAttributes, profileOptions])
 
-  const attributesByCategoryComboboxData = useComboboxData<any, any>({
-    queryKey: ["medusa-category-attributes-by-category", selectedMedusaCategoryIds],
-    enabled: selectedMedusaCategoryIds.length > 0,
-    queryFn: async () => {
-      const fields = [
-        "id",
-        "title",
-        "description",
-        "*options",
-        "*variants.options",
-        "*variants.images",
-        "*variants.prices",
-        "variants.sku",
-        "variants.weight",
-        "variants.length",
-        "variants.height",
-        "variants.width",
-        "variants.barcode",
-      ].join(",")
-      const results = await Promise.all(
-        selectedMedusaCategoryIds.map(async (categoryId) => {
-          const res = await sdk.admin.product.list({
-            category_id: [categoryId],
-            fields,
-          })
-
-          const products = res?.products
-          const attributes = extractMedusaAttributeTitles(products)
-          return {
-            category: {
-              id: categoryId,
-              name: medusaCategoryNameById.get(categoryId) ?? categoryId,
-            },
-            attributes,
-          }
-        }),
-      )
-      return { result: results }
-    },
-    defaultValue: undefined,
-    getOptions: (data) => {
-      const rows = data?.result ?? []
-
-      const baseSet = new Set<string>()
-      const optionsSet = new Set<string>()
-
-      for (const row of rows as any[]) {
-        for (const key of row?.attributes?.base ?? []) baseSet.add(String(key).trim())
-        for (const key of row?.attributes?.options ?? []) optionsSet.add(String(key).trim())
-      }
-
-      const baseOptions = Array.from(baseSet)
-        .filter(Boolean)
-        .sort((a, b) => a.localeCompare(b))
-        .map((key) => ({ label: key, value: `base:${key}` }))
-
-      const optionTitles = Array.from(optionsSet)
-        .filter(Boolean)
-        .sort((a, b) => a.localeCompare(b))
-        .map((key) => ({ label: key, value: `opt:${key}` }))
-
-      return [...baseOptions, ...optionTitles]
-    },
-  })
-
   const medusaAttributeGroups = useMemo(() => {
-    const base = attributesByCategoryComboboxData.options.filter((o) => String(o.value).startsWith("base:"))
-    const opts = attributesByCategoryComboboxData.options.filter((o) => String(o.value).startsWith("opt:"))
+    const base = attributesByCategoryComboboxData.options.filter((o: ComboboxOption) => String(o.value).startsWith("base:"))
+    const opts = attributesByCategoryComboboxData.options.filter((o: ComboboxOption) => String(o.value).startsWith("opt:"))
 
     return [
       { label: "Base attributes", options: base },
@@ -151,14 +57,14 @@ export const AttributeMappingRow = ({
   }, [attributesByCategoryComboboxData.options])
 
   const blockedMedusa = useMemo(() => {
-    return new Set(selectedMedusaValues.filter((v) => v && v !== currentMedusaValue))
-  }, [selectedMedusaValues, currentMedusaValue])
+    return blockedMedusaValues
+  }, [blockedMedusaValues])
 
   const medusaGroups = useMemo(() => {
     return medusaAttributeGroups
       .map((g) => ({
         label: g.label,
-        options: g.options.filter((o) => !blockedMedusa.has(o.value) || o.value === currentMedusaValue),
+        options: g.options.filter((o: ComboboxOption) => !blockedMedusa.has(o.value) || o.value === currentMedusaValue),
       }))
       .filter((g) => g.options.length > 0)
   }, [medusaAttributeGroups, blockedMedusa, currentMedusaValue])
@@ -166,8 +72,8 @@ export const AttributeMappingRow = ({
   const medusaOptions = useMemo(() => medusaGroups.flatMap((g) => g.options), [medusaGroups])
 
   const blockedOzon = useMemo(() => {
-    return new Set(selectedOzonValues.filter((v) => v && v !== currentOzonValue))
-  }, [selectedOzonValues, currentOzonValue])
+    return blockedOzonValues
+  }, [blockedOzonValues])
 
   const ozonAttributesOptions = useMemo(() => {
     return (ozonAttributes ?? []).map((attribute: any) => {
@@ -224,7 +130,7 @@ export const AttributeMappingRow = ({
           <Form.Field
             control={form.control}
             name={`category_mappings.${categoryIndex}.mappings.${attrIndex}.medusa_attribute`}
-            rules={isRequiredRow ? { required: "Select a Medusa attribute" }: {}}
+            rules={isRequiredRow ? { required: "Select a Medusa attribute" } : {}}
             render={({ field }) => (
               <Form.Item>
                 <Form.Control>
@@ -249,9 +155,9 @@ export const AttributeMappingRow = ({
             render={({ field }) => (
               <Form.Item>
                 <Form.Control>
-                  <input
-                    {...field}
-                    className="txt-compact-small bg-ui-bg-base shadow-borders-base text-ui-fg-base h-8 w-full rounded-md px-2 py-1.5"
+                  <ChipInput
+                    value={field.value ?? []}
+                    onChange={field.onChange}
                     placeholder="Default value"
                   />
                 </Form.Control>

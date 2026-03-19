@@ -1,11 +1,3 @@
-import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
-import type {
-  FieldArrayWithId,
-  UseFieldArrayAppend,
-  UseFieldArrayRemove,
-  UseFormReturn,
-} from "react-hook-form"
-
 export type SelectOption = {
   value: string;
   label: string 
@@ -65,12 +57,6 @@ export const transformOptions: Array<{ label: string; value: TransformName }> = 
   { label: "Fallback", value: "fallback" },
 ]
 
-export type MappingRowFormFieldProps = {
-  form: UseFormReturn<MappingFormValues>
-  ozonTreeByValueRef: any
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
-}
-
 export type OzonComboboxOption = {
   label: string
   value: string
@@ -79,62 +65,6 @@ export type OzonComboboxOption = {
 export type OzonComboboxGroupWithIds = {
   label: string
   options: OzonComboboxOption[]
-}
-
-export type CategoryMappingRowProps = {
-  form: UseFormReturn<MappingFormValues>
-  index: number
-  productCategoriesCombobox: Record<any, any>
-  ozonCategoriesCombobox: Record<any, any>
-  rootOzonCategoriesCombobox: Record<any, any>
-  ozonGroupsWithIds: OzonComboboxGroupWithIds[]
-  selectedOzonRootCategoryValue: string
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
-}
-
-export type CategorySelectorsProps = {
-  index: number
-  form: UseFormReturn<MappingFormValues>
-  productCategoriesCombobox: Record<any, any>
-  ozonCategoriesCombobox: Record<any, any>
-  rootOzonCategoriesCombobox: Record<any, any>
-  ozonGroupsWithIds: OzonComboboxGroupWithIds[]
-  isOzonDisabled: boolean
-  selectedMedusaCategoryIds: string[]
-  selectedOzonRootCategoryValue: string
-}
-
-export type AttributeMappingProps = {
-  form: UseFormReturn<MappingFormValues>
-  categoryIndex: number
-  attrFields: FieldArrayWithId[]
-  appendAttr: UseFieldArrayAppend<MappingFormValues>
-  removeAttr: UseFieldArrayRemove
-  canAdd: boolean
-  selectedMedusaCategoryIds: string[]
-  ozonIds: OzonIds
-  medusaCategoryNameById: Map<string, string>
-  selectedMedusaValues: string[]
-  selectedOzonValues: string[]
-  ozonAttributes: any
-  profileOptions: ComboboxOption[]
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
-}
-
-export type AttributeMappingRowProps = {
-  form: UseFormReturn<MappingFormValues>
-  rowId: string
-  categoryIndex: number
-  attrIndex: number
-  selectedMedusaCategoryIds: string[]
-  ozonIds: OzonIds
-  medusaCategoryNameById: Map<string, string>
-  selectedMedusaValues: string[]
-  selectedOzonValues: string[]
-  onRemove: () => void
-  ozonAttributes: any
-  profileOptions: ComboboxOption[]
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
 }
 
 export type CategoryMappingRule = {
@@ -154,7 +84,7 @@ export type AdminCategoryMappingListResponse = {
 export type MappingRowValue = {
   ozon_attribute_id: string
   medusa_attribute: string
-  default_value?: string
+  default_value?: string[]
   transform?: TransformName
 }
 

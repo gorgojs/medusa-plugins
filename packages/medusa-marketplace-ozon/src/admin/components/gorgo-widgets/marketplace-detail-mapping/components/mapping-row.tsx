@@ -3,15 +3,23 @@ import { useFieldArray } from "react-hook-form"
 import { buildOzonCategoryTypeSelectOptionsDeep, findCategoryNodeById, ozonOptionsToGroups } from "../../../../utils"
 import { sdk } from "../../../../lib/sdk"
 import { useComboboxData } from "../../../../hooks/use-combobox-data"
-import { MappingRowFormFieldProps } from "../../../../types"
+import { MappingFormValues } from "../../../../types"
 import { CategoryMappingRow } from "./category-mapping-row"
 import { useWatch } from "react-hook-form"
+import { UseFormReturn } from "react-hook-form"
+import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
+
+type MappingRowProps = {
+  form: UseFormReturn<MappingFormValues>
+  ozonTreeByValueRef: any
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
+}
 
 export const MappingRow = ({
   form,
   ozonTreeByValueRef,
   marketplace
-}: MappingRowFormFieldProps) => {
+}: MappingRowProps) => {
   const { fields } = useFieldArray({
     control: form.control,
     name: "category_mappings",
@@ -91,7 +99,7 @@ export const MappingRow = ({
         ozonCategoriesCombobox={ozonCategoriesCombobox}
         ozonGroupsWithIds={ozonGroupsWithIds}
         selectedOzonRootCategoryValue={rootOzonCategoryId}
-        marketplace = {marketplace}
+        marketplace={marketplace}
       />
     </div>
   )

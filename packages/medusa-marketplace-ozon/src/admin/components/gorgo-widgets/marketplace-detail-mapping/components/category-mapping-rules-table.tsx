@@ -7,13 +7,20 @@ import {
 } from "@medusajs/ui"
 import { Pencil, Trash } from "@medusajs/icons"
 import { useMemo, useState } from "react"
-import { useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
 import { Header } from "../../../common/header"
 import { CategoryMappingRule } from "../../../../types"
 import { sdk } from "../../../../lib/sdk"
 import { ActionMenu } from "../../../common/action-menu"
+
+type CategoryMappingRulesTableProps = {
+  stateModal: boolean
+  openModal: () => void
+  onEdit: (id: string) => void
+  onDelete: (id: string) => void
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
+}
 
 const PAGE_SIZE = 20
 
@@ -23,14 +30,7 @@ export const CategoryMappingRulesTable = ({
   onEdit,
   onDelete,
   marketplace,
-}: {
-  stateModal: boolean
-  openModal: () => void
-  onEdit: (id: string) => void
-  onDelete: (id: string) => void
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
-}) => {
-  const navigate = useNavigate()
+}: CategoryMappingRulesTableProps) => {
   const limit = PAGE_SIZE
 
   const [pagination, setPagination] = useState<DataTablePaginationState>({
@@ -133,7 +133,10 @@ export const CategoryMappingRulesTable = ({
                     {
                       icon: <Trash />,
                       label: "Delete",
-                      onClick: () => onDelete(id),
+                      onClick: () => {
+                        console.log("onDelete from table", id)
+                        onDelete(id)
+                      },
                     },
                   ],
                 },
@@ -152,9 +155,6 @@ export const CategoryMappingRulesTable = ({
     rowCount: allRules.length,
     isLoading: isLoadingCategories,
     pagination: { state: pagination, onPaginationChange: setPagination },
-    onRowClick: (_e, row) => {
-      navigate(row.id)
-    },
   })
 
   return (

@@ -1,7 +1,20 @@
 import { Label } from "@medusajs/ui"
 import { Form } from "../../../common/form"
 import { Combobox } from "../../../common/combobox"
-import { CategorySelectorsProps } from "../../../../types"
+import { UseFormReturn } from "react-hook-form"
+import { MappingFormValues, OzonComboboxGroupWithIds } from "../../../../types"
+
+type CategorySelectorsProps = {
+  index: number
+  form: UseFormReturn<MappingFormValues>
+  productCategoriesCombobox: Record<any, any>
+  ozonCategoriesCombobox: Record<any, any>
+  rootOzonCategoriesCombobox: Record<any, any>
+  ozonGroupsWithIds: OzonComboboxGroupWithIds[]
+  isOzonDisabled: boolean
+  selectedMedusaCategoryIds: string[]
+  selectedOzonRootCategoryValue: string
+}
 
 export const CategorySelectors = ({
   index,
@@ -22,6 +35,7 @@ export const CategorySelectors = ({
           <Label size="small" weight="plus">Medusa Category</Label>
           <Form.Field
             name={`category_mappings.${index}.medusa_category_ids`}
+            rules={{ validate: (value: string[]) => value && value.length > 0 ? true : "Select at least one category" }}
             render={({ field }) => (
               <Form.Item>
                 <Form.Control>
@@ -44,6 +58,7 @@ export const CategorySelectors = ({
           <Label size="small" weight="plus">Ozon Category</Label>
           <Form.Field
             name={`category_mappings.${index}.root_ozon_category_id`}
+            rules={{ required: "Select Ozon category" }}
             render={({ field }) => (
               <Form.Item>
                 <Form.Control>
@@ -68,6 +83,7 @@ export const CategorySelectors = ({
           <Label size="small" weight="plus">Ozon Subcategory</Label>
           <Form.Field
             name={`category_mappings.${index}.ozon_category_type_value`}
+            rules={{ required: "Select Ozon subcategory" }}
             render={({ field }) => (
               <Form.Item>
                 <Form.Control>

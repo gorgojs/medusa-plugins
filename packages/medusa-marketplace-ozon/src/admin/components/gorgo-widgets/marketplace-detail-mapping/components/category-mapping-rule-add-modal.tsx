@@ -16,6 +16,13 @@ import {
 import { buildOzonMappingPayload } from "../../../../utils"
 import { sdk } from "../../../../lib/sdk"
 
+type CategoryMappingRuleAddModalProps = {
+  stateModal: boolean
+  closeModal: () => void
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
+  editingId: string | null
+}
+
 const makeDefaults = (): MappingFormValues => ({
   category_mappings: [
     {
@@ -53,7 +60,7 @@ const makeDefaultsFromSettingsRule = (
         return Object.values(optionRules).map((value) => ({
           ozon_attribute_id: `attr:${value?.attributeId}`,
           medusa_attribute: value.medusa_attribute ?? "",
-          default_value: value.default?.[0] ?? "",
+          default_value: value.default ?? [],
           transform: (value.transform?.name as any) ?? "none",
         }))
       }) ?? []
@@ -78,12 +85,7 @@ export const CategoryMappingRuleAddModal = ({
   closeModal,
   marketplace,
   editingId,
-}: {
-  stateModal: boolean
-  closeModal: () => void
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
-  editingId: string | null
-}) => {
+}: CategoryMappingRuleAddModalProps) => {
   const form = useForm<MappingFormValues>({
     defaultValues: makeDefaults(),
     mode: "onChange",

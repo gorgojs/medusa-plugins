@@ -199,7 +199,7 @@ export const buildOzonMappingPayload = (
       if (ozonTargetRaw.startsWith("field:")) {
         const to = ozonTargetRaw.slice("field:".length)
         const rule: OutputFieldRule = { from, to }
-        if (defaultValue !== undefined && defaultValue !== "") rule.default = defaultValue
+        if (Array.isArray(defaultValue) && defaultValue.length > 0) rule.default = defaultValue
         if (transform) rule.transform = transform
         profileFieldRules.push(rule)
         continue
@@ -215,7 +215,7 @@ export const buildOzonMappingPayload = (
           medusa_attribute: medusaSourceRaw || undefined,
         }
       
-        if (defaultValue !== undefined && defaultValue !== "") {
+        if (Array.isArray(defaultValue) && defaultValue.length > 0) {
           rule.default = Array.isArray(defaultValue) ? defaultValue : [defaultValue]
         }
         if (transform) rule.transform = transform

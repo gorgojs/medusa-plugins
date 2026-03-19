@@ -1,10 +1,23 @@
 import { useEffect, useMemo, useState } from "react"
 import { Heading } from "@medusajs/ui"
 import { useFieldArray, useWatch } from "react-hook-form"
-import { CategoryMappingRowProps, ComboboxOption, OzonComboboxOption } from "../../../../types"
+import { ComboboxOption, MappingFormValues, OzonComboboxGroupWithIds, OzonComboboxOption } from "../../../../types"
 import { CategorySelectors } from "./category-selectors"
 import { AttributesMapping } from "./attributes-mapping"
 import { sdk } from "../../../../lib/sdk"
+import { UseFormReturn } from "react-hook-form"
+import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
+
+type CategoryMappingRowProps = {
+  form: UseFormReturn<MappingFormValues>
+  index: number
+  productCategoriesCombobox: Record<any, any>
+  ozonCategoriesCombobox: Record<any, any>
+  rootOzonCategoriesCombobox: Record<any, any>
+  ozonGroupsWithIds: OzonComboboxGroupWithIds[]
+  selectedOzonRootCategoryValue: string
+  marketplace: MarketplaceHttpTypes.AdminMarketplace
+}
 
 const profileFieldOptions: OzonComboboxOption[] = [
   { value: "field:offer_id", label: "offer_id" },
@@ -67,7 +80,7 @@ export const CategoryMappingRow = ({
 
   useEffect(() => {
     const hasExisting = (attrFields ?? []).length > 0
-  
+
     const load = async () => {
       if (!selectedOzonCategoryTypeValue) {
         if (!hasExisting) {
@@ -76,7 +89,7 @@ export const CategoryMappingRow = ({
         }
         return
       }
-  
+
       const { description_category_id, type_id } = ozonIds
       if (!description_category_id || !type_id) {
         if (!hasExisting) {
@@ -85,39 +98,39 @@ export const CategoryMappingRow = ({
         }
         return
       }
-  
+
       const params = new URLSearchParams({ description_category_id, type_id })
       const res = await sdk.client.fetch<any>(`/admin/ozon/${marketplace.id}/attributes?${params.toString()}`)
       const result = (res?.result ?? []) as any[]
       setOzonAttributes(result)
-  
+
       if (hasExisting) {
         return
       }
-  
+
       removeAttr()
-  
+
       result
         .filter((a) => a?.is_required)
         .forEach((a) =>
           appendAttr({
             medusa_attribute: "",
             ozon_attribute_id: `attr:${String(a.id)}`,
-            default_value: "",
+            default_value: [],
             transform: "none",
           })
         )
-  
+
       profileFieldOptions.forEach((p) =>
         appendAttr({
           medusa_attribute: "",
           ozon_attribute_id: p.value,
-          default_value: "",
+          default_value: [],
           transform: "none",
         })
       )
     }
-  
+
     load()
   }, [
     selectedOzonCategoryTypeValue,
