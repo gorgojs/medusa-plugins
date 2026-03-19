@@ -174,6 +174,9 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
     const api: SellerWarehousesApi = getWbApi("SellerWarehouses", marketplace.credentials as MarketplaceWildberriesCredentialsType)
     const {status, data: warehouses } = await api.apiV3WarehousesGet()
 
-    return warehouses
+    return warehouses.map(wh => ({
+      id: wh.id ? wh.id.toString() : "",
+      name: wh.name ?? ""
+    }))
   }
 }

@@ -1,4 +1,4 @@
-import { Badge, Toaster, toast } from "@medusajs/ui"
+import { Toaster, toast } from "@medusajs/ui"
 import { useState, useEffect } from "react"
 import { useLocation } from "react-router-dom"
 import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
