@@ -1,4 +1,4 @@
-import { MarketplaceDTO, MarketplaceEventDTO, MarketplaceExchangeProfileDTO } from "../../../../types";
+import { MarketplaceDTO, MarketplaceEventDTO, MarketplaceExchangeProfileDTO } from "../../../../types"
 
 export interface AdminMarketplace extends MarketplaceDTO { }
 

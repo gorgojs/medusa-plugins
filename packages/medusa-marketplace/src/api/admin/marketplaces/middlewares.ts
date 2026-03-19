@@ -7,6 +7,7 @@ import {
   AdminMarketplaceGetEventsParams,
   AdminMarketplaceListExchangeProfileParams,
   AdminMarketplaceSyncProducts,
+  AdminMarketplaceUpdateExchangeProfile,
   AdminUpdateMarketplace
 } from "./validators"
 import * as QueryConfig from "./query-config"
@@ -69,6 +70,13 @@ export const adminMarketplaceRoutesMiddlewares: MiddlewareRoute[] = [
     methods: ["POST"],
     middlewares: [
       validateAndTransformBody(AdminMarketplaceCreateExchangeProfile)
+    ]
+  },
+  {
+    matcher: "/admin/marketplaces/:id/exchange-profiles/:ep_id",
+    methods: ["POST"],
+    middlewares: [
+      validateAndTransformBody(AdminMarketplaceUpdateExchangeProfile)
     ]
   },
   {

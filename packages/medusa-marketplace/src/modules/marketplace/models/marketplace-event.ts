@@ -6,7 +6,7 @@ const MarketplaceEvent = model.define("marketplace_event", {
     prefix: "mpevent"
   }).primaryKey(),
   marketplace: model.belongsTo(() => Marketplace, {
-    mappedBy: undefined,
+    mappedBy: "events",
   }),
   correlation_id: model.text().nullable(),
   direction: model.enum([

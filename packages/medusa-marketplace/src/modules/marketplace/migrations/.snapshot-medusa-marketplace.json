@@ -313,6 +313,7 @@
             "id"
           ],
           "referencedTableName": "public.marketplace",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },
@@ -345,6 +346,7 @@
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "default": "''",
           "mappedType": "text"
         },
         "order_type": {
@@ -439,6 +441,7 @@
             "id"
           ],
           "referencedTableName": "public.marketplace",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },

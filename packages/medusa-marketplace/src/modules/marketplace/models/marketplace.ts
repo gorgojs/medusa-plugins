@@ -1,4 +1,6 @@
 import { model } from "@medusajs/framework/utils"
+import MarketplaceExchangeProfile from "./marketplace-exchange-profile"
+import MarketplaceEvent from "./marketplace-event"
 
 const Marketplace = model.define("marketplace", {
   id: model.id({
@@ -8,7 +10,15 @@ const Marketplace = model.define("marketplace", {
   provider_id: model.text(),
   credentials: model.json().default({}),
   settings: model.json().default({}),
-  is_enabled: model.boolean().default(true)
+  is_enabled: model.boolean().default(true),
+  events: model.hasMany(() => MarketplaceEvent, {
+    mappedBy: "marketplace",
+  }),
+  exchange_profiles: model.hasMany(() => MarketplaceExchangeProfile, {
+    mappedBy: "marketplace",
+  })
+}).cascades({
+  delete: ["exchange_profiles", "events"]
 })
 
 export default Marketplace

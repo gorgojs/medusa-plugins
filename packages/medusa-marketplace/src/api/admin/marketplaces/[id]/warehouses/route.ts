@@ -1,11 +1,11 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 import { MARKETPLACE_MODULE } from "../../../../../modules/marketplace"
 import { MarketplaceModuleService } from "../../../../../modules/marketplace/services"
-import { MarketplaceDTO } from "../../../../../types"
+import { AdminMarketplaceWarehouseListResponse, MarketplaceDTO } from "../../../../../types"
 
 export const GET = async (
   req: MedusaRequest,
-  res: MedusaResponse
+  res: MedusaResponse<AdminMarketplaceWarehouseListResponse>
 ) => {
   const marketplaceModuleService: MarketplaceModuleService = req.scope.resolve(MARKETPLACE_MODULE)
 

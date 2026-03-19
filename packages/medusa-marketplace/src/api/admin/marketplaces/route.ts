@@ -4,6 +4,7 @@ import { MarketplaceModuleService } from "../../../modules/marketplace/services"
 import { AdminCreateMarketplaceType, AdminMarketplaceDefaultFindParams } from "./validators"
 import { AdminMarketplaceListResponse, AdminMarketplaceResponse } from "../../../types"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { createExchangeProfileWorkflow } from "../../../workflows/marketplace-exchange-profile/workflows"
 
 export const GET = async (
   req: MedusaRequest,
@@ -44,6 +45,15 @@ export const POST = async (
       }
     })
   }
+
+  const exchangeProfile = await createExchangeProfileWorkflow(req.scope).run({
+    input: {
+      marketplace_id: marketplace.id,
+      warehouse_id: "",
+      stock_location_id: "",
+      order_type: "FBS"
+    }
+  })
 
   res.status(200).json({ marketplace })
 }

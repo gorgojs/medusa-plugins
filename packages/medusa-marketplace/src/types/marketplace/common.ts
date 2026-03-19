@@ -1,5 +1,12 @@
-import { SalesChannelDTO } from "@medusajs/framework/types"
-import { OrderType } from "../../modules/marketplace/models/marketplace-exchange-profile"
+import { SalesChannelDTO, StockLocationDTO } from "@medusajs/framework/types"
+
+export const ORDER_TYPES = ["FBS", "FBO", "DBS"] as const
+
+export type OrderType = (typeof ORDER_TYPES)[number]
+
+export function isValidOrderType(type: any): type is OrderType {
+  return ORDER_TYPES.includes(type)
+}
 
 export type EventDirectionType = "MEDUSA_TO_MARKETPLACE" | "MARKETPLACE_TO_MEDUSA"
 
@@ -10,6 +17,11 @@ export type EventActionType = "CREATE" | "UPDATE" | "DELETE"
 export type MarketplaceCredentialsType = Record<string, unknown>
 
 export type MarketplaceSettingsType = Record<string, unknown>
+
+export type MarketplaceWarehouseType = {
+  id: string
+  name: string
+} & Record<string, unknown>
 
 export type MarketplaceDTO = {
   id: string
@@ -44,7 +56,7 @@ export type MarketplaceProductDTO = Record<string, unknown>
 export type MarketplaceExchangeProfileDTO = {
   id: string
   marketplace_id: string
-  stock_location_id?: string
   warehouse_id: string
   order_type: OrderType
+  stock_location?: StockLocationDTO
 }

@@ -12,6 +12,7 @@ import {
 } from "../../../../components/routes/marketplaces/marketplace-detail"
 import { TwoColumnPageWithWidgets } from "../../../../components/layout"
 import { WidgetProvider } from "../../../../providers/widget-provider"
+import { MarketplaceExchangeProfileSection } from "../../../../components/routes/marketplaces/marketplace-detail/marketplace-exchange-profile-section"
 
 const MarketplaceDetail = () => {
   const { marketplace } = useLoaderData() as AdminMarketplaceResponse
@@ -30,9 +31,12 @@ const MarketplaceDetail = () => {
         firstCol={
           <MarketplaceGeneralSection marketplace={marketplace} />
         }
-        secondCol={
-          <MarketplaceEventsSection marketplace={marketplace}/>
-        }
+        secondCol={(
+          <div className="flex flex-col gap-y-6">
+            <MarketplaceExchangeProfileSection marketplace={marketplace}/>
+            <MarketplaceEventsSection marketplace={marketplace}/>
+          </div>
+        )}
       />
     </WidgetProvider>
   )

@@ -47,9 +47,9 @@ export const listEventQueryConfig = {
 export const defaultAdminMarketplaceExchangeProfileFields = [
   "id",
   "marketplace_id",
-  "stock_location_id",
   "warehouse_id",
-  "order_type"
+  "order_type",
+  "stock_location.*"
 ]
 
 export const retrieveExchangeProfileQueryConfig = {
