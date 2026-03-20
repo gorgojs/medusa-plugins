@@ -254,37 +254,43 @@ export class YandexMarketMarketplaceProvider extends AbstractMarketplaceProvider
   async mapToMarketplaceProducts(data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput> {
     const settings = {
       "medusaToMarketplaceMappingSchema": {
-        // yandexmarket_category: {
-        //   "categoryId": 69732932
-        // },
-        medusa_categories: [
-          "pcat_01KKK4R8H9S8J3T4S07GEJZMMB"
-        ],
         fields: [
           {
             from: "id",
-            to: "offer.offerId",
+            to: "offerId",
           },
           {
             from: "combined_name",
-            to: "offer.name",
+            to: "name",
           },
           {
             from: "description",
-            to: "offer.description",
+            to: "description",
           },
           {
             from: "prices.0.amount",
-            to: "offer.basicPrice",
+            to: "basicPrice",
           },
           {
             from: "prices.currency_code",
-            to: "offer.currencyId",
+            to: "currencyId",
             default: "RUB",
           },
           {
-            from: "weightDimensions",
-            to: "offer.weightDimensions",
+            from: "product.weight",
+            to: "weightDimensions.weight",
+          },
+          {
+            from: "product.length",
+            to: "weightDimensions.length",
+          },
+          {
+            from: "product.height",
+            to: "weightDimensions.height",
+          },
+          {
+            from: "product.width",
+            to: "weightDimensions.width",
           },
           // {
           //   from: "images",
@@ -300,17 +306,17 @@ export class YandexMarketMarketplaceProvider extends AbstractMarketplaceProvider
     const marketplaceProducts: any[] = []
 
     products.forEach((product) => {
-      const intersect =
-        product.categories
-          ?.filter((value) => schema.medusa_categories.includes(value.id))
-          .map((c) => c.id) || []
+      // const intersect =
+      //   product.categories
+      //     ?.filter((value) => schema.medusa_categories.includes(value.id))
+      //     .map((c) => c.id) || []
 
       console.log(product.categories?.[0]?.id)
 
       console.log(product.id)
       console.log(product.categories?.map(c => c.id))
-      console.log(schema.medusa_categories)
-      console.log(intersect)
+      // console.log(schema.medusa_categories)
+      // console.log(intersect)
       // if (intersect.length === 0) return
 
       product.variants.forEach((variant) => {
@@ -321,13 +327,13 @@ export class YandexMarketMarketplaceProvider extends AbstractMarketplaceProvider
         const combinedName = `${product?.title ?? ""} ${variant.title ?? ""}`.trim()
 
 
-        const weightDimensions = {
-          "weight": Number(variant.weight ?? product.weight ?? 0),
-          "width": Number(variant.width ?? product.width ?? 0),
-          "height": Number(variant.height ?? product.height ?? 0),
-          "length": Number(variant.length ?? product.length ?? 0)
-        }
-        console.log(weightDimensions)
+        // const weightDimensions = {
+        //   "weight": Number(variant.weight ?? product.weight ?? 0),
+        //   "width": Number(variant.width ?? product.width ?? 0),
+        //   "height": Number(variant.height ?? product.height ?? 0),
+        //   "length": Number(variant.length ?? product.length ?? 0)
+        // }
+        // console.log(weightDimensions)
 
 
         const parameterValues = []
@@ -337,21 +343,16 @@ export class YandexMarketMarketplaceProvider extends AbstractMarketplaceProvider
           ...variant,
           // images,
           combinedName: combinedName,
-          weightDimensions,
+          // weightDimensions,
           parameterValues,
         }
-
-        const yandexItem = mapObject(mergedForMapping, schema) as any
-
-        if (!yandexItem.offer) {
-          yandexItem.offer = {}
-        }
+        const offer = mapObject(mergedForMapping, schema) as any
 
         // yandexItem.offer.marketCategoryId =
         //   product.metadata?.yandex_market_category_id ??
         //   schema.yandexmarket_category?.categoryId
 
-        marketplaceProducts.push(yandexItem)
+        marketplaceProducts.push({ offer: offer })
       })
     })
     console.log("count", products.length)
