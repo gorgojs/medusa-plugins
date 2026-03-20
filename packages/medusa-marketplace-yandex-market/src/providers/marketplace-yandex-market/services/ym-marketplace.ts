@@ -20,11 +20,12 @@ import {
 import {
   GetOfferMappingDTO,
   GetOfferMappingsRequest,
+  OfferMappingDTO,
   UpdateOfferMappingDTO,
 } from "../../../lib/yandex-market-client/api"
 import { businessOfferMappingsApi, withBusinessId } from "../../../lib/ym-client"
 import type { MarketplaceYandexMarketCredentialsType } from "../types"
-import { chunk } from "../utils"
+import { chunk, getMappingSchema, toStringArray, mapObject } from "../utils"
 
 const PAGE_LIMIT = 100
 const OFFER_IDS_CHUNK_SIZE = 200
@@ -34,14 +35,12 @@ export class YandexMarketMarketplaceProvider extends AbstractMarketplaceProvider
 
   async exportProducts(data: ExportProductsInput): Promise<ExportProductsOutput> {
     const { container, marketplaceProducts, marketplace } = data
-    const products = Array.isArray(marketplaceProducts)
-      ? (marketplaceProducts as UpdateOfferMappingDTO[])
-      : []
+    const products = (marketplaceProducts as { marketplaceProducts?: UpdateOfferMappingDTO[] }).marketplaceProducts ?? []
 
     const { result } = await exportMarketplaceProductsYmWorkflow(container!).run({
       input: {
         credentials: marketplace.credentials as MarketplaceYandexMarketCredentialsType,
-        products,
+        products
       },
     })
 
@@ -143,11 +142,222 @@ export class YandexMarketMarketplaceProvider extends AbstractMarketplaceProvider
     return result as GetMarketplaceProductsOutput
   }
 
-  async mapToMedusaProducts(_data: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput> {
-    return []
+  async mapToMedusaProducts(input: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput> {
+    const { container, marketplace, marketplaceProducts } = input
+    const offerMappings = Array.isArray(marketplaceProducts) ? (marketplaceProducts as GetOfferMappingDTO[]) : []
+
+    const settings = {
+      "marketplaceToMedusaMappingSchema": {
+        fields: [
+          {
+            from: "offer.offerId",
+            to: "variant.metadata.yandex_market_offer_id",
+            default: []
+          },
+          {
+            from: "offer.cardStatus",
+            to: "variant.metadata.yandex_market_card_status",
+            default: []
+          },
+          {
+            from: "mapping.marketSku",
+            to: "variant.metadata.yandex_market_marketSku",
+            default: []
+          },
+          {
+            from: "mapping.marketSkuName",
+            to: "variant.metadata.yandex_market_marketSkuName",
+            default: []
+          },
+          {
+            from: "mapping.marketCategoryId",
+            to: "product.metadata.yandex_market_category_id",
+            default: []
+          },
+          {
+            from: "mapping.marketCategoryName",
+            to: "product.metadata.yandex_market_category_name",
+            default: []
+          },
+        ],
+      }
+    }
+
+    const schema = settings.marketplaceToMedusaMappingSchema
+
+    if (!offerMappings.length) return []
+
+    const offerIds = Array.from(
+      offerMappings
+        .map((item) => item.offer?.offerId)
+        .filter((id): id is string => typeof id === "string" && id.length > 0)
+    )
+
+    if (!offerIds.length) return []
+
+    const query = await container!.resolve("query")
+    const { data: variants } = await query.graph({
+      entity: "product_variant",
+      fields: ["id", "sku", "metadata", "product.id", "product.metadata"],
+      filters: { sku: offerIds },
+    })
+
+    const productById = new Map<string, any>()
+    const variantBySku = new Map<string, { product: any; variant: any }>()
+
+    for (const variant of variants as any[]) {
+      if (!variant?.sku || !variant?.id || !variant?.product?.id) continue
+
+      const mappedVariant = { id: variant.id, metadata: { ...(variant.metadata ?? {}) } }
+      let mappedProduct = productById.get(variant.product.id)
+      if (!mappedProduct) {
+        mappedProduct = {
+          id: variant.product.id,
+          metadata: { ...(variant.product.metadata ?? {}) },
+          variants: [],
+        }
+        productById.set(variant.product.id, mappedProduct)
+      }
+      mappedProduct.variants.push(mappedVariant)
+      variantBySku.set(variant.sku, { product: mappedProduct, variant: mappedVariant })
+    }
+
+    for (const offerMapping of offerMappings) {
+      const offerId = offerMapping.offer?.offerId
+      if (!offerId) continue
+
+      const target = variantBySku.get(offerId)
+      if (!target) continue
+
+      const { product, variant } = target
+      const mappingSource = {
+        ...offerMapping,
+        offer: {
+          ...offerMapping.offer,
+          barcodes: toStringArray(offerMapping.offer?.barcodes),
+        },
+      } as any
+
+      const mapped = mapObject<any, any>(mappingSource, schema)
+
+      if (mapped?.variant?.metadata) {
+        variant.metadata = { ...(variant.metadata ?? {}), ...mapped.variant.metadata }
+      }
+      if (mapped?.product?.metadata) {
+        product.metadata = { ...(product.metadata ?? {}), ...mapped.product.metadata }
+      }
+    }
+
+    return Array.from(productById.values()) as any
   }
 
-  async mapToMarketplaceProducts(_data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput> {
-    return { import: [] }
+  async mapToMarketplaceProducts(data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput> {
+    const settings = {
+      "medusaToMarketplaceMappingSchema": {
+        // yandexmarket_category: {
+        //   "categoryId": 69732932
+        // },
+        medusa_categories: [
+          "pcat_01KKK4R8H9S8J3T4S07GEJZMMB"
+        ],
+        fields: [
+          {
+            from: "id",
+            to: "offer.offerId",
+          },
+          {
+            from: "combined_name",
+            to: "offer.name",
+          },
+          {
+            from: "description",
+            to: "offer.description",
+          },
+          {
+            from: "prices.0.amount",
+            to: "offer.basicPrice",
+          },
+          {
+            from: "prices.currency_code",
+            to: "offer.currencyId",
+            default: "RUB",
+          },
+          {
+            from: "weightDimensions",
+            to: "offer.weightDimensions",
+          },
+          // {
+          //   from: "images",
+          //   to: "offer.pictures",
+          //   default: []
+          // }
+        ]
+      }
+    }
+
+    const schema = settings.medusaToMarketplaceMappingSchema
+    const products = data.products ?? []
+    const marketplaceProducts: any[] = []
+
+    products.forEach((product) => {
+      const intersect =
+        product.categories
+          ?.filter((value) => schema.medusa_categories.includes(value.id))
+          .map((c) => c.id) || []
+
+      console.log(product.categories?.[0]?.id)
+
+      console.log(product.id)
+      console.log(product.categories?.map(c => c.id))
+      console.log(schema.medusa_categories)
+      console.log(intersect)
+      // if (intersect.length === 0) return
+
+      product.variants.forEach((variant) => {
+        const { variants: _ignored, ...productWithoutVariants } = product
+
+        // const images = ( variant.images && variant.images.length ? variant.images : product.images || [] ).map((img) => img.url)
+
+        const combinedName = `${product?.title ?? ""} ${variant.title ?? ""}`.trim()
+
+
+        const weightDimensions = {
+          "weight": Number(variant.weight ?? product.weight ?? 0),
+          "width": Number(variant.width ?? product.width ?? 0),
+          "height": Number(variant.height ?? product.height ?? 0),
+          "length": Number(variant.length ?? product.length ?? 0)
+        }
+        console.log(weightDimensions)
+
+
+        const parameterValues = []
+
+        const mergedForMapping = {
+          product: productWithoutVariants,
+          ...variant,
+          // images,
+          combinedName: combinedName,
+          weightDimensions,
+          parameterValues,
+        }
+
+        const yandexItem = mapObject(mergedForMapping, schema) as any
+
+        if (!yandexItem.offer) {
+          yandexItem.offer = {}
+        }
+
+        // yandexItem.offer.marketCategoryId =
+        //   product.metadata?.yandex_market_category_id ??
+        //   schema.yandexmarket_category?.categoryId
+
+        marketplaceProducts.push(yandexItem)
+      })
+    })
+    console.log("count", products.length)
+    console.log("mProducts", JSON.stringify(marketplaceProducts, null, 2))
+    return {
+      marketplaceProducts
+    }
   }
 }
