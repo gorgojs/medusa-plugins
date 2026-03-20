@@ -1,14 +1,12 @@
 import { createStep, StepResponse } from "@medusajs/workflows-sdk"
 import { MarketplaceModuleService } from "../../../modules/marketplace/services"
 import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
-import { OrderType } from "../../../types/marketplace"
-import { useQueryGraphStep } from "@medusajs/medusa/core-flows"
 
 export type UpdateExchangeProfileStepInput = {
   id: string
   marketplace_id: string
   warehouse_id?: string
-  order_type?: OrderType
+  order_type?: string
   stock_location_id?: string
 }
 

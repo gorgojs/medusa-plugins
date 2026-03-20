@@ -39,6 +39,10 @@ export interface AdminMarketplaceExchangeProfileResponse {
   exchange_profile: AdminMarketplaceExchangeProfile
 }
 
+export interface AdminMarketplaceOrderTypeListResponse {
+  orderTypes: string[]
+}
+
 export interface AdminMarketplaceWarehouseListResponse {
   warehouses: GetWarehousesOutput
 }

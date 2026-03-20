@@ -1,6 +1,5 @@
 import { z } from "zod"
 import { createFindParams } from "@medusajs/medusa/api/utils/validators"
-import { ORDER_TYPES } from "../../../types"
 
 export const AdminMarketplaceDefaultFindParams = { limit: 20, offset: 0 }
 
@@ -55,12 +54,12 @@ export type AdminMarketplaceCreateExchangeProfileType = z.infer<typeof AdminMark
 export const AdminMarketplaceCreateExchangeProfile = z.object({
   stock_location_id: z.string(),
   warehouse_id: z.string(),
-  order_type: z.enum(ORDER_TYPES)
+  order_type: z.string()
 })
 
 export type AdminMarketplaceUpdateExchangeProfileType = z.infer<typeof AdminMarketplaceUpdateExchangeProfile>
 export const AdminMarketplaceUpdateExchangeProfile = z.object({
   stock_location_id: z.string().optional(),
   warehouse_id: z.string().optional(),
-  order_type: z.enum(ORDER_TYPES).optional()
+  order_type: z.string().optional()
 })

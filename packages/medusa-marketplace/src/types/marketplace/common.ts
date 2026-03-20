@@ -1,13 +1,5 @@
 import { SalesChannelDTO, StockLocationDTO } from "@medusajs/framework/types"
 
-export const ORDER_TYPES = ["FBS", "FBO", "DBS"] as const
-
-export type OrderType = (typeof ORDER_TYPES)[number]
-
-export function isValidOrderType(type: any): type is OrderType {
-  return ORDER_TYPES.includes(type)
-}
-
 export type EventDirectionType = "MEDUSA_TO_MARKETPLACE" | "MARKETPLACE_TO_MEDUSA"
 
 export type EventEntityType = "PRODUCT" | "PRODUCT_MEDIA" | "PRODUCT_PRICE" | "PRODUCT_STOCK" | "ORDER"
@@ -57,6 +49,6 @@ export type MarketplaceExchangeProfileDTO = {
   id: string
   marketplace_id: string
   warehouse_id: string
-  order_type: OrderType
+  order_type: string
   stock_location?: StockLocationDTO
 }

@@ -16,7 +16,9 @@ import {
   MapToMedusaProductsInput,
   MapToMedusaProductsOutput,
   GetWarehousesInput,
-  GetWarehousesOutput
+  GetWarehousesOutput,
+  GetOrderTypesInput,
+  GetOrderTypesOutput
 } from "../../../types"
 import MarketplaceProviderService from "./marketplace-provider"
 import { joinerConfig } from "../joiner-config"
@@ -76,6 +78,10 @@ export default class MarketplaceModuleService extends MedusaService({
 
   async getMarketplaceProducts(providerId: string, data: GetMarketplaceProductsInput): Promise<GetMarketplaceProductsOutput> {
     return await this.marketplaceProviderService_.getMarketplaceProducts(providerId, data)
+  }
+
+  async getOrderTypes(providerId: string, data: GetOrderTypesInput): Promise<GetOrderTypesOutput> {
+    return await this.marketplaceProviderService_.getOrderTypes(providerId, data)
   }
 
   async getWarehouses(providerId: string, data: GetWarehousesInput): Promise<GetWarehousesOutput> {

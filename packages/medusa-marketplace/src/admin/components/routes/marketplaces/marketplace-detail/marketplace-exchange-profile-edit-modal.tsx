@@ -6,8 +6,8 @@ import { useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { HttpTypes } from "@medusajs/framework/types"
 import { MarketplaceHttpTypes } from "../../../../../types"
-import { ORDER_TYPES } from "../../../../../types"
 import { sdk } from "../../../../lib/sdk"
+import { useOrderTypes, useWarehouses } from "../../../../hooks/api/exchange-profiles"
 
 type MarketplaceExchangeProfileEditModalProps = {
   exchangeProfile: MarketplaceHttpTypes.AdminMarketplaceExchangeProfile
@@ -18,7 +18,7 @@ type MarketplaceExchangeProfileEditModalProps = {
 const ExchangeProfileEditSchema = z.object({
   stock_location_id: z.string().optional(),
   warehouse_id: z.string().optional(),
-  order_type: z.enum(ORDER_TYPES),
+  order_type: z.string().optional(),
 })
 
 type ExchangeProfileEditValues = z.infer<typeof ExchangeProfileEditSchema>
@@ -38,19 +38,21 @@ export const MarketplaceExchangeProfileEditModal = ({
   })
   const stockLocations = stockLocationData?.stock_locations ?? []
 
-  const { data: warehousesData, isLoading: isWarehousesLoading } = useQuery<MarketplaceHttpTypes.AdminMarketplaceWarehouseListResponse>({
-    queryKey: ["admin-warehouses"],
-    queryFn: () => sdk.client.fetch(`/admin/marketplaces/${exchangeProfile.marketplace_id}/warehouses`, { query: { limit: 50 }}),
-    enabled: open,
-    staleTime: 5 * 60 * 1000,
-  })
-  const warehouses = warehousesData?.warehouses ?? []
+  const { warehouses: warehousesData, isLoading: isWarehousesLoading } = useWarehouses(
+    exchangeProfile.marketplace_id, { limit: 50 }, { enabled: open, staleTime: 5 * 60 * 1000 }
+  )
+  const warehouses = warehousesData ?? []
+
+  const { orderTypes: orderTypesData, isLoading: isOrderTypesLoading } = useOrderTypes(
+    exchangeProfile.marketplace_id, {}, { enabled: open, staleTime: 5 * 60 * 1000 }
+  )
+  const orderTypes = orderTypesData ?? []
 
   const form = useForm<ExchangeProfileEditValues>({
     defaultValues: {
       stock_location_id: exchangeProfile.stock_location?.id,
       warehouse_id: exchangeProfile.warehouse_id,
-      order_type: exchangeProfile.order_type ?? "FBS",
+      order_type: exchangeProfile.order_type,
     },
     resolver: zodResolver(ExchangeProfileEditSchema),
     mode: "onSubmit",
@@ -60,7 +62,7 @@ export const MarketplaceExchangeProfileEditModal = ({
     form.reset({
       stock_location_id: exchangeProfile.stock_location?.id,
       warehouse_id: exchangeProfile.warehouse_id,
-      order_type: exchangeProfile.order_type ?? "FBS",
+      order_type: exchangeProfile.order_type,
     })
 
   useEffect(() => {
@@ -189,13 +191,14 @@ export const MarketplaceExchangeProfileEditModal = ({
                     <Select
                       value={field.value}
                       onValueChange={(v: string) => field.onChange(v)}
+                      disabled={isOrderTypesLoading}
                     >
                       <Select.Trigger>
                         <Select.Value placeholder="Select order type" />
                       </Select.Trigger>
 
                       <Select.Content>
-                        {ORDER_TYPES.map((type) => (
+                        {orderTypes.map((type) => (
                           <Select.Item key={type} value={type}>
                             {type}
                           </Select.Item>

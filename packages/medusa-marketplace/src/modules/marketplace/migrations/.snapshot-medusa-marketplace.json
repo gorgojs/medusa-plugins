@@ -356,13 +356,8 @@
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "default": "'FBS'",
-          "enumItems": [
-            "FBS",
-            "FBO",
-            "DBS"
-          ],
-          "mappedType": "enum"
+          "default": "''",
+          "mappedType": "text"
         },
         "created_at": {
           "name": "created_at",
