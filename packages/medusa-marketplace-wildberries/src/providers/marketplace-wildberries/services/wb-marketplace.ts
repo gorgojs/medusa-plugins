@@ -4,6 +4,8 @@ import {
   ExportProductsOutput,
   GetMarketplaceProductsInput,
   GetMarketplaceProductsOutput,
+  GetOrderTypesInput,
+  GetOrderTypesOutput,
   GetProductsInput,
   GetProductsOutput,
   GetWarehousesInput,
@@ -14,7 +16,6 @@ import {
   MapToMarketplaceProductsOutput,
   MapToMedusaProductsInput,
   MapToMedusaProductsOutput,
-  MarketplaceCredentialsType,
 } from "@gorgo/medusa-marketplace/types"
 import {
   exportMarketplaceProductsWbWorkflow,
@@ -28,7 +29,7 @@ import {
   ContentV2CardsUploadPostRequestInner,
   SellerWarehousesApi
 } from "../../../lib/wildberries-products-client"
-import { MarketplaceWildberriesCredentialsType, MAX_VARIANTS_TO_CREATE } from "../types"
+import { MarketplaceWildberriesCredentialsType, MAX_VARIANTS_TO_CREATE, ORDER_TYPES } from "../types"
 import { getWbApi } from "../../../lib/wildberries-client"
 
 export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider {
@@ -178,5 +179,9 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
       id: wh.id ? wh.id.toString() : "",
       name: wh.name ?? ""
     }))
+  }
+
+  async getOrderTypes(data: GetOrderTypesInput): Promise<GetOrderTypesOutput> {
+    return Object.values(ORDER_TYPES) as string[]
   }
 }

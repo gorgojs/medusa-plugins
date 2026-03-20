@@ -9,3 +9,7 @@ export interface MarketplaceWildberriesCredentialsType extends MarketplaceCreden
 export interface MarketplaceWildberriesSettingsType extends MarketplaceSettingsType {
   // TODO
 }
+
+export const ORDER_TYPES = ["FBS", "FBO"] as const
+
+export type MarketplaceWildberriesOrderType = (typeof ORDER_TYPES)[number]
