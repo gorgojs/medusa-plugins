@@ -42,11 +42,12 @@ const makeDefaultsFromSettingsRule = (
   if (!rule) {
     return makeDefaults()
   }
+
   const medusa_category_ids: string[] = rule.medusa_categories
   const categoryNode = rule.ozon_category.children[0]
   const typeNode = categoryNode.children[0]
 
-  const root_ozon_category_id = String(categoryNode.category_name)
+  const root_ozon_category_id = String(rule.ozon_category.description_category_id)
 
   const ozon_category_type_value = `${categoryNode.description_category_id}:${typeNode.type_id}`
 
@@ -91,7 +92,7 @@ export const CategoryMappingRuleAddModal = ({
     mode: "onChange",
     reValidateMode: "onChange",
   })
-  const { trigger, getValues, reset } = form
+  const { trigger, reset } = form
   const queryClient = useQueryClient()
   const { revalidate } = useRevalidator()
   const ozonTreeByValueRef = useRef(new Map<string, OzonCategoryNode>())
@@ -103,9 +104,7 @@ export const CategoryMappingRuleAddModal = ({
 
     if (editingId) {
       const rule = mapping[editingId]
-      console.log("editingId", editingId, "rule", rule)
       const defaults = makeDefaultsFromSettingsRule(editingId, rule)
-      console.log("defaults", defaults)
       reset(defaults)
     } else {
       reset(makeDefaults())
@@ -165,7 +164,7 @@ export const CategoryMappingRuleAddModal = ({
     if (!valid) {
       return
     }
-    const values = getValues()
+    const values = form.getValues()
     createMapping.mutate(values)
   }
 

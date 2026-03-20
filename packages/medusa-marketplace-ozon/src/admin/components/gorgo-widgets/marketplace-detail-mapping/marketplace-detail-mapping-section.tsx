@@ -20,31 +20,32 @@ export const MarketplaceDetailMappingSection = ({
 
   const deleteMapping = useMutation({
     mutationFn: async (ruleId: string) => {
-      console.log("MUTATION start", ruleId)
-
       const settings = (marketplace.settings || {}) as any
       const mapping = { ...(settings.mapping || {}) }
 
-      console.log("before keys", Object.keys(mapping))
+      await sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`, {
+        method: "POST",
+        body: {
+          settings: { mapping: "" },
+        },
+      })
 
       delete mapping[ruleId]
 
-      console.log("after  keys", Object.keys(mapping))
-
-      const payload = {
-        ...settings,
-        mapping,
-      }
-
-      const res = await sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`, {
-        method: "POST",
-        body: { settings: payload },
-      })
-
-      console.log("MUTATION done", res)
+      const res = await sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`,
+        {
+          method: "POST",
+          body: {
+            settings: { mapping: mapping },
+          },
+        }
+      )
 
       return res
     },
+    onSuccess: () => {
+      revalidate()
+    }
   })
 
   const handleAdd = () => {
@@ -58,7 +59,6 @@ export const MarketplaceDetailMappingSection = ({
   }
 
   const onDelete = (id: string) => {
-    console.log("onDelete external", id)
     deleteMapping.mutate(id)
   }
 

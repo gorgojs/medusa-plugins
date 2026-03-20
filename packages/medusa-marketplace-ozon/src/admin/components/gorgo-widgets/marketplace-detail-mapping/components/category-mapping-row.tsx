@@ -184,6 +184,7 @@ export const CategoryMappingRow = ({
           marketplace={marketplace}
           ozonAttributes={ozonAttributes}
           profileOptions={profileFieldOptions}
+          watchedRules={watchedRules}
         />
       </div>
     </div>

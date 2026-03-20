@@ -1,7 +1,6 @@
 import { Button, Text } from "@medusajs/ui"
 import { ComboboxOption, MappingFormValues, OzonIds } from "../../../../types"
 import { AttributeMappingRow } from "./attributes-mapping-row"
-import { useWatch } from "react-hook-form"
 import { useMemo } from "react"
 import { useComboboxData } from "../../../../hooks/use-combobox-data"
 import { extractMedusaAttributeTitles } from "../../../../utils"
@@ -24,6 +23,7 @@ type AttributeMappingProps = {
   ozonAttributes: any
   profileOptions: ComboboxOption[]
   marketplace: MarketplaceHttpTypes.AdminMarketplace
+  watchedRules: any
 }
 
 export const AttributesMapping = ({
@@ -40,12 +40,9 @@ export const AttributesMapping = ({
   selectedOzonValues,
   marketplace,
   ozonAttributes,
-  profileOptions
+  profileOptions,
+  watchedRules
 }: AttributeMappingProps) => {
-  const allMappings = useWatch({
-    control: form.control,
-    name: `category_mappings.${categoryIndex}.mappings`,
-  })
   const ozonAttributesComboboxData = useComboboxData<any, any>({
     queryKey: ["ozon-attributes", marketplace.id, ozonIds.description_category_id, ozonIds.type_id],
     enabled: Boolean(ozonIds.description_category_id && ozonIds.type_id),
@@ -165,8 +162,8 @@ export const AttributesMapping = ({
             onRemove={() => removeAttr(attrIndex)}
             ozonAttributes={ozonAttributes}
             profileOptions={profileOptions}
-            currentMedusaValue={allMappings?.[attrIndex]?.medusa_attribute}
-            currentOzonValue={allMappings?.[attrIndex]?.ozon_attribute_id}
+            currentMedusaValue={watchedRules?.[attrIndex]?.medusa_attribute}
+            currentOzonValue={watchedRules?.[attrIndex]?.ozon_attribute_id}
             blockedMedusaValues={blockedMedusaValues}
             blockedOzonValues={blockedOzonValues}
             ozonAttributesComboboxData={ozonAttributesComboboxData}
