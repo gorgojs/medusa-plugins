@@ -4,6 +4,8 @@ import {
   ExportProductsOutput,
   GetMarketplaceProductsInput,
   GetMarketplaceProductsOutput,
+  GetOrdersInput,
+  GetOrdersOutput,
   GetOrderTypesInput,
   GetOrderTypesOutput,
   GetProductsInput,
@@ -14,6 +16,8 @@ import {
   ImportProductsOutput,
   MapToMarketplaceProductsInput,
   MapToMarketplaceProductsOutput,
+  MapToMedusaOrdersInput,
+  MapToMedusaOrdersOutput,
   MapToMedusaProductsInput,
   MapToMedusaProductsOutput,
 } from "@gorgo/medusa-marketplace/types"
@@ -183,5 +187,38 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
 
   async getOrderTypes(data: GetOrderTypesInput): Promise<GetOrderTypesOutput> {
     return Object.values(ORDER_TYPES) as string[]
+  }
+
+  async getOrders(data: GetOrdersInput): Promise<GetOrdersOutput> {
+    const { container, marketplace, orderType } = data
+
+    let status: number = 400
+    let orders: any[] = []
+    switch (orderType) {
+      case ORDER_TYPES[0]: // "FBS"
+        const ordersApi = getWbApi("FBSAssemblyOrders", marketplace.credentials as MarketplaceWildberriesCredentialsType)
+        const result = await ordersApi.apiV3OrdersNewGet()
+        status = result.status
+        orders = result.data.orders
+        break
+
+      case ORDER_TYPES[1]: // "FBO"
+        status = 200
+        orders = [{ name: "Test1"}] // TODO: implement fetching FBO orders
+        break
+
+      default:
+        status = 400
+        orders = []
+        break
+    }
+
+    return status === 200 ? orders! : []
+  }
+
+  async mapToMedusaOrders(data: MapToMedusaOrdersInput): Promise<MapToMedusaOrdersOutput> {
+    const { container, marketplace, marketplaceOrders } = data
+
+    return marketplaceOrders as any
   }
 }
