@@ -163,7 +163,7 @@ export const MarketplaceExchangeProfileEditModal = ({
                       <Select.Content>
                         {warehouses.map((wh) => (
                           <Select.Item key={wh.id} value={wh.id}>
-                            {wh.name}
+                            {`${wh.name} (ID: ${wh.id})`}
                           </Select.Item>
                         ))}
                       </Select.Content>

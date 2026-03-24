@@ -51,7 +51,7 @@ export const POST = async (
       marketplace_id: marketplace.id,
       warehouse_id: "",
       stock_location_id: "",
-      order_type: "FBS"
+      order_type: "",
     }
   })
 
