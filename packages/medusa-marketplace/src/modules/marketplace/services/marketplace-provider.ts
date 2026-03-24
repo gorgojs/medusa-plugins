@@ -16,7 +16,11 @@ import {
   GetWarehousesInput,
   GetWarehousesOutput,
   GetOrderTypesOutput,
-  GetOrderTypesInput
+  GetOrderTypesInput,
+  GetOrdersInput,
+  GetOrdersOutput,
+  MapToMedusaOrdersInput,
+  MapToMedusaOrdersOutput
 } from "../../../types"
 import { MarketplaceProviderRegistrationPrefix } from "../types"
 import { Logger } from "@medusajs/framework/types"
@@ -97,6 +101,15 @@ Please make sure that the provider is registered in the container and it is conf
     return provider.getOrderTypes(input)
   }
 
+  async getOrders(
+    providerId: string,
+    input: GetOrdersInput
+  ): Promise<GetOrdersOutput> {
+    const provider = this.retrieveProvider(providerId)
+
+    return provider.getOrders(input)
+  }
+
   async getWarehouses(
     providerId: string,
     input: GetWarehousesInput
@@ -113,6 +126,15 @@ Please make sure that the provider is registered in the container and it is conf
     const provider = this.retrieveProvider(providerId)
 
     return provider.importProducts(input)
+  }
+
+  async mapToMedusaOrders(
+    providerId: string,
+    input: MapToMedusaOrdersInput
+  ): Promise<MapToMedusaOrdersOutput> {
+    const provider = this.retrieveProvider(providerId)
+
+    return provider.mapToMedusaOrders(input)
   }
 
   async mapToMarketplaceProducts(

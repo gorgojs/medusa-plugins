@@ -7,19 +7,23 @@ export interface IMarketplaceProvider {
 
   exportProducts(data: ExportProductsInput): Promise<ExportProductsOutput>
 
-  getProducts(data: GetProductsInput): Promise<GetProductsOutput>
-
   importProducts(data: ImportProductsInput): Promise<ImportProductsOutput>
 
+  getProducts(data: GetProductsInput): Promise<GetProductsOutput>
+
   getMarketplaceProducts(data: GetMarketplaceProductsInput): Promise<GetMarketplaceProductsOutput>
+
+  getOrderTypes(data: GetOrderTypesInput): Promise<GetOrderTypesOutput>
+
+  getOrders(data: GetOrdersInput): Promise<GetOrdersOutput>
+
+  getWarehouses(data: GetWarehousesInput): Promise<GetWarehousesOutput>
+
+  mapToMedusaOrders(data: MapToMedusaOrdersInput): Promise<MapToMedusaOrdersOutput>
 
   mapToMarketplaceProducts(data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput>
 
   mapToMedusaProducts(data: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput>
-
-  getOrderTypes(data: GetOrderTypesInput): Promise<GetOrderTypesOutput>
-
-  getWarehouses(data: GetWarehousesInput): Promise<GetWarehousesOutput>
 }
 
 export type MarketplaceProviderInput = {
@@ -44,6 +48,10 @@ export type ImportProductsInput = MarketplaceProviderInput & {
   products: ProductDTO[]
 }
 
+export type MapToMedusaOrdersInput = MarketplaceProviderInput & {
+  marketplaceOrders: Record<string, unknown>[]
+}
+
 export type MapToMarketplaceProductsInput = MarketplaceProviderInput & {
   products: ProductDTO[]
 }
@@ -53,6 +61,10 @@ export type MapToMedusaProductsInput = MarketplaceProviderInput & {
 }
 
 export type GetOrderTypesInput = MarketplaceProviderInput
+
+export type GetOrdersInput = MarketplaceProviderInput & {
+  orderType?: string
+}
 
 export type GetWarehousesInput = MarketplaceProviderInput
 
@@ -64,10 +76,14 @@ export type GetMarketplaceProductsOutput = MarketplaceProductDTO[]
 
 export type ImportProductsOutput = Record<string, unknown>
 
+export type MapToMedusaOrdersOutput = Record<string, unknown>[]
+
 export type MapToMarketplaceProductsOutput = Record<string, unknown>
 
 export type MapToMedusaProductsOutput = ProductDTO[] 
 
 export type GetOrderTypesOutput = string[]
+
+export type GetOrdersOutput = Record<string, unknown>[]
 
 export type GetWarehousesOutput = MarketplaceWarehouseType[]

@@ -15,7 +15,11 @@ import {
   GetWarehousesInput,
   GetWarehousesOutput,
   GetOrderTypesInput,
-  GetOrderTypesOutput
+  GetOrderTypesOutput,
+  GetOrdersOutput,
+  GetOrdersInput,
+  MapToMedusaOrdersInput,
+  MapToMedusaOrdersOutput
 } from "../../../types"
 
 export class AbstractMarketplaceProvider implements IMarketplaceProvider {
@@ -28,6 +32,10 @@ export class AbstractMarketplaceProvider implements IMarketplaceProvider {
 
   async getOrderTypes(data: GetOrderTypesInput): Promise<GetOrderTypesOutput> {
     throw Error("getOrderTypes must be overridden by the child class")
+  }
+
+  async getOrders(data: GetOrdersInput): Promise<GetOrdersOutput> {
+    throw Error("getOrders must be overridden by the child class")
   }
 
   async getWarehouses(data: GetWarehousesInput): Promise<GetWarehousesOutput> {
@@ -48,6 +56,10 @@ export class AbstractMarketplaceProvider implements IMarketplaceProvider {
 
   async importProducts(data: ImportProductsInput): Promise<ImportProductsOutput> {
     throw Error("importProducts must be overridden by the child class")
+  }
+
+  async mapToMedusaOrders(data: MapToMedusaOrdersInput): Promise<MapToMedusaOrdersOutput> {
+    throw Error("mapToMedusaOrders must be overridden by the child class")
   }
 
   async mapToMarketplaceProducts(data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput> {
