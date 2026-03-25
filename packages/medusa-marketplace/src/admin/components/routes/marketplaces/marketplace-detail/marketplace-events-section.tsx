@@ -4,14 +4,8 @@ import {
   Tooltip,
   clx,
   Button,
-  DropdownMenu
 } from "@medusajs/ui"
-import {
-  ArrowPath,
-  Tag,
-  ShoppingCart
-} from "@medusajs/icons"
-import { useQuery, useMutation } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import {
   Link
 } from "react-router-dom"
@@ -106,25 +100,6 @@ export const MarketplaceEventsSection = ({
       }),
   })
 
-  const syncProducts = useMutation({
-    mutationFn: async () => {
-      return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}/products/sync`, {
-        method: "POST",
-        body: {
-          ids: [],
-        },
-      })
-    },
-  })
-
-  const syncOrders = useMutation({
-    mutationFn: async () => {
-      return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}/orders/sync`, {
-        method: "POST"
-      })
-    },
-  })
-
   const marketplace_events = (data?.marketplace_events ?? []) as MarketplaceHttpTypes.AdminMarketplaceEvent[]
   const total = data?.count ?? 0
   const shown = marketplace_events.length
@@ -140,41 +115,7 @@ export const MarketplaceEventsSection = ({
 
   return (
     <Container>
-      <Header
-        title="Events"
-        actions={[
-          {
-            type: "custom",
-            children: (
-              <DropdownMenu>
-                <DropdownMenu.Trigger asChild>
-                  <Button size="small" variant="secondary">
-                    <ArrowPath className="mr-1 text-ui-fg-subtle" />
-                    Synchronize
-                  </Button>
-                </DropdownMenu.Trigger>
-
-                <DropdownMenu.Content>
-                  <DropdownMenu.Group>
-                    <DropdownMenu.Item onClick={() => {
-                      syncOrders.mutate()
-                    }}>
-                      <ShoppingCart className="mr-1 text-ui-fg-subtle" />
-                      Orders
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item onClick={() => {
-                      syncProducts.mutate()
-                    }}>
-                      <Tag className="mr-1 text-ui-fg-subtle" />
-                      Products
-                    </DropdownMenu.Item>
-                  </DropdownMenu.Group>
-                </DropdownMenu.Content>
-              </DropdownMenu>
-            ),
-          },
-        ]}
-      />
+      <Header title="Events" />
       {items.length === 0 ?
         (
           <div className="flex items-center justify-between px-6 py-3 border-t border-ui-border-subtle">

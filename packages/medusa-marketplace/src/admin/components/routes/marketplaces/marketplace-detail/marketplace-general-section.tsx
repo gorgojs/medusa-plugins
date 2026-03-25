@@ -1,6 +1,19 @@
-import { Heading, Badge, StatusBadge } from "@medusajs/ui"
+import {
+  Heading,
+  Badge,
+  StatusBadge,
+  DropdownMenu,
+  Button
+} from "@medusajs/ui"
+import {
+  ArrowPath,
+  Tag,
+  ShoppingCart
+} from "@medusajs/icons"
 import { useState, useEffect } from "react"
 import { useLocation } from "react-router-dom"
+import { useMutation } from "@tanstack/react-query"
+import { sdk } from "../../../../lib/sdk"
 import { MarketplaceActionMenu } from "../marketplace-list/marketplace-action-menu"
 import { MarketplaceEditModal } from "./marketplace-edit-modal"
 import { MarketplaceHttpTypes } from "../../../../../types"
@@ -25,6 +38,25 @@ export const MarketplaceGeneralSection = ({
     }
   }, [location.state])
 
+  const syncProducts = useMutation({
+    mutationFn: async () => {
+      return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}/products/sync`, {
+        method: "POST",
+        body: {
+          ids: [],
+        },
+      })
+    },
+  })
+
+  const syncOrders = useMutation({
+    mutationFn: async () => {
+      return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}/orders/sync`, {
+        method: "POST"
+      })
+    },
+  })
+
   return (
     <>
       <Container>
@@ -37,6 +69,32 @@ export const MarketplaceGeneralSection = ({
             <StatusBadge color={marketplace.is_enabled ? "green" : "red"}>
               {marketplace.is_enabled ? "Enabled" : "Disabled"}
             </StatusBadge>
+
+            <DropdownMenu>
+              <DropdownMenu.Trigger asChild>
+                <Button size="small" variant="secondary">
+                  <ArrowPath className="mr-1 text-ui-fg-subtle" />
+                  Synchronize
+                </Button>
+              </DropdownMenu.Trigger>
+
+              <DropdownMenu.Content>
+                <DropdownMenu.Group>
+                  <DropdownMenu.Item onClick={() => {
+                    syncOrders.mutate()
+                  }}>
+                    <ShoppingCart className="mr-1 text-ui-fg-subtle" />
+                    Orders
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item onClick={() => {
+                    syncProducts.mutate()
+                  }}>
+                    <Tag className="mr-1 text-ui-fg-subtle" />
+                    Products
+                  </DropdownMenu.Item>
+                </DropdownMenu.Group>
+              </DropdownMenu.Content>
+            </DropdownMenu>
 
             <MarketplaceActionMenu
               marketplace={marketplace}
