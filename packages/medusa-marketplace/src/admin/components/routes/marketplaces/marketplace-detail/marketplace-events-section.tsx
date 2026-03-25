@@ -8,9 +8,8 @@ import {
 } from "@medusajs/ui"
 import {
   ArrowPath,
-  CubeSolid,
-  CurrencyDollar,
-  HandTruck
+  Tag,
+  ShoppingCart
 } from "@medusajs/icons"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import {
@@ -118,6 +117,14 @@ export const MarketplaceEventsSection = ({
     },
   })
 
+  const syncOrders = useMutation({
+    mutationFn: async () => {
+      return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}/orders/sync`, {
+        method: "POST"
+      })
+    },
+  })
+
   const marketplace_events = (data?.marketplace_events ?? []) as MarketplaceHttpTypes.AdminMarketplaceEvent[]
   const total = data?.count ?? 0
   const shown = marketplace_events.length
@@ -142,7 +149,7 @@ export const MarketplaceEventsSection = ({
               <DropdownMenu>
                 <DropdownMenu.Trigger asChild>
                   <Button size="small" variant="secondary">
-                    <ArrowPath className="mr-1" />
+                    <ArrowPath className="mr-1 text-ui-fg-subtle" />
                     Synchronize
                   </Button>
                 </DropdownMenu.Trigger>
@@ -150,27 +157,18 @@ export const MarketplaceEventsSection = ({
                 <DropdownMenu.Content>
                   <DropdownMenu.Group>
                     <DropdownMenu.Item onClick={() => {
+                      syncOrders.mutate()
+                    }}>
+                      <ShoppingCart className="mr-1 text-ui-fg-subtle" />
+                      Orders
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item onClick={() => {
                       syncProducts.mutate()
                     }}>
-                      <CubeSolid className="mr-1 text-ui-fg-subtle" />
+                      <Tag className="mr-1 text-ui-fg-subtle" />
                       Products
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item onClick={() => { }}>
-                      <CurrencyDollar className="mr-1 text-ui-fg-subtle" />
-                      Prices
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item onClick={() => { }}>
-                      <HandTruck className="mr-1 text-ui-fg-subtle" />
-                      Inventory
-                    </DropdownMenu.Item>
                   </DropdownMenu.Group>
-
-                  <DropdownMenu.Separator />
-
-                  <DropdownMenu.Item onClick={() => { }}>
-                    <ArrowPath className="mr-1 text-ui-fg-subtle" />
-                    All
-                  </DropdownMenu.Item>
                 </DropdownMenu.Content>
               </DropdownMenu>
             ),

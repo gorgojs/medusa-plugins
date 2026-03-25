@@ -1,8 +1,8 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework";
-import { importMarketplaceOrdersWorkflow } from "../../../../../workflows/marketplace-orders";
+import { importMarketplaceOrdersWorkflow } from "../../../../../../workflows/marketplace-orders";
 
 // request for testing the workflow, not the final implementation of the route handler
-export const GET = async (
+export const POST = async (
   req: MedusaRequest,
   res: MedusaResponse
 ) => {
