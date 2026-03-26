@@ -46,7 +46,7 @@ export function getWbApi(apiName: WildberriesApi, credentials: MarketplaceWildbe
       api: ProductCardsApi,
       baseUrl: BASE_URLS['content']
     },
-    CreatingProductCardsApi: { 
+    CreatingProductCards: {
       api: CreatingProductCardsApi,
       baseUrl: BASE_URLS['content']
     },

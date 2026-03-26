@@ -1,5 +1,5 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
-import { ContentV2CardsUpdatePostRequestInner } from "../../../lib/wildberries-products-client"
+import { ContentV2CardsUpdatePostRequestInner, ProductCardsApi } from "../../../lib/wildberries-products-client"
 import { getWbApi } from "../../../lib/wildberries-client"
 import { MarketplaceWildberriesCredentialsType } from "../../../providers/marketplace-wildberries/types"
 
@@ -18,7 +18,7 @@ export const updateProductCardsStep = createStep(
     const logger = container.resolve("logger")
     const productCards = input.productCards
 
-    const productApi = getWbApi("ProductCards", input.credentials)
+    const productApi = getWbApi("ProductCards", input.credentials) as ProductCardsApi
 
     if (productCards.length === 0) {
       logger.info("Nothing to update. Skipping...")

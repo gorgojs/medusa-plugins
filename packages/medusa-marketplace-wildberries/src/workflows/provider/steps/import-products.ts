@@ -2,6 +2,7 @@ import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { batchProductsWorkflow, batchProductVariantsWorkflow } from "@medusajs/medusa/core-flows"
 import { getWbApi } from "../../../lib/wildberries-client"
 import { MarketplaceWildberriesCredentialsType } from "../../../providers/marketplace-wildberries/types"
+import { ProductCardsApi } from "../../../lib/wildberries-products-client"
 
 export type ImportProductsStepInput = {
   credentials: MarketplaceWildberriesCredentialsType
@@ -30,7 +31,7 @@ export const importProductsStep = createStep(
     }
     let total: number
     do {
-      const productApi = getWbApi("ProductCards", input.credentials)
+      const productApi = getWbApi("ProductCards", input.credentials) as ProductCardsApi
 
       const { status, data: {cards, cursor} } = await productApi.contentV2GetCardsListPost(body)
       total = cursor!.total!

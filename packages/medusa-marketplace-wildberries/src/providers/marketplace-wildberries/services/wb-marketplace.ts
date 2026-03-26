@@ -35,6 +35,7 @@ import {
 } from "../../../lib/wildberries-products-client"
 import { MarketplaceWildberriesCredentialsType, MAX_VARIANTS_TO_CREATE, ORDER_TYPES } from "../types"
 import { getWbApi } from "../../../lib/wildberries-client"
+import { FBSAssemblyOrdersApi } from "../../../lib/wildberries-orders-fbs-client"
 
 export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider {
   static identifier = "wildberries"
@@ -176,7 +177,7 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
   async getWarehouses(data: GetWarehousesInput): Promise<GetWarehousesOutput> {
     const { container, marketplace } = data
 
-    const api: SellerWarehousesApi = getWbApi("SellerWarehouses", marketplace.credentials as MarketplaceWildberriesCredentialsType)
+    const api = getWbApi("SellerWarehouses", marketplace.credentials as MarketplaceWildberriesCredentialsType) as SellerWarehousesApi
     const {status, data: warehouses } = await api.apiV3WarehousesGet()
 
     return warehouses.map(wh => ({
@@ -196,10 +197,10 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
     let orders: any[] = []
     switch (orderType) {
       case ORDER_TYPES[0]: // "FBS"
-        const ordersApi = getWbApi("FBSAssemblyOrders", marketplace.credentials as MarketplaceWildberriesCredentialsType)
+        const ordersApi = getWbApi("FBSAssemblyOrders", marketplace.credentials as MarketplaceWildberriesCredentialsType) as FBSAssemblyOrdersApi
         const result = await ordersApi.apiV3OrdersNewGet()
         status = result.status
-        orders = result.data.orders
+        orders = result.data.orders ?? []
         break
 
       case ORDER_TYPES[1]: // "FBO"
