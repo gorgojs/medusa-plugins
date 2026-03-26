@@ -7,7 +7,7 @@ export type GetOrdersByTypeStepInput = {
   providerId: string
 } & Omit<GetOrdersInput, "container">
 
-export const getOrdersByTypeStep = createStep(
+export const getOrdersStep = createStep(
   "get-orders-by-type",
   async (input: GetOrdersByTypeStepInput, { container }) => {
     const marketplaceService: MarketplaceModuleService = container.resolve(MARKETPLACE_MODULE)
