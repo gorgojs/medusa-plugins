@@ -1,26 +1,27 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { getPointsAddressesWorkflow } from "../../../../workflows/get-point-addresses"
+import { getApishipPointsWorkflow } from "../../../../workflows/get-apiship-points"
+import { StoreApishipPointListResponse } from "../../../../types/http"
+import { StoreGetApishipPointsType } from "../validators"
 
-export const POST = async (
-  req: MedusaRequest<{
-    cartId: string
-    shippingOptionId: string
-    pointIds: Array<number>
-  }>,
-  res: MedusaResponse
+export const GET = async (
+  req: MedusaRequest<unknown, StoreGetApishipPointsType>,
+  res: MedusaResponse<StoreApishipPointListResponse>
 ) => {
-  const { cartId, shippingOptionId, pointIds } = req.body
-  const { result } = await getPointsAddressesWorkflow(
+  const { key, filter, fields, limit, offset } = req.validatedQuery
+
+  const { result } = await getApishipPointsWorkflow(
     req.scope
   ).run({
     input: {
-      cartId,
-      shippingOptionId,
-      pointIds,
+      key,
+      filter,
+      fields,
+      limit,
+      offset,
     },
   })
 
   res.status(200).json({
-    points: result.points
+    points: result,
   })
 }

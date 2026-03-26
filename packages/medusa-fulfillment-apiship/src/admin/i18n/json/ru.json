@@ -1,0 +1,201 @@
+{
+  "general": {
+    "selected": "Выбрано",
+    "areYouSure": "Вы уверены?",
+    "typeToConfirm": "Введите для подтверждения",
+    "noResultsTitle": "Нет результатов",
+    "noResultsMessage": "Попробуйте изменить фильтры или поисковый запрос",
+    "loading": "Загрузка..."
+  },
+  "statuses": {
+    "test": "Тестовый",
+    "production": "Рабочий",
+    "enabled": "Включено",
+    "disabled": "Выключено"
+  },
+  "fields": {
+    "city": "Город",
+    "address": "Адрес",
+    "phone": "Телефон",
+    "countryCode": "Страна",
+    "contactName": "ФИО",
+    "token": "API токен",
+    "mode": "Режим"
+  },
+  "apiship": {
+    "domain": "ApiShip",
+    "subtitle": "Здесь собраны основные настройки, которые используются для расчета доставки и создания заказов в ApiShip.",
+    "general": {
+      "title": "ApiShip",
+      "subtitle": "API-токен и режим работы для подключения магазина к ApiShip.",
+      "edit": {
+        "header": "Редактировать ApiShip",
+        "description": "Обновите API токен и режим.",
+        "successToast": "Настройки ApiShip обновлены.",
+        "errorToast": "Не удалось обновить настройки ApiShip."
+      },
+      "fields": {
+        "token": {
+          "label": "API токен",
+          "placeholder": "Введите API токен ApiShip"
+        },
+        "mode": {
+          "label": "Режим"
+        }
+      }
+    },
+    "defaultStoreAddress": {
+      "title": "Отправитель",
+      "subtitle": "Настраивайте данные отправителя по умолчанию.",
+      "edit": {
+        "header": "Редактировать данные отправителя",
+        "description": "Обновите данные отправителя.",
+        "successToast": "Данные отправителя обновлены.",
+        "errorToast": "Не удалось обновить данные отправителя."
+      },
+      "fields": {
+        "countryCode": {
+          "label": "Страна",
+          "placeholder": "Выберите страну"
+        },
+        "address": {
+          "label": "Адрес",
+          "placeholder": "Введите полный адрес"
+        },
+        "contactName": {
+          "label": "ФИО",
+          "placeholder": "Введите ФИО"
+        },
+        "phone": {
+          "label": "Телефон",
+          "placeholder": "Введите номер телефона"
+        }
+      }
+    },
+    "defaultProductSizes": {
+      "title": "Параметры товаров по умолчанию",
+      "subtitle": "Параметры товаров по умолчанию на случай, если у товара не заданы собственные.",
+      "edit": {
+        "header": "Редактировать размеры",
+        "description": "Обновите размеры посылки по умолчанию.",
+        "successToast": "Размеры обновлены.",
+        "errorToast": "Не удалось обновить размеры."
+      },
+      "fields": {
+        "length": {
+          "label": "Длина"
+        },
+        "width": {
+          "label": "Ширина"
+        },
+        "height": {
+          "label": "Высота"
+        },
+        "weight": {
+          "label": "Вес"
+        }
+      }
+    },
+    "paymentAndTax": {
+      "title": "Оплата и НДС",
+      "subtitle": "Настройки наложенного платежа и ставки НДС для доставки.",
+      "edit": {
+        "header": "Редактировать оплату и налоги",
+        "description": "Обновите настройки оплаты и налогов.",
+        "successToast": "Настройки обновлены.",
+        "errorToast": "Не удалось обновить настройки."
+      },
+      "fields": {
+        "isCod": {
+          "label": "Наложенный платеж",
+          "hint": "Разрешить оплату при получении."
+        },
+        "deliveryCostVat": {
+          "label": "Ставка НДС доставки",
+          "placeholder": "Выберите ставку НДС"
+        }
+      },
+      "values": {
+        "noVat": "Без НДС",
+        "vat0": "0%",
+        "vat5": "5%",
+        "vat7": "7%",
+        "vat10": "10%",
+        "vat20": "20%",
+        "vat22": "22%"
+      }
+    },
+    "connections": {
+      "title": "Подключения",
+      "subtitle": "Управляйте подключениями ApiShip.",
+      "list": {
+        "empty": {
+          "heading": "Нет записей",
+          "description": "Нет записей для отображения"
+        },
+        "filtered": {
+          "heading": "Ничего не найдено",
+          "description": "Попробуйте изменить фильтры или поиск."
+        }
+      },
+      "fields": {
+        "deliveryService": "Служба доставки",
+        "accountConnection": "Подключения",
+        "pickupPoint": "Пункт выдачи",
+        "pointId": "ID точки",
+        "enabled": "Включено"
+      },
+      "create": {
+        "header": "Добавить подключение",
+        "description": "Добавьте новое подключение и настройте его.",
+        "successToast": "Подключение создано.",
+        "errorToast": "Не удалось создать подключение."
+      },
+      "edit": {
+        "header": "Редактировать подключение",
+        "description": "Обновите настройки подключения.",
+        "successToast": "Подключение обновлено.",
+        "errorToast": "Не удалось обновить подключение."
+      },
+      "delete": {
+        "title": "Удалить подключение?",
+        "description": "Вы уверены, что хотите удалить подключение \"{{name}}\"?",
+        "successToast": "Подключение удалено.",
+        "errorToast": "Не удалось удалить подключение."
+      },
+      "form": {
+        "fields": {
+          "accountConnection": {
+            "label": "Подключения",
+            "placeholder": "Выберите подключение"
+          },
+          "point": {
+            "label": "Пункт выдачи",
+            "placeholder": "Выберите пункт",
+            "placeholderLoading": "Загрузка пунктов...",
+            "placeholderSelectAccountConnection": "Сначала выберите аккаунт",
+            "noResults": "Пункты не найдены",
+            "noResultsHint": "Попробуйте загрузить заново."
+          },
+          "enabled": {
+            "label": "Включено",
+            "hint": "Включить это подключение сразу."
+          }
+        },
+        "hints": {
+          "singleEnabledPerProvider": "Для одной службы доставки может быть включено только одно подключение. Остальные будут автоматически отключены."
+        },
+        "errors": {
+          "accountConnectionRequired": "Необходимо выбрать подключение.",
+          "pointRequired": "Необходимо выбрать пункт.",
+          "accountConnectionNotFound": "Подключение не найдено.",
+          "selectAccountConnectionFirst": "Сначала выберите подключение."
+        }
+      }
+    },
+    "points": {
+      "loadSuccess": "Пункты успешно загружены.",
+      "loadError": "Не удалось загрузить пункты."
+    }
+  }
+}

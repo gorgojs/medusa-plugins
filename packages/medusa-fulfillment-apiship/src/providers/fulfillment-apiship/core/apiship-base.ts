@@ -13,22 +13,25 @@ import {
   FulfillmentOrderDTO,
 } from "@medusajs/framework/types"
 import {
-  Configuration,
-  OrdersApi,
-  OrderDocsApi,
-  ListsApi,
-  CalculatorApi,
   type TariffObject,
 } from "../../../lib/apiship-client"
-import { ApishipOptions } from "../types"
+import {
+  createApishipClient,
+  type ApishipClient,
+} from "../../../lib/client"
+import type {
+  ApishipOptionsDTO,
+  DeepPartial,
+} from "../../../types/apiship"
 import {
   getCheapestTariff,
   mapToApishipOrderRequest,
   mapToApishipCalculatorRequest,
-  registerApishipClient,
   hashObject
 } from "../utils"
 import {
+  getApishipClientConfigWorkflow,
+  getApishipOptionsWorkflow,
   getShippingOptionWorkflow,
   getStockLocationWorkflow,
   getCalculationWorkflow,
@@ -41,39 +44,118 @@ import axios, { AxiosError } from "axios"
 
 class ApishipBase extends AbstractFulfillmentProviderService {
   protected logger_: Logger
-  protected options_: ApishipOptions
-  protected serverUrl_: string
 
-  private ordersApi_: OrdersApi
-  private orderDocsApi_: OrderDocsApi
-  private listsApi_: ListsApi
-  private calculatorApi_: CalculatorApi
-
-  constructor({ logger }: InjectedDependencies, options: ApishipOptions) {
+  constructor({ logger }: InjectedDependencies, _options: unknown) {
     super()
-    this.options_ = options // TODO: validate options
     this.logger_ = logger
+  }
 
-    this.serverUrl_ = options.isTest
-      ? "http://api.dev.apiship.ru/v1"
-      : "https://api.apiship.ru/v1"
+  private async getApishipClient_(): Promise<ApishipClient> {
+    const { result: apishipClientConfig } =
+      await getApishipClientConfigWorkflow().run()
 
-    const config = new Configuration({
-      basePath: this.serverUrl_,
-      apiKey: this.options_.token,
-    })
+    return createApishipClient(apishipClientConfig)
+  }
 
-    this.ordersApi_ = new OrdersApi(config)
-    this.orderDocsApi_ = new OrderDocsApi(config)
-    this.listsApi_ = new ListsApi(config)
-    this.calculatorApi_ = new CalculatorApi(config)
+  private normalizeApishipOptions_(
+    apishipOptions: DeepPartial<ApishipOptionsDTO>
+  ): ApishipOptionsDTO {
+    if (!apishipOptions.token?.trim()) {
+      throw new Error("Apiship token is required")
+    }
 
-    registerApishipClient("apiship_apiship", {
-      ordersApi: this.ordersApi_,
-      orderDocsApi: this.orderDocsApi_,
-      listsApi: this.listsApi_,
-      calculatorApi: this.calculatorApi_,
-    })
+    if (apishipOptions.is_test === undefined) {
+      throw new Error("Apiship is_test flag is required")
+    }
+
+    return {
+      token: apishipOptions.token,
+      is_test: apishipOptions.is_test,
+      settings: {
+        connections: (apishipOptions.settings?.connections ?? []).flatMap(
+          (connection) => {
+            if (
+              !connection?.id ||
+              !connection.name ||
+              !connection.provider_key ||
+              !connection.provider_connect_id ||
+              connection.is_enabled === undefined
+            ) {
+              return []
+            }
+
+            return [
+              {
+                id: connection.id,
+                name: connection.name,
+                provider_key: connection.provider_key,
+                provider_connect_id: connection.provider_connect_id,
+                point_in_id: connection.point_in_id,
+                point_in_address: connection.point_in_address,
+                is_enabled: connection.is_enabled,
+              },
+            ]
+          }
+        ),
+        default_sender_settings: {
+          country_code:
+            apishipOptions.settings?.default_sender_settings?.country_code ?? "",
+          address_string:
+            apishipOptions.settings?.default_sender_settings?.address_string ??
+            "",
+          contact_name:
+            apishipOptions.settings?.default_sender_settings?.contact_name ?? "",
+          phone: apishipOptions.settings?.default_sender_settings?.phone ?? "",
+        },
+        default_product_sizes: {
+          length:
+            apishipOptions.settings?.default_product_sizes?.length ?? 10,
+          width: apishipOptions.settings?.default_product_sizes?.width ?? 10,
+          height:
+            apishipOptions.settings?.default_product_sizes?.height ?? 10,
+          weight:
+            apishipOptions.settings?.default_product_sizes?.weight ?? 20,
+        },
+        delivery_cost_vat:
+          apishipOptions.settings?.delivery_cost_vat ??
+          (-1 as ApishipOptionsDTO["settings"]["delivery_cost_vat"]),
+        is_cod: apishipOptions.settings?.is_cod ?? false,
+      },
+    }
+  }
+
+  private assertOrderOptions_(apishipOptions: ApishipOptionsDTO) {
+    const defaultSenderSettings =
+      apishipOptions.settings.default_sender_settings
+
+    if (!defaultSenderSettings.country_code) {
+      throw new Error(
+        "Apiship settings.default_sender_settings.country_code is required"
+      )
+    }
+
+    if (!defaultSenderSettings.address_string) {
+      throw new Error(
+        "Apiship settings.default_sender_settings.address_string is required"
+      )
+    }
+
+    if (!defaultSenderSettings.contact_name) {
+      throw new Error(
+        "Apiship settings.default_sender_settings.contact_name is required"
+      )
+    }
+
+    if (!defaultSenderSettings.phone) {
+      throw new Error(
+        "Apiship settings.default_sender_settings.phone is required"
+      )
+    }
+  }
+
+  private async getApishipOptions_(): Promise<ApishipOptionsDTO> {
+    const { result: apishipOptions } = await getApishipOptionsWorkflow().run()
+    return this.normalizeApishipOptions_(apishipOptions)
   }
 
   async calculatePrice(
@@ -82,10 +164,14 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     context: CalculateShippingOptionPriceDTO["context"]
   ): Promise<CalculatedShippingOptionPrice> {
     this.logger_.debug(`Apiship.calculatePrice input: ${JSON.stringify({ optionData, data, context }, null, 2)}`)
+    const [apishipClient, apishipOptions] = await Promise.all([
+      this.getApishipClient_(),
+      this.getApishipOptions_(),
+    ])
     const calculatorRequest = mapToApishipCalculatorRequest(
       optionData,
       context,
-      this.options_
+      apishipOptions
     )
 
     const shippingOptionId = optionData.id as string
@@ -107,7 +193,9 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       tariffs = cache
     } else {
       try {
-        const { data: response } = await this.calculatorApi_.getCalculator({ calculatorRequest })
+        const { data: response } = await apishipClient.calculatorApi.getCalculator({
+          calculatorRequest
+        })
         tariffs = response
 
         await saveCalculationWorkflow().run({
@@ -153,6 +241,11 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     fulfillment: Partial<Omit<FulfillmentDTO, "provider_id" | "data" | "items">>
   ): Promise<CreateFulfillmentResult> {
     this.logger_.debug(`Apiship.createFulfillment input: ${JSON.stringify({ data, items, order, fulfillment }, null, 2)}`)
+    const [apishipClient, apishipOptions] = await Promise.all([
+      this.getApishipClient_(),
+      this.getApishipOptions_(),
+    ])
+    this.assertOrderOptions_(apishipOptions)
 
     const locationId = fulfillment.location_id as string
     const { result: stockLocation } = await getStockLocationWorkflow()
@@ -176,7 +269,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       ? Number(apishipData.point.id)
       : undefined
     const apishipOrder = mapToApishipOrderRequest(
-      this.options_,
+      apishipOptions,
       order!,
       stockLocation,
       providerKey,
@@ -186,7 +279,7 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       pointOutId
     )
     try {
-      const response = await this.ordersApi_.addOrder({
+      const response = await apishipClient.ordersApi.addOrder({
         orderRequest: apishipOrder,
       })
       const orderId = response.data.orderId
@@ -214,7 +307,8 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     let rows: TariffObject[] | undefined
     try {
       this.logger_.debug(`Apiship.getListTariffs try filter: ${filter}`)
-      const { data: response } = await this.listsApi_.getListTariffs({
+      const apishipClient = await this.getApishipClient_()
+      const { data: response } = await apishipClient.listsApi.getListTariffs({
         limit: 100,
         offset: 0,
         filter,
@@ -246,7 +340,8 @@ class ApishipBase extends AbstractFulfillmentProviderService {
     this.logger_.debug(`Apiship.cancelFulfillment input: ${JSON.stringify(data, null, 2)}`)
     const orderId = data?.orderId as number
     try {
-      const response = await this.ordersApi_.cancelOrder({ orderId })
+      const apishipClient = await this.getApishipClient_()
+      const response = await apishipClient.ordersApi.cancelOrder({ orderId })
       this.logger_.debug(`Apiship.cancelFulfillment output: ${JSON.stringify(response, null, 2)}`)
       return response
     } catch (e: any) {
@@ -297,11 +392,15 @@ class ApishipBase extends AbstractFulfillmentProviderService {
   /**
    * Retrieve an order information.
    */
-  private async waitForOrderInfo(orderId: number): Promise<{ trackingNumber: string; trackingUrl: string }> {
+  private async waitForOrderInfo(
+    orderId: number,
+    apishipClient?: ApishipClient
+  ): Promise<{ trackingNumber: string; trackingUrl: string }> {
     this.logger_.debug(`Apiship.waitForOrderInfo input: ${orderId}`)
+    const client = apishipClient ?? await this.getApishipClient_()
 
     const response = await this.executeWithRetry({
-      apiCall: () => this.ordersApi_.getOrderInfo({ orderId }),
+      apiCall: () => client.ordersApi.getOrderInfo({ orderId }),
       isReady: (response: any) => Boolean(response?.data?.order?.providerNumber),
       label: `orderInfo:${orderId}`,
     })
@@ -318,11 +417,15 @@ class ApishipBase extends AbstractFulfillmentProviderService {
   /**
    * Retrieve a labels for orders.
    */
-  private async waitForLabelUrl(orderId: number): Promise<string> {
+  private async waitForLabelUrl(
+    orderId: number,
+    apishipClient?: ApishipClient
+  ): Promise<string> {
     this.logger_.debug(`Apiship.waitForLabelUrl input: ${orderId}`)
+    const client = apishipClient ?? await this.getApishipClient_()
 
     const response = await this.executeWithRetry({
-      apiCall: () => this.orderDocsApi_.getLabels({
+      apiCall: () => client.orderDocsApi.getLabels({
         labelsRequest: {
           orderIds: [orderId],
           format: "pdf"
@@ -345,8 +448,12 @@ class ApishipBase extends AbstractFulfillmentProviderService {
 
     const orderId = data?.orderId as number
     try {
-      const { trackingNumber, trackingUrl } = await this.waitForOrderInfo(orderId)
-      const labelUrl = await this.waitForLabelUrl(orderId)
+      const apishipClient = await this.getApishipClient_()
+      const { trackingNumber, trackingUrl } = await this.waitForOrderInfo(
+        orderId,
+        apishipClient
+      )
+      const labelUrl = await this.waitForLabelUrl(orderId, apishipClient)
       const labels = [
         {
           tracking_number: String(trackingNumber),
@@ -383,7 +490,10 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       format: "pdf"
     }
     try {
-      const { data: response } = await this.orderDocsApi_.getWaybills({ documentsRequest })
+      const apishipClient = await this.getApishipClient_()
+      const { data: response } = await apishipClient.orderDocsApi.getWaybills({
+        documentsRequest
+      })
       const result = response?.waybillItems?.[0].file
       this.logger_.debug(`Apiship.getFulfillmentDocuments output: ${JSON.stringify(result, null, 2)}`)
       return result as unknown as never[]

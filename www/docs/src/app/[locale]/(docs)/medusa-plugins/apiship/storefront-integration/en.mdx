@@ -53,6 +53,8 @@ Open [`src/lib/data/cart.ts`](https://github.com/gorgojs/medusa-plugins/blob/7aa
 ![Directory structure in the Medusa Storefront after updating the file for cart](https://github.com/user-attachments/assets/f2563a45-53bd-4e28-8d25-8b612d0bb8ba)
 
 ```ts
+import type { ApishipHttpTypes } from "@gorgo/medusa-fulfillment-apiship/types"
+
 export async function retrieveCart(cartId?: string, fields?: string) {
   // ...
   // add +shipping_methods.data parameter
@@ -94,7 +96,7 @@ export async function removeShippingMethodFromCart(shippingMethodId: string) {
   }
 
   return sdk.client
-    .fetch<Record<string, unknown>>(
+    .fetch<ApishipHttpTypes.DeleteResponse<"shipping_method">>(
       `/store/shipping-methods/${shippingMethodId}`,
       {
         method: "DELETE",
@@ -125,12 +127,39 @@ Open [`src/lib/data/fulfillment.ts`](https://github.com/gorgojs/medusa-plugins/b
 ![Directory structure in the Medusa Storefront after updating the file for fulfillment](https://github.com/user-attachments/assets/c37d99e7-403a-4fef-84dc-ed351087a4dc)
 
 ```ts
+import type { ApishipHttpTypes } from "@gorgo/medusa-fulfillment-apiship/types"
+
+type StorefrontApishipPoint = Omit<
+  ApishipHttpTypes.StoreApishipPoint,
+  "id" | "lat" | "lng" | "worktime"
+> & {
+  id: string
+  lat: number
+  lng: number
+  worktime?: Record<string, string>
+}
+
+type StorefrontApishipPointListResponse = {
+  points: StorefrontApishipPoint[]
+}
+
+type StorefrontApishipCalculation = {
+  deliveryToDoor?: Array<{
+    providerKey: string
+    tariffs?: Array<ApishipHttpTypes.StoreApishipDoorTariff>
+  }>
+  deliveryToPoint?: Array<{
+    providerKey: string
+    tariffs?: Array<ApishipHttpTypes.StoreApishipPointTariff>
+  }>
+}
+
 // ... other helpers
 
 export const retrieveCalculation = async (
   cartId: string,
   shippingOptionId: string
-) => {
+): Promise<StorefrontApishipCalculation | null> => {
   const headers = {
     ...(await getAuthHeaders()),
 
@@ -143,7 +172,7 @@ export const retrieveCalculation = async (
   const body = { cart_id: cartId }
 
   return sdk.client
-    .fetch<Record<string, unknown>>(
+    .fetch<ApishipHttpTypes.StoreApishipCalculationResponse>(
       `/store/apiship/${shippingOptionId}/calculate`,
       {
         method: "POST",
@@ -152,7 +181,32 @@ export const retrieveCalculation = async (
         next,
       }
     )
-    .then(({ data }) => data)
+    .then(({ calculation }) => ({
+      deliveryToDoor: (calculation.deliveryToDoor ?? []).flatMap((group) => {
+        if (!group.providerKey) {
+          return []
+        }
+
+        return [
+          {
+            providerKey: group.providerKey,
+            tariffs: group.tariffs,
+          },
+        ]
+      }),
+      deliveryToPoint: (calculation.deliveryToPoint ?? []).flatMap((group) => {
+        if (!group.providerKey) {
+          return []
+        }
+
+        return [
+          {
+            providerKey: group.providerKey,
+            tariffs: group.tariffs,
+          },
+        ]
+      }),
+    }))
     .catch((e) => {
       return null
     })
@@ -162,7 +216,7 @@ export const getPointAddresses = async (
   cartId: string,
   shippingOptionId: string,
   pointIds: Array<number>
-) => {
+): Promise<StorefrontApishipPointListResponse | null> => {
   const headers = {
     ...(await getAuthHeaders()),
   }
@@ -171,29 +225,73 @@ export const getPointAddresses = async (
     ...(await getCacheOptions("fulfillment")),
   }
 
-  const body = {
-    cartId,
-    shippingOptionId,
-    pointIds
+  if (!pointIds.length) {
+    return {
+      points: [],
+    }
   }
 
+  const filter = `id=[${pointIds.join(",")}]`
+  const fields = [
+    "id",
+    "description",
+    "providerKey",
+    "name",
+    "address",
+    "photos",
+    "worktime",
+    "timetable",
+    "lat",
+    "lng",
+  ].join(",")
+  const key = `apiship:points:${cartId}:${shippingOptionId}`
+
   return sdk.client
-    .fetch<{
-      points: any[]
-      meta: any
-    }>(`/store/apiship/points`, {
-      method: "POST",
-      headers,
-      body,
-      next,
-    })
+    .fetch<ApishipHttpTypes.StoreApishipPointListResponse>(
+      `/store/apiship/points`,
+      {
+        method: "GET",
+        headers,
+        query: {
+          key,
+          filter,
+          fields,
+          limit: 0,
+        },
+        next,
+      }
+    )
+    .then(({ points }) => ({
+      points: (points ?? []).flatMap((point) => {
+        if (
+          point.id === undefined ||
+          point.id === null ||
+          point.lat === undefined ||
+          point.lat === null ||
+          point.lng === undefined ||
+          point.lng === null
+        ) {
+          return []
+        }
+
+        return [
+          {
+            ...point,
+            id: String(point.id),
+            lat: point.lat,
+            lng: point.lng,
+            worktime: point.worktime as Record<string, string> | undefined,
+          },
+        ]
+      }),
+    }))
     .catch((e) => {
       console.error("getPointsAddresses error", e)
       return null
     })
 }
 
-export const retrieveProviders = async () => {
+export const retrieveProviders = async (): Promise<ApishipHttpTypes.StoreApishipProviderListResponse | null> => {
   const headers = {
     ...(await getAuthHeaders()),
   }
@@ -203,17 +301,14 @@ export const retrieveProviders = async () => {
   }
 
   return sdk.client
-    .fetch<{
-      providers: Array<{
-        key: string
-        name: string
-        description: string | null
-      }>
-    }>(`/store/apiship/providers`, {
-      method: "POST",
-      headers,
-      next,
-    })
+    .fetch<ApishipHttpTypes.StoreApishipProviderListResponse>(
+      `/store/apiship/providers`,
+      {
+        method: "GET",
+        headers,
+        next,
+      }
+    )
     .catch((e) => {
       console.error("retrieveProviders error", e)
       return null
@@ -234,54 +329,35 @@ Open [`src/modules/checkout/components/shipping/apiship/types/index.ts`](https:/
 ![Directory structure in the Medusa Storefront after creating the file for ApiShip types](https://github.com/user-attachments/assets/759f8e54-1f6b-4371-a518-78bddcdcf0f1)
 
 ```ts
+import type { ApishipHttpTypes } from "@gorgo/medusa-fulfillment-apiship/types"
+
 export type ApishipCalculation = {
   deliveryToDoor?: Array<{
     providerKey: string
-    tariffs?: Array<
-      Omit<ApishipTariff, "key" | "providerKey">
-    >
+    tariffs?: Array<ApishipHttpTypes.StoreApishipDoorTariff>
   }>
   deliveryToPoint?: Array<{
     providerKey: string
-    tariffs?: Array<
-      Omit<ApishipTariff, "key" | "providerKey"> & { pointIds?: number[] }
-    >
+    tariffs?: Array<ApishipHttpTypes.StoreApishipPointTariff>
   }>
 }
 
 export type ApishipTariff = {
   key: string
   providerKey: string
-  tariffProviderId?: string
-  tariffId?: number
-  tariffName?: string
-  deliveryCost?: number
-  deliveryCostOriginal?: number
-  daysMin?: number
-  daysMax?: number
-  calendarDaysMin?: number
-  calendarDaysMax?: number
-  workDaysMin?: number
-  workDaysMax?: number
-}
+} & (
+  ApishipHttpTypes.StoreApishipDoorTariff |
+  ApishipHttpTypes.StoreApishipPointTariff
+)
 
-export type ApishipPoint = {
+export type ApishipPoint = Omit<
+  ApishipHttpTypes.StoreApishipPoint,
+  "id" | "lat" | "lng" | "worktime"
+> & {
   id: string
-  providerKey?: string
-  availableOperation?: number
-  name?: string
-  description?: string
-  worktime?: Record<string, string>
-  photos?: string[]
-  timetable?: string
   lat: number
   lng: number
-  code?: string
-  postIndex?: string
-  region?: string
-  city?: string
-  address?: string
-  phone?: string
+  worktime?: Record<string, string>
 }
 
 export type Chosen = {
@@ -957,7 +1033,6 @@ import {
 } from "@lib/data/fulfillment"
 import { ApishipMap } from "./apiship-map"
 import {
-  ApishipCalculation,
   ApishipPoint,
   ApishipTariff,
   Chosen
@@ -1032,7 +1107,7 @@ export const ApishipPickupPointModal: React.FC<ApishipPickupPointModalProps> = (
 
     setIsLoadingPoints(true)
     try {
-      const calculation = (await retrieveCalculation(cart.id, shippingOptionId)) as ApishipCalculation
+      const calculation = await retrieveCalculation(cart.id, shippingOptionId)
       if (isCancelled()) return
       const tariffsMap = buildTariffsByPointId(calculation)
       setTariffsByPointId(tariffsMap)
@@ -1043,7 +1118,11 @@ export const ApishipPickupPointModal: React.FC<ApishipPickupPointModalProps> = (
         return
       }
 
-      const pointAddresses = (await getPointAddresses(cart.id, shippingOptionId, pointIds)) as { points: ApishipPoint[] }
+      const pointAddresses = await getPointAddresses(
+        cart.id,
+        shippingOptionId,
+        pointIds
+      )
       if (isCancelled()) return
 
       setPoints(pointAddresses?.points ?? [])
@@ -1253,7 +1332,7 @@ export const ApishipCourierModal: React.FC<ApishipCourierModalProps> = ({
     setCalculation(null)
 
     try {
-      const calculation = (await retrieveCalculation(cart.id, shippingOptionId)) as ApishipCalculation
+      const calculation = await retrieveCalculation(cart.id, shippingOptionId)
       if (isCancelled()) return
       setCalculation(calculation)
     } catch (e: any) {

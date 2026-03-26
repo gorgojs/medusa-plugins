@@ -1977,7 +1977,7 @@ paths:
             name, postIndex, lat, lng, countryCode, region, regionType, city,
             cityGuid, cityType, community, communityGuid, communityType, area,
             street, streetType, house, block, office, address, url, email,
-            phone, availableOperation, type, cod, paymentCash, paymentCard,
+            phone, availableOperation, type, cod, paymentCash, paymentCard,paymentOnline,
             multiplaceDeliveryAllowed, fittingRoom. Например:
             city=Москва;providerKey=cdek;availableOperation=[2,3].
              Документация работы фильтра: https://docs.apiship.ru/docs/api/query-filter/
@@ -4238,6 +4238,7 @@ components:
             - 2 - Карта;
             - 3 - Смешанная оплата(наличные и карта)
             - 4 - Безналичная оплата (по счету)
+            - 5 - Онлайн оплата (по ссылке)
           enum:
             - 1
             - 2
@@ -4969,6 +4970,11 @@ components:
           description: >-
             Имеется ли возможность оплаты банковской картой (null - нет данных,
             1 - оплата картой доступна, 0 - оплата картой не доступна)
+        paymentOnline:
+          type: integer
+          description: >-
+            Имеется ли возможность оплаты онлайн (null - нет данных,
+            1 - оплата онлайн доступна, 0 - оплата онлайн не доступна)
         multiplaceDeliveryAllowed:
           type: integer
           description: >-

@@ -1,17 +1,16 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { retriveProvidersWorkflow } from "../../../../workflows/retrive-providers"
+import { StoreApishipProviderListResponse } from "../../../../types/http"
+import { getApishipProvidersWorkflow } from "../../../../workflows/get-apiship-providers"
 
-export const POST = async (
+export const GET = async (
   req: MedusaRequest,
-  res: MedusaResponse
+  res: MedusaResponse<StoreApishipProviderListResponse>
 ) => {
-  const { result } = await retriveProvidersWorkflow(
+  const { result } = await getApishipProvidersWorkflow(
     req.scope
-  ).run({
-    input: {}
-  })
+  ).run()
   
   res.status(200).json({
-    ...result
+    providers: result,
   })
 }

@@ -12,7 +12,6 @@ import {
 } from "@lib/data/fulfillment"
 import { ApishipMap } from "./apiship-map"
 import {
-  ApishipCalculation,
   ApishipPoint,
   ApishipTariff,
   Chosen
@@ -87,7 +86,7 @@ export const ApishipPickupPointModal: React.FC<ApishipPickupPointModalProps> = (
 
     setIsLoadingPoints(true)
     try {
-      const calculation = (await retrieveCalculation(cart.id, shippingOptionId)) as ApishipCalculation
+      const calculation = await retrieveCalculation(cart.id, shippingOptionId)
       if (isCancelled()) return
       const tariffsMap = buildTariffsByPointId(calculation)
       setTariffsByPointId(tariffsMap)
@@ -98,7 +97,11 @@ export const ApishipPickupPointModal: React.FC<ApishipPickupPointModalProps> = (
         return
       }
 
-      const pointAddresses = (await getPointAddresses(cart.id, shippingOptionId, pointIds)) as { points: ApishipPoint[] }
+      const pointAddresses = await getPointAddresses(
+        cart.id,
+        shippingOptionId,
+        pointIds
+      )
       if (isCancelled()) return
 
       setPoints(pointAddresses?.points ?? [])
