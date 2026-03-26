@@ -1,4 +1,6 @@
 export { saveCalculationWorkflow } from "./save-calculation"
 export { getCalculationWorkflow } from "./get-calculation"
 export { getStockLocationWorkflow } from "./get-stock-location"
-export { getShippingOptionWorkflow } from "./get-shipping-option" 
+export { getShippingOptionWorkflow } from "./get-shipping-option"
+export { getApishipClientConfigWorkflow } from "./get-apiship-client-config"
+export { getApishipOptionsWorkflow } from "./get-apiship-options"

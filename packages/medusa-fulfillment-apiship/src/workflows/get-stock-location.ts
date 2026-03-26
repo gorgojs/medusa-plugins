@@ -13,6 +13,8 @@ export type GetStockLocationStepInput = {
 export const getStockLocationStep = createStep(
   "get-stock-locations-step",
   async (input: GetStockLocationStepInput, { container }) => {
+        const service = container.resolve(Modules.PRODUCT)
+const prevData = await service.listProductVariants()
     const stockLocationModuleService = container.resolve(Modules.STOCK_LOCATION)
     const stockLocations = await stockLocationModuleService.retrieveStockLocation(
       input.id,

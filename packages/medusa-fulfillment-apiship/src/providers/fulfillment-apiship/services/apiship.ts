@@ -1,6 +1,6 @@
 import ApishipBase from "../core/apiship-base"
-import { FulfillmentProviderKeys } from "../types"
 import { FulfillmentOption } from "@medusajs/framework/types"
+import { FulfillmentProviderKeys } from "../../../types/apiship"
 
 class ApishipService extends ApishipBase {
   static identifier = FulfillmentProviderKeys.APISHIP

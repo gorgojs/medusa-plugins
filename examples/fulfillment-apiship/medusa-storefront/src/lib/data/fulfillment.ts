@@ -1,8 +1,34 @@
 "use server"
 
 import { sdk } from "@lib/config"
+import type { ApishipHttpTypes } from "@gorgo/medusa-fulfillment-apiship/types"
 import { HttpTypes } from "@medusajs/types"
 import { getAuthHeaders, getCacheOptions } from "./cookies"
+
+type StorefrontApishipPoint = Omit<
+  ApishipHttpTypes.StoreApishipPoint,
+  "id" | "lat" | "lng" | "worktime"
+> & {
+  id: string
+  lat: number
+  lng: number
+  worktime?: Record<string, string>
+}
+
+type StorefrontApishipPointListResponse = {
+  points: StorefrontApishipPoint[]
+}
+
+type StorefrontApishipCalculation = {
+  deliveryToDoor?: Array<{
+    providerKey: string
+    tariffs?: Array<ApishipHttpTypes.StoreApishipDoorTariff>
+  }>
+  deliveryToPoint?: Array<{
+    providerKey: string
+    tariffs?: Array<ApishipHttpTypes.StoreApishipPointTariff>
+  }>
+}
 
 export const listCartShippingMethods = async (cartId: string) => {
   const headers = {
@@ -70,7 +96,7 @@ export const calculatePriceForShippingOption = async (
 export const retrieveCalculation = async (
   cartId: string,
   shippingOptionId: string
-) => {
+): Promise<StorefrontApishipCalculation | null> => {
   const headers = {
     ...(await getAuthHeaders()),
 
@@ -83,7 +109,7 @@ export const retrieveCalculation = async (
   const body = { cart_id: cartId }
 
   return sdk.client
-    .fetch<Record<string, unknown>>(
+    .fetch<ApishipHttpTypes.StoreApishipCalculationResponse>(
       `/store/apiship/${shippingOptionId}/calculate`,
       {
         method: "POST",
@@ -92,7 +118,32 @@ export const retrieveCalculation = async (
         next,
       }
     )
-    .then(({ data }) => data)
+    .then(({ calculation }) => ({
+      deliveryToDoor: (calculation.deliveryToDoor ?? []).flatMap((group) => {
+        if (!group.providerKey) {
+          return []
+        }
+
+        return [
+          {
+            providerKey: group.providerKey,
+            tariffs: group.tariffs,
+          },
+        ]
+      }),
+      deliveryToPoint: (calculation.deliveryToPoint ?? []).flatMap((group) => {
+        if (!group.providerKey) {
+          return []
+        }
+
+        return [
+          {
+            providerKey: group.providerKey,
+            tariffs: group.tariffs,
+          },
+        ]
+      }),
+    }))
     .catch((e) => {
       return null
     })
@@ -102,7 +153,7 @@ export const getPointAddresses = async (
   cartId: string,
   shippingOptionId: string,
   pointIds: Array<number>
-) => {
+): Promise<StorefrontApishipPointListResponse | null> => {
   const headers = {
     ...(await getAuthHeaders()),
   }
@@ -111,29 +162,73 @@ export const getPointAddresses = async (
     ...(await getCacheOptions("fulfillment")),
   }
 
-  const body = {
-    cartId,
-    shippingOptionId,
-    pointIds
+  if (!pointIds.length) {
+    return {
+      points: [],
+    }
   }
 
+  const filter = `id=[${pointIds.join(",")}]`
+  const fields = [
+    "id",
+    "description",
+    "providerKey",
+    "name",
+    "address",
+    "photos",
+    "worktime",
+    "timetable",
+    "lat",
+    "lng",
+  ].join(",")
+  const key = `apiship:points:${cartId}:${shippingOptionId}`
+
   return sdk.client
-    .fetch<{
-      points: any[]
-      meta: any
-    }>(`/store/apiship/points`, {
-      method: "POST",
-      headers,
-      body,
-      next,
-    })
+    .fetch<ApishipHttpTypes.StoreApishipPointListResponse>(
+      `/store/apiship/points`,
+      {
+        method: "GET",
+        headers,
+        query: {
+          key,
+          filter,
+          fields,
+          limit: 0,
+        },
+        next,
+      }
+    )
+    .then(({ points }) => ({
+      points: (points ?? []).flatMap((point) => {
+        if (
+          point.id === undefined ||
+          point.id === null ||
+          point.lat === undefined ||
+          point.lat === null ||
+          point.lng === undefined ||
+          point.lng === null
+        ) {
+          return []
+        }
+
+        return [
+          {
+            ...point,
+            id: String(point.id),
+            lat: point.lat,
+            lng: point.lng,
+            worktime: point.worktime as Record<string, string> | undefined,
+          },
+        ]
+      }),
+    }))
     .catch((e) => {
       console.error("getPointsAddresses error", e)
       return null
     })
 }
 
-export const retrieveProviders = async () => {
+export const retrieveProviders = async (): Promise<ApishipHttpTypes.StoreApishipProviderListResponse | null> => {
   const headers = {
     ...(await getAuthHeaders()),
   }
@@ -143,17 +238,14 @@ export const retrieveProviders = async () => {
   }
 
   return sdk.client
-    .fetch<{
-      providers: Array<{
-        key: string
-        name: string
-        description: string | null
-      }>
-    }>(`/store/apiship/providers`, {
-      method: "POST",
-      headers,
-      next,
-    })
+    .fetch<ApishipHttpTypes.StoreApishipProviderListResponse>(
+      `/store/apiship/providers`,
+      {
+        method: "GET",
+        headers,
+        next,
+      }
+    )
     .catch((e) => {
       console.error("retrieveProviders error", e)
       return null

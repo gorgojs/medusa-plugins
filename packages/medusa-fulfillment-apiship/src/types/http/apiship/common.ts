@@ -6,57 +6,78 @@ export const FulfillmentProviderKeys = {
   APISHIP: "apiship",
 }
 
-interface DefaultSenderSettings {
+type Primitive = string | number | boolean | bigint | symbol | null | undefined
+
+export type BaseCostDeliveryCostVatEnum = CostDeliveryCostVatEnum
+
+export type DeepPartial<T> =
+  T extends Primitive
+  ? T
+  : T extends Array<infer U>
+  ? Array<DeepPartial<U>>
+  : { [K in keyof T]?: DeepPartial<T[K]> }
+
+interface BaseDefaultSenderSettings {
   /**
    * Код страны в соответствии с ISO 3166-1 alpha-2
    */
-  countryCode: string
+  country_code?: string
   /**
    * Полный адрес одной строкой. При заполнении этого поля остальные можно не заполнять, кроме countryCode
    */
-  addressString: string
+  address_string?: string
   /**
    * ФИО контактного лица
    */
-  contactName: string
+  contact_name?: string
   /**
    * Контактный телефон
    */
-  phone: string
+  phone?: string
 }
 
-interface DefaultProductSizes {
+export interface BaseDefaultProductSizes {
   /**
    * Длина товара по умолчанию
    */
-  length: number
+  length?: number
   /**
    * Ширина товара по умолчанию
    */
-  width: number
+  width?: number
   /**
    * Высота товара по умолчанию
    */
-  height: number
+  height?: number
   /**
    * Вес товара по умолчанию
    */
-  weight: number
+  weight?: number
 }
 
-interface Settings {
+export interface BaseApishipConnection {
+  id: string
+  name: string
+  provider_key: string
+  provider_connect_id: string
+  point_in_id?: string
+  point_in_address?: string
+  is_enabled: boolean
+}
+
+export interface BaseSettings {
   /**
-   * Настройка подключений
+   * Подключения
    */
-  connectionsMap?: Record<string, string>
+  connections?: BaseApishipConnection[]
   /**
    * Параменты магазина по умолчанию
    */
-  defaultSenderSettings: DefaultSenderSettings
+  default_sender_settings?: BaseDefaultSenderSettings
   /**
    * Размеры товара по умолчанию
    */
-  defaultProductSizes?: DefaultProductSizes
+  default_product_sizes?: BaseDefaultProductSizes
   /**
    * Процентная ставка НДС:
    * -1 - Без НДС
@@ -67,24 +88,36 @@ interface Settings {
    * 20 - НДС 20%
    * 22 - НДС 22%
    */
-  deliveryCostVat: CostDeliveryCostVatEnum
+  delivery_cost_vat?: BaseCostDeliveryCostVatEnum
   /**
    * Использовать ли наложенный платеж при создании заказа
    */
-  isCod?: boolean
+  is_cod?: boolean
 }
 
-export interface ApishipOptions {
+export interface BaseApishipOptions {
   /**
    * Токен ApiShip
    */
-  token: string
+  token?: string
   /**
    * Использовать тестовый режим
    */
-  isTest?: boolean
+  is_test?: boolean
   /**
    * Параменты провайдера
    */
-  settings: Settings
+  settings?: BaseSettings
+}
+
+export interface BaseApishipAccountConnection {
+  id: string
+  provider_key: string
+  name: string
+}
+
+export interface BaseApishipProvider {
+  key?: string
+  name?: string
+  description?: string
 }

@@ -153,7 +153,13 @@ const Shipping: React.FC<ShippingProps> = ({
         if (cancelled) return
 
         const map: Record<string, string> = {}
-        for (const provider of providers ?? []) map[provider.key] = provider.name
+        for (const provider of providers ?? []) {
+          if (!provider.key || !provider.name) {
+            continue
+          }
+
+          map[provider.key] = provider.name
+        }
         setProvidersMap(map)
       })()
 
@@ -439,7 +445,6 @@ const Shipping: React.FC<ShippingProps> = ({
                       setShippingMethodId(null)
                     }}
                     onEdit={() => {
-                      console.log(cart)
                       if (apishipMode === "point") setApishipPickupPointModalOpen(true)
                       if (apishipMode === "door") setApishipCourierModalOpen(true)
                     }}

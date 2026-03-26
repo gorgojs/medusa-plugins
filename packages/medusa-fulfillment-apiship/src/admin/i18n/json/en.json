@@ -1,0 +1,201 @@
+{
+  "general": {
+    "selected": "Selected",
+    "areYouSure": "Are you sure?",
+    "typeToConfirm": "Type to confirm",
+    "noResultsTitle": "No results",
+    "noResultsMessage": "Try changing the filters or search query",
+    "loading": "Loading..."
+  },
+  "statuses": {
+    "test": "Test",
+    "production": "Production",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
+  },
+  "fields": {
+    "city": "City",
+    "address": "Address",
+    "phone": "Phone",
+    "countryCode": "Country code",
+    "contactName": "Contact name",
+    "token": "API Token",
+    "mode": "Mode"
+  },
+  "apiship": {
+    "domain": "ApiShip",
+    "subtitle": "The main settings used to calculate shipping rates and create orders in ApiShip.",
+    "general": {
+      "title": "ApiShip",
+      "subtitle": "API token and mode for connecting your store to ApiShip.",
+      "edit": {
+        "header": "Edit ApiShip",
+        "description": "Update API Token and mode.",
+        "successToast": "ApiShip options updated.",
+        "errorToast": "Failed to update ApiShip options."
+      },
+      "fields": {
+        "token": {
+          "label": "API Token",
+          "placeholder": "ApiShip Token"
+        },
+        "mode": {
+          "label": "Mode"
+        }
+      }
+    },
+    "defaultStoreAddress": {
+      "title": "Sender",
+      "subtitle": "Set up default sender details.",
+      "edit": {
+        "header": "Edit Default Sender Data",
+        "description": "Update sender data information.",
+        "successToast": "Default sender data updated.",
+        "errorToast": "Failed to update default sender data."
+      },
+      "fields": {
+        "countryCode": {
+          "label": "Country",
+          "placeholder": "Select country"
+        },
+        "address": {
+          "label": "Address",
+          "placeholder": "Enter address"
+        },
+        "contactName": {
+          "label": "Full Name",
+          "placeholder": "Enter full name"
+        },
+        "phone": {
+          "label": "Phone",
+          "placeholder": "Enter phone number"
+        }
+      }
+    },
+    "defaultProductSizes": {
+      "title": "Default Product Settings",
+      "subtitle": "Default product settings in case no specific settings have been defined for the product.",
+      "edit": {
+        "header": "Edit Default Product Sizes",
+        "description": "Update default parcel dimensions.",
+        "successToast": "Default product sizes updated.",
+        "errorToast": "Failed to update default product sizes."
+      },
+      "fields": {
+        "length": {
+          "label": "Length"
+        },
+        "width": {
+          "label": "Width"
+        },
+        "height": {
+          "label": "Height"
+        },
+        "weight": {
+          "label": "Weight"
+        }
+      }
+    },
+    "paymentAndTax": {
+      "title": "Payment & VAT",
+      "subtitle": "Cash on delivery and shipping VAT settings.",
+      "edit": {
+        "header": "Edit Payment & Tax",
+        "description": "Update payment and tax settings.",
+        "successToast": "Payment and tax settings updated.",
+        "errorToast": "Failed to update payment and tax settings."
+      },
+      "fields": {
+        "isCod": {
+          "label": "Cash on Delivery",
+          "hint": "Allow cash on delivery for shipments."
+        },
+        "deliveryCostVat": {
+          "label": "Delivery VAT Rate",
+          "placeholder": "Select VAT rate"
+        }
+      },
+      "values": {
+        "noVat": "No VAT",
+        "vat0": "0%",
+        "vat5": "5%",
+        "vat7": "7%",
+        "vat10": "10%",
+        "vat20": "20%",
+        "vat22": "22%"
+      }
+    },
+    "connections": {
+      "title": "Connections",
+      "subtitle": "Manage your ApiShip connections.",
+      "list": {
+        "empty": {
+          "heading": "No records",
+          "description": "There are no records to show"
+        },
+        "filtered": {
+          "heading": "No connections found",
+          "description": "Try changing your filters or search query."
+        }
+      },
+      "fields": {
+        "deliveryService": "Delivery Service",
+        "accountConnection": "Connection",
+        "pickupPoint": "Pickup Point",
+        "pointId": "Point ID",
+        "enabled": "Enabled"
+      },
+      "create": {
+        "header": "Add ApiShip Connection",
+        "description": "Add a new connection and configure it.",
+        "successToast": "Connection created.",
+        "errorToast": "Failed to create connection."
+      },
+      "edit": {
+        "header": "Edit Connection",
+        "description": "Update connection settings.",
+        "successToast": "Connection updated.",
+        "errorToast": "Failed to update connection."
+      },
+      "delete": {
+        "title": "Delete connection?",
+        "description": "Are you sure you want to delete connection \"{{name}}\"?",
+        "successToast": "Connection deleted.",
+        "errorToast": "Failed to delete connection."
+      },
+      "form": {
+        "fields": {
+          "accountConnection": {
+            "label": "Connection",
+            "placeholder": "Select connection"
+          },
+          "point": {
+            "label": "Point",
+            "placeholder": "Select point",
+            "placeholderLoading": "Loading points...",
+            "placeholderSelectAccountConnection": "Select account connection first",
+            "noResults": "No points found",
+            "noResultsHint": "Try loading points again."
+          },
+          "enabled": {
+            "label": "Enabled",
+            "hint": "Enable this connection immediately."
+          }
+        },
+        "hints": {
+          "singleEnabledPerProvider": "Only one enabled connection is allowed per delivery service. Other connections for the same provider will be disabled automatically."
+        },
+        "errors": {
+          "accountConnectionRequired": "Connection is required.",
+          "pointRequired": "Point is required.",
+          "accountConnectionNotFound": "Connection not found.",
+          "selectAccountConnectionFirst": "Select connection first."
+        }
+      }
+    },
+    "points": {
+      "loadSuccess": "Points loaded successfully.",
+      "loadError": "Failed to load points."
+    }
+  }
+}

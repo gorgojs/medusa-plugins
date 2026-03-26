@@ -13,6 +13,9 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
   },
+  featureFlags: {
+    backend_hm: true
+  },
   modules: [
     {
       resolve: "@medusajs/medusa/fulfillment",

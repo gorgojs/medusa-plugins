@@ -86,7 +86,7 @@ export const ApishipCourierModal: React.FC<ApishipCourierModalProps> = ({
     setCalculation(null)
 
     try {
-      const calculation = (await retrieveCalculation(cart.id, shippingOptionId)) as ApishipCalculation
+      const calculation = await retrieveCalculation(cart.id, shippingOptionId)
       if (isCancelled()) return
       setCalculation(calculation)
     } catch (e: any) {

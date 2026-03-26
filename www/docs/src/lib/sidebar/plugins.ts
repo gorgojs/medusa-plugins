@@ -172,6 +172,14 @@ export const pluginsSidebar: SidebarType = {
         },
         {
           title: {
+            en: "Settings",
+            ru: "Настройка",
+          },
+          slug: "settings",
+          children: [],
+        },
+        {
+          title: {
             en: "Storefront Integration",
             ru: "Интеграция в витрину",
           },

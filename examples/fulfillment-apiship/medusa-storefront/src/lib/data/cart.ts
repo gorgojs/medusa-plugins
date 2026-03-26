@@ -1,6 +1,7 @@
 "use server"
 
 import { sdk } from "@lib/config"
+import type { ApishipHttpTypes } from "@gorgo/medusa-fulfillment-apiship/types"
 import medusaError from "@lib/util/medusa-error"
 import { HttpTypes } from "@medusajs/types"
 import { revalidateTag } from "next/cache"
@@ -486,7 +487,7 @@ export async function removeShippingMethodFromCart(shippingMethodId: string) {
   }
 
   return sdk.client
-    .fetch<Record<string, unknown>>(
+    .fetch<ApishipHttpTypes.DeleteResponse<"shipping_method">>(
       `/store/shipping-methods/${shippingMethodId}`,
       {
         method: "DELETE",

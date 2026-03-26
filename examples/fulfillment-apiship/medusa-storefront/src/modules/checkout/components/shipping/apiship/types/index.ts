@@ -1,51 +1,32 @@
+import type { ApishipHttpTypes } from "@gorgo/medusa-fulfillment-apiship/types"
+
 export type ApishipCalculation = {
   deliveryToDoor?: Array<{
     providerKey: string
-    tariffs?: Array<
-      Omit<ApishipTariff, "key" | "providerKey">
-    >
+    tariffs?: Array<ApishipHttpTypes.StoreApishipDoorTariff>
   }>
   deliveryToPoint?: Array<{
     providerKey: string
-    tariffs?: Array<
-      Omit<ApishipTariff, "key" | "providerKey"> & { pointIds?: number[] }
-    >
+    tariffs?: Array<ApishipHttpTypes.StoreApishipPointTariff>
   }>
 }
 
 export type ApishipTariff = {
   key: string
   providerKey: string
-  tariffProviderId?: string
-  tariffId?: number
-  tariffName?: string
-  deliveryCost?: number
-  deliveryCostOriginal?: number
-  daysMin?: number
-  daysMax?: number
-  calendarDaysMin?: number
-  calendarDaysMax?: number
-  workDaysMin?: number
-  workDaysMax?: number
-}
+} & (
+  ApishipHttpTypes.StoreApishipDoorTariff |
+  ApishipHttpTypes.StoreApishipPointTariff
+)
 
-export type ApishipPoint = {
+export type ApishipPoint = Omit<
+  ApishipHttpTypes.StoreApishipPoint,
+  "id" | "lat" | "lng" | "worktime"
+> & {
   id: string
-  providerKey?: string
-  availableOperation?: number
-  name?: string
-  description?: string
-  worktime?: Record<string, string>
-  photos?: string[]
-  timetable?: string
   lat: number
   lng: number
-  code?: string
-  postIndex?: string
-  region?: string
-  city?: string
-  address?: string
-  phone?: string
+  worktime?: Record<string, string>
 }
 
 export type Chosen = {

@@ -28,18 +28,18 @@
   },
   "dependencies": {
     "@gorgo/medusa-fulfillment-apiship": "latest",
-    "@medusajs/admin-sdk": "2.13.4",
-    "@medusajs/cli": "2.13.4",
-    "@medusajs/framework": "2.13.4",
-    "@medusajs/medusa": "2.13.4"
+    "@medusajs/admin-sdk": "2.13.5",
+    "@medusajs/cli": "2.13.5",
+    "@medusajs/framework": "2.13.5",
+    "@medusajs/medusa": "2.13.5"
   },
   "devDependencies": {
-    "@medusajs/test-utils": "2.13.4",
-    "@swc/core": "^1.7.28",
+    "@medusajs/test-utils": "2.13.5",
+    "@swc/core": "1.7.28",
     "@swc/jest": "^0.2.36",
     "@types/jest": "^29.5.13",
     "@types/localtunnel": "^2",
-    "@types/node": "^20.0.0",
+    "@types/node": "^20.12.11",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.2.25",
     "concurrently": "^9.1.2",
