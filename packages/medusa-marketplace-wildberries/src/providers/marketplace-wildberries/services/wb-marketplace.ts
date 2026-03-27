@@ -35,7 +35,7 @@ import {
 } from "../../../lib/wildberries-products-client"
 import { MarketplaceWildberriesCredentialsType, MAX_VARIANTS_TO_CREATE, ORDER_TYPES } from "../types"
 import { getWbApi } from "../../../lib/wildberries-client"
-import { FBSAssemblyOrdersApi } from "../../../lib/wildberries-orders-fbs-client"
+import { FBSAssemblyOrdersApi, OrderNew } from "../../../lib/wildberries-orders-fbs-client"
 
 export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider {
   static identifier = "wildberries"
@@ -193,19 +193,26 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
   async getOrders(data: GetOrdersInput): Promise<GetOrdersOutput> {
     const { container, marketplace, orderType } = data
 
+    const fbsApi = getWbApi("FBSAssemblyOrders", marketplace.credentials as MarketplaceWildberriesCredentialsType) as FBSAssemblyOrdersApi
+
     let status: number = 400
     let orders: any[] = []
     switch (orderType) {
       case ORDER_TYPES[0]: // "FBS"
-        const ordersApi = getWbApi("FBSAssemblyOrders", marketplace.credentials as MarketplaceWildberriesCredentialsType) as FBSAssemblyOrdersApi
-        const result = await ordersApi.apiV3OrdersNewGet()
-        status = result.status
-        orders = result.data.orders ?? []
+        const fbsResult = await fbsApi.apiV3OrdersNewGet()
+        status = fbsResult.status
+        orders = fbsResult.data.orders ?? []
         break
 
       case ORDER_TYPES[1]: // "FBO"
         status = 200
         orders = [{ name: "Test1"}] // TODO: implement fetching FBO orders
+        break
+
+      case undefined: // all
+        const fbsResultAll = await fbsApi.apiV3OrdersNewGet()
+        status = fbsResultAll.status
+        orders = fbsResultAll.data.orders ?? []
         break
 
       default:
@@ -220,6 +227,32 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
   async mapToMedusaOrders(data: MapToMedusaOrdersInput): Promise<MapToMedusaOrdersOutput> {
     const { container, marketplace, marketplaceOrders } = data
 
-    return marketplaceOrders as any
+    const medusaOrders = (marketplaceOrders as Array<OrderNew>).map(order => {
+      const mappedOrder: MapToMedusaOrdersOutput[number] = {
+        sales_channel_id: marketplace.sales_channel_id!,
+        email: "wb_customer_" + order.rid + "@generated.com",
+        shipping_address: {
+          address_1: order.address?.fullAddress ?? "",
+          city: order.address?.fullAddress?.split(",")[0] ?? "",
+          postal_code: "-",
+          country_code: "ru",
+          first_name: "WB",
+          last_name: "Customer"
+        },
+        items: [{
+          title: order.article ?? "",
+          variant_sku: order.article,
+          quantity: 1,
+          unit_price: (order.finalPrice ?? 0) / 100
+        }],
+        metadata: {
+          original_order: order
+        }
+      }
+      return mappedOrder
+    })
+    // TODO: group orders by order.orderUid
+
+    return medusaOrders
   }
 }
