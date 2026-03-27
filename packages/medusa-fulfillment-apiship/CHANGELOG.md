@@ -1,5 +1,11 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 0.2.4
+
+### Patch Changes
+
+- Test on Medusa 2.13.4
+
 ## 0.2.3
 
 ### Patch Changes
