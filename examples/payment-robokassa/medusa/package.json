@@ -28,13 +28,13 @@
   },
   "dependencies": {
     "@gorgo/medusa-payment-robokassa": "latest",
-    "@medusajs/admin-sdk": "2.13.1",
-    "@medusajs/cli": "2.13.1",
-    "@medusajs/framework": "2.13.1",
-    "@medusajs/medusa": "2.13.1"
+    "@medusajs/admin-sdk": "2.13.4",
+    "@medusajs/cli": "2.13.4",
+    "@medusajs/framework": "2.13.4",
+    "@medusajs/medusa": "2.13.4"
   },
   "devDependencies": {
-    "@medusajs/test-utils": "2.13.1",
+    "@medusajs/test-utils": "2.13.4",
     "@swc/core": "^1.7.28",
     "@swc/jest": "^0.2.36",
     "@types/jest": "^29.5.13",
