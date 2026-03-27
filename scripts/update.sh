@@ -11,10 +11,6 @@ NC='\033[0m' # No Color
 SKIP_DIRS=(
 )
 
-# Directories that need integration tests inside examples
-INTEGRATION_TEST_DIRS=(
-)
-
 # Directories that should skip migrations inside examples
 SKIP_MIGRATIONS_DIRS=(
 )
@@ -53,6 +49,15 @@ error() {
     local dir=$1
     local msg=$2
     echo -e "\n${RED}✗ [$dir] $msg${NC}\n"
+}
+
+# Cross-platform in-place sed wrapper (GNU/BSD).
+sedi() {
+    if sed --version > /dev/null 2>&1; then
+        sed -i -E "$1" "$2"
+    else
+        sed -i '' -E "$1" "$2"
+    fi
 }
 
 # Function to check if a directory should be skipped
@@ -140,7 +145,11 @@ process_directory() {
         # Trim empty lines from package.json
         echo -e "\n${YELLOW}[$dir] Trimming package.json...${NC}\n"
         # Remove all empty lines and ensure no trailing newline
-        sed -i '' -e '/^[[:space:]]*$/d' package.json && \
+        if sed --version > /dev/null 2>&1; then
+            sed -i -e '/^[[:space:]]*$/d' package.json || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
+        else
+            sed -i '' -e '/^[[:space:]]*$/d' package.json || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
+        fi
         perl -i -pe 'chomp if eof' package.json || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
         
         # Check if this directory should skip migrations
@@ -169,18 +178,22 @@ process_directory() {
         echo -e "\n${YELLOW}[$dir] Running: yarn build${NC}\n"
         yarn build || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
         
-        # Check if this directory needs integration tests
-        for test_dir in "${INTEGRATION_TEST_DIRS[@]}"; do
-            if [ "$dirname" = "$test_dir" ]; then
-                log "$dir" "Running integration tests"
-                echo -e "\n${YELLOW}[$dir] Running: yarn test:integration:http${NC}\n"
-                yarn test:integration:http || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
-                
-                echo -e "\n${YELLOW}[$dir] Running: yarn test:integration:modules${NC}\n"
-                yarn test:integration:modules || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
-                break
-            fi
-        done
+        # Run integration tests if scripts exist in package.json.
+        if grep -q '"test:integration:http"' package.json; then
+            log "$dir" "Running integration HTTP tests"
+            echo -e "\n${YELLOW}[$dir] Running: yarn test:integration:http${NC}\n"
+            yarn test:integration:http --passWithNoTests || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
+        else
+            warning "$dir" "No test:integration:http script, skipping..."
+        fi
+
+        if grep -q '"test:integration:modules"' package.json; then
+            log "$dir" "Running integration modules tests"
+            echo -e "\n${YELLOW}[$dir] Running: yarn test:integration:modules${NC}\n"
+            yarn test:integration:modules --passWithNoTests || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
+        else
+            warning "$dir" "No test:integration:modules script, skipping..."
+        fi
         
         success "$dir" "Successfully updated and built"
         cd - > /dev/null
@@ -192,14 +205,14 @@ process_directory() {
 
             if [ -f "README.md" ]; then
                 echo -e "\n${YELLOW}[$package_dir] Updating version badge in $package_dir/README.md${NC}\n"
-                sed -i '' -E "s/(Tested_with_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\\1$VERSION/" README.md || \
-                handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
+                sedi "s/(Tested_with_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\\1$VERSION/" README.md || \
+                    handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
             fi
 
             if [ -f "README.ru.md" ]; then
                 echo -e "\n${YELLOW}[$package_dir] Updating version badge in $package_dir/README.ru.md${NC}\n"
-                sed -i '' -E "s/(Протестировано_с_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\\1$VERSION/" README.ru.md || \
-                handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
+                sedi "s/(Протестировано_с_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\\1$VERSION/" README.ru.md || \
+                    handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
             fi
         fi
 
