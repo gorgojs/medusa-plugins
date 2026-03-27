@@ -1,6 +1,6 @@
 import { MedusaContainer } from "@medusajs/framework"
 import { ProductDTO } from "@medusajs/framework/types"
-import {MarketplaceDTO, MarketplaceProductDTO, MarketplaceWarehouseType} from "../../types"
+import {MarketplaceDTO, MarketplaceProductDTO, MarketplaceWarehouseType, MedusaOrder} from "../../types"
 
 export interface IMarketplaceProvider {
   getIdentifier(): string
@@ -76,7 +76,7 @@ export type GetMarketplaceProductsOutput = MarketplaceProductDTO[]
 
 export type ImportProductsOutput = Record<string, unknown>
 
-export type MapToMedusaOrdersOutput = Record<string, unknown>[]
+export type MapToMedusaOrdersOutput = MedusaOrder[]
 
 export type MapToMarketplaceProductsOutput = Record<string, unknown>
 

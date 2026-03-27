@@ -1,5 +1,5 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
-import { MarketplaceDTO } from "../../../types"
+import { MarketplaceDTO, MedusaOrder } from "../../../types"
 import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
 import { MarketplaceModuleService } from "../../../modules/marketplace/services"
 
@@ -21,6 +21,6 @@ export const mapToMedusaOrdersStep = createStep(
       marketplaceOrders: orders
     })
 
-    return new StepResponse(medusaOrders)
+    return new StepResponse<MedusaOrder[]>(medusaOrders)
   }
 )
