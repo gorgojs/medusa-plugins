@@ -142,8 +142,6 @@ process_directory() {
         echo -e "\n${YELLOW}[$dir] Running: yarn add ...${NC}\n"
         yarn add $(grep "\"@medusajs" package.json | grep -v "\"@medusajs/ui\"" | sed 's/.*"@medusajs\/\([^"]*\)".*/@medusajs\/\1@'"$VERSION"'/') || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
         
-        # Trim empty lines from package.json
-        echo -e "\n${YELLOW}[$dir] Trimming package.json...${NC}\n"
         # Remove all empty lines and ensure no trailing newline
         if sed --version > /dev/null 2>&1; then
             sed -i -e '/^[[:space:]]*$/d' package.json || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
