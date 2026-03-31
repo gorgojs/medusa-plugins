@@ -51,15 +51,6 @@ error() {
     echo -e "\n${RED}✗ [$dir] $msg${NC}\n"
 }
 
-# Cross-platform in-place sed wrapper (GNU/BSD).
-sedi() {
-    if sed --version > /dev/null 2>&1; then
-        sed -i -E "$1" "$2"
-    else
-        sed -i '' -E "$1" "$2"
-    fi
-}
-
 # Function to check if a directory should be skipped
 should_skip() {
     local dir=$1
@@ -75,12 +66,13 @@ should_skip() {
 # Check if version argument is provided
 if [ -z "$1" ]; then
     error "" "Please provide a version number"
-    echo "Usage: ./update.sh <version> [start_directory] [-s|--single]"
+    echo "Usage: ./update.sh <version> [start_directory] [-s|--single] [--skip-build]"
     exit 1
 fi
 
 VERSION=$1
 SINGLE_DIR=false
+SKIP_BUILD=false
 shift  # Remove version from arguments
 
 # Parse remaining arguments
@@ -88,6 +80,10 @@ while [[ $# -gt 0 ]]; do
     case $1 in
         -s|--single)
             SINGLE_DIR=true
+            shift
+            ;;
+        --skip-build)
+            SKIP_BUILD=true
             shift
             ;;
         *)
@@ -164,17 +160,21 @@ process_directory() {
             fi
         done
         
-        # Run database migrations if not skipped
-        if [ "$skip_migrations" = false ]; then
-            log "$dir" "Running database migrations"
-            echo -e "\n${YELLOW}[$dir] Running: npx medusa db:migrate${NC}\n"
-            npx medusa db:migrate || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
+        if [ "$SKIP_BUILD" = false ]; then
+            # Run database migrations if not skipped
+            if [ "$skip_migrations" = false ]; then
+                log "$dir" "Running database migrations"
+                echo -e "\n${YELLOW}[$dir] Running: npx medusa db:migrate${NC}\n"
+                npx medusa db:migrate || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
+            fi
+            
+            # Build the project
+            log "$dir" "Building project"
+            echo -e "\n${YELLOW}[$dir] Running: yarn build${NC}\n"
+            yarn build || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
+        else
+            warning "$dir" "Skipping migrations and build"
         fi
-        
-        # Build the project
-        log "$dir" "Building project"
-        echo -e "\n${YELLOW}[$dir] Running: yarn build${NC}\n"
-        yarn build || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
         
         # Run integration tests if scripts exist in package.json.
         if grep -q '"test:integration:http"' package.json; then
@@ -203,13 +203,13 @@ process_directory() {
 
             if [ -f "README.md" ]; then
                 echo -e "\n${YELLOW}[$package_dir] Updating version badge in $package_dir/README.md${NC}\n"
-                sedi "s/(Tested_with_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\\1$VERSION/" README.md || \
+                sed -i -E "s/(Tested_with_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\\1$VERSION/" README.md || \
                     handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
             fi
 
             if [ -f "README.ru.md" ]; then
                 echo -e "\n${YELLOW}[$package_dir] Updating version badge in $package_dir/README.ru.md${NC}\n"
-                sedi "s/(Протестировано_с_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\\1$VERSION/" README.ru.md || \
+                sed -i -E "s/(Протестировано_с_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\\1$VERSION/" README.ru.md || \
                     handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
             fi
         fi
