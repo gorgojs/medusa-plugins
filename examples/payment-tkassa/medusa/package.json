@@ -27,7 +27,7 @@
     "tunnel": "lt --port 9000 --subdomain medusa-tkassa"
   },
   "dependencies": {
-    "@gorgo/medusa-payment-tkassa": "file:.yalc/@gorgo/medusa-payment-tkassa",
+    "@gorgo/medusa-payment-tkassa": "latest",
     "@medusajs/admin-sdk": "2.13.4",
     "@medusajs/cli": "2.13.4",
     "@medusajs/framework": "2.13.4",
