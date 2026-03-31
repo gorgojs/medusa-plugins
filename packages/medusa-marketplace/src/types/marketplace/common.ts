@@ -52,3 +52,10 @@ export type MarketplaceExchangeProfileDTO = {
   order_type: string
   stock_location?: StockLocationDTO
 }
+
+export type CreateMarketplaceOrderDTO = {
+  order_id: string
+  marketplace_id: string
+  status: string
+  type: string
+}

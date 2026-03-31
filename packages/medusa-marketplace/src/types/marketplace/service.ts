@@ -1,5 +1,5 @@
 import { CreateOrderDTO } from "@medusajs/framework/types"
-import { EventActionType, EventDirectionType, EventEntityType } from "./common"
+import { CreateMarketplaceOrderDTO, EventActionType, EventDirectionType, EventEntityType } from "./common"
 
 export type LogEventInput = {
   marketplaceId: string
@@ -18,5 +18,6 @@ export type MedusaOrder = {
   email: string
   shipping_address: NonNullable<CreateOrderDTO["shipping_address"]>
   items: NonNullable<CreateOrderDTO["items"]>
+  marketplace_order: CreateMarketplaceOrderDTO
   metadata?: Record<string, any>
 }
