@@ -1,6 +1,6 @@
 import { AbstractMarketplaceProvider } from "@gorgo/medusa-marketplace/modules/marketplace/utils"
-import { V3ImportProductsRequestItem } from "../../../lib/ozon-seller-api"
-import { productApi, withAuth } from "../../../lib/ozon-client"
+import { V3FbsPosting, V3ImportProductsRequestItem } from "../../../lib/ozon-seller-api"
+import { productApi, withAuth, warehousesApi, fbsApi } from "../../../lib/ozon-client"
 import { MedusaContainer } from "@medusajs/framework"
 import {
   ExportProductsInput,
@@ -14,14 +14,22 @@ import {
   ImportProductsInput,
   ImportProductsOutput,
   MapToMarketplaceProductsInput,
-  MapToMarketplaceProductsOutput
+  MapToMarketplaceProductsOutput,
+  GetMarketplaceWarehousesInput,
+  GetMarketplaceWarehousesOutput,
+  GetMarketplaceOrdersInput,
+  GetMarketplaceOrdersOutput,
+  GetMarketplaceOrderTypesInput,
+  GetMarketplaceOrderTypesOutput,
+  MapToMedusaOrdersInput,
+  MapToMedusaOrdersOutput
 } from "@gorgo/medusa-marketplace/types"
 import {
   importMarketplaceProductsWorkflow,
   exportMarketplaceProductsWorkflow
 } from "../../../workflows/provider"
 import { mapObject } from "../utils"
-import { MarketplaceOzonCredentialsType } from "../types"
+import { MarketplaceOzonCredentialsType, ORDER_TYPES } from "../types"
 
 export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
   static identifier = "ozon"
@@ -256,6 +264,110 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
     }
 
     return { create: marketplaceProducts }
+  }
+
+  async getMarketplaceWarehouses(data: GetMarketplaceWarehousesInput): Promise<GetMarketplaceWarehousesOutput> {
+    const { marketplace } = data
+
+    const { data: warehouses } = await warehousesApi.warehouseListV2(
+      withAuth(marketplace.credentials as MarketplaceOzonCredentialsType, {
+        v2WarehouseListV2Request: {
+          limit: 200
+        }
+      })
+    )
+
+    return warehouses.warehouses!.map(wh => ({
+      id: wh.warehouse_id ? wh.warehouse_id.toString() : "",
+      name: wh.name ?? ""
+    }))
+  }
+
+  async getMarketplaceOrderTypes(data: GetMarketplaceOrderTypesInput): Promise<GetMarketplaceOrderTypesOutput> {
+    return Object.values(ORDER_TYPES) as string[]
+  }
+
+  async getMarketplaceOrders(data: GetMarketplaceOrdersInput): Promise<GetMarketplaceOrdersOutput> {
+    const { marketplace, orderType } = data
+
+    const to = new Date()
+    const since = new Date(to)
+    since.setDate(since.getDate() - 30)
+
+    switch (orderType) {
+      case ORDER_TYPES[0]:
+      case undefined: {
+        const limit = 100
+        let offset = 0
+        let hasNext = true
+        const orders: any[] = []
+
+        while (hasNext) {
+          const realFbsResult = await fbsApi.postingAPIGetFbsPostingListV3(
+            withAuth(marketplace.credentials as MarketplaceOzonCredentialsType, {
+              postingv3GetFbsPostingListRequest: {
+                filter: {
+                  since: since.toISOString(),
+                  to: to.toISOString()
+                },
+                limit,
+                offset
+              }
+            })
+          )
+
+          if (realFbsResult.status !== 200) {
+            return []
+          }
+
+          const result = realFbsResult.data.result
+          const postings = result?.postings ?? []
+
+          orders.push(...postings)
+          hasNext = result?.has_next ?? false
+          offset += limit
+        }
+        return orders
+      }
+
+      default:
+        return []
+    }
+  }
+
+  async mapToMedusaOrders(data: MapToMedusaOrdersInput): Promise<MapToMedusaOrdersOutput> {
+    const { marketplace, marketplaceOrders } = data
+
+    const medusaOrders = (marketplaceOrders as any[]).map(order => {
+      const mappedOrder: MapToMedusaOrdersOutput[number] = {
+        sales_channel_id: marketplace.sales_channel?.id,
+        email: order.customer?.customer_email || `ozon_customer_${String(order.order_id)}@example.com`,
+        shipping_address: {
+          address_1: order.customer?.address?.address_tail ?? "",
+          city: order.customer?.address?.city ?? "",
+          postal_code: "-",
+          country_code: "ru",
+          first_name: "Ozon",
+          last_name: "Customer"
+        },
+        items: [{
+          title: order.products?.[0]?.name ?? "",
+          variant_sku: order.products?.[0]?.offer_id,
+          quantity: order.products?.[0]?.quantity ?? 1,
+          unit_price: order.products?.[0]?.price ?? 0
+        }],
+        marketplace_order: {
+          marketplace_id: marketplace.id,
+          order_id: String(order.order_id),
+          status: "New",
+          type: "realFBS",
+          data: order as Record<string, unknown>
+        },
+      }
+      return mappedOrder
+    })
+    // TODO: group orders by order.orderUid
+    return medusaOrders
   }
 
   async mapToMedusaProducts(input: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput> {

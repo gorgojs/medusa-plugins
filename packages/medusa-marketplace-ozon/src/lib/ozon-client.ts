@@ -1,5 +1,5 @@
 import { MarketplaceOzonCredentialsType } from '../providers/marketplace-ozon/types';
-import { Configuration, ProductAPIApi, CategoryAPIApi } from './ozon-seller-api';
+import { Configuration, ProductAPIApi, CategoryAPIApi, FBSWarehouseAPIApi, FboPostingAPIApi, FBSApi } from './ozon-seller-api';
 
 const BASE_URL="https://api-seller.ozon.ru"
 
@@ -16,3 +16,5 @@ export const withAuth = <T extends object>(credentials: MarketplaceOzonCredentia
 
 export const productApi = new ProductAPIApi(config)
 export const categoryApi = new CategoryAPIApi(config)
+export const warehousesApi = new FBSWarehouseAPIApi(config)
+export const fbsApi = new FBSApi(config)

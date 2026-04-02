@@ -4,3 +4,5 @@ export interface MarketplaceOzonCredentialsType extends MarketplaceCredentialsTy
   apiKey: string;
   clientId: string;
 }
+
+export const ORDER_TYPES = ["realFBS", "FBO"] as const
