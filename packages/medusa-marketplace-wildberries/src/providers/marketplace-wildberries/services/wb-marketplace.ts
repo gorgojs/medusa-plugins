@@ -193,8 +193,6 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
   async getMarketplaceOrders(data: GetMarketplaceOrdersInput): Promise<GetMarketplaceOrdersOutput> {
     const { container, marketplace, orderType } = data
 
-    console.log("Getting marketplace orders with orderType", orderType)
-
     const fbsApi = getWbApi("FBSAssemblyOrders", marketplace.credentials as MarketplaceWildberriesCredentialsType) as FBSAssemblyOrdersApi
 
     let status: number = 400
@@ -222,8 +220,6 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
         orders = []
         break
     }
-
-    console.log("Fetched marketplace orders with status", status, "and orders", orders)
 
     return status === 200 ? orders! : []
   }
