@@ -1,7 +1,6 @@
 import { createWorkflow, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
 import { ImportMarketplaceOrdersWorkflowInput } from "../../../types/workflow/marketplace-orders/import-orders"
-import { createMedusaOrdersStep, getOrdersStep, mapToMedusaOrdersStep } from "../steps"
-import { findOneOrAnyRegionStep } from "@medusajs/medusa/core-flows"
+import { createOrdersStep, getOrdersStep, mapToMedusaOrdersStep } from "../steps"
 
 export const importMarketplaceOrdersWorkflowId = "import-marketplace-orders"
 
@@ -22,10 +21,7 @@ export const importMarketplaceOrdersWorkflow = createWorkflow(
       orders: marketplaceOrders
     })
 
-    const region = findOneOrAnyRegionStep({})
-
-    const result = createMedusaOrdersStep({
-      region_id: region?.id,
+    const result = createOrdersStep({
       orders: medusaOrders
     })
 
