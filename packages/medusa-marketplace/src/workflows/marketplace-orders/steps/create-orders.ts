@@ -28,13 +28,21 @@ export const createOrdersStep = createStep(
     for (const order of orders) {
       const { marketplace_order: marketplaceOrder, ...medusaOrder } = order
 
+      const [existingOrder] = await marketplaceService.listMarketplaceOrders({
+        order_id: marketplaceOrder.order_id
+      }, { take: 1 })
+
+      if (existingOrder) {
+        continue
+      }
+
       const { result } = await createOrderWorkflow(container).run({
         input: {
           ...medusaOrder
         }
       })
 
-      marketplaceService.createMarketplaceOrders({
+      await marketplaceService.createMarketplaceOrders({
         ...marketplaceOrder
       })
 
