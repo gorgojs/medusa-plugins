@@ -4,7 +4,7 @@ import { MedusaOrder } from "../../../types"
 import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
 import { MarketplaceModuleService } from "../../../modules/marketplace/services"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
-import { CreateOrderDTO } from "@medusajs/framework/types"
+import { CreateOrderDTO, OrderDTO } from "@medusajs/framework/types"
 
 export type CreateOrdersStepInput = {
   region_id?: string
@@ -22,6 +22,8 @@ export const createOrdersStep = createStep(
     if (!orders.length) {
       return new StepResponse()
     }
+
+    const createOrdersResults: OrderDTO[] = []
 
     for (const order of orders) {
       const { marketplace_order: marketplaceOrder, ...medusaOrder } = order
@@ -44,8 +46,10 @@ export const createOrdersStep = createStep(
           order_id: result.id
         }
       })
+
+      createOrdersResults.push(result)
     }
 
-    return new StepResponse()
+    return new StepResponse(createOrdersResults)
   }
 )
