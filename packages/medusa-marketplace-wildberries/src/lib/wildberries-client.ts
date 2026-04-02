@@ -30,7 +30,9 @@ axiosRetry(limitedAxiosInst, {
   retries: 3,
   retryCondition: (error: AxiosError) => {
     const status = error.response?.status
-    return axiosRetry.isNetworkError(error) || status === 429 || status === 503
+    return axiosRetry.isNetworkError(error)
+      || error.code === "ECONNABORTED"
+      || status === 429 || status === 503
   },
   retryDelay: axiosRetry.exponentialDelay,
   onRetry: (retryConunt, error, requestConfig) => {

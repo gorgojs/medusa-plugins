@@ -10,6 +10,8 @@ import {
   GetMarketplaceOrderTypesOutput,
   GetMarketplaceWarehousesInput,
   GetMarketplaceWarehousesOutput,
+  GetProductsInput,
+  GetProductsOutput,
   ImportProductsInput,
   ImportProductsOutput,
   MapToMarketplaceProductsInput,
@@ -191,6 +193,8 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
   async getMarketplaceOrders(data: GetMarketplaceOrdersInput): Promise<GetMarketplaceOrdersOutput> {
     const { container, marketplace, orderType } = data
 
+    console.log("Getting marketplace orders with orderType", orderType)
+
     const fbsApi = getWbApi("FBSAssemblyOrders", marketplace.credentials as MarketplaceWildberriesCredentialsType) as FBSAssemblyOrdersApi
 
     let status: number = 400
@@ -219,6 +223,8 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
         break
     }
 
+    console.log("Fetched marketplace orders with status", status, "and orders", orders)
+
     return status === 200 ? orders! : []
   }
 
@@ -227,15 +233,12 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
 
     const medusaOrders = (marketplaceOrders as Array<OrderNew>).map(order => {
       const mappedOrder: MapToMedusaOrdersOutput[number] = {
-        sales_channel_id: marketplace.sales_channel_id!,
-        email: "wb_customer_" + order.rid + "@generated.com",
+        sales_channel_id: marketplace.sales_channel?.id,
+        email: "wb_customer_" + order.rid + "@example.com",
         shipping_address: {
           address_1: order.address?.fullAddress ?? "",
-          city: order.address?.fullAddress?.split(",")[0] ?? "",
-          postal_code: "-",
-          country_code: "ru",
-          first_name: "WB",
-          last_name: "Customer"
+          country_code: "ru", // TODO: what if other country
+          first_name: "WB Customer"
         },
         items: [{
           title: order.article ?? "",
@@ -243,7 +246,13 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
           quantity: 1,
           unit_price: (order.finalPrice ?? 0) / 100
         }],
-        marketplace_order: order
+        marketplace_order: {
+          order_id: order.rid!,
+          marketplace_id: marketplace.id,
+          status: "New",
+          type: "FBS",
+          data: order as Record<string, unknown>
+        }
       }
       return mappedOrder
     })
