@@ -12,7 +12,10 @@ export default async function (container: MedusaContainer) {
   for (const marketplace of marketplaces) {
     try {
       const { result } = await importMarketplaceOrdersWorkflow(container).run({
-        input: { marketplace }
+        input: { 
+          marketplace,
+          orderType: marketplace.exchange_profiles[0]?.order_type
+        }
       })
       logger.info(`Imported orders from marketplace ${marketplace.id}: ${JSON.stringify(result, null, 2)}`)
     } catch (e) {

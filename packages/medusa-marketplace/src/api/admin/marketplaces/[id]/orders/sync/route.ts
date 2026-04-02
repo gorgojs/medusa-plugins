@@ -9,7 +9,7 @@ export const POST = async (
   const { result } = await importMarketplaceOrdersWorkflow(req.scope).run({
     input: {
       marketplace: req["marketplaceContext"],
-      orderType: req.query.order_type as string | undefined,
+      orderType: req["marketplaceContext"]?.exchange_profiles[0]?.order_type
     }
   })
 
