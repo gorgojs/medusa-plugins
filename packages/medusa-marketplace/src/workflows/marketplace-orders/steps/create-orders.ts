@@ -19,17 +19,16 @@ export const createOrdersStep = createStep(
     const marketplaceService = container.resolve<MarketplaceModuleService>(MARKETPLACE_MODULE)
     const link = container.resolve(ContainerRegistrationKeys.LINK)
 
-    if (!input.region_id || !orders.length) {
+    if (!orders.length) {
       return new StepResponse()
     }
 
     for (const order of orders) {
-      const marketplaceOrder = order.marketplace_order
-      const medusaOrderData = order as CreateOrderDTO
+      const { marketplace_order: marketplaceOrder, ...medusaOrder } = order
 
       const { result } = await createOrderWorkflow(container).run({
         input: {
-          ...medusaOrderData
+          ...medusaOrder
         }
       })
 
