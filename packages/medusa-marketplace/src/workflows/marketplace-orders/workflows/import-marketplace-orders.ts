@@ -1,6 +1,6 @@
 import { createWorkflow, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
 import { ImportMarketplaceOrdersWorkflowInput } from "../../../types/workflow/marketplace-orders/import-orders"
-import { createOrdersStep, getOrdersStep, mapToMedusaOrdersStep } from "../steps"
+import { createOrdersStep, getMarketplaceOrdersStep, mapToMedusaOrdersStep } from "../steps"
 
 export const importMarketplaceOrdersWorkflowId = "import-marketplace-orders"
 
@@ -9,7 +9,7 @@ export const importMarketplaceOrdersWorkflow = createWorkflow(
   (input: ImportMarketplaceOrdersWorkflowInput) => {
     const marketplace = input.marketplace
 
-    const marketplaceOrders = getOrdersStep({
+    const marketplaceOrders = getMarketplaceOrdersStep({
       providerId: marketplace.provider_id,
       marketplace,
       orderType: input.orderType
@@ -18,7 +18,7 @@ export const importMarketplaceOrdersWorkflow = createWorkflow(
     const medusaOrders = mapToMedusaOrdersStep({
       providerId: marketplace.provider_id,
       marketplace,
-      orders: marketplaceOrders
+      marketplaceOrders: marketplaceOrders
     })
 
     const result = createOrdersStep({
@@ -27,6 +27,6 @@ export const importMarketplaceOrdersWorkflow = createWorkflow(
 
     // TODO: log the result of the import using the logMarketplaceEventWorkflow
 
-    return new WorkflowResponse(medusaOrders)
+    return new WorkflowResponse(result)
   }
 )

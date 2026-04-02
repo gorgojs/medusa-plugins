@@ -13,11 +13,11 @@ export interface IMarketplaceProvider {
 
   getMarketplaceProducts(data: GetMarketplaceProductsInput): Promise<GetMarketplaceProductsOutput>
 
-  getOrderTypes(data: GetOrderTypesInput): Promise<GetOrderTypesOutput>
+  getMarketplaceOrderTypes(data: GetMarketplaceOrderTypesInput): Promise<GetMarketplaceOrderTypesOutput>
 
-  getOrders(data: GetOrdersInput): Promise<GetOrdersOutput>
+  getMarketplaceOrders(data: GetMarketplaceOrdersInput): Promise<GetMarketplaceOrdersOutput>
 
-  getWarehouses(data: GetWarehousesInput): Promise<GetWarehousesOutput>
+  getMarketplaceWarehouses(data: GetMarketplaceWarehousesInput): Promise<GetMarketplaceWarehousesOutput>
 
   mapToMedusaOrders(data: MapToMedusaOrdersInput): Promise<MapToMedusaOrdersOutput>
 
@@ -60,13 +60,13 @@ export type MapToMedusaProductsInput = MarketplaceProviderInput & {
   marketplaceProducts: any
 }
 
-export type GetOrderTypesInput = MarketplaceProviderInput
+export type GetMarketplaceOrderTypesInput = MarketplaceProviderInput
 
-export type GetOrdersInput = MarketplaceProviderInput & {
+export type GetMarketplaceOrdersInput = MarketplaceProviderInput & {
   orderType?: string
 }
 
-export type GetWarehousesInput = MarketplaceProviderInput
+export type GetMarketplaceWarehousesInput = MarketplaceProviderInput
 
 export type ExportProductsOutput = Record<string, unknown>
 
@@ -82,8 +82,8 @@ export type MapToMarketplaceProductsOutput = Record<string, unknown>
 
 export type MapToMedusaProductsOutput = ProductDTO[] 
 
-export type GetOrderTypesOutput = string[]
+export type GetMarketplaceOrderTypesOutput = string[]
 
-export type GetOrdersOutput = Record<string, unknown>[]
+export type GetMarketplaceOrdersOutput = Record<string, unknown>[]
 
-export type GetWarehousesOutput = MarketplaceWarehouseType[]
+export type GetMarketplaceWarehousesOutput = MarketplaceWarehouseType[]

@@ -15,12 +15,12 @@ import {
   MapToMarketplaceProductsOutput,
   MapToMedusaProductsInput,
   MapToMedusaProductsOutput,
-  GetWarehousesInput,
-  GetWarehousesOutput,
-  GetOrderTypesInput,
-  GetOrderTypesOutput,
-  GetOrdersOutput,
-  GetOrdersInput,
+  GetMarketplaceWarehousesInput,
+  GetMarketplaceWarehousesOutput,
+  GetMarketplaceOrderTypesInput,
+  GetMarketplaceOrderTypesOutput,
+  GetMarketplaceOrdersInput, 
+  GetMarketplaceOrdersOutput,
   MapToMedusaOrdersOutput,
   MapToMedusaOrdersInput
 } from "../../../types"
@@ -85,15 +85,15 @@ export default class MarketplaceModuleService extends MedusaService({
     return await this.marketplaceProviderService_.getMarketplaceProducts(providerId, data)
   }
 
-  async getOrderTypes(providerId: string, data: GetOrderTypesInput): Promise<GetOrderTypesOutput> {
+  async getOrderTypes(providerId: string, data: GetMarketplaceOrderTypesInput): Promise<GetMarketplaceOrderTypesOutput> {
     return await this.marketplaceProviderService_.getOrderTypes(providerId, data)
   }
 
-  async getOrders(providerId: string, data: GetOrdersInput): Promise<GetOrdersOutput> {
-    return await this.marketplaceProviderService_.getOrders(providerId, data)
+  async getMarketplaceOrders(providerId: string, data: GetMarketplaceOrdersInput): Promise<GetMarketplaceOrdersOutput> {
+    return await this.marketplaceProviderService_.getMarketplaceOrders(providerId, data)
   }
 
-  async getWarehouses(providerId: string, data: GetWarehousesInput): Promise<GetWarehousesOutput> {
+  async getWarehouses(providerId: string, data: GetMarketplaceWarehousesInput): Promise<GetMarketplaceWarehousesOutput> {
     return await this.marketplaceProviderService_.getWarehouses(providerId, data)
   }
 

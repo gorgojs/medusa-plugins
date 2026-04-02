@@ -4,14 +4,12 @@ import {
   ExportProductsOutput,
   GetMarketplaceProductsInput,
   GetMarketplaceProductsOutput,
-  GetOrdersInput,
-  GetOrdersOutput,
-  GetOrderTypesInput,
-  GetOrderTypesOutput,
-  GetProductsInput,
-  GetProductsOutput,
-  GetWarehousesInput,
-  GetWarehousesOutput,
+  GetMarketplaceOrdersInput,
+  GetMarketplaceOrdersOutput,
+  GetMarketplaceOrderTypesInput,
+  GetMarketplaceOrderTypesOutput,
+  GetMarketplaceWarehousesInput,
+  GetMarketplaceWarehousesOutput,
   ImportProductsInput,
   ImportProductsOutput,
   MapToMarketplaceProductsInput,
@@ -174,7 +172,7 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
     return marketplaceProducts as any
   }
 
-  async getWarehouses(data: GetWarehousesInput): Promise<GetWarehousesOutput> {
+  async getMarketplaceWarehouses(data: GetMarketplaceWarehousesInput): Promise<GetMarketplaceWarehousesOutput> {
     const { container, marketplace } = data
 
     const api = getWbApi("SellerWarehouses", marketplace.credentials as MarketplaceWildberriesCredentialsType) as SellerWarehousesApi
@@ -186,11 +184,11 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
     }))
   }
 
-  async getOrderTypes(data: GetOrderTypesInput): Promise<GetOrderTypesOutput> {
+  async getMarketplaceOrderTypes(data: GetMarketplaceOrderTypesInput): Promise<GetMarketplaceOrderTypesOutput> {
     return Object.values(ORDER_TYPES) as string[]
   }
 
-  async getOrders(data: GetOrdersInput): Promise<GetOrdersOutput> {
+  async getMarketplaceOrders(data: GetMarketplaceOrdersInput): Promise<GetMarketplaceOrdersOutput> {
     const { container, marketplace, orderType } = data
 
     const fbsApi = getWbApi("FBSAssemblyOrders", marketplace.credentials as MarketplaceWildberriesCredentialsType) as FBSAssemblyOrdersApi
@@ -245,9 +243,7 @@ export class WildberriesMarketplaceProvider extends AbstractMarketplaceProvider 
           quantity: 1,
           unit_price: (order.finalPrice ?? 0) / 100
         }],
-        metadata: {
-          original_order: order
-        }
+        marketplace_order: order
       }
       return mappedOrder
     })

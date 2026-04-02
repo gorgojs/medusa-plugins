@@ -13,12 +13,12 @@ import {
   MapToMarketplaceProductsOutput,
   MapToMedusaProductsInput,
   MapToMedusaProductsOutput,
-  GetWarehousesInput,
-  GetWarehousesOutput,
-  GetOrderTypesOutput,
-  GetOrderTypesInput,
-  GetOrdersInput,
-  GetOrdersOutput,
+  GetMarketplaceWarehousesInput,
+  GetMarketplaceWarehousesOutput,
+  GetMarketplaceOrderTypesOutput,
+  GetMarketplaceOrderTypesInput,
+  GetMarketplaceOrdersInput,
+  GetMarketplaceOrdersOutput,
   MapToMedusaOrdersInput,
   MapToMedusaOrdersOutput
 } from "../../../types"
@@ -94,29 +94,29 @@ Please make sure that the provider is registered in the container and it is conf
 
   async getOrderTypes(
     providerId: string,
-    input: GetOrderTypesInput
-  ): Promise<GetOrderTypesOutput> {
+    input: GetMarketplaceOrderTypesInput
+  ): Promise<GetMarketplaceOrderTypesOutput> {
     const provider = this.retrieveProvider(providerId)
 
-    return provider.getOrderTypes(input)
+    return provider.getMarketplaceOrderTypes(input)
   }
 
-  async getOrders(
+  async getMarketplaceOrders(
     providerId: string,
-    input: GetOrdersInput
-  ): Promise<GetOrdersOutput> {
+    input: GetMarketplaceOrdersInput
+  ): Promise<GetMarketplaceOrdersOutput> {
     const provider = this.retrieveProvider(providerId)
 
-    return provider.getOrders(input)
+    return provider.getMarketplaceOrders(input)
   }
 
   async getWarehouses(
     providerId: string,
-    input: GetWarehousesInput
-  ): Promise<GetWarehousesOutput> {
+    input: GetMarketplaceWarehousesInput
+  ): Promise<GetMarketplaceWarehousesOutput> {
     const provider = this.retrieveProvider(providerId)
 
-    return provider.getWarehouses(input)
+    return provider.getMarketplaceWarehouses(input)
   }
 
   async importProducts(

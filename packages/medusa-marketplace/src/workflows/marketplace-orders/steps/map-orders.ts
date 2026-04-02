@@ -6,21 +6,21 @@ import { MarketplaceModuleService } from "../../../modules/marketplace/services"
 export type MapToMedusaOrdersStepInput = {
   marketplace: MarketplaceDTO
   providerId: string
-  orders: any[]
+  marketplaceOrders: any[]
 }
 
 export const mapToMedusaOrdersStep = createStep(
   "map-to-medusa-orders",
   async (input: MapToMedusaOrdersStepInput, { container }) => {
     const marketplaceService: MarketplaceModuleService = container.resolve(MARKETPLACE_MODULE)
-    const { marketplace, providerId, orders } = input
+    const { marketplace, providerId, marketplaceOrders } = input
 
-    const medusaOrders = await marketplaceService.mapToMedusaOrders(providerId, {
+    const orders = await marketplaceService.mapToMedusaOrders(providerId, {
       container,
       marketplace,
-      marketplaceOrders: orders
+      marketplaceOrders: marketplaceOrders
     })
 
-    return new StepResponse<MedusaOrder[]>(medusaOrders)
+    return new StepResponse<MedusaOrder[]>(orders)
   }
 )

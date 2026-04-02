@@ -58,4 +58,5 @@ export type CreateMarketplaceOrderDTO = {
   marketplace_id: string
   status: string
   type: string
+  data?: Record<string, unknown>
 }
