@@ -11,6 +11,7 @@ const MarketplaceOrder = model.define("marketplace_order", {
   }),
   status: model.text(),
   type: model.text(),
+  data: model.json().default({})
 })
 
 export default MarketplaceOrder

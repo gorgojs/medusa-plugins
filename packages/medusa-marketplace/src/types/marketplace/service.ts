@@ -13,11 +13,6 @@ export type LogEventInput = {
   responseData?: Record<string, unknown>
 }
 
-export type MedusaOrder = {
-  sales_channel_id: string
-  email: string
-  shipping_address: NonNullable<CreateOrderDTO["shipping_address"]>
-  items: NonNullable<CreateOrderDTO["items"]>
+export interface MedusaOrder extends CreateOrderDTO {
   marketplace_order: CreateMarketplaceOrderDTO
-  metadata?: Record<string, any>
 }
