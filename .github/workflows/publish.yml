@@ -1,0 +1,53 @@
+name: Release Plugins
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .changeset/**
+
+jobs:   
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Required for OIDC
+      contents: write
+      issues : write
+      pull-requests: write
+    concurrency:
+      group: release-plugins-${{ github.ref }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          
+      - name: Version and publish packages
+        uses: changesets/action@v1
+        with:
+          version: yarn changeset version
+          publish: yarn changeset publish
+          title: 'chore: release packages'
+          commit: 'chore: release packages'
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
