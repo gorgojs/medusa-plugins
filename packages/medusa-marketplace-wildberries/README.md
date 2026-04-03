@@ -179,7 +179,7 @@ In this guide, you’ll learn how to manage marketplaces in the Medusa Admin.
 
 Go to **Settings → Marketplaces** to see a table of all configured marketplace integrations.
 
-![settings.marketplaces](image.png)
+![settings.marketplaces](../../www/docs/public/static/marketplace-wildberries/image.png)
 
 The table shows:
 
@@ -203,7 +203,7 @@ The table shows:
    - **Enabled** — toggle whether this marketplace is active.
 4. Click **Save** to create the marketplace.
 
-![settings.marketplaces.add](image-2.png)
+![settings.marketplaces.add](../../www/docs/public/static/marketplace-wildberries/image-1.png)
 
 > After creation, configure the **Credentials** and **Exchange settings** sections before running a sync.
 
@@ -218,7 +218,7 @@ Click on a marketplace in the list to open its detail page. The detail page is d
 - **Events** — a log of all sync operations for this marketplace.
 - **Credentials** — your Wildberries API key (provided by the Wildberries provider widget).
 
-![settings.marketplaces.[id]](image-3.png)
+![settings.marketplaces.[id]](../../www/docs/public/static/marketplace-wildberries/image-2.png)
 
 ---
 
@@ -229,7 +229,7 @@ Click on a marketplace in the list to open its detail page. The detail page is d
 3. Update the **Title** or toggle **Enabled**.
 4. Click **Save**.
 
-![settings.marketplace.[id].edit](image-4.png)
+![settings.marketplaces.[id].edit](../../www/docs/public/static/marketplace-wildberries/image-3.png)
 
 ---
 
@@ -247,6 +247,8 @@ The **Credentials** section is provided by the `@gorgo/medusa-marketplace-wildbe
 4. Click the **Edit** (pencil) icon to open the edit form.
 5. Enter your [Wildberries API key](https://seller.wildberries.ru/supplier-settings/access-to-api) in the **API Key** field.
 6. Click **Save**.
+
+![settings.marketplaces.[id].credentials.edit](../../www/docs/public/static/marketplace-wildberries/image-4.png)
 
 > Your API key is stored in the database and is never shown in plain text in the admin UI by default.
 
@@ -266,6 +268,8 @@ Exchange settings map a **warehouse** to an **order type** (FBS, FBO, DBS, ...).
    - **Warehouse** — choose from the list of warehouses fetched live from your Wildberries account.
    - **Order Type** — `FBS` (Fulfilled by Seller) or `FBO` (Fulfilled by Operator).
 4. Click **Save**.
+
+![settings.marketplaces.[id].exchange-settings.edit](../../www/docs/public/static/marketplace-wildberries/image-5.png)
 
 > The warehouse list is fetched from the Wildberries API using your configured API key. Make sure credentials are saved before adding an exchange profile.
 
@@ -296,6 +300,8 @@ After a successful export or import, the following metadata fields are set on va
 2. Choose "Products" from the dropdown.
 3. The sync runs in the background. Check the **Events** section for progress and results.
 
+![settings.marketplaces.[id].products-sync](../../www/docs/public/static/marketplace-wildberries/image-6.png)
+
 ---
 
 #### Scheduled Sync Products
@@ -316,6 +322,8 @@ Orders are imported from Wildberries into Medusa. For each Wildberries order, a 
 2. Choose "Orders" from the dropdown.
 3. The sync runs in the background. Check the **Events** section for progress and results.
 
+![settings.marketplaces.[id].orders-sync](../../www/docs/public/static/marketplace-wildberries/image-7.png)
+
 ---
 
 #### Scheduled Sync Orders
@@ -330,6 +338,8 @@ Orders are automatically synced every day at midnight (UTC) via the `sync-market
 2. Click "Delete".
 3. Confirm the deletion.
 
+![settings.marketplaces.[id].delete](../../www/docs/public/static/marketplace-wildberries/image-8.png)
+
 > Deleting a marketplace also permanently deletes all associated exchange profiles and events.
 
 ---
@@ -337,6 +347,8 @@ Orders are automatically synced every day at midnight (UTC) via the `sync-market
 #### View Events
 
 Go to **Settings → Marketplaces → Events** to see a log of all sync operations across all marketplaces. Events scoped to a single marketplace are also visible on its detail page.
+
+![settings.marketplaces.[id].events](../../www/docs/public/static/marketplace-wildberries/image-9.png)
 
 The events list shows:
 
@@ -359,5 +371,7 @@ Click on any event in the events list to open its detail view. This shows:
 - **Started at** / **Finished at** timestamps.
 - **Request data** — the full payload sent to or received from Wildberries (JSON).
 - **Response data** — the full response from Wildberries (JSON), including any validation errors returned by the Wildberries API.
+
+![settings.marketplaces.[id].events.[event_id]](../../www/docs/public/static/marketplace-wildberries/image-10.png)
 
 > Event details are useful for diagnosing sync failures. Validation errors for individual product cards are stored in the **Response data** field and also written back to the `wildberries_error` metadata field on the affected variants.
