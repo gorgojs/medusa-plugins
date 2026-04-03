@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'www/docs/**'
+  workflow_dispatch:
 
 jobs:
   notify:
