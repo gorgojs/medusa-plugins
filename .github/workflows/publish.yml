@@ -5,9 +5,9 @@ on:
     branches:
       - main
     paths:
-      - .changeset/**
+      - 'packages/**'
 
-jobs:   
+jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
@@ -49,5 +49,6 @@ jobs:
           publish: yarn changeset publish
           title: 'chore: release packages'
           commit: 'chore: release packages'
+          createGithubReleases: false
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
