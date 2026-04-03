@@ -1,11 +1,11 @@
 <h1 align="center">
-  Wildberries Integration for Medusa
+  Интеграция Wildberries с Medusa
 </h1>
 
 <p align="center">
-  A Medusa plugin that integrates your store with the <a href="https://www.wildberries.ru">Wildberries</a> marketplace
+  Плагин для Medusa, который интегрирует ваш магазин с маркетплейсом <a href="https://www.wildberries.ru">Wildberries</a>
   <br/>
-  <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-marketplace-wildberries/README.ru.md">Читать README на русском ↗</a>
+   <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-marketplace-wildberries/README.md">Read README in English ↗</a>
 </p>
 
 <p align="center">
@@ -13,56 +13,56 @@
     <img src="https://img.shields.io/badge/Medusa-^2.13.3-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.13.5-green?logo=checkmarx" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Протестировано_с_Medusa-v2.13.5-green?logo=checkmarx" alt="Medusa" />
   </a>
 </p>
 
 <p align="center">
   <a href="https://t.me/medusajs_chat">
-    <img src="https://img.shields.io/badge/Telegram-Plugin_Support_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js⊷1C on Telegram" />
+    <img src="https://img.shields.io/badge/Telegram-Чат_поддержки_плагина-0088cc?logo=telegram&style=social" alt="Чат поддержки плагина в Telegram" />
   </a>
 </p>
 
 <p align="center">
   <a href="https://t.me/medusajs_chat">
-    <img src="https://img.shields.io/badge/Telegram-Medusa.js_Dev_Community_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js Chat on Telegram" />
+    <img src="https://img.shields.io/badge/Telegram-Чат_dev--сообщества_Medusa.js-0088cc?logo=telegram&style=social" alt="Чат сообщества разработчиков Medusa.js в Telegram" />
   </a>
 </p>
 
-## Status
+## Статус
 
-🚧 Work in progress, see the [Roadmap](https://github.com/gorgojs/medusa-plugins/issues/102).
+🚧 В разработке, подробнее см. [Roadmap](https://github.com/gorgojs/medusa-plugins/issues/102).
 
-## Features
+## Возможности
 
-- 🧩  **Built as a provider on top of [`@gorgo/medusa-marketplace`](https://www.npmjs.com/package/@gorgo/medusa-marketplace)** with shared admin UI, events & workflows
-- 🔄  **Product sync**  with Wildberries (create, update, merge)  
-- 📦  **Order sync** with automatic customer & order creation  
-- ⏱  **Scheduled & manual sync** from admin
-- 📊  **Event logging** for all sync operations  
-- 🛠  **Admin UI** for managing marketplaces, credentials & configs
-- 🔑  **API key management** via admin  
-- ⚙️  **Exchange profiles** — configure warehouse & FBS/FBO/DBS mappings
+- 🧩  **Построен как провайдер поверх [`@gorgo/medusa-marketplace`](https://www.npmjs.com/package/@gorgo/medusa-marketplace)** с общей админ-панелью, событиями и workflow
+- 🔄  **Синхронизация товаров** с Wildberries (создание, обновление, объединение)
+- 📦  **Синхронизация заказов** с автоматическим созданием клиентов и заказов
+- ⏱  **Плановая и ручная синхронизация** через админ-панель
+- 📊  **Логирование событий** для всех операций синхронизации
+- 🛠  **Админ UI** для управления маркетплейсами, доступами и настройками
+- 🔑  **Управление API-ключом** через UI
+- ⚙️  **Профили обмена** — настройка складов и схем FBS/FBO/DBS
 
-## Requirements
+## Требования
 
-- Medusa v2 (`@medusajs/medusa` >= 2.13.3)
-- [`@gorgo/medusa-marketplace`](https://www.npmjs.com/package/@gorgo/medusa-marketplace) installed and configured as a Medusa plugin
-- Node.js >= 20
+- Medusa v2 (`@medusajs/medusa` >= 2.13.3)  
+- Основной плагин маркетплейса [`@gorgo/medusa-marketplace`](https://www.npmjs.com/package/@gorgo/medusa-marketplace)  
+- Node.js >= 20  
 
-## Installation
+## Установка
 
-Install both the Marketplace core plugin and the Wildberries provider:
+Установите основной плагин Marketplace и плагин-провайдер Wildberries:
 
 ```bash
 npm install @gorgo/medusa-marketplace @gorgo/medusa-marketplace-wildberries
-# or
+# или
 yarn add @gorgo/medusa-marketplace @gorgo/medusa-marketplace-wildberries
 ```
 
-## Configuration
+## Настройка
 
-Add the provider configuration in your `medusa-config.ts` file of the Medusa admin application:
+Добавьте конфигурацию провайдера в файл `medusa-config.ts` приложения Medusa Admin:
 
 ```ts
 // medusa-config.ts
@@ -70,22 +70,22 @@ import { gorgoPluginsInject } from '@gorgo/medusa-marketplace/exports'
 
 module.exports = defineConfig({
   // ...
-  // Register plugins
+  // Регистрация плагинов
   plugins: [
     // ...
-    // Register the Wildberries plugin (registers admin routes and widgets)
+    // Регистрация плагина Wildberries (добавляет роуты и виджеты в админке)
     {
       resolve: "@gorgo/medusa-marketplace-wildberries",
       options: {},
     },
-    // Register the marketplace core plugin and declare Wildberries as a provider
+   // Регистрация основного плагина marketplace и объявление провайдера Wildberries
     {
       resolve: "@gorgo/medusa-marketplace",
       options: {
         providers: [
           {
             resolve: "@gorgo/medusa-marketplace-wildberries/providers/marketplace-wildberries",
-            id: "wb", // Unique identifier for this provider instance
+            id: "wb", // Уникальный идентификатор экземпляра провайдера
             options: {},
           },
         ],
@@ -93,7 +93,7 @@ module.exports = defineConfig({
     },
   ],
   // ...
-  // Configure Vite plugin for marketplace widgets injection
+  // Настройка Vite-плагина для внедрения marketplace-виджетов
   admin: {
     vite: (config) => {
       return {
@@ -107,9 +107,8 @@ module.exports = defineConfig({
           }),
         ],
         /**
-         * The `optimizeDeps` and `resolve` entries are required to ensure
-         * that shared dependencies (React, React Query, React Router) are not duplicated
-         * between the host Medusa admin and the plugin packages
+         * Параметры `optimizeDeps` и `resolve` необходимы, чтобы избежать дублирования
+         * общих зависимостей (React, React Query, React Router) между Medusa admin и пакетами плагинов
          */
         optimizeDeps: {
           exclude: ["@gorgo/medusa-marketplace"],
@@ -130,40 +129,40 @@ module.exports = defineConfig({
 })
 ```
 
-The admin UI components are injected into the Medusa admin via a Vite plugin. 
+Компоненты админ-интерфейса внедряются в Medusa Admin с помощью Vite-плагина.
 
-**`@gorgo/medusa-marketplace` plugin options:**
+**Параметры плагина `@gorgo/medusa-marketplace`:**
 
-| Option                | Type     | Required | Description                                                                                                                |
-| --------------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `providers`           | `array`  | Yes      | List of marketplace provider registrations                                                                                |
-| `providers[].resolve` | `string` | Yes      | Path to the provider module. For Wildberries: `@gorgo/medusa-marketplace-wildberries/providers/marketplace-wildberries` |
-| `providers[].id`      | `string` | Yes      | A unique identifier for this provider instance (e.g. `wb`). Used to distinguish multiple provider instances             |
-| `providers[].options` | `object` | No       | Provider-level options (unused for Wildberries)                                                                           |
+| Параметр              | Тип      | Обязательный | Описание                                                                                                             |
+| --------------------- | -------- | ------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `providers`           | `array`  | Yes          | Список регистраций провайдеров маркетплейсов                                                                         |
+| `providers[].resolve` | `string` | Yes          | Путь к модулю провайдера. Для Wildberries: `@gorgo/medusa-marketplace-wildberries/providers/marketplace-wildberries` |
+| `providers[].id`      | `string` | Yes          | Уникальный идентификатор экземпляра провайдера (например, `wb` ), используется для различения нескольких подключений |
+| `providers[].options` | `object` | No           | Опции уровня провайдера (для Wildberries не используются)                                                            |
 
-**`@gorgo/medusa-marketplace-wildberries` plugin options:**
+**Параметры плагина `@gorgo/medusa-marketplace-wildberries`:**
 
-No options are required at the plugin level. All marketplace-specific settings (such as the API key) are configured per-marketplace instance in the admin UI.
+Указание параметров на уровне регистрации плагина не требуеся. Все настройки маркетплейса (например, API-ключ) задаются отдельно для каждого подключения в Medusa Admin.
 
-**`gorgoPluginsInject` Vite-plugin options:**
+**Параметры плагина Vite `gorgoPluginsInject`:**
 
-| Option    | Type       | Description                                                                                                                                                           |
-| --------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sources` | `string[]` | List of Gorgo plugin packages whose admin extensions should be injected into the Medusa admin. Include every `@gorgo/medusa-marketplace-*` plugin you have installed |
+| Параметр  | Тип        | Описание                                                                                                                                                               |
+| --------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sources` | `string[]` | Список пакетов Gorgo-плагинов, чьи расширения админ-интерфейса должны быть внедрены в Medusa Admin. Укажите все установленные `@gorgo/medusa-marketplace-*` NPM-пакеты |
 
-## Development
+## Разработка
 
-Docker is required for generating the [Wildberries OpenAPI client](https://openapi-generator.tech/docs/installation/). To (re)generate the client, run:
+Для генерации [клиента Wildberries OpenAPI](https://openapi-generator.tech/docs/installation/) требуется Docker. Чтобы сгенерировать клиент, выполните:
 
 ```bash
 yarn
-yarn openapi:pull  # download the latest Wildberries OpenAPI schema
-yarn openapi:gen   # generate the API client
+yarn openapi:pull  # загрузить актуальную схему Wildberries OpenAPI
+yarn openapi:gen   # сгенерировать API-клиент
 ```
 
-The client is also regenerated automatically on `yarn dev`.
+Клиент также автоматически пересобирается при запуске `yarn dev`.
 
-## License
+## Лицензия
 
 MIT
 
@@ -185,10 +184,10 @@ The table shows:
 
 | Column            | Description                                          |
 | ----------------- | ---------------------------------------------------- |
-| **Title**         | The display name you gave to the marketplace      |
-| **Provider**      | The marketplace type (e.g. `wildberries`)           |
-| **Sales Channel** | The Medusa sales channel linked to this marketplace |
-| **Status**        | Whether the marketplace is enabled or disabled      |
+| **Title**         | The display name you gave to the marketplace.        |
+| **Provider**      | The marketplace type (e.g. `wildberries`).           |
+| **Sales Channel** | The Medusa sales channel linked to this marketplace. |
+| **Status**        | Whether the marketplace is enabled or disabled.      |
 
 ---
 
