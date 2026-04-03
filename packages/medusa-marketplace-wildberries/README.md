@@ -216,7 +216,7 @@ Click on a marketplace in the list to open its detail page. The detail page is d
 - **General** — title and enabled status.
 - **Exchange Profiles** — warehouse and order type mappings.
 - **Events** — a log of all sync operations for this marketplace.
-- **Credentials** — your Wildberries API key (provided by the Wildberries provider widget).
+- **Credentials** — your Wildberries API key.
 
 ![settings.marketplaces.[id]](../../www/docs/public/static/marketplace-wildberries/image-2.png)
 
@@ -243,7 +243,7 @@ The **Credentials** section is provided by the `@gorgo/medusa-marketplace-wildbe
 
 1. Find the **Credentials** section on the marketplace detail page.
 2. Your current API key is displayed in redacted form (first 4 and last 2 characters are shown).
-3. Click the eye icon to reveal the full key, or the copy icon to copy it to the clipboard.
+3. Click the eye icon to reveal the full key, or click on the key to copy it to the clipboard.
 4. Click the **Edit** (pencil) icon to open the edit form.
 5. Enter your [Wildberries API key](https://seller.wildberries.ru/supplier-settings/access-to-api) in the **API Key** field.
 6. Click **Save**.
@@ -357,8 +357,8 @@ The events list shows:
 | **Direction** | `Medusa → Marketplace` (export) or `Marketplace → Medusa` (import).                        |
 | **Entity**    | What was synced: `PRODUCT`, `PRODUCT_MEDIA`, `PRODUCT_PRICE`, `PRODUCT_STOCK`, or `ORDER`. |
 | **Action**    | The operation performed: `CREATE`, `UPDATE`, or `DELETE`.                                  |
-| **Started**   | When the sync operation began.                                                             |
-| **Finished**  | When the sync operation completed.                                                         |
+| **Started**   | When the operation began.                                                             |
+| **Finished**  | When the operation completed.                                                         |
 
 ---
 
@@ -366,7 +366,7 @@ The events list shows:
 
 Click on any event in the events list to open its detail view. This shows:
 
-- **Correlation ID** — groups related events from the same sync run.
+- **Correlation ID** — groups related events from the same sync run (WIP).
 - **Direction**, **Entity type**, and **Action**.
 - **Started at** / **Finished at** timestamps.
 - **Request data** — the full payload sent to or received from Wildberries (JSON).

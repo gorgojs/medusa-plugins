@@ -166,197 +166,211 @@ yarn openapi:gen   # сгенерировать API-клиент
 
 MIT
 
-## Usage
+## Использование
 
-This documentation describes how to manage Wildberries marketplace integrations from the Medusa admin panel.
+Данная документация описывает управление интеграциями с маркетплейсом Wildberries из панели администратора Medusa.
 
-### Manage Marketplaces
+### Управление маркетплейсами
 
-In this guide, you’ll learn how to manage marketplaces in the Medusa Admin.
+В этом руководстве вы узнаете, как управлять маркетплейсами в панели администратора Medusa.
 
-#### View Marketplaces
+#### Просмотр маркетплейсов
 
-Go to **Settings → Marketplaces** to see a table of all configured marketplace integrations.
+Перейдите в **Настройки → Маркетплейсы**, чтобы увидеть таблицу всех настроенных интеграций с маркетплейсами.
 
-![settings.marketplaces](image.png)
+![settings.marketplaces](../../www/docs/public/static/marketplace-wildberries/image.png)
 
-The table shows:
+В таблице отображается:
 
-| Column            | Description                                          |
-| ----------------- | ---------------------------------------------------- |
-| **Title**         | The display name you gave to the marketplace.        |
-| **Provider**      | The marketplace type (e.g. `wildberries`).           |
-| **Sales Channel** | The Medusa sales channel linked to this marketplace. |
-| **Status**        | Whether the marketplace is enabled or disabled.      |
-
----
-
-#### Add Marketplace
-
-1. Go to **Settings → Marketplaces**
-2. Click **Add** to create a marketplace connection.
-3. Fill in the form:
-   - **Title** — a human-readable name for this marketplace connection (e.g. "Wildberries Main Store").
-   - **Provider** — select `wildberries` from the dropdown.
-   - **Sales Channel** — select the Medusa sales channel that products and orders for this marketplace will belong to.
-   - **Enabled** — toggle whether this marketplace is active.
-4. Click **Save** to create the marketplace.
-
-![settings.marketplaces.add](image-2.png)
-
-> After creation, configure the **Credentials** and **Exchange settings** sections before running a sync.
+| Column            | Описание                                                      |
+| ----------------- | ------------------------------------------------------------- |
+| **Title**         | Отображаемое имя, которое вы присвоили маркетплейсу           |
+| **Provider**      | Тип маркетплейса (например, `wildberries`)                    |
+| **Sales Channel** | Канал продаж Medusa, связанный с данным маркетплейсом         |
+| **Status**        | Активен или отключён маркетплейс                              |
 
 ---
 
-#### View Marketplace Details
+#### Добавление маркетплейса
 
-Click on a marketplace in the list to open its detail page. The detail page is divided into several sections:
+1. Перейдите в **Настройки → Маркетплейсы**.
+2. Нажмите **Добавить**, чтобы создать подключение к маркетплейсу.
+3. Заполните форму:
+   - **Title** — понятное имя для данного подключения (например, «Wildberries Основной магазин»).
+   - **Provider** — выберите `wildberries` из выпадающего списка.
+   - **Sales Channel** — выберите канал продаж Medusa, к которому будут относиться товары и заказы данного маркетплейса.
+   - **Enabled** — переключите, чтобы включить или отключить маркетплейс.
+4. Нажмите **Save**, чтобы создать маркетплейс.
 
-- **General** — title and enabled status.
-- **Exchange Profiles** — warehouse and order type mappings.
-- **Events** — a log of all sync operations for this marketplace.
-- **Credentials** — your Wildberries API key (provided by the Wildberries provider widget).
+![settings.marketplaces.add](../../www/docs/public/static/marketplace-wildberries/image-1.png)
 
-![settings.marketplaces.[id]](image-3.png)
-
----
-
-#### Edit Marketplace Details
-
-1. On the marketplace detail page, find the **General** section.
-2. Click the **Edit** (pencil) icon.
-3. Update the **Title** or toggle **Enabled**.
-4. Click **Save**.
-
-![settings.marketplace.[id].edit](image-4.png)
+> После создания настройте разделы **Credentials** и **Exchange settings** перед запуском синхронизации.
 
 ---
 
-### Manage Marketplace Credentials
+#### Просмотр сведений о маркетплейсе
 
-In this guide, you’ll learn how to manage Wildberries credentials in the Medusa Admin.
+Нажмите на маркетплейс в списке, чтобы открыть страницу с подробными сведениями. Страница разделена на несколько секций:
 
-#### Edit Marketplace Credentials
+- **General** — название и статус активности.
+- **Exchange Profiles** — сопоставление складов и типов заказов.
+- **Events** — журнал всех операций синхронизации для данного маркетплейса.
+- **Credentials** — ваш API-ключ Wildberries.
 
-The **Credentials** section is provided by the `@gorgo/medusa-marketplace-wildberries` widget on the marketplace detail page.
-
-1. Find the **Credentials** section on the marketplace detail page.
-2. Your current API key is displayed in redacted form (first 4 and last 2 characters are shown).
-3. Click the eye icon to reveal the full key, or the copy icon to copy it to the clipboard.
-4. Click the **Edit** (pencil) icon to open the edit form.
-5. Enter your [Wildberries API key](https://seller.wildberries.ru/supplier-settings/access-to-api) in the **API Key** field.
-6. Click **Save**.
-
-> Your API key is stored in the database and is never shown in plain text in the admin UI by default.
+![settings.marketplaces.[id]](../../www/docs/public/static/marketplace-wildberries/image-2.png)
 
 ---
 
-### Manage Marketplace Exchange Settings
+#### Редактирование сведений о маркетплейсе
 
-In this guide, you’ll learn how to manage Wildberries credentials in the Medusa Admin.
+1. На странице сведений о маркетплейсе найдите раздел **General**.
+2. Нажмите на значок **Edit** (карандаш).
+3. Обновите **Title** или переключите **Enabled**.
+4. Нажмите **Save**.
 
-#### Edit Marketplace Exchange Settings
-
-Exchange settings map a **warehouse** to an **order type** (FBS, FBO, DBS, ...). It is required to sync orders.
-
-1. Find the **Exchange settings** section on the marketplace detail page.
-2. Click **Add** (or the edit icon on an existing profile).
-3. Select:
-   - **Warehouse** — choose from the list of warehouses fetched live from your Wildberries account.
-   - **Order Type** — `FBS` (Fulfilled by Seller) or `FBO` (Fulfilled by Operator).
-4. Click **Save**.
-
-> The warehouse list is fetched from the Wildberries API using your configured API key. Make sure credentials are saved before adding an exchange profile.
+![settings.marketplaces.[id].edit](../../www/docs/public/static/marketplace-wildberries/image-3.png)
 
 ---
 
-### Sync Products
+### Управление учётными данными маркетплейса
 
-Products can be synced in both directions:
+В этом руководстве вы узнаете, как управлять учётными данными Wildberries в панели администратора Medusa.
 
-- **Export** — Medusa products are sent to Wildberries. New product cards are created for products without a Wildberries ID; existing cards are updated by nomenclature ID (`nmID`). If a product already has many variants on Wildberries, new variants are merged into the existing card.
-- **Import** — Wildberries product data (nmID, imtID, size SKUs) is fetched and stored as metadata on your Medusa products and variants.
+#### Редактирование учётных данных маркетплейса
 
-After a successful export or import, the following metadata fields are set on variants:
+Раздел **Credentials** предоставляется виджетом `@gorgo/medusa-marketplace-wildberries` на странице сведений о маркетплейсе.
 
-| Metadata key           | Description                                           |
-| ---------------------- | ----------------------------------------------------- |
-| `wildberries_nmID`     | Nomenclature ID on Wildberries (variant identifier).  |
-| `wildberries_imtID`    | Material ID on Wildberries (product card identifier). |
-| `wildberries_sizeSkus` | Array of size SKUs.                                   |
-| `wildberries_sizeID`   | Size identifier.                                      |
-| `wildberries_error`    | Validation error from Wildberries, if any.            |
+1. Найдите раздел **Credentials** на странице сведений о маркетплейсе.
+2. Текущий API-ключ отображается в скрытом виде (показываются первые 4 и последние 2 символа).
+3. Нажмите на значок глаза, чтобы показать полный ключ, или нажмите на ключ, чтобы скопировать его в буфер обмена.
+4. Нажмите на значок **Edit** (карандаш), чтобы открыть форму редактирования.
+5. Введите ваш [API-ключ Wildberries](https://seller.wildberries.ru/supplier-settings/access-to-api) в поле **API Key**.
+6. Нажмите **Save**.
 
----
+![settings.marketplaces.[id].credentials.edit](../../www/docs/public/static/marketplace-wildberries/image-4.png)
 
-#### Manual Sync Products
-
-1. On the marketplace detail page, click "Synchronize".
-2. Choose "Products" from the dropdown.
-3. The sync runs in the background. Check the **Events** section for progress and results.
+> Ваш API-ключ хранится в базе данных и по умолчанию никогда не отображается в открытом виде в интерфейсе администратора.
 
 ---
 
-#### Scheduled Sync Products
+### Управление настройками обмена маркетплейса
 
-Products are automatically synced every day at midnight (UTC) via the `sync-marketplace-products` background job. No additional configuration is needed.
+В этом руководстве вы узнаете, как управлять настройками обмена Wildberries в панели администратора Medusa.
 
----
+#### Редактирование настроек обмена маркетплейса
 
-### Sync Orders
+Настройки обмена связывают **склад** с **типом заказа** (FBS, FBO, DBS и т.д.). Они необходимы для синхронизации заказов.
 
-Orders are imported from Wildberries into Medusa. For each Wildberries order, a corresponding Medusa order and customer are created if they do not already exist. Duplicate orders are skipped automatically.
+1. Найдите раздел **Exchange settings** на странице сведений о маркетплейсе.
+2. Нажмите **Add** (или значок редактирования у существующего профиля).
+3. Выберите:
+   - **Warehouse** — выберите из списка складов, полученных в режиме реального времени из вашего аккаунта Wildberries.
+   - **Order Type** — `FBS` (Fulfilled by Seller, выполняется продавцом) или `FBO` (Fulfilled by Operator, выполняется оператором).
+4. Нажмите **Save**.
 
----
+![settings.marketplaces.[id].exchange-settings.edit](../../www/docs/public/static/marketplace-wildberries/image-5.png)
 
-#### Manual Sync Orders
-
-1. On the marketplace detail page, click "Synchronize".
-2. Choose "Orders" from the dropdown.
-3. The sync runs in the background. Check the **Events** section for progress and results.
-
----
-
-#### Scheduled Sync Orders
-
-Orders are automatically synced every day at midnight (UTC) via the `sync-marketplace-orders` background job. No additional configuration is needed.
+> Список складов загружается из API Wildberries с использованием вашего настроенного API-ключа. Убедитесь, что учётные данные сохранены перед добавлением профиля обмена.
 
 ---
 
-#### Delete Marketplace
+### Синхронизация товаров
 
-1. On the marketplace detail page, open the actions menu.
-2. Click "Delete".
-3. Confirm the deletion.
+Товары можно синхронизировать в обоих направлениях:
 
-> Deleting a marketplace also permanently deletes all associated exchange profiles and events.
+- **Export** — товары Medusa отправляются в Wildberries. Для товаров без идентификатора Wildberries создаются новые карточки товаров; существующие карточки обновляются по идентификатору номенклатуры (`nmID`). Если товар уже имеет множество вариантов на Wildberries, новые варианты добавляются в существующую карточку.
+- **Import** — данные товаров Wildberries (nmID, imtID, SKU размеров) загружаются и сохраняются в виде метаданных для ваших товаров и вариантов в Medusa.
 
----
+После успешного экспорта или импорта в вариантах устанавливаются следующие поля метаданных:
 
-#### View Events
-
-Go to **Settings → Marketplaces → Events** to see a log of all sync operations across all marketplaces. Events scoped to a single marketplace are also visible on its detail page.
-
-The events list shows:
-
-| Column        | Description                                                                                |
-| ------------- | ------------------------------------------------------------------------------------------ |
-| **Direction** | `Medusa → Marketplace` (export) or `Marketplace → Medusa` (import).                        |
-| **Entity**    | What was synced: `PRODUCT`, `PRODUCT_MEDIA`, `PRODUCT_PRICE`, `PRODUCT_STOCK`, or `ORDER`. |
-| **Action**    | The operation performed: `CREATE`, `UPDATE`, or `DELETE`.                                  |
-| **Started**   | When the sync operation began.                                                             |
-| **Finished**  | When the sync operation completed.                                                         |
+| Metadata key           | Описание                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| `wildberries_nmID`     | Идентификатор номенклатуры на Wildberries (идентификатор варианта).             |
+| `wildberries_imtID`    | Идентификатор материала на Wildberries (идентификатор карточки товара).         |
+| `wildberries_sizeSkus` | Массив SKU размеров.                                                            |
+| `wildberries_sizeID`   | Идентификатор размера.                                                          |
+| `wildberries_error`    | Ошибка валидации от Wildberries, если есть.                                     |
 
 ---
 
-#### View Event Details
+#### Ручная синхронизация товаров
 
-Click on any event in the events list to open its detail view. This shows:
+1. На странице сведений о маркетплейсе нажмите «Синхронизировать».
+2. Выберите «Товары» из выпадающего меню.
+3. Синхронизация выполняется в фоновом режиме. Для отслеживания прогресса и результатов проверьте раздел **Events**.
 
-- **Correlation ID** — groups related events from the same sync run.
-- **Direction**, **Entity type**, and **Action**.
-- **Started at** / **Finished at** timestamps.
-- **Request data** — the full payload sent to or received from Wildberries (JSON).
-- **Response data** — the full response from Wildberries (JSON), including any validation errors returned by the Wildberries API.
+![settings.marketplaces.[id].products-sync](../../www/docs/public/static/marketplace-wildberries/image-6.png)
 
-> Event details are useful for diagnosing sync failures. Validation errors for individual product cards are stored in the **Response data** field and also written back to the `wildberries_error` metadata field on the affected variants.
+---
+
+#### Плановая синхронизация товаров
+
+Товары автоматически синхронизируются каждый день в полночь (UTC) с помощью фонового задания `sync-marketplace-products`. Дополнительная настройка не требуется.
+
+---
+
+### Синхронизация заказов
+
+Заказы импортируются из Wildberries в Medusa. Для каждого заказа Wildberries создаются соответствующий заказ и покупатель в Medusa, если они ещё не существуют. Дублирующиеся заказы пропускаются автоматически.
+
+---
+
+#### Ручная синхронизация заказов
+
+1. На странице сведений о маркетплейсе нажмите «Синхронизировать».
+2. Выберите «Заказы» из выпадающего меню.
+3. Синхронизация выполняется в фоновом режиме. Для отслеживания прогресса и результатов проверьте раздел **Events**.
+
+![settings.marketplaces.[id].orders-sync](../../www/docs/public/static/marketplace-wildberries/image-7.png)
+
+---
+
+#### Плановая синхронизация заказов
+
+Заказы автоматически синхронизируются каждый день в полночь (UTC) с помощью фонового задания `sync-marketplace-orders`. Дополнительная настройка не требуется.
+
+---
+
+#### Удаление маркетплейса
+
+1. На странице сведений о маркетплейсе откройте меню действий.
+2. Нажмите «Удалить».
+3. Подтвердите удаление.
+
+![settings.marketplaces.[id].delete](../../www/docs/public/static/marketplace-wildberries/image-8.png)
+
+> Удаление маркетплейса также безвозвратно удаляет все связанные профили обмена и события.
+
+---
+
+#### Просмотр событий
+
+Перейдите в **Настройки → Маркетплейсы → События**, чтобы просмотреть журнал всех операций синхронизации по всем маркетплейсам. События, относящиеся к конкретному маркетплейсу, также видны на его странице сведений.
+
+![settings.marketplaces.[id].events](../../www/docs/public/static/marketplace-wildberries/image-9.png)
+
+Список событий содержит:
+
+| Column        | Описание                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------- |
+| **Direction** | `Medusa → Marketplace` (экспорт) или `Marketplace → Medusa` (импорт).                            |
+| **Entity**    | Что синхронизировалось: `PRODUCT`, `PRODUCT_MEDIA`, `PRODUCT_PRICE`, `PRODUCT_STOCK` или `ORDER`. |
+| **Action**    | Выполненная операция: `CREATE`, `UPDATE` или `DELETE`.                                            |
+| **Started**   | Когда началась операция.                                                                          |
+| **Finished**  | Когда завершилась операция.                                                                       |
+
+---
+
+#### Просмотр сведений о событии
+
+Нажмите на любое событие в списке, чтобы открыть подробный просмотр. Здесь отображается:
+
+- **Correlation ID** — группирует связанные события из одного цикла синхронизации (WIP).
+- **Direction**, **Entity type** и **Action**.
+- Временные метки **Started at** / **Finished at**.
+- **Request data** — полная полезная нагрузка, отправленная в Wildberries или полученная от него (JSON).
+- **Response data** — полный ответ от Wildberries (JSON), включая любые ошибки валидации, возвращённые API Wildberries.
+
+![settings.marketplaces.[id].events.[event_id]](../../www/docs/public/static/marketplace-wildberries/image-10.png)
+
+> Сведения о событии полезны для диагностики сбоев синхронизации. Ошибки валидации для отдельных карточек товаров хранятся в поле **Response data** и также записываются обратно в поле метаданных `wildberries_error` затронутых вариантов.
