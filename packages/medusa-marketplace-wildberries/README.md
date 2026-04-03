@@ -1,41 +1,58 @@
 <h1 align="center">
-  Wildberries Marketplace Integration for Medusa
+  Wildberries Integration for Medusa
 </h1>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@gorgo/medusa-marketplace-wildberries">
-    <img src="https://img.shields.io/npm/v/@gorgo/medusa-marketplace-wildberries.svg" alt="NPM version" />
+  A Medusa plugin that integrates your store with the <a href="https://www.wildberries.ru">Wildberries</a> marketplace
+  <br/>
+  <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-marketplace-wildberries/README.ru.md">Читать README на русском ↗</a>
+</p>
+
+<p align="center">
+  <a href="https://medusajs.com">
+    <img src="https://img.shields.io/badge/Medusa-^2.13.3-blue?logo=medusa" alt="Medusa" />
   </a>
-  <a href="https://www.npmjs.com/package/@gorgo/medusa-marketplace-wildberries">
-    <img src="https://img.shields.io/npm/l/@gorgo/medusa-marketplace-wildberries.svg" alt="License" />
+  <a href="https://medusajs.com">
+    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.13.5-green?logo=checkmarx" alt="Medusa" />
   </a>
 </p>
 
-## Overview
+<p align="center">
+  <a href="https://t.me/medusajs_chat">
+    <img src="https://img.shields.io/badge/Telegram-Plugin_Support_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js⊷1C on Telegram" />
+  </a>
+</p>
 
-`@gorgo/medusa-marketplace-wildberries` is a Medusa v2 plugin that integrates your store with the [Wildberries](https://www.wildberries.ru) marketplace. It is a **provider** for the `@gorgo/medusa-marketplace` meta-plugin and adds Wildberries-specific functionality on top of the shared marketplace infrastructure.
+<p align="center">
+  <a href="https://t.me/medusajs_chat">
+    <img src="https://img.shields.io/badge/Telegram-Medusa.js_Dev_Community_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js Chat on Telegram" />
+  </a>
+</p>
+
+## Status
+
+🚧 Work in progress, see the [Roadmap](https://github.com/gorgojs/medusa-plugins/issues/102).
 
 ## Features
 
-- **Implements `@gorgo/medusa-marketplace`** — built as a provider on top of the shared marketplace meta-plugin, inheriting its admin UI, event system, and workflow engine.
-- **Product synchronization** — export Medusa products to Wildberries (create new cards, update existing ones, merge variants into existing cards) and import Wildberries product data back into Medusa metadata.
-- **Order synchronization** — import FBS (Fulfilled by Seller) orders from Wildberries into Medusa, creating customers and orders automatically.
-- **Scheduled sync** — product and order sync jobs run automatically on a daily schedule, or can be triggered manually from the admin UI.
-- **Manual sync** — trigger product or order sync for any marketplace at any time directly from the admin panel.
-- **Event logging** — every sync operation is recorded as a marketplace event with direction, entity type, action, timing, and full request/response payloads for debugging.
-- **Admin UI** — manage marketplaces, credentials, exchange profiles, and events through the Medusa admin panel.
-- **Wildberries API key management** — securely store, view (with redaction), and update your Wildberries API key from the admin UI.
-- **Exchange profiles** — configure warehouse and order type (FBS/FBO) mappings per marketplace.
+- 🧩  **Built as a provider on top of [`@gorgo/medusa-marketplace`](https://www.npmjs.com/package/@gorgo/medusa-marketplace)** with shared admin UI, events & workflows
+- 🔄  **Product sync**  with Wildberries (create, update, merge)  
+- 📦  **Order sync** with automatic customer & order creation  
+- ⏱  **Scheduled & manual sync** from admin
+- 📊  **Event logging** for all sync operations  
+- 🛠  **Admin UI** for managing marketplaces, credentials & configs
+- 🔑  **API key management** via admin  
+- ⚙️  **Exchange profiles** — configure warehouse & FBS/FBO/DBS mappings
 
 ## Requirements
 
-- Node.js >= 20
 - Medusa v2 (`@medusajs/medusa` >= 2.13.3)
-- `@gorgo/medusa-marketplace` installed and configured as a plugin
+- [`@gorgo/medusa-marketplace`](https://www.npmjs.com/package/@gorgo/medusa-marketplace) installed and configured as a Medusa plugin
+- Node.js >= 20
 
 ## Installation
 
-Install both the meta-plugin and the Wildberries provider:
+Install both the Marketplace core plugin and the Wildberries provider:
 
 ```bash
 npm install @gorgo/medusa-marketplace @gorgo/medusa-marketplace-wildberries
@@ -43,13 +60,9 @@ npm install @gorgo/medusa-marketplace @gorgo/medusa-marketplace-wildberries
 yarn add @gorgo/medusa-marketplace @gorgo/medusa-marketplace-wildberries
 ```
 
-> **Note:** `@gorgo/medusa-marketplace-wildberries` is a **provider** for `@gorgo/medusa-marketplace`. Both packages must be installed and configured together.
-
 ## Configuration
 
-### Vite plugin (admin UI)
-
-The admin UI components are injected into the Medusa admin via a Vite plugin. Add the following to the `admin.vite` section of your `medusa-config.ts`:
+Add the provider configuration in your `medusa-config.ts` file of the Medusa admin application:
 
 ```ts
 // medusa-config.ts
@@ -57,6 +70,30 @@ import { gorgoPluginsInject } from '@gorgo/medusa-marketplace/exports'
 
 module.exports = defineConfig({
   // ...
+  // Register plugins
+  plugins: [
+    // ...
+    // Register the Wildberries plugin (registers admin routes and widgets)
+    {
+      resolve: "@gorgo/medusa-marketplace-wildberries",
+      options: {},
+    },
+    // Register the marketplace core plugin and declare Wildberries as a provider
+    {
+      resolve: "@gorgo/medusa-marketplace",
+      options: {
+        providers: [
+          {
+            resolve: "@gorgo/medusa-marketplace-wildberries/providers/marketplace-wildberries",
+            id: "wb", // Unique identifier for this provider instance
+            options: {},
+          },
+        ],
+      },
+    },
+  ],
+  // ...
+  // Configure Vite plugin for marketplace widgets injection
   admin: {
     vite: (config) => {
       return {
@@ -69,6 +106,11 @@ module.exports = defineConfig({
             ],
           }),
         ],
+        /**
+         * The `optimizeDeps` and `resolve` entries are required to ensure
+         * that shared dependencies (React, React Query, React Router) are not duplicated
+         * between the host Medusa admin and the plugin packages
+         */
         optimizeDeps: {
           exclude: ["@gorgo/medusa-marketplace"],
         },
@@ -85,61 +127,10 @@ module.exports = defineConfig({
       }
     },
   },
-  // ...
 })
 ```
 
-**`gorgoPluginsInject` options:**
-
-| Option    | Type       | Description                                                                                                                                        |
-| --------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sources` | `string[]` | List of Gorgo plugin packages whose admin extensions should be injected into the Medusa admin. Include every `@gorgo/*` plugin you have installed. |
-
-> The `optimizeDeps.exclude` and `resolve` entries are required to ensure that shared dependencies (React, React Query, React Router) are not duplicated between the host Medusa admin and the plugin packages.
-
-### Plugin configuration (`medusa-config.ts`)
-
-Add both the provider plugin and the marketplace plugin to the `plugins` array of your `medusa-config.ts`:
-
-```ts
-// medusa-config.ts
-// ... other imports
-import { gorgoPluginsInject } from '@gorgo/medusa-marketplace/exports'
-
-module.exports = defineConfig({
-  // ...
-  admin: {
-    vite: (config) => { /* see above */ }
-  },
-  plugins: [
-    // ...
-
-    // 1. Register the Wildberries plugin (registers admin routes and widgets)
-    {
-      resolve: "@gorgo/medusa-marketplace-wildberries",
-      options: {},
-    },
-
-    // 2. Register the marketplace meta-plugin and declare Wildberries as a provider
-    {
-      resolve: "@gorgo/medusa-marketplace",
-      options: {
-        providers: [
-          {
-            resolve: "@gorgo/medusa-marketplace-wildberries/providers/marketplace-wildberries",
-            id: "wb",         // Unique identifier for this provider instance
-            options: {},
-          },
-        ],
-      },
-    },
-  ],
-})
-```
-
-**`@gorgo/medusa-marketplace-wildberries` plugin options:**
-
-No options are required at the plugin level. All marketplace-specific settings (such as the API key) are configured per-marketplace instance in the admin UI.
+The admin UI components are injected into the Medusa admin via a Vite plugin. 
 
 **`@gorgo/medusa-marketplace` plugin options:**
 
@@ -148,17 +139,45 @@ No options are required at the plugin level. All marketplace-specific settings (
 | `providers`           | `array`  | Yes      | List of marketplace provider registrations.                                                                                |
 | `providers[].resolve` | `string` | Yes      | Path to the provider module. For Wildberries: `"@gorgo/medusa-marketplace-wildberries/providers/marketplace-wildberries"`. |
 | `providers[].id`      | `string` | Yes      | A unique identifier for this provider instance (e.g. `"wb"`). Used to distinguish multiple provider instances.             |
-| `providers[].options` | `object` | No       | Provider-level options (currently unused for Wildberries).                                                                 |
+| `providers[].options` | `object` | No       | Provider-level options (unused for Wildberries).                                                                           |
+
+**`@gorgo/medusa-marketplace-wildberries` plugin options:**
+
+No options are required at the plugin level. All marketplace-specific settings (such as the API key) are configured per-marketplace instance in the admin UI.
+
+**`gorgoPluginsInject` options:**
+
+| Option    | Type       | Description                                                                                                                                                           |
+| --------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sources` | `string[]` | List of Gorgo plugin packages whose admin extensions should be injected into the Medusa admin. Include every `@gorgo/medusa-marketplace-*` plugin you have installed. |
+
+## Development
+
+Docker is required for generating the [Wildberries OpenAPI client](https://openapi-generator.tech/docs/installation/). To (re)generate the client, run:
+
+```bash
+yarn
+yarn openapi:pull  # download the latest Wildberries OpenAPI schema
+yarn openapi:gen   # generate the API client
+```
+
+The client is also regenerated automatically on `yarn dev`.
+
+## License
+
+MIT
 
 ## Usage
 
-### Overview
+This documentation describes how to manage Wildberries marketplace integrations from the Medusa admin panel.
 
-This section describes how to manage your Wildberries marketplace integration from the Medusa admin panel. All marketplace management is available under **Settings → Marketplaces**.
+### Manage Marketplaces
 
-### View Marketplaces
+In this guide, you’ll learn how to manage marketplaces in the Medusa Admin.
 
-Navigate to **Settings → Marketplaces** to see a table of all configured marketplace integrations.
+#### View Marketplaces
+
+Go to **Settings → Marketplaces** to see a table of all configured marketplace integrations.
 
 ![settings.marketplaces](image.png)
 
@@ -171,21 +190,26 @@ The table shows:
 | **Sales Channel** | The Medusa sales channel linked to this marketplace. |
 | **Status**        | Whether the marketplace is enabled or disabled.      |
 
-### Add Marketplace
+---
 
-1. On the **Settings → Marketplaces** page, click **Add marketplace**.
-2. Fill in the form:
+#### Add Marketplace
+
+1. Go to **Settings → Marketplaces**
+2. Click **Add** to create a marketplace connection.
+3. Fill in the form:
    - **Title** — a human-readable name for this marketplace connection (e.g. "Wildberries Main Store").
    - **Provider** — select `wildberries` from the dropdown.
    - **Sales Channel** — select the Medusa sales channel that products and orders for this marketplace will belong to.
    - **Enabled** — toggle whether this marketplace is active.
-3. Click **Save** to create the marketplace.
+4. Click **Save** to create the marketplace.
 
 ![settings.marketplaces.add](image-2.png)
 
-> After creation, configure the **Credentials** and **Exchange Profiles** sections before running a sync.
+> After creation, configure the **Credentials** and **Exchange settings** sections before running a sync.
 
-### View Marketplace Details
+---
+
+#### View Marketplace Details
 
 Click on a marketplace in the list to open its detail page. The detail page is divided into several sections:
 
@@ -196,7 +220,9 @@ Click on a marketplace in the list to open its detail page. The detail page is d
 
 ![settings.marketplaces.[id]](image-3.png)
 
-### Edit Marketplace — General Section
+---
+
+#### Edit Marketplace Details
 
 1. On the marketplace detail page, find the **General** section.
 2. Click the **Edit** (pencil) icon.
@@ -205,7 +231,13 @@ Click on a marketplace in the list to open its detail page. The detail page is d
 
 ![settings.marketplace.[id].edit](image-4.png)
 
-### Edit Marketplace — Credentials (Wildberries API Key)
+---
+
+### Manage Marketplace Credentials
+
+In this guide, you’ll learn how to manage Wildberries credentials in the Medusa Admin.
+
+#### Edit Marketplace Credentials
 
 The **Credentials** section is provided by the `@gorgo/medusa-marketplace-wildberries` widget on the marketplace detail page.
 
@@ -218,11 +250,17 @@ The **Credentials** section is provided by the `@gorgo/medusa-marketplace-wildbe
 
 > Your API key is stored in the database and is never shown in plain text in the admin UI by default.
 
-### Edit Marketplace — Exchange Profiles
+---
 
-Exchange profiles map a **Wildberries warehouse** to an **order type** (FBS or FBO). At least one exchange profile is required to sync orders.
+### Manage Marketplace Exchange Settings
 
-1. Find the **Exchange Profiles** section on the marketplace detail page.
+In this guide, you’ll learn how to manage Wildberries credentials in the Medusa Admin.
+
+#### Edit Marketplace Exchange Settings
+
+Exchange settings map a **warehouse** to an **order type** (FBS, FBO, DBS, ...). It is required to sync orders.
+
+1. Find the **Exchange settings** section on the marketplace detail page.
 2. Click **Add** (or the edit icon on an existing profile).
 3. Select:
    - **Warehouse** — choose from the list of warehouses fetched live from your Wildberries account.
@@ -230,6 +268,8 @@ Exchange profiles map a **Wildberries warehouse** to an **order type** (FBS or F
 4. Click **Save**.
 
 > The warehouse list is fetched from the Wildberries API using your configured API key. Make sure credentials are saved before adding an exchange profile.
+
+---
 
 ### Sync Products
 
@@ -248,39 +288,55 @@ After a successful export or import, the following metadata fields are set on va
 | `wildberries_sizeID`   | Size identifier.                                      |
 | `wildberries_error`    | Validation error from Wildberries, if any.            |
 
-**Manual sync:**
+---
 
-1. On the marketplace detail page, click **Sync products**.
-2. The sync runs in the background. Check the **Events** section for progress and results.
+#### Manual Sync Products
 
-**Scheduled sync:**
+1. On the marketplace detail page, click "Synchronize".
+2. Choose "Products" from the dropdown.
+3. The sync runs in the background. Check the **Events** section for progress and results.
+
+---
+
+#### Scheduled Sync Products
 
 Products are automatically synced every day at midnight (UTC) via the `sync-marketplace-products` background job. No additional configuration is needed.
 
+---
+
 ### Sync Orders
 
-Orders are imported from Wildberries into Medusa. For each Wildberries FBS order, a corresponding Medusa order and customer are created if they do not already exist. Duplicate orders are skipped automatically.
+Orders are imported from Wildberries into Medusa. For each Wildberries order, a corresponding Medusa order and customer are created if they do not already exist. Duplicate orders are skipped automatically.
 
-**Manual sync:**
+---
 
-1. On the marketplace detail page, click **Sync orders**.
-2. The sync runs in the background. Check the **Events** section for progress and results.
+#### Manual Sync Orders
 
-**Scheduled sync:**
+1. On the marketplace detail page, click "Synchronize".
+2. Choose "Orders" from the dropdown.
+3. The sync runs in the background. Check the **Events** section for progress and results.
+
+---
+
+#### Scheduled Sync Orders
 
 Orders are automatically synced every day at midnight (UTC) via the `sync-marketplace-orders` background job. No additional configuration is needed.
 
-### Delete Marketplace
+---
+
+#### Delete Marketplace
 
 1. On the marketplace detail page, open the actions menu.
-2. Click **Delete**.
+2. Click "Delete".
 3. Confirm the deletion.
 
 > Deleting a marketplace also permanently deletes all associated exchange profiles and events.
 
-### View Events
+---
 
-Navigate to **Settings → Marketplaces → Events** to see a log of all sync operations across all marketplaces. Events scoped to a single marketplace are also visible on its detail page.
+#### View Events
+
+Go to **Settings → Marketplaces → Events** to see a log of all sync operations across all marketplaces. Events scoped to a single marketplace are also visible on its detail page.
 
 The events list shows:
 
@@ -292,7 +348,9 @@ The events list shows:
 | **Started**   | When the sync operation began.                                                             |
 | **Finished**  | When the sync operation completed.                                                         |
 
-### View Event Details
+---
+
+#### View Event Details
 
 Click on any event in the events list to open its detail view. This shows:
 
@@ -303,19 +361,3 @@ Click on any event in the events list to open its detail view. This shows:
 - **Response data** — the full response from Wildberries (JSON), including any validation errors returned by the Wildberries API.
 
 > Event details are useful for diagnosing sync failures. Validation errors for individual product cards are stored in the **Response data** field and also written back to the `wildberries_error` metadata field on the affected variants.
-
-## Development
-
-Docker is required for generating the [Wildberries OpenAPI client](https://openapi-generator.tech/docs/installation/). To (re)generate the client, run:
-
-```bash
-yarn
-yarn openapi:pull  # download the latest Wildberries OpenAPI schema
-yarn openapi:gen   # generate the API client
-```
-
-The client is also regenerated automatically on `yarn dev`.
-
-## License
-
-MIT
