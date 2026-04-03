@@ -11,12 +11,21 @@ jobs:
     name: Notify Private Repo
     runs-on: ubuntu-latest
     if: github.repository == 'gorgojs/medusa-plugins'
-    
+
     steps:
+    - name: Generate GitHub App token
+      id: app-token
+      uses: actions/create-github-app-token@v1
+      with:
+        app-id: ${{ secrets.GH_APP_ID }}
+        private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+        owner: gorgojs
+        repositories: internal-scripts
+
     - name: Notify internal-scripts about docs changes
       uses: actions/github-script@v7
       with:
-        github-token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        github-token: ${{ steps.app-token.outputs.token }}
         script: |
           console.log('Notifying internal-scripts about docs changes...')
           
