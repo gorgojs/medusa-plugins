@@ -1,7 +1,7 @@
 {
   "name": "@gorgo/medusa-marketplace",
-  "version": "0.0.1",
-  "description": "Marketplace integration for Medusa",
+  "version": "0.1.0",
+  "description": "Marketplace integration core-plugin for Medusa",
   "files": [
     ".medusa/server"
   ],

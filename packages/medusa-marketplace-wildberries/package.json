@@ -1,6 +1,6 @@
 {
   "name": "@gorgo/medusa-marketplace-wildberries",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Wildberries marketplace integration for Medusa",
   "files": [
     ".medusa/server"

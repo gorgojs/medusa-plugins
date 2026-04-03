@@ -46,13 +46,13 @@
 
 ## Требования
 
-- Medusa v2 (`@medusajs/medusa` >= 2.13.3)  
-- Основной плагин маркетплейса [`@gorgo/medusa-marketplace`](https://www.npmjs.com/package/@gorgo/medusa-marketplace)  
-- Node.js >= 20  
+- Medusa v2.13.3 или выше
+- Node.js v20 или выше
+- Core-плагин [@gorgo/medusa-marketplace](https://www.npmjs.com/package/@gorgo/medusa-marketplace)  
 
 ## Установка
 
-Установите основной плагин Marketplace и плагин-провайдер Wildberries:
+Установите core-плагин Marketplace и плагин-провайдер Wildberries:
 
 ```bash
 npm install @gorgo/medusa-marketplace @gorgo/medusa-marketplace-wildberries
@@ -60,7 +60,7 @@ npm install @gorgo/medusa-marketplace @gorgo/medusa-marketplace-wildberries
 yarn add @gorgo/medusa-marketplace @gorgo/medusa-marketplace-wildberries
 ```
 
-## Настройка
+## Конфигурация
 
 Добавьте конфигурацию провайдера в файл `medusa-config.ts` приложения Medusa Admin:
 
@@ -78,7 +78,7 @@ module.exports = defineConfig({
       resolve: "@gorgo/medusa-marketplace-wildberries",
       options: {},
     },
-   // Регистрация основного плагина marketplace и объявление провайдера Wildberries
+   // Регистрация core-плагина marketplace и объявление провайдера Wildberries
     {
       resolve: "@gorgo/medusa-marketplace",
       options: {
@@ -138,7 +138,7 @@ module.exports = defineConfig({
 | `providers`           | `array`  | Yes          | Список регистраций провайдеров маркетплейсов                                                                         |
 | `providers[].resolve` | `string` | Yes          | Путь к модулю провайдера. Для Wildberries: `@gorgo/medusa-marketplace-wildberries/providers/marketplace-wildberries` |
 | `providers[].id`      | `string` | Yes          | Уникальный идентификатор экземпляра провайдера (например, `wb` ), используется для различения нескольких подключений |
-| `providers[].options` | `object` | No           | Опции уровня провайдера (для Wildberries не используются)                                                            |
+| `providers[].options` | `object` | No           | Параметры уровня провайдера (для Wildberries не используются)                                                            |
 
 **Параметры плагина `@gorgo/medusa-marketplace-wildberries`:**
 

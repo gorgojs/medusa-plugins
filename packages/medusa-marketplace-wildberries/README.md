@@ -19,7 +19,7 @@
 
 <p align="center">
   <a href="https://t.me/medusajs_chat">
-    <img src="https://img.shields.io/badge/Telegram-Plugin_Support_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js⊷1C on Telegram" />
+    <img src="https://img.shields.io/badge/Telegram-Plugin_Support_Chat-0088cc?logo=telegram&style=social" alt="Plugin support chat on Telegram" />
   </a>
 </p>
 
@@ -46,9 +46,9 @@
 
 ## Requirements
 
-- Medusa v2 (`@medusajs/medusa` >= 2.13.3)
-- [`@gorgo/medusa-marketplace`](https://www.npmjs.com/package/@gorgo/medusa-marketplace) installed and configured as a Medusa plugin
-- Node.js >= 20
+- Medusa v2.13.3 or later
+- Node.js v20 or later
+- [@gorgo/medusa-marketplace](https://www.npmjs.com/package/@gorgo/medusa-marketplace) core plugin
 
 ## Installation
 
@@ -62,7 +62,7 @@ yarn add @gorgo/medusa-marketplace @gorgo/medusa-marketplace-wildberries
 
 ## Configuration
 
-Add the provider configuration in your `medusa-config.ts` file of the Medusa admin application:
+Add the provider configuration in your `medusa-config.ts` file of the Medusa Admin application:
 
 ```ts
 // medusa-config.ts

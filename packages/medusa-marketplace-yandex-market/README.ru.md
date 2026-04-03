@@ -19,13 +19,13 @@
 
 <p align="center">
   <a href="https://t.me/medusajs_chat">
-    <img src="https://img.shields.io/badge/Telegram-Plugin_Support_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js⊷1C on Telegram" />
+    <img src="https://img.shields.io/badge/Telegram-Plugin_Support_Chat-0088cc?logo=telegram&style=social" alt="Чат поддержки плагина в Telegram" />
   </a>
 </p>
 
 <p align="center">
   <a href="https://t.me/medusajs_chat">
-    <img src="https://img.shields.io/badge/Telegram-Medusa.js_Dev_Community_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js Chat on Telegram" />
+    <img src="https://img.shields.io/badge/Telegram-Medusa.js_Dev_Community_Chat-0088cc?logo=telegram&style=social" alt="Чат сообщества разработчиков Medusa.js в Telegram" />
   </a>
 </p>
 
@@ -46,13 +46,13 @@
 
 ## Требования
 
-- Medusa v2 (`@medusajs/medusa` >= 2.13.3)  
-- Основной плагин маркетплейса [`@gorgo/medusa-marketplace`](https://www.npmjs.com/package/@gorgo/medusa-marketplace)  
-- Node.js >= 20  
+- Medusa v2.13.3 или выше
+- Node.js v20 или выше
+- Core-плагин [@gorgo/medusa-marketplace](https://www.npmjs.com/package/@gorgo/medusa-marketplace)  
 
 ## Установка
 
-Установите основной плагин Marketplace и плагин-провайдер Yandex Market:
+Установите core-плагин Marketplace и плагин-провайдер Yandex Market:
 
 ```bash
 npm install @gorgo/medusa-marketplace @gorgo/medusa-marketplace-yandex-market
@@ -61,7 +61,7 @@ npm install @gorgo/medusa-marketplace @gorgo/medusa-marketplace-yandex-market
 yarn add @gorgo/medusa-marketplace @gorgo/medusa-marketplace-yandex-market
 ```
 
-## Настройка
+## Конфигурация
 
 Добавьте конфигурацию провайдера в файл `medusa-config.ts` приложения Medusa Admin:
 
@@ -79,7 +79,7 @@ module.exports = defineConfig({
       resolve: "@gorgo/medusa-marketplace-yandex-market",
       options: {},
     },
-    // Регистрация основного плагина marketplace и объявление провайдера Yandex Market
+    // Регистрация core-плагина marketplace и объявление провайдера Yandex Market
     {
       resolve: "@gorgo/medusa-marketplace",
       options: {
@@ -137,9 +137,9 @@ module.exports = defineConfig({
 | Параметр              | Тип      | Обязательно | Описание                                                                                                                      |
 | --------------------- | -------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `providers`           | `array`  | Да          | Список регистраций провайдеров маркетплейсов.                                                                                 |
-| `providers[].resolve` | `string` | Да          | Путь к модулю провайдера. Для Yandex Market: `"@gorgo/medusa-marketplace-yandex-market/providers/marketplace-yandex-market"`. |
-| `providers[].id`      | `string` | Да          | Уникальный идентификатор экземпляра провайдера (например `"ym"`). Нужен, если подключено несколько провайдеров.                 |
-| `providers[].options` | `object` | Нет         | Опции на уровне провайдера (для Yandex Market не используются).                                                               |
+| `providers[].resolve` | `string` | Да          | Путь к модулю провайдера. Для Yandex Market: `@gorgo/medusa-marketplace-yandex-market/providers/marketplace-yandex-market`. |
+| `providers[].id`      | `string` | Да          | Уникальный идентификатор экземпляра провайдера (например `ym`). Нужен, если подключено несколько провайдеров.                 |
+| `providers[].options` | `object` | Нет         | Параметры уровня провайдера (для Yandex Market не используются).                                                               |
 
 **Параметры плагина `@gorgo/medusa-marketplace-yandex-market`:**
 

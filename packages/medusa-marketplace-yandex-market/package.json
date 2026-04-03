@@ -1,7 +1,7 @@
 {
   "name": "@gorgo/medusa-marketplace-yandex-market",
-  "version": "0.0.1",
-  "description": "Medusa plugin for integration with Yandex Market.",
+  "version": "0.1.0",
+  "description": "Yandex Market marketplace integration for Medusa",
   "files": [
     ".medusa/server"
   ],
