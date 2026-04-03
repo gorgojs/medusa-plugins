@@ -1,5 +1,11 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 0.3.0
+
+### Minor Changes
+
+- [#182](https://github.com/gorgojs/medusa-plugins/pull/182) [`8463123`](https://github.com/gorgojs/medusa-plugins/commit/84631238073bf5803cab1f7c29a1681c1ab496db) Thanks [@gorgohead](https://github.com/gorgohead)! - feat: manage all ApiShip settings in Medusa Admin
+
 ## 0.2.4
 
 ### Patch Changes
