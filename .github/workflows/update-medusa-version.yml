@@ -235,7 +235,7 @@ jobs:
             - Updated examples only: ${{ needs.check_medusa_version.outputs.outdated_examples }}
             - Steps executed:
               - Postgres DB preparation for examples
-              - `./scripts/update.sh <version> <example> --single` for outdated examples only
+              - `./scripts/update.sh <version> <example> --single --skip-build` for outdated examples only
               - integration tests only for outdated examples
           branch: chore/medusa-update-v${{ needs.check_medusa_version.outputs.new_medusa_version }}
           delete-branch: true
