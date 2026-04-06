@@ -1,0 +1,284 @@
+name: Update Medusa Version
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  check_medusa_version:
+    name: Check Medusa version increment
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      should_update: ${{ steps.versions.outputs.should_update }}
+      new_medusa_version: ${{ steps.versions.outputs.new_medusa_version }}
+      current_versions: ${{ steps.versions.outputs.current_versions }}
+      outdated_examples: ${{ steps.versions.outputs.outdated_examples }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Resolve version delta
+        id: versions
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          TARGET_OWNER: ${{ github.repository_owner }}
+          TARGET_REPO: ${{ github.event.repository.name }}
+        run: |
+          set -euo pipefail
+
+          TARGET_VERSION="$(npm view @medusajs/medusa version)"
+
+          export TARGET_VERSION
+
+          node - <<'NODE'
+          const fs = require('fs')
+          const path = require('path')
+          const https = require('https')
+
+          const target = process.env.TARGET_VERSION
+          const examplesDir = path.join(process.cwd(), 'examples')
+          const versions = new Set()
+          const outdated = []
+
+          for (const entry of fs.readdirSync(examplesDir, { withFileTypes: true })) {
+            if (!entry.isDirectory()) continue
+
+            const pkgPath = path.join(examplesDir, entry.name, 'medusa', 'package.json')
+            if (!fs.existsSync(pkgPath)) continue
+
+            const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
+            const version = pkg.dependencies && pkg.dependencies['@medusajs/medusa']
+            const normalized = version ? version.replace(/^[~^]/, '') : null
+
+            if (normalized) {
+              versions.add(normalized)
+            }
+
+            if (!normalized || normalized !== target) {
+              outdated.push(entry.name)
+            }
+          }
+
+          const sorted = [...versions].sort((a, b) => {
+            const pa = a.split('.').map((n) => Number(n))
+            const pb = b.split('.').map((n) => Number(n))
+            for (let i = 0; i < 3; i++) {
+              if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0)
+            }
+            return 0
+          })
+
+          const currentVersions = sorted.join(',')
+          const outdatedExamples = outdated.join(',')
+
+          const owner = process.env.TARGET_OWNER
+          const repo = process.env.TARGET_REPO
+          const branchName = `chore/medusa-update-v${target}`
+
+          function hasOpenPrForBranch() {
+            return new Promise((resolve) => {
+              const apiToken = process.env.GITHUB_TOKEN
+              if (!owner || !repo || !apiToken) {
+                resolve(false)
+                return
+              }
+
+              const head = encodeURIComponent(`${owner}:${branchName}`)
+              const options = {
+                hostname: 'api.github.com',
+                path: `/repos/${owner}/${repo}/pulls?state=open&head=${head}`,
+                method: 'GET',
+                headers: {
+                  'User-Agent': 'medusa-daily-version-update',
+                  'Authorization': `Bearer ${apiToken}`,
+                  'Accept': 'application/vnd.github+json',
+                },
+              }
+
+              const req = https.request(options, (res) => {
+                let body = ''
+                res.on('data', (chunk) => {
+                  body += chunk
+                })
+                res.on('end', () => {
+                  try {
+                    if (res.statusCode !== 200) {
+                      console.log(`PR lookup skipped: GitHub API status ${res.statusCode}, body: ${body}`)
+                      resolve(false)
+                      return
+                    }
+
+                    const prs = JSON.parse(body)
+                    resolve(Array.isArray(prs) && prs.length > 0)
+                  } catch {
+                    resolve(false)
+                  }
+                })
+              })
+
+              req.on('error', () => resolve(false))
+              req.end()
+            })
+          }
+
+          ;(async () => {
+            const openPrExists = await hasOpenPrForBranch()
+            const shouldUpdate = outdated.length > 0 && !openPrExists ? 'true' : 'false'
+
+            const outPath = process.env.GITHUB_OUTPUT
+            fs.appendFileSync(outPath, `new_medusa_version=${target}\n`)
+            fs.appendFileSync(outPath, `current_versions=${currentVersions}\n`)
+            fs.appendFileSync(outPath, `should_update=${shouldUpdate}\n`)
+            fs.appendFileSync(outPath, `outdated_examples=${outdatedExamples}\n`)
+
+            console.log(`Current versions: ${currentVersions}`)
+            console.log(`Target version: ${target}`)
+            console.log(`Outdated examples: ${outdatedExamples}`)
+            console.log(`Open PR for ${branchName}: ${openPrExists}`)
+            console.log(`Should update: ${shouldUpdate}`)
+          })()
+          NODE
+
+  update_test_and_pr:
+    name: Update Medusa, run tests, create PR
+    needs: check_medusa_version
+    if: needs.check_medusa_version.outputs.should_update == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    services:
+      postgres:
+        image: public.ecr.aws/docker/library/postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      NODE_ENV: test
+      YARN_ENABLE_GLOBAL_CACHE: "false"
+      YARN_CACHE_FOLDER: .yarn/cache
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable Corepack and Yarn
+        run: |
+          corepack enable
+          corepack prepare yarn@4.9.2 --activate
+
+      - name: Install root dependencies
+        run: corepack yarn install --immutable
+
+      - name: Run update script only for outdated examples
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x ./scripts/update.sh
+
+          TARGET_VERSION="${{ needs.check_medusa_version.outputs.new_medusa_version }}"
+          OUTDATED_EXAMPLES="${{ needs.check_medusa_version.outputs.outdated_examples }}"
+
+          IFS=',' read -ra EXAMPLES <<< "$OUTDATED_EXAMPLES"
+          for example in "${EXAMPLES[@]}"; do
+            [ -z "$example" ] && continue
+            echo "Updating example: $example"
+            ./scripts/update.sh "$TARGET_VERSION" "$example" --single --skip-build
+          done
+
+      - name: Generate GitHub App token for PR
+        id: app-token-pr
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Create pull request
+        id: cpr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ steps.app-token-pr.outputs.token }}
+          commit-message: "chore: update Medusa to v${{ needs.check_medusa_version.outputs.new_medusa_version }}"
+          title: "chore: update Medusa to v${{ needs.check_medusa_version.outputs.new_medusa_version }}"
+          body: |
+            Automated daily Medusa update.
+
+            - Previous Medusa versions in repo: ${{ needs.check_medusa_version.outputs.current_versions }}
+            - Updated to: ${{ needs.check_medusa_version.outputs.new_medusa_version }}
+            - Updated examples only: ${{ needs.check_medusa_version.outputs.outdated_examples }}
+            - Steps executed:
+              - Postgres DB preparation for examples
+              - `./scripts/update.sh <version> <example> --single` for outdated examples only
+              - integration tests only for outdated examples
+          branch: chore/medusa-update-v${{ needs.check_medusa_version.outputs.new_medusa_version }}
+          delete-branch: true
+          labels: |
+            dependencies
+            automation
+
+      - name: Show pull request result
+        if: always()
+        run: |
+          echo "PR number: ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "PR URL: ${{ steps.cpr.outputs.pull-request-url }}"
+
+      # - name: Notify on failure
+      #   if: failure()
+      #   uses: actions/github-script@v7
+      #   with:
+      #     github-token: ${{ steps.app-token-pr.outputs.token }}
+      #     script: |
+      #       const owner = context.repo.owner
+      #       const repo = context.repo.repo
+      #       const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
+      #       const version = `${{ needs.check_medusa_version.outputs.new_medusa_version }}` || 'unknown'
+      #
+      #       await github.rest.issues.create({
+      #         owner, repo,
+      #         title: `[CI] Medusa auto-update failed (target ${version})`,
+      #         body: [
+      #           'Automatic daily Medusa update workflow failed.',
+      #           `- Run URL: ${runUrl}`,
+      #           `- Target Medusa version: ${version}`,
+      #         ].join('\n'),
+      #         labels: ['ci', 'automation', 'needs-attention']
+      #       })
+
+  no_update_needed:
+    name: No update needed
+    needs: check_medusa_version
+    if: needs.check_medusa_version.outputs.should_update != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log skip reason
+        run: |
+          echo "No Medusa update needed."
+          echo "Current versions: ${{ needs.check_medusa_version.outputs.current_versions }}"
+          echo "Latest version: ${{ needs.check_medusa_version.outputs.new_medusa_version }}"

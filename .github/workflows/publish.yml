@@ -1,4 +1,4 @@
-name: Release Plugins
+name: Release Packages
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
       issues : write
       pull-requests: write
     concurrency:
-      group: release-plugins-${{ github.ref }}
+      group: release-packages-${{ github.ref }}
       cancel-in-progress: false
 
     steps:
