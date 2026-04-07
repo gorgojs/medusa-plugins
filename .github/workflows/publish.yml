@@ -5,16 +5,15 @@ on:
     branches:
       - main
     paths:
-      - '.changeset/**'
       - 'packages/**'
 
 jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write  # Required for OIDC
+      id-token: write
       contents: write
-      issues : write
+      issues: write
       pull-requests: write
     concurrency:
       group: release-packages-${{ github.ref }}
@@ -23,7 +22,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+        with:
+          fetch-depth: 0
+
       - name: Enable Corepack
         run: corepack enable
 
@@ -36,13 +37,16 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Generate changesets from conventional commits
+        run: node scripts/generate-changesets.mjs
+
       - name: Generate GitHub App token
         id: app-token
         uses: actions/create-github-app-token@v1
         with:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          
+
       - name: Version and publish packages
         uses: changesets/action@v1
         with:

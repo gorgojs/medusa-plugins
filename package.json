@@ -6,10 +6,17 @@
   ],
   "packageManager": "yarn@4.9.2",
   "scripts": {
-    "update": "./scripts/update.sh"
+    "update": "./scripts/update.sh",
+    "prepare": "husky",
+    "commitlint": "commitlint"
   },
   "dependencies": {
     "@changesets/changelog-github": "^0.6.0",
     "@changesets/cli": "^2.30.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "husky": "^9.1.7"
   }
 }
