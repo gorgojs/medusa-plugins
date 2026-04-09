@@ -157,7 +157,7 @@ export const ApishipConnectionCreateForm = ({
         <FocusModal.Body className="flex-1 overflow-y-auto">
           <div className="mx-auto flex w-full max-w-[720px] flex-col gap-y-8 px-2 py-16">
             <div>
-              <Heading className="capitalize">
+              <Heading>
                 {t("apiship.connections.create.header")}
               </Heading>
               <Text size="small" className="text-ui-fg-subtle">
@@ -201,38 +201,15 @@ export const ApishipConnectionCreateForm = ({
 
             <Form.Field
               control={form.control}
-              name="is_enabled"
-              render={({ field: { value, onChange, ...field } }) => (
-                <Form.Item>
-                  <div className="flex items-center justify-between">
-                    <Form.Label>
-                      {t("apiship.connections.form.fields.enabled.label")}
-                    </Form.Label>
-                    <Form.Control>
-                      <Switch
-                        {...field}
-                        checked={!!value}
-                        className="rtl:rotate-180"
-                        onCheckedChange={onChange}
-                      />
-                    </Form.Control>
-                  </div>
-                  <Form.Hint>
-                    {t("apiship.connections.form.fields.enabled.hint")}
-                  </Form.Hint>
-                  <Form.ErrorMessage />
-                </Form.Item>
-              )}
-            />
-
-            <Form.Field
-              control={form.control}
               name="point_in_id"
               render={({ field }) => (
                 <Form.Item>
                   <Form.Label optional>
                     {t("apiship.connections.form.fields.point.label")}
                   </Form.Label>
+                  <Form.Hint>
+                    {t("apiship.connections.form.fields.point.hint")}
+                  </Form.Hint>
                   <Form.Control>
                     <Combobox
                       value={field.value}
@@ -276,6 +253,32 @@ export const ApishipConnectionCreateForm = ({
                       allowClear
                     />
                   </Form.Control>
+                  <Form.ErrorMessage />
+                </Form.Item>
+              )}
+            />
+            
+            <Form.Field
+              control={form.control}
+              name="is_enabled"
+              render={({ field: { value, onChange, ...field } }) => (
+                <Form.Item>
+                  <div className="flex items-center justify-between">
+                    <Form.Label>
+                      {t("apiship.connections.form.fields.enabled.label")}
+                    </Form.Label>
+                    <Form.Control>
+                      <Switch
+                        {...field}
+                        checked={!!value}
+                        className="rtl:rotate-180"
+                        onCheckedChange={onChange}
+                      />
+                    </Form.Control>
+                  </div>
+                  <Form.Hint>
+                    {t("apiship.connections.form.fields.enabled.hint")}
+                  </Form.Hint>
                   <Form.ErrorMessage />
                 </Form.Item>
               )}

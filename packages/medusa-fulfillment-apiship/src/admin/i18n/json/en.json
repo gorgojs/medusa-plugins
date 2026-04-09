@@ -13,7 +13,7 @@
   "apiship": {
     "general": {
       "title": "ApiShip",
-      "subtitle": "API token and mode for connecting your store to ApiShip.",
+      "subtitle": "Manage your ApiShip connection settings to calculate shipping rates and create orders.",
       "edit": {
         "header": "Edit ApiShip",
         "description": "Update API Token and mode.",
@@ -32,7 +32,7 @@
     },
     "defaultStoreAddress": {
       "title": "Sender",
-      "subtitle": "Set up default sender details.",
+      "subtitle": "Configure the default sender details.",
       "edit": {
         "header": "Edit Default Sender Data",
         "successToast": "Default sender data updated.",
@@ -108,15 +108,15 @@
       }
     },
     "connections": {
-      "title": "Connections",
-      "subtitle": "Sync delivery services with ApiShip account.",
+      "title": "Delivery Services",
+      "subtitle": "Manage delivery services available in your ApiShip account.",
       "list": {
         "empty": {
           "heading": "No records",
           "description": "There are no records to show"
         },
         "filtered": {
-          "heading": "No connections found",
+          "heading": "No results",
           "description": "Try changing your filters or search query."
         }
       },
@@ -128,21 +128,21 @@
         "enabled": "Enabled"
       },
       "create": {
-        "header": "Add ApiShip Connection",
-        "description": "Add a new connection and configure it.",
-        "successToast": "Connection created.",
-        "errorToast": "Failed to create connection."
+        "header": "Add Delivery Service",
+        "description": "Add a new delivery service and configure it.",
+        "successToast": "Delivery service created.",
+        "errorToast": "Failed to create delivery service."
       },
       "edit": {
-        "header": "Edit Connection",
-        "successToast": "Connection updated.",
-        "errorToast": "Failed to update connection."
+        "header": "Edit Delivery Service",
+        "successToast": "Delivery service updated.",
+        "errorToast": "Failed to update delivery service."
       },
       "delete": {
-        "title": "Delete connection?",
-        "description": "Are you sure you want to delete connection \"{{name}}\"?",
-        "successToast": "Connection deleted.",
-        "errorToast": "Failed to delete connection."
+        "title": "Delete delivery service?",
+        "description": "Are you sure you want to delete delivery service \"{{name}}\"?",
+        "successToast": "Delivery service deleted.",
+        "errorToast": "Failed to delete delivery service."
       },
       "form": {
         "fields": {
@@ -151,20 +151,21 @@
             "placeholder": "Select connection"
           },
           "point": {
-            "label": "Point",
-            "placeholder": "Select point",
-            "placeholderLoading": "Loading points...",
-            "placeholderSelectAccountConnection": "Select account connection first",
-            "noResults": "No points found",
-            "noResultsHint": "Try loading points again."
+            "label": "Drop-off point",
+            "hint": "If no drop-off point is selected, the delivery service courier will pick up orders from the sender’s default address.",
+            "placeholder": "Select drop-off point",
+            "placeholderLoading": "Loading drop-off points...",
+            "placeholderSelectAccountConnection": "Select a connection first",
+            "noResults": "No drop-off points found",
+            "noResultsHint": "Try loading drop-off points again."
           },
           "enabled": {
             "label": "Enabled",
-            "hint": "Enable this connection immediately."
+            "hint": "Specify whether the delivery service is enabled."
           }
         },
         "hints": {
-          "singleEnabledPerProvider": "Only one enabled connection is allowed per delivery service. Other connections for the same provider will be disabled automatically."
+          "singleEnabledPerProvider": "Only one delivery service can be enabled per connection. All other delivery services for this connection will be automatically disabled."
         },
         "errors": {
           "accountConnectionRequired": "Connection is required.",
