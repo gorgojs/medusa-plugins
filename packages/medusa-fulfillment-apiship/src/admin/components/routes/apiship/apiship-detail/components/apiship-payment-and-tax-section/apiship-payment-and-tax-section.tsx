@@ -34,7 +34,6 @@ export const ApishipPaymentAndTaxSection = ({
     <Container className="divide-y p-0">
       <Header
         title={t("apiship.paymentAndTax.title")}
-        subtitle={t("apiship.paymentAndTax.subtitle")}
         actions={[
           {
             type: "action-menu",

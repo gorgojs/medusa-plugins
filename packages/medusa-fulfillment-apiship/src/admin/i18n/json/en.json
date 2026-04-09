@@ -1,10 +1,7 @@
 {
   "general": {
     "selected": "Selected",
-    "areYouSure": "Are you sure?",
-    "typeToConfirm": "Type to confirm",
     "noResultsTitle": "No results",
-    "noResultsMessage": "Try changing the filters or search query",
     "loading": "Loading..."
   },
   "statuses": {
@@ -13,18 +10,7 @@
     "enabled": "Enabled",
     "disabled": "Disabled"
   },
-  "fields": {
-    "city": "City",
-    "address": "Address",
-    "phone": "Phone",
-    "countryCode": "Country code",
-    "contactName": "Contact name",
-    "token": "API Token",
-    "mode": "Mode"
-  },
   "apiship": {
-    "domain": "ApiShip",
-    "subtitle": "The main settings used to calculate shipping rates and create orders in ApiShip.",
     "general": {
       "title": "ApiShip",
       "subtitle": "API token and mode for connecting your store to ApiShip.",
@@ -49,7 +35,6 @@
       "subtitle": "Set up default sender details.",
       "edit": {
         "header": "Edit Default Sender Data",
-        "description": "Update sender data information.",
         "successToast": "Default sender data updated.",
         "errorToast": "Failed to update default sender data."
       },
@@ -74,10 +59,9 @@
     },
     "defaultProductSizes": {
       "title": "Default Product Settings",
-      "subtitle": "Default product settings in case no specific settings have been defined for the product.",
+      "subtitle": "Used when a product has no custom settings.",
       "edit": {
         "header": "Edit Default Product Sizes",
-        "description": "Update default parcel dimensions.",
         "successToast": "Default product sizes updated.",
         "errorToast": "Failed to update default product sizes."
       },
@@ -98,10 +82,8 @@
     },
     "paymentAndTax": {
       "title": "Payment & VAT",
-      "subtitle": "Cash on delivery and shipping VAT settings.",
       "edit": {
         "header": "Edit Payment & Tax",
-        "description": "Update payment and tax settings.",
         "successToast": "Payment and tax settings updated.",
         "errorToast": "Failed to update payment and tax settings."
       },
@@ -127,7 +109,7 @@
     },
     "connections": {
       "title": "Connections",
-      "subtitle": "Manage your ApiShip connections.",
+      "subtitle": "Sync delivery services with ApiShip account.",
       "list": {
         "empty": {
           "heading": "No records",
@@ -153,7 +135,6 @@
       },
       "edit": {
         "header": "Edit Connection",
-        "description": "Update connection settings.",
         "successToast": "Connection updated.",
         "errorToast": "Failed to update connection."
       },

@@ -74,7 +74,7 @@ export const getCachedOrFetchApishipPointsStep = createStep(
     const cache = container.resolve(Modules.CACHE)
 
     const cached = (await cache.get(key)) as Record<string, any>[] | null
-    if (cached) {
+    if (Array.isArray(cached) && cached.length > 0) {
       return new StepResponse(cached)
     }
 
@@ -89,7 +89,9 @@ export const getCachedOrFetchApishipPointsStep = createStep(
 
     const points = data.rows ?? []
 
-    await cache.set(key, points)
+    if (points.length > 0) {
+      await cache.set(key, points)
+    }
 
     return new StepResponse(points)
   }
