@@ -13,10 +13,10 @@ jobs:
       contents: read
       pull-requests: read
     outputs:
-      should_update: ${{ steps.versions.outputs.should_update }}
+      should_update: ${{ steps.decide.outputs.should_update }}
       new_medusa_version: ${{ steps.versions.outputs.new_medusa_version }}
       current_versions: ${{ steps.versions.outputs.current_versions }}
-      outdated_examples: ${{ steps.versions.outputs.outdated_examples }}
+      outdated_packages: ${{ steps.versions.outputs.outdated_packages }}
 
     steps:
       - name: Checkout repository
@@ -30,49 +30,48 @@ jobs:
       - name: Resolve version delta
         id: versions
         shell: bash
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          TARGET_OWNER: ${{ github.repository_owner }}
-          TARGET_REPO: ${{ github.event.repository.name }}
         run: |
           set -euo pipefail
 
           TARGET_VERSION="$(npm view @medusajs/medusa version)"
-
           export TARGET_VERSION
 
           node - <<'NODE'
           const fs = require('fs')
           const path = require('path')
-          const https = require('https')
+
+          const BADGE_REGEX = /Tested_with_Medusa-v([\d.]+)/
 
           const target = process.env.TARGET_VERSION
-          const examplesDir = path.join(process.cwd(), 'examples')
+          const packagesDir = path.join(process.cwd(), 'packages')
           const versions = new Set()
           const outdated = []
 
-          for (const entry of fs.readdirSync(examplesDir, { withFileTypes: true })) {
+          for (const entry of fs.readdirSync(packagesDir, { withFileTypes: true })) {
             if (!entry.isDirectory()) continue
 
-            const pkgPath = path.join(examplesDir, entry.name, 'medusa', 'package.json')
-            if (!fs.existsSync(pkgPath)) continue
+            const readmePath = path.join(packagesDir, entry.name, 'README.md')
+            if (!fs.existsSync(readmePath)) continue
 
-            const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
-            const version = pkg.dependencies && pkg.dependencies['@medusajs/medusa']
-            const normalized = version ? version.replace(/^[~^]/, '') : null
+            const content = fs.readFileSync(readmePath, 'utf8')
+            const match = content.match(BADGE_REGEX)
+            const testedVersion = match ? match[1] : null
 
-            if (normalized) {
-              versions.add(normalized)
+            if (!testedVersion) {
+              console.log(`Skipping ${entry.name}: no Tested_with_Medusa badge found in README`)
+              continue
             }
 
-            if (!normalized || normalized !== target) {
+            versions.add(testedVersion)
+
+            if (testedVersion !== target) {
               outdated.push(entry.name)
             }
           }
 
           const sorted = [...versions].sort((a, b) => {
-            const pa = a.split('.').map((n) => Number(n))
-            const pb = b.split('.').map((n) => Number(n))
+            const pa = a.split('.').map(Number)
+            const pb = b.split('.').map(Number)
             for (let i = 0; i < 3; i++) {
               if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0)
             }
@@ -80,75 +79,60 @@ jobs:
           })
 
           const currentVersions = sorted.join(',')
-          const outdatedExamples = outdated.join(',')
+          const outdatedPackages = outdated.join(',')
 
-          const owner = process.env.TARGET_OWNER
-          const repo = process.env.TARGET_REPO
-          const branchName = `chore/medusa-update-v${target}`
+          const outPath = process.env.GITHUB_OUTPUT
+          fs.appendFileSync(outPath, `new_medusa_version=${target}\n`)
+          fs.appendFileSync(outPath, `current_versions=${currentVersions}\n`)
+          fs.appendFileSync(outPath, `outdated_packages=${outdatedPackages}\n`)
 
-          function hasOpenPrForBranch() {
-            return new Promise((resolve) => {
-              const apiToken = process.env.GITHUB_TOKEN
-              if (!owner || !repo || !apiToken) {
-                resolve(false)
-                return
-              }
-
-              const head = encodeURIComponent(`${owner}:${branchName}`)
-              const options = {
-                hostname: 'api.github.com',
-                path: `/repos/${owner}/${repo}/pulls?state=open&head=${head}`,
-                method: 'GET',
-                headers: {
-                  'User-Agent': 'medusa-daily-version-update',
-                  'Authorization': `Bearer ${apiToken}`,
-                  'Accept': 'application/vnd.github+json',
-                },
-              }
-
-              const req = https.request(options, (res) => {
-                let body = ''
-                res.on('data', (chunk) => {
-                  body += chunk
-                })
-                res.on('end', () => {
-                  try {
-                    if (res.statusCode !== 200) {
-                      console.log(`PR lookup skipped: GitHub API status ${res.statusCode}, body: ${body}`)
-                      resolve(false)
-                      return
-                    }
-
-                    const prs = JSON.parse(body)
-                    resolve(Array.isArray(prs) && prs.length > 0)
-                  } catch {
-                    resolve(false)
-                  }
-                })
-              })
-
-              req.on('error', () => resolve(false))
-              req.end()
-            })
-          }
-
-          ;(async () => {
-            const openPrExists = await hasOpenPrForBranch()
-            const shouldUpdate = outdated.length > 0 && !openPrExists ? 'true' : 'false'
-
-            const outPath = process.env.GITHUB_OUTPUT
-            fs.appendFileSync(outPath, `new_medusa_version=${target}\n`)
-            fs.appendFileSync(outPath, `current_versions=${currentVersions}\n`)
-            fs.appendFileSync(outPath, `should_update=${shouldUpdate}\n`)
-            fs.appendFileSync(outPath, `outdated_examples=${outdatedExamples}\n`)
-
-            console.log(`Current versions: ${currentVersions}`)
-            console.log(`Target version: ${target}`)
-            console.log(`Outdated examples: ${outdatedExamples}`)
-            console.log(`Open PR for ${branchName}: ${openPrExists}`)
-            console.log(`Should update: ${shouldUpdate}`)
-          })()
+          console.log(`Current versions: ${currentVersions}`)
+          console.log(`Target version: ${target}`)
+          console.log(`Outdated packages: ${outdatedPackages}`)
           NODE
+
+      - name: Check for existing pull request
+        id: pr_check
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          TARGET_VERSION="${{ steps.versions.outputs.new_medusa_version }}"
+          BRANCH_NAME="chore/medusa-update-v${TARGET_VERSION}"
+          OWNER="${{ github.repository_owner }}"
+          REPO="${{ github.event.repository.name }}"
+
+          PR_COUNT=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${OWNER}/${REPO}/pulls?state=open&head=${OWNER}:${BRANCH_NAME}" \
+            --jq 'length')
+
+          OPEN_PR_EXISTS="false"
+          if [ "$PR_COUNT" -gt 0 ] 2>/dev/null; then
+            OPEN_PR_EXISTS="true"
+          fi
+
+          echo "open_pr_exists=${OPEN_PR_EXISTS}" >> "$GITHUB_OUTPUT"
+          echo "Open PR for ${BRANCH_NAME}: ${OPEN_PR_EXISTS}"
+
+      - name: Decide whether to update
+        id: decide
+        shell: bash
+        run: |
+          OUTDATED="${{ steps.versions.outputs.outdated_packages }}"
+          OPEN_PR="${{ steps.pr_check.outputs.open_pr_exists }}"
+
+          if [ -n "$OUTDATED" ] && [ "$OPEN_PR" != "true" ]; then
+            echo "should_update=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_update=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "Outdated packages: ${OUTDATED}"
+          echo "Open PR exists: ${OPEN_PR}"
+          echo "Should update: $(grep should_update "$GITHUB_OUTPUT" | tail -1)"
 
   update_test_and_pr:
     name: Update Medusa, run tests, create PR
@@ -197,19 +181,21 @@ jobs:
       - name: Install root dependencies
         run: corepack yarn install --immutable
 
-      - name: Run update script only for outdated examples
+      - name: Run update script only for outdated packages
         shell: bash
         run: |
           set -euo pipefail
           chmod +x ./scripts/update.sh
 
           TARGET_VERSION="${{ needs.check_medusa_version.outputs.new_medusa_version }}"
-          OUTDATED_EXAMPLES="${{ needs.check_medusa_version.outputs.outdated_examples }}"
+          OUTDATED_PACKAGES="${{ needs.check_medusa_version.outputs.outdated_packages }}"
 
-          IFS=',' read -ra EXAMPLES <<< "$OUTDATED_EXAMPLES"
-          for example in "${EXAMPLES[@]}"; do
-            [ -z "$example" ] && continue
-            echo "Updating example: $example"
+          # Strip leading "medusa-" prefix to get the example directory name
+          IFS=',' read -ra PACKAGES <<< "$OUTDATED_PACKAGES"
+          for package in "${PACKAGES[@]}"; do
+            [ -z "$package" ] && continue
+            example="${package#medusa-}"
+            echo "Updating example '$example' for package '$package'"
             ./scripts/update.sh "$TARGET_VERSION" "$example" --single --skip-build
           done
 
@@ -232,11 +218,11 @@ jobs:
 
             - Previous Medusa versions in repo: ${{ needs.check_medusa_version.outputs.current_versions }}
             - Updated to: ${{ needs.check_medusa_version.outputs.new_medusa_version }}
-            - Updated examples only: ${{ needs.check_medusa_version.outputs.outdated_examples }}
+            - Updated packages: ${{ needs.check_medusa_version.outputs.outdated_packages }}
             - Steps executed:
               - Postgres DB preparation for examples
-              - `./scripts/update.sh <version> <example> --single --skip-build` for outdated examples only
-              - integration tests only for outdated examples
+              - `./scripts/update.sh <version> <package> --single --skip-build` for outdated packages only
+              - integration tests only for outdated packages
           branch: chore/medusa-update-v${{ needs.check_medusa_version.outputs.new_medusa_version }}
           delete-branch: true
           labels: |
@@ -270,15 +256,3 @@ jobs:
       #         ].join('\n'),
       #         labels: ['ci', 'automation', 'needs-attention']
       #       })
-
-  no_update_needed:
-    name: No update needed
-    needs: check_medusa_version
-    if: needs.check_medusa_version.outputs.should_update != 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Log skip reason
-        run: |
-          echo "No Medusa update needed."
-          echo "Current versions: ${{ needs.check_medusa_version.outputs.current_versions }}"
-          echo "Latest version: ${{ needs.check_medusa_version.outputs.new_medusa_version }}"
