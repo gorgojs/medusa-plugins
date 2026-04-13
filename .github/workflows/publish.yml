@@ -1,4 +1,4 @@
-name: Release Packages
+name: Publish Packages
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
       - 'packages/**'
 
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -16,7 +16,7 @@ jobs:
       issues: write
       pull-requests: write
     concurrency:
-      group: release-packages-${{ github.ref }}
+      group: publish-packages-${{ github.ref }}
       cancel-in-progress: false
 
     steps:
@@ -38,7 +38,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Generate changesets from conventional commits
-        run: node scripts/generate-changesets.mjs
+        run: node scripts/generate-changesets.js
 
       - name: Generate GitHub App token
         id: app-token
