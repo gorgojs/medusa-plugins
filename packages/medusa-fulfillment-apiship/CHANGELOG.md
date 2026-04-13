@@ -1,5 +1,11 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 0.3.1
+
+### Patch Changes
+
+- [`deef5f7`](https://github.com/gorgojs/medusa-plugins/commit/deef5f72f36a835bbf766dbf3b6b5dcece9db4a8) Thanks [@gorgohead](https://github.com/gorgohead)! - improve UI texts
+
 ## 0.3.0
 
 ### Minor Changes

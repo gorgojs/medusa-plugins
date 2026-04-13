@@ -1,6 +1,6 @@
 {
   "name": "@gorgo/medusa-fulfillment-apiship",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "ApiShip fulfillment provider for Medusa",
   "files": [
     ".medusa/server",
