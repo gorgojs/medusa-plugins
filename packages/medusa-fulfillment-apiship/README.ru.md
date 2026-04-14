@@ -43,6 +43,12 @@
   </a>
 </p>
 
+<p align="center">
+  <a href="https://s3.ru1.storage.beget.cloud/5fc5fbb75424-gorgo-public/videos/apiship/apiship-1776095804.mp4">
+    <img src="https://s3.ru1.storage.beget.cloud/5fc5fbb75424-gorgo-public/videos/apiship/apiship-play-button-1776166893.webp" alt="Смотреть демо-видео плагина ApiShip" width="100%" style="border-radius: 8px; max-width: 720px;">
+  </a>
+</p>
+
 ## Возможности
 
 - ✅  **Полноценная интеграция** с ApiShip  
