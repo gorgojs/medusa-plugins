@@ -43,12 +43,10 @@ ApiShip Fulfillment for Medusa
   </a>
 </p>
 
-## Demo
-
 <p align="center">
-  <video src="https://s3.ru1.storage.beget.cloud/5fc5fbb75424-gorgo-public/videos/apiship/apiship-1776095804.mp4" controls width="100%" style="border-radius: 8px; max-width: 960px;">
-    <a href="https://s3.ru1.storage.beget.cloud/5fc5fbb75424-gorgo-public/videos/apiship/apiship-1776095804.mp4">▶ Watch Demo Video</a>
-  </video>
+  <a href="https://s3.ru1.storage.beget.cloud/5fc5fbb75424-gorgo-public/videos/apiship/apiship-1776095804.mp4">
+    <img src="https://s3.ru1.storage.beget.cloud/5fc5fbb75424-gorgo-public/videos/apiship/apiship-play-button-1776166893.webp" alt="Watch the ApiShip plugin demo video" width="100%" style="border-radius: 8px; max-width: 720px;">
+  </a>
 </p>
 
 ## Features
