@@ -1,5 +1,11 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 0.4.1
+
+### Patch Changes
+
+- Update docs
+
 ## 0.4.0
 
 ### Minor Changes
