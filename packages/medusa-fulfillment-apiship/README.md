@@ -13,7 +13,7 @@ ApiShip Fulfillment for Medusa
 </h1>
 
 <p align="center">
-  A Medusa plugin that integrates the ApiShip delivery services platform.
+  A Medusa plugin that integrates the ApiShip delivery services platform, giving your store access to dozens of delivery carriers with minimal configuration.
   <br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/apiship">Documentation ↗</a>
   <br/>
@@ -24,7 +24,7 @@ ApiShip Fulfillment for Medusa
 
 <p align="center">
   <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Medusa-^2.7.1-blue?logo=medusa" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Medusa-^2.13.0-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://medusajs.com">
     <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.13.6-green?logo=checkmarx" alt="Medusa" />
@@ -44,12 +44,18 @@ ApiShip Fulfillment for Medusa
 </p>
 
 <p align="center">
-  <a href="https://s3.ru1.storage.beget.cloud/5fc5fbb75424-gorgo-public/videos/apiship/apiship-1776095804.mp4">
-    <img src="https://s3.ru1.storage.beget.cloud/5fc5fbb75424-gorgo-public/videos/apiship/apiship-play-button-1776166893.webp" alt="Watch the ApiShip plugin demo video" width="100%" style="border-radius: 8px; max-width: 720px;">
+  <a href="https://static.gorgojs.com/videos/apiship/apiship-1776095804.mp4">
+    <img src="https://static.gorgojs.com/videos/apiship/apiship-play-button-1776166893.webp" alt="Watch the ApiShip plugin demo video" width="100%" style="border-radius: 8px; max-width: 720px;">
   </a>
 </p>
 
-## Features
+## What is ApiShip?
+
+<a href="https://apiship.com" target="_blank">ApiShip</a> is a Russian delivery aggregator platform that connects online stores to 40+ delivery services through a single API. Instead of integrating each carrier separately, ApiShip provides a unified interface for rate calculation, order creation, tracking, and document generation across all connected providers.
+
+Popular delivery services available through ApiShip include CDEK, Yandex Delivery, Russian Post, Delovye Linii, PECOM, Boxberry, SberLogistics, DPD, and many more. You can browse the <a href="https://apiship.com/couriers" target="_blank">full list of delivery services</a> on the ApiShip website.
+
+## Plugin Features
 
 - ✅  **Complete integration** with ApiShip
 - 💰  **Shipping rate calculation** in checkout
@@ -70,7 +76,7 @@ Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.
 
 ## Requirements
 
-- Medusa v2.7.0 or later
+- Medusa v2.13.0 or later
 - Node.js v20 or later
 - An ApiShip account - [sign in or create one](https://a.apiship.ru)
 

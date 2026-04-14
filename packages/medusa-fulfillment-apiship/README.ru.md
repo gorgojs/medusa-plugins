@@ -13,7 +13,7 @@
 </h1>
 
 <p align="center">
-  Плагин Medusa для фулфилмента через интегратор служб доставки ApiShip.
+  Плагин Medusa для фулфилмента через интегратор служб доставки ApiShip, предоставляя вашему магазину доступ к множеству перевозчиков с минимальной настройкой.
   <br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/apiship">Документация ↗</a>
   <br/>
@@ -24,7 +24,7 @@
 
 <p align="center">
   <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Medusa-^2.7.1-blue?logo=medusa" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Medusa-^2.13.0-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://medusajs.com">
     <img src="https://img.shields.io/badge/Протестировано_с_Medusa-v2.13.6-green?logo=checkmarx" alt="Medusa" />
@@ -44,12 +44,18 @@
 </p>
 
 <p align="center">
-  <a href="https://s3.ru1.storage.beget.cloud/5fc5fbb75424-gorgo-public/videos/apiship/apiship-1776095804.mp4">
-    <img src="https://s3.ru1.storage.beget.cloud/5fc5fbb75424-gorgo-public/videos/apiship/apiship-play-button-1776166893.webp" alt="Смотреть демо-видео плагина ApiShip" width="100%" style="border-radius: 8px; max-width: 720px;">
+  <a href="https://static.gorgojs.com/videos/apiship/apiship-1776095804.mp4">
+    <img src="https://static.gorgojs.com/videos/apiship/apiship-play-button-1776166893.webp" alt="Смотреть демо-видео плагина ApiShip" width="100%" style="border-radius: 8px; max-width: 720px;">
   </a>
 </p>
 
-## Возможности
+## Что такое ApiShip?
+
+<a href="https://apiship.ru/" target="_blank">ApiShip</a> — российская платформа-агрегатор служб доставки, которая подключает интернет-магазины к 40+ курьерским службам через единый API. Вместо отдельной интеграции с каждым перевозчиком, ApiShip предоставляет унифицированный интерфейс для расчёта тарифов, создания заказов, отслеживания и формирования документов по всем подключённым провайдерам.
+
+Среди популярных служб доставки, доступных через ApiShip: СДЭК, Яндекс Доставка, Почта России, Деловые Линии, ПЭК, Boxberry, СберЛогистика, DPD, и многие другие. Полный список можно посмотреть на <a href="https://apiship.ru/couriers" target="_blank">странице служб доставки</a> на сайте ApiShip.
+
+## Возможности плагина
 
 - ✅  **Полноценная интеграция** с ApiShip  
 - 💰  **Расчёт стоимости доставки** на этапе оформления заказа  
@@ -70,7 +76,7 @@
 
 ## Требования
 
-- Medusa v2.7.1 или новее
+- Medusa v2.13.0 или новее
 - Node.js v20 или новее
 - Аккаунт ApiShip – [зарегистрируйтесь или войдите](https://a.apiship.ru)
 
