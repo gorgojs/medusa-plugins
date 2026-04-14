@@ -1,8 +1,8 @@
-import OneCSettingsService from "./service";
-import { Module } from "@medusajs/framework/utils";
+import OnecService from "./service"
+import { Module } from "@medusajs/framework/utils"
 
-export const ONE_C_MODULE = "oneC";
+export const ONE_C_MODULE = "onec";
 
 export default Module(ONE_C_MODULE, {
-	service: OneCSettingsService,
+	service: OnecService,
 });

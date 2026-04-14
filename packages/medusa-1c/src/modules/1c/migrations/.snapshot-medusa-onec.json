@@ -15,24 +15,6 @@
           "nullable": false,
           "mappedType": "text"
         },
-        "login": {
-          "name": "login",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "text"
-        },
-        "password": {
-          "name": "password",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "text"
-        },
         "interval": {
           "name": "interval",
           "type": "integer",
@@ -103,20 +85,20 @@
           "mappedType": "datetime"
         }
       },
-      "name": "one_csettings",
+      "name": "onec",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "IDX_one_csettings_deleted_at",
+          "keyName": "IDX_onec_deleted_at",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_one_csettings_deleted_at\" ON \"one_csettings\" (deleted_at) WHERE deleted_at IS NULL"
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_onec_deleted_at\" ON \"onec\" (deleted_at) WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "one_csettings_pkey",
+          "keyName": "onec_pkey",
           "columnNames": [
             "id"
           ],

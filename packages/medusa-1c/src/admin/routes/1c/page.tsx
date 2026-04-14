@@ -25,7 +25,7 @@ const OnecAdminPage = () => {
 
 	const { data: settings, isLoading } = useQuery<OneCSettings | undefined>({
 		queryKey: ["1c-settings"],
-		queryFn: () => sdk.client.fetch("/admin/1c/settings"),
+		queryFn: () => sdk.client.fetch("/1c"),
 	});
 
 	return (
@@ -62,14 +62,6 @@ const OnecAdminPage = () => {
 							},
 						},
 					]}
-				/>
-				<SectionRow
-					title="Login"
-					value={formatValue(settings?.login)}
-				/>
-				<SectionRow
-					title="Password"
-					value={settings?.password ? "***" : "-"}
 				/>
 				<SectionRow
 					title="Step interval in seconds (0 - load in a single step)"

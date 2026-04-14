@@ -2,7 +2,7 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import * as fs from "fs/promises";
 import * as path from "path";
 import { MedusaError, Modules } from "@medusajs/utils";
-import OneCSettingsService from "../../../modules/1c/service";
+import OnecService from "../../../modules/1c/service";
 import { ONE_C_MODULE } from "../../../modules/1c";
 import {
   decompressAndExtract,
@@ -38,7 +38,7 @@ function isAuthValid(req: MedusaRequest) {
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const logger = req.scope.resolve("logger");
-  const oneCSettingsService: OneCSettingsService =
+  const oneCSettingsService: OnecService =
     req.scope.resolve(ONE_C_MODULE);
 
   const settings = await oneCSettingsService.getSettings();
