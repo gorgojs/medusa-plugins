@@ -1,5 +1,11 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 0.4.0
+
+### Minor Changes
+
+- [#190](https://github.com/gorgojs/medusa-plugins/pull/190) [`eab0baf`](https://github.com/gorgojs/medusa-plugins/commit/eab0baf75e03aedc86df178ee354403058a30547) Thanks [@gorgohead](https://github.com/gorgohead)! - add apiship readme demo video ([#190](https://github.com/gorgojs/medusa-plugins/issues/190))
+
 ## 0.3.1
 
 ### Patch Changes
