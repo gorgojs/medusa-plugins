@@ -1,4 +1,6 @@
-import { createStep, StepResponse } from "@medusajs/workflows-sdk"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import { RemoteQueryFunction } from "@medusajs/framework/types"
 import { MarketplaceModuleService } from "../../../modules/marketplace/services"
 import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
 
@@ -13,7 +15,7 @@ export type UpdateExchangeProfileStepInput = {
 export const updateExchangeProfileStep = createStep(
   "update-exchange-profile",
   async (input: UpdateExchangeProfileStepInput, { container }) => {
-    const query = container.resolve("query")
+    const query = container.resolve<RemoteQueryFunction>(ContainerRegistrationKeys.QUERY)
     const service = container.resolve<MarketplaceModuleService>(MARKETPLACE_MODULE)
     console.log("input", input)
 

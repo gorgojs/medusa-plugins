@@ -5,6 +5,7 @@ import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
 import { MarketplaceModuleService } from "../../../modules/marketplace/services"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import { CreateOrderDTO, OrderDTO } from "@medusajs/framework/types"
+import { Link } from "@medusajs/modules-sdk"
 
 export type CreateOrdersStepInput = {
   region_id?: string
@@ -17,7 +18,7 @@ export const createOrdersStep = createStep(
     const { orders } = input
 
     const marketplaceService = container.resolve<MarketplaceModuleService>(MARKETPLACE_MODULE)
-    const link = container.resolve(ContainerRegistrationKeys.LINK)
+    const link = container.resolve<Link>(ContainerRegistrationKeys.LINK)
 
     if (!orders.length) {
       return new StepResponse()
