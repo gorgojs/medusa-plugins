@@ -10,6 +10,9 @@ const BUMP_BY_TYPE = {
   fix:      'patch',
   perf:     'patch',
   refactor: 'patch',
+  docs:     'patch',
+  revert:   'patch',
+  test:     'patch'
 }
 
 const CHANGESET_DIR = path.resolve('.changeset')
