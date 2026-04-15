@@ -42,26 +42,34 @@ Yandex Market YML Feed Generator for Medusa
   </a>
 </p>
 
-## 💬 Yandex Plugin Support Chat
+## Plugin Features
 
-Got questions or ideas for new plugin features?  
-Join the Telegram chat – [@medusajs_yandex](https://t.me/medusajs_yandex)
+- **YML Feed Export**  
+  Generate product feeds in Yandex Market YML format.
+- **Feed URL Access**  
+  Easily retrieve feed URLs for integration with Yandex Market.
+- **Admin UI**  
+  Manage feeds directly from the Medusa Admin panel.
+- **Scheduled Generation**  
+  Automatic feed exports at configurable intervals.
+- **Category Filtering**  
+  Select specific product categories for export.
+- **Manual Generation**  
+  Trigger feed generation on demand.
+- **File Module Integration**  
+  Uses Medusa File Module with built-in provider support.
 
-## 👥 Medusa.js Community Chat
+## What is YML?
 
-Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.me/medusajs_chat)
+<a href="https://yandex.com/support/direct/feeds/requirements-yml.html" target="_blank">YML (Yandex Market Language)</a> is an XML-based format used by Yandex Market and Yandex Direct for product data feeds. It's the standard way to list your products on Yandex Market, one of the largest e-commerce marketplaces in Eastern Europe and Central Asia.
 
-## Features
+## 💬  Support & Community
 
-- ✅ Export product feeds in [Yandex Market YML](https://yandex.com/support/direct/en/feeds/requirements-yml.html) format
-- ✅ Easily access feed URLs for integration with Yandex Market
-- ✅ Internalized interface in Medusa Admin
-- ✅ Schedule automatic feed exports at intervals
-- ✅ Select specific product categories for export
-- ✅ Manual feed generation
-- ✅ Uses Medusa File Module with built-in file provider support
+Got questions or ideas about the plugin? Join the Telegram support chat — [@medusajs_yandex](https://t.me/medusajs_yandex)
 
-## Prerequisites
+Connect with other Medusa developers on Telegram — [@medusajs_chat](https://t.me/medusajs_chat)
+
+## Requirements
 
 - Medusa server v2.8.0 or later
 - Node.js v20 or later
@@ -74,7 +82,7 @@ yarn add @gorgo/medusa-feed-yandex
 npm install @gorgo/medusa-feed-yandex
 ```
 
-## 📘  Documentation
+## Documentation
 
 The complete installation, configuration, and usage guide for this plugin is available on the [Gorgo documentation website](https://docs.gorgojs.com/medusa-plugins/yandex-yml-feed).
 
