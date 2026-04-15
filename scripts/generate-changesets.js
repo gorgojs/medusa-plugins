@@ -2,6 +2,7 @@
 import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
+import test from 'node:test'
 
 const PATHS_TO_DIR = ['packages', 'packages/utils']
 
@@ -10,6 +11,10 @@ const BUMP_BY_TYPE = {
   fix:      'patch',
   perf:     'patch',
   refactor: 'patch',
+  chore:    'patch',
+  docs:     'patch',
+  revert:   'patch',
+  test:     'patch'
 }
 
 const CHANGESET_DIR = path.resolve('.changeset')
