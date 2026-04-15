@@ -7,7 +7,7 @@
   "packageManager": "yarn@4.9.2",
   "scripts": {
     "update": "./scripts/update.sh",
-    "prepare": "husky",
+    "postinstall": "husky",
     "commitlint": "commitlint"
   },
   "dependencies": {
