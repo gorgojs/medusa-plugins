@@ -14,7 +14,7 @@ Robokassa Payments for Medusa
 </h1>
 
 <p align="center">
-  A Medusa plugin that provides Robokassa payments.
+  A Medusa plugin that provides Robokassa payments. Production-ready.
   <br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/robokassa">Documentation ↗</a>
   <br/>
@@ -44,25 +44,34 @@ Robokassa Payments for Medusa
   </a>
 </p>
 
-## Features
+## Plugin Features
 
-- 🔗  **Seamless integration** with the Robokassa payment system  
-- 🧾  **Receipt generation** compliant with Federal Law No. 54   
-- 1️⃣  **One-step** (autocapture) and  **2️⃣  two-step** (authorization/hold) payment flows 
-- 🔔  **Webhook support** for real-time payment status updates    
-- 🔄  **Refund** and **order cancellation** support   
-- 🛡  **Webhook verification** for enhanced security   
-- ⚙️  **Test mode** for simulating payments without real charges   
-- 🔍  **Detailed logging** for debugging and transaction auditing  
+- **Full Integration with Robokassa**  
+  Connect your store to Robokassa for secure and reliable payments.
+- **Receipt Generation**  
+  Online receipts compliant with Federal Law No. 54.
+- **One-Step & Two-Step Payments**  
+  Autocapture or authorization/hold payment flows.
+- **Refunds & Cancellations**  
+  Refund and order cancellation support.
+- **Webhook Notifications**  
+  Real-time payment status updates with signature verification.
+- **Test Mode**  
+  Simulate payments without real charges.
+- **Detailed Logging**  
+  Request and response logs for debugging and support in development mode.
+- **Storefront Example**  
+  A complete <a href="https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-robokassa/medusa-storefront" target="_blank">Next.js storefront</a> ready to use as a reference.
 
-## 💬  Robokassa Plugin Support Chat
+## What is Robokassa?
 
-Got questions or ideas for new plugin features?  
-Join the Telegram chat – [@medusajs_robokassa](https://t.me/medusajs_robokassa)
+<a href="https://robokassa.com" target="_blank">Robokassa</a> is a Russian payment aggregator that supports bank cards, e-wallets, mobile payments, SBP, and other methods. It's widely used by small and mid-size online stores in Russia for its simple integration and broad payment method coverage.
 
-## 👥  Medusa.js Community Chat
+## 💬  Support & Community
 
-Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.me/medusajs_chat)
+Got questions or ideas about the plugin? Join the Telegram support chat — [@medusajs_robokassa](https://t.me/medusajs_robokassa)
+
+Connect with other Medusa developers on Telegram — [@medusajs_chat](https://t.me/medusajs_chat)
 
 ## Requirements
 
@@ -78,7 +87,7 @@ yarn add @gorgo/medusa-payment-robokassa
 npm install @gorgo/medusa-payment-robokassa
 ```
 
-## 📘  Documentation
+## Documentation
 
 The complete installation, configuration, and usage guide for this plugin is available on the [Gorgo documentation website](https://docs.gorgojs.com/medusa-plugins/robokassa).
 

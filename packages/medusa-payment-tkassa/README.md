@@ -14,7 +14,7 @@ T-Kassa Payments by T-Bank for Medusa
 </h1>
 
 <p align="center">
-  A Medusa plugin that provides T-Kassa payments by T-Bank.
+  A Medusa plugin that provides T-Kassa payments by T-Bank. Production-ready.
   <br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/t-kassa">Documentation ↗</a>
   <br/>
@@ -45,24 +45,32 @@ T-Kassa Payments by T-Bank for Medusa
 </p>
 
 
-## Features
+## Plugin Features
 
-- 🔗  **Seamless integration** with the T-Kassa payment system
-- 🧾  **Receipt generation** compliant with Federal Law No. 54, supporting FFD 1.05 and 1.2 formats
-- 1️⃣  **One-step** (autocapture) and  **2️⃣  two-step** (authorization/hold) payment flows
-- 🔄  **Full refund** and **order cancellation** support
-- 🔔  **Webhook support** for real-time payment status updates
-- 🛡  **Webhook verification** for enhanced security
-- 🔍  **Detailed logging** for debugging
+- **Full Integration with T-Kassa**  
+  Connect your store to T-Kassa for secure and reliable payments.
+- **Receipt Generation**  
+  Online receipts compliant with Federal Law No. 54 (FFD 1.05 and 1.2).
+- **One-Step & Two-Step Payments**  
+  Autocapture or authorization/hold payment flows.
+- **Refunds & Cancellations**  
+  Full refund and order cancellation support.
+- **Webhook Notifications**  
+  Real-time payment status updates with signature verification.
+- **Detailed Logging**  
+  Request and response logs for debugging and support in development mode.
+- **Storefront Example**  
+  A complete <a href="https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-tkassa/medusa-storefront" target="_blank">Next.js storefront</a> ready to use as a reference.
 
-## 💬  T-Kassa Plugin Support Chat
+## What is T-Kassa?
 
-Got questions or ideas for new plugin features?  
-Join the Telegram chat – [@medusajs_tkassa](https://t.me/medusajs_tkassa)
+T-Kassa is an internet acquiring service by T-Bank (formerly Tinkoff Bank), one of Russia's largest digital banks. It lets online stores accept card payments, SBP (Faster Payments System), T-Pay, SberPay, Alfa Pay, Mir Pay, and more. Learn more at the <a href="https://www.tbank.ru/business/online-payments/internet-acquiring/" target="_blank">T-Bank website</a>.
 
-## 👥  Medusa.js Community Chat
+## 💬  Support & Community
 
-Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.me/medusajs_chat)
+Got questions or ideas about the plugin? Join the Telegram support chat — [@medusajs_tkassa](https://t.me/medusajs_tkassa)
+
+Connect with other Medusa developers on Telegram — [@medusajs_chat](https://t.me/medusajs_chat)
 
 ## Requirements
 
@@ -78,7 +86,7 @@ yarn add @gorgo/medusa-payment-tkassa
 npm install @gorgo/medusa-payment-tkassa
 ```
 
-## 📘  Documentation
+## Documentation
 
 The complete installation, configuration, and usage guide for this plugin is available on the [Gorgo documentation website](https://docs.gorgojs.com/medusa-plugins/t-kassa).
 

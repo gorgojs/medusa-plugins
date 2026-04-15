@@ -35,14 +35,11 @@
 
 🚧 Work in progress, see the [Roadmap](#roadmap).  
 
-## 💬 1C:Enterprise Plugin Support Chat
+## 💬  Support & Community
 
-Got questions or ideas for new plugin features?  
-Join the Telegram chat – [@medusajs_1c](https://t.me/medusajs_1c)
+Got questions or ideas about the plugin? Join the Telegram support chat — [@medusajs_1c](https://t.me/medusajs_1c)
 
-## 👥 Medusa.js Community Chat
-
-Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.me/medusajs_chat)
+Connect with other Medusa developers on Telegram — [@medusajs_chat](https://t.me/medusajs_chat)
 
 ## Roadmap
 
@@ -55,7 +52,7 @@ Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.
 - [ ] Admin UI extension for journaling and audit logs
 - [ ] Detailed documentation
 
-## Prerequisites
+## Requirements
 
 - Medusa server v2.8.0 or later
 - Node.js v20 or later
@@ -68,7 +65,7 @@ yarn add @gorgo/medusa-1c
 npm install @gorgo/medusa-1c
 ```
 
-## 📘  Documentation
+## Documentation
 
 The complete installation, configuration, and usage guide for this plugin is available on the [Gorgo documentation website](https://docs.gorgojs.com/medusa-plugins/1c-enterprise).
 
