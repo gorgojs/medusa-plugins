@@ -13,7 +13,7 @@ ApiShip Fulfillment for Medusa
 </h1>
 
 <p align="center">
-  A Medusa plugin that integrates the ApiShip delivery aggregator platform, giving your store access to dozens of delivery carriers with minimal configuration.
+  A Medusa plugin that integrates the ApiShip delivery aggregator platform, giving your store access to dozens of delivery carriers with minimal configuration. Production-ready.
   <br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/apiship">Documentation ↗</a>
   <br/>
@@ -49,30 +49,34 @@ ApiShip Fulfillment for Medusa
   </a>
 </p>
 
+## Plugin Features
+
+- **Shipping Rate Calculation**  
+  Real-time delivery rates from multiple carriers at checkout.
+- **Pickup Point Delivery**  
+  Pickup point selection from a list or interactive map.
+- **One-Click Order Creation**  
+  Create shipments in ApiShip directly from Medusa Admin, no manual data entry needed.
+- **Shipment Documents**  
+  Labels, waybills, and other documents retrieved directly from ApiShip.
+- **Test Mode**  
+  Simulate calculations and orders without affecting real data.
+- **Detailed Logging**  
+  Request and response logs for debugging and support in development mode.
+- **Storefront Example**  
+  A complete [Next.js storefront](https://github.com/gorgojs/medusa-plugins/tree/main/examples/fulfillment-apiship/medusa-storefront) ready to use as a reference.
+
 ## What is ApiShip?
 
 <a href="https://apiship.com" target="_blank">ApiShip</a> is a Russian delivery aggregator platform that connects online stores to 40+ delivery services through a single API. Instead of integrating each carrier separately, ApiShip provides a unified interface for rate calculation, order creation, tracking, and document generation across all connected providers.
 
 Popular delivery services available through ApiShip include CDEK, Yandex Delivery, Russian Post, Delovye Linii, PECOM, Boxberry, SberLogistics, DPD, and many more. You can browse the <a href="https://apiship.com/couriers" target="_blank">full list of delivery services</a> on the ApiShip website.
 
-## Plugin Features
+## 💬  Support & Community
 
-- ✅  **Complete integration** with ApiShip
-- 💰  **Shipping rate calculation** in checkout
-- 📍  **Pickup point delivery** with list and interactive map selection
-- 🧾  **Automatic order creation** in ApiShip with selected tariff and pickup point
-- 🏷️  **Shipment documents retrieval**, including labels and waybills
-- ⚙️  **Test mode** for simulating calculations  
-- 🔍  **Detailed logging** for monitoring, debugging, and support
+Got questions or ideas about the plugin? Join the Telegram support chat — [@medusajs_apiship](https://t.me/medusajs_apiship)
 
-## 💬  ApiShip Plugin Support Chat
-
-Got questions or ideas for new plugin features?  
-Join the Telegram chat – [@medusajs_apiship](https://t.me/medusajs_apiship)
-
-## 👥  Medusa.js Community Chat
-
-Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.me/medusajs_chat)
+Connect with other Medusa developers on Telegram — [@medusajs_chat](https://t.me/medusajs_chat)
 
 ## Requirements
 
@@ -88,7 +92,7 @@ yarn add @gorgo/medusa-payment-apiship
 npm install @gorgo/medusa-payment-apiship
 ```
 
-## 📘  Documentation
+## Documentation
 
 The complete installation, configuration, and usage guide for this plugin is available on the [Gorgo documentation website](https://docs.gorgojs.com/medusa-plugins/apiship).
 
