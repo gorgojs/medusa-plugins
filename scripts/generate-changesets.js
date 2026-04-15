@@ -11,7 +11,6 @@ const BUMP_BY_TYPE = {
   fix:      'patch',
   perf:     'patch',
   refactor: 'patch',
-  chore:    'patch',
   docs:     'patch',
   revert:   'patch',
   test:     'patch'
