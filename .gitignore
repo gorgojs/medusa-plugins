@@ -27,7 +27,6 @@ examples/**/yalc.lock
 **/dist
 **/stats
 .vscode
+.zed
 
 **/tsconfig.tsbuildinfo
-
-

@@ -5,7 +5,7 @@ export default defineMiddlewares({
 	routes: [
 		{
 			method: ["POST"],
-			matcher: "/onec/exchange",
+			matcher: "/1c/exchange",
 			middlewares: [
 				bodyParser.raw({
 					type: () => true,

@@ -1,11 +1,9 @@
-import { model } from "@medusajs/utils";
+import { model } from "@medusajs/utils"
 
-export const OneCSettings = model.define("oneCSettings", {
+export const Onec = model.define("onec", {
 	id: model.id().primaryKey(),
-	login: model.text().nullable(),
-	password: model.text().nullable(),
 	interval: model.number().nullable(),
 	chunkSize: model.number().nullable(),
 	useZip: model.boolean().default(false),
 	attributes: model.json().nullable(),
-});
+})
