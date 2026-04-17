@@ -6,6 +6,8 @@
   Sync products and orders between Medusa and 1C:Enterprise.
   <br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/1c-enterprise">Documentation ↗</a>
+  <br/>
+  <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-1c/README.ru.md">Читать README на русском ↗</a>
 </p>
 
 <br/>
@@ -33,7 +35,7 @@
 
 ## Status
 
-🚧 Work in progress, see the [Roadmap](#roadmap).  
+> 🚧 Work in progress, see the [Roadmap](#roadmap).  
 
 ## 💬  Support & Community
 
