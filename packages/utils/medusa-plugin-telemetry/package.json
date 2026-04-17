@@ -1,0 +1,55 @@
+{
+  "name": "@gorgo/medusa-plugin-telemetry",
+  "version": "0.1.0",
+  "description": "Telemetry module for tracking metrics in Gorgo Medusa plugins",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.mjs",
+      "require": "./dist/react/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "keywords": [
+    "medusa",
+    "plugin",
+    "telemetry",
+    "analytics",
+    "medusa-v2"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "dev": "yarn build && yalc publish"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.11",
+    "@types/react": "^19.0.12",
+    "react": "^18.3.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.6.2",
+    "yalc": "^1.0.0-pre.53"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
