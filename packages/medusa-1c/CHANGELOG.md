@@ -6,23 +6,6 @@
 
 - [#208](https://github.com/gorgojs/medusa-plugins/pull/208) [`f03c62d`](https://github.com/gorgojs/medusa-plugins/commit/f03c62d7158aa20bee5003b5c3791d75a855dd51) Thanks [@ca11ba](https://github.com/ca11ba)! - improve plugin and 1c model ([#208](https://github.com/gorgojs/medusa-plugins/issues/208))
 
-  - feat: auth from medusa
-
-  - feat: split workflows, added variants creations
-
-  - style(medusa-1c): improve mapping syntax
-
-  - refactor(medusa-1c): move workflow steps
-
-  - refactor(1c): rename
-
-  - refactor(1c): rename model
-
-  ***
-
-  Co-authored-by: PoSayDone <poseaydone@ya.ru>
-  Co-authored-by: gorgohead <head@gorgojs.com>
-
 ## 0.0.18
 
 ### Patch Changes
