@@ -1,52 +1,52 @@
 ---
 title: "create-medusa-plugin"
-description: "A CLI tool to quickly scaffold a Medusa plugin and example projects in a ready-to-develop monorepo structure"
+description: "CLI-инструмент для быстрого создания плагина Medusa и примеров проектов в структуре монорепозитория, готовой к разработке"
 ---
 
 # {frontmatter.title}
 
-A CLI tool to quickly scaffold a Medusa plugin and example projects in a ready-to-develop monorepo structure.
+CLI-инструмент для быстрого создания плагина Medusa и примеров проектов в структуре монорепозитория, готовой к разработке.
 
-## Usage
+## Использование
 
-`create-medusa-plugin` uses the official [`create-medusa-app`](https://docs.medusajs.com/resources/create-medusa-app) under the hood to scaffold Medusa projects—including the plugin, backend and storefront folders. This ensures your setup follows official best practices and remains fully compatible with the Medusa ecosystem by leveraging the official Medusa app generator.
+`create-medusa-plugin` использует официальный [`create-medusa-app`](https://docs.medusajs.com/resources/create-medusa-app) для создания проектов Medusa, включая папки плагина, backend и storefront. Благодаря этому итоговая структура соответствует официальным рекомендациям и остается полностью совместимой с экосистемой Medusa, так как основана на официальном генераторе приложений Medusa.
 
 ```bash
 npx create-medusa-plugin [plugin-name] [options]
 ```
 
-Replace `[plugin-name]` with your desired plugin name.
+Замените `[plugin-name]` на желаемое имя плагина.
 
-### Options
+### Опции
 
-| Option                     | Description                                                                                          | Default           |
-| -------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------- |
-| `-r, --repo <name>`        | Root repository (monorepo) name                                                                      | _none_            |
-| `-e, --example <name>`     | Example folder name, where the `medusa` and `medusa-storefront` examples will be created             | _none_            |
-| `--directory-path <path>`  | Path to the output directory for the root repository                                                 | Current directory |
-| `--plugin-repo-url <url>`  | URL of repository to setup a Medusa plugin (forwards `repo-url` to `create-medusa-app`)              | _none_            |
-| `--example-repo-url <url>` | URL of repository to setup an example Medusa backend (forwards `repo-url` to `create-medusa-app`)    | _none_            |
-| `--no-storefront`          | Do not include example storefront (forwards as `--with-nextjs-starter=false` to `create-medusa-app`) | `false`           |
-| `--skip-example-db`        | Skip creating the Medusa example database (forwards `--skip-db` to `create-medusa-app`)              | `false`           |
-| `--verbose`                | Show all logs of underlying commands (forwards `--verbose` to `create-medusa-app`)                   | `false`           |
+| Опция                      | Описание                                                                                              | По умолчанию      |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------- |
+| `-r, --repo <name>`        | Имя корневого репозитория (монорепозитория)                                                           | _не задано_       |
+| `-e, --example <name>`     | Имя папки с примером, в которой будут созданы примеры `medusa` и `medusa-storefront`                 | _не задано_       |
+| `--directory-path <path>`  | Путь к директории, в которой будет создан корневой репозиторий                                        | Текущая директория |
+| `--plugin-repo-url <url>`  | URL репозитория для создания плагина Medusa (передает `repo-url` в `create-medusa-app`)              | _не задано_       |
+| `--example-repo-url <url>` | URL репозитория для создания примера backend на Medusa (передает `repo-url` в `create-medusa-app`)   | _не задано_       |
+| `--no-storefront`          | Не включать пример storefront (передается как `--with-nextjs-starter=false` в `create-medusa-app`)   | `false`           |
+| `--skip-example-db`        | Пропустить создание базы данных для примера Medusa (передает `--skip-db` в `create-medusa-app`)      | `false`           |
+| `--verbose`                | Показывать все логи внутренних команд (передает `--verbose` в `create-medusa-app`)                   | `false`           |
 
-## Examples
+## Примеры
 
-* **Basic usage**
+* **Базовое использование**
 
   ```bash
   npx create-medusa-plugin
   ```
 
-  This command will prompt you for the plugin name and other configuration options interactively.
+  Эта команда в интерактивном режиме запросит имя плагина и другие параметры конфигурации.
 
-* **With options**
+* **С опциями**
 
   ```bash
   npx create-medusa-plugin my-plugin -r my-plugin-monorepo -e my-plugin-example --skip-example-db
   ```
 
-  This command scaffolds the following monorepo structur, installing the Medusa projects within it:
+  Эта команда создаст следующую структуру монорепозитория и установит в нее проекты Medusa:
 
   ```
   /
@@ -61,13 +61,13 @@ Replace `[plugin-name]` with your desired plugin name.
       └── README.md
   ```
 
-* **With a plugin scope**
+* **С областью имен плагина**
 
   ```bash
   npx create-medusa-plugin @my-scope/my-plugin -r my-plugin-monorepo -e my-plugin-example --skip-example-db
   ```
 
-  This command scaffolds the following monorepo structure, placing your scoped plugin in a nested folder under `packages` and installing the Medusa projects within it:
+  Эта команда создаст следующую структуру монорепозитория, поместит scoped-плагин во вложенную папку внутри `packages` и установит в нее проекты Medusa:
 
 
   ```
