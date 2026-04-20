@@ -1,10 +1,6 @@
 <p align="center">
-  <a href="https://www.medusajs.com">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/1bb06efa-98f4-4515-b6a1-e3dd37ed8e79">
-      <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/1bb06efa-98f4-4515-b6a1-e3dd37ed8e79">
-      <img alt="Medusa-ApiShip logo" src="https://github.com/user-attachments/assets/1bb06efa-98f4-4515-b6a1-e3dd37ed8e79" height="120">
-    </picture>
+  <a href="https://docs.gorgojs.com/medusa-plugins/apiship">
+    <img alt="Medusa-ApiShip logo" src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/apiship-medusa-logo.png" width="270">
   </a>
 </p>
 
