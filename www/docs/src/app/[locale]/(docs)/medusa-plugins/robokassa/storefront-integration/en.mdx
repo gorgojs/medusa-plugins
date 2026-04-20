@@ -73,18 +73,34 @@ Open [`src/modules/checkout/components/payment/index.tsx`](https://github.com/go
 ![Directory structure in the Medusa Storefront after updating the file for payment component](https://github.com/user-attachments/assets/5c4dfcf9-57e7-48f6-956c-0e0a91ec6c8f)
 
 ```ts
-await initiatePaymentSession(cart, {
-  provider_id: selectedPaymentMethod,
-  data: {
-    SuccessUrl2: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`,
-    SuccessUrl2Method: "GET",
-    FailUrl2: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`,
-    FailUrl2Method: "GET",
-    EMail: cart?.email,
-    Culture: countryCode === "ru" ? "ru" : "en",
-    cart: cart
+import { getBaseURL } from "@lib/util/env"
+
+const Payment = ({
+  // ...
+}) => {
+  // ...
+  const handleSubmit = async () => {
+    setIsLoading(true)
+    try {
+      // ...
+      const countryCode = cart?.shipping_address?.country_code
+      if (!checkActiveSession) {
+        await initiatePaymentSession(cart, {
+          provider_id: selectedPaymentMethod,
+          data: {
+            SuccessUrl2: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`,
+            SuccessUrl2Method: "GET",
+            FailUrl2: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`,
+            FailUrl2Method: "GET",
+            EMail: cart?.email,
+            Culture: countryCode === "ru" ? "ru" : "en",
+            cart: cart
+          }
+        })
+      }
+    }
   }
-})
+}
 ```
 
 When initiating the payment session for Robokassa, the `SuccessUrl2` and `FailUrl2` parameters define where the customer will be redirected after attempting payment. Both URLs are dynamically constructed using the storefront's base URL, the cart ID, and the selected country code.
@@ -100,6 +116,13 @@ Open [`src/modules/checkout/components/payment-button/index.tsx`](https://github
 ![Directory structure in the Medusa Storefront after updating the file for payment button component](https://github.com/user-attachments/assets/4b76ee52-747f-452e-9160-6365f742e33e)
 
 ```ts
+import { 
+  // ...
+  isRobokassa
+} from "@lib/constants"
+import { useRouter } from "next/navigation"
+
+
 const PaymentButton: React.FC<PaymentButtonProps> = ({
   cart,
   "data-testid": dataTestId,
@@ -211,7 +234,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
   const cartCacheTag = await getCacheTag("carts")
   revalidateTag(cartCacheTag)
   const { cart } = await sdk.store.cart.retrieve(cartId, {
-    fields: "id, order_link.order_id"
+    fields: "id, order_link.order_id, items.total"
   },
     headers
   )
