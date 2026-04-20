@@ -1,11 +1,17 @@
+<p align="center">
+  <a href="https://docs.gorgojs.ru/medusa-plugins/1c-enterprise">
+    <img alt="Medusa-1C logo" src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/1c-medusa-logo.png" width="270">
+  </a>
+</p>
+
 <h1 align="center">
   Интеграция 1С:Предприятие с Medusa
 </h1>
 
 <p align="center">
-  Синхронизация товаров и заказов между Medusa и 1С:Предприятие.
+  <a href="https://docs.gorgojs.com/medusa-plugins/1c-enterprise">Документация</a>
   <br/>
-  <a href="https://docs.gorgojs.com/medusa-plugins/1c-enterprise">Документация ↗</a>
+  Синхронизация товаров и заказов между Medusa и 1С:Предприятие.
   <br/>
   <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-1c/README.md">Read README in English ↗</a>
 </p>

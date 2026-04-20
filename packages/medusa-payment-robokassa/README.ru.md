@@ -1,10 +1,6 @@
 <p align="center">
-  <a href="https://www.medusajs.com">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/119f3faf-da2e-476e-bf08-6e557de689b6">
-      <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/119f3faf-da2e-476e-bf08-6e557de689b6">
-      <img alt="Medusa-Robokassa logo" src="https://github.com/user-attachments/assets/119f3faf-da2e-476e-bf08-6e557de689b6" height="120">
-    </picture>
+  <a href="https://docs.gorgojs.ru/medusa-plugins/robokassa">
+    <img alt="Medusa-Robokassa logo" src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/robokassa-medusa-logo.png" width="270">
   </a>
 </p>
 
@@ -13,9 +9,9 @@
 </h1>
 
 <p align="center">
-  Плагин Medusa для приёма платежей через Robokassa. Готов к использованию в продакшене.
+  <a href="https://docs.gorgojs.ru/medusa-plugins/robokassa">Документация</a>
   <br/>
-  <a href="https://docs.gorgojs.ru/medusa-plugins/robokassa">Документация ↗</a>
+  Плагин Medusa для приёма платежей через Robokassa. Готов к использованию в продакшене.
   <br/>
   <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-payment-robokassa/README.md">Read README in English →</a>
 </p>

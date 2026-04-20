@@ -1,10 +1,6 @@
 <p align="center">
-  <a href="https://www.medusajs.com">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/1bb06efa-98f4-4515-b6a1-e3dd37ed8e79">
-      <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/1bb06efa-98f4-4515-b6a1-e3dd37ed8e79">
-      <img alt="Medusa-ApiShip logo" src="https://github.com/user-attachments/assets/1bb06efa-98f4-4515-b6a1-e3dd37ed8e79" height="120">
-    </picture>
+  <a href="https://docs.gorgojs.com/medusa-plugins/apiship">
+    <img alt="Medusa-ApiShip logo" src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/apiship-medusa-logo.png" width="270">
   </a>
 </p>
 
@@ -13,9 +9,9 @@ ApiShip Fulfillment for Medusa
 </h1>
 
 <p align="center">
-  A Medusa plugin that integrates the ApiShip delivery aggregator platform, giving your store access to dozens of delivery carriers with minimal configuration. Production-ready.
+  <a href="https://docs.gorgojs.com/medusa-plugins/apiship">Documentation</a>
   <br/>
-  <a href="https://docs.gorgojs.com/medusa-plugins/apiship">Documentation ↗</a>
+  A Medusa plugin that integrates the ApiShip delivery aggregator platform, giving your store access to dozens of delivery carriers with minimal configuration. Production-ready.
   <br/>
   <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-fulfillment-apiship/README.ru.md">Читать README на русском ↗</a>
 </p>

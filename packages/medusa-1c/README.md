@@ -1,11 +1,17 @@
+<p align="center">
+  <a href="https://docs.gorgojs.com/medusa-plugins/1c-enterprise">
+    <img alt="Medusa-1C logo" src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/1c-medusa-logo.png" width="270">
+  </a>
+</p>
+
 <h1 align="center">
   Medusa – 1C:Enterprise Integration
 </h1>
 
 <p align="center">
-  Sync products and orders between Medusa and 1C:Enterprise.
+  <a href="https://docs.gorgojs.com/medusa-plugins/1c-enterprise">Documentation</a>
   <br/>
-  <a href="https://docs.gorgojs.com/medusa-plugins/1c-enterprise">Documentation ↗</a>
+  Sync products and orders between Medusa and 1C:Enterprise.
   <br/>
   <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-1c/README.ru.md">Читать README на русском ↗</a>
 </p>
