@@ -74,16 +74,32 @@ export const setCartId = async (cartId: string) => {
 ![Структура проекта Medusa Storefront после обновления файла для компонента оплаты](https://github.com/user-attachments/assets/5c4dfcf9-57e7-48f6-956c-0e0a91ec6c8f)
 
 ```ts
-await initiatePaymentSession(cart, {
-  provider_id: selectedPaymentMethod,
-  data: {
-    confirmation: {
-      type: "redirect",
-      return_url: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`
-    },
-    cart: cart
+import { getBaseURL } from "@lib/util/env"
+
+const Payment = ({
+  // ...
+}) => {
+  // ...
+  const handleSubmit = async () => {
+    setIsLoading(true)
+    try {
+      // ...
+      const countryCode = cart?.shipping_address?.country_code
+      if (!checkActiveSession) {
+        await initiatePaymentSession(cart, {
+          provider_id: selectedPaymentMethod,
+          data: {
+            confirmation: {
+              type: "redirect",
+              return_url: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`
+            },
+            cart: cart
+          }
+        })
+      }
+    }
   }
-})
+}
 ```
 
 При инициировании платёжной сессии для ЮKassa передайте объект `confirmation` с `type: "redirect"` и `return_url`. Позже ЮKassa предоставит `confirmation_url`, на которое клиент должен быть перенаправлен.
@@ -101,6 +117,12 @@ await initiatePaymentSession(cart, {
 ![Структура проекта Medusa Storefront после обновления файла для компонента кнопки оплаты](https://github.com/user-attachments/assets/4b76ee52-747f-452e-9160-6365f742e33e)
 
 ```ts
+import { 
+  // ...
+  isYookassa
+} from "@lib/constants"
+import { useRouter } from "next/navigation"
+
 const PaymentButton: React.FC<PaymentButtonProps> = ({
   cart,
   "data-testid": dataTestId,
@@ -142,7 +164,7 @@ const YookassaPaymentButton = ({
   const handlePayment = () => {
     setSubmitting(true)
 
-    const confirmation = paymentSession?.data?.confirmation as IConfirmation
+    const confirmation = paymentSession?.data?.confirmation as any
     if (confirmation?.confirmation_url) {
       router.push(confirmation.confirmation_url)
     }
@@ -206,7 +228,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
   const cartCacheTag = await getCacheTag("carts")
   revalidateTag(cartCacheTag)
   const { cart } = await sdk.store.cart.retrieve(cartId, {
-    fields: "id, order_link.order_id"
+    fields: "id, order_link.order_id, items.total"
   },
     headers
   )
