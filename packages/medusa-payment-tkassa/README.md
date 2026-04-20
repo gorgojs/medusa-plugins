@@ -9,9 +9,9 @@ T-Kassa Payments by T-Bank for Medusa
 </h1>
 
 <p align="center">
-  A Medusa plugin that provides T-Kassa payments by T-Bank. Production-ready.
+  <a href="https://docs.gorgojs.com/medusa-plugins/t-kassa">Documentation</a>
   <br/>
-  <a href="https://docs.gorgojs.com/medusa-plugins/t-kassa">Documentation ↗</a>
+  A Medusa plugin that provides T-Kassa payments by T-Bank. Production-ready.
   <br/>
   <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-payment-tkassa/README.ru.md">Читать README на русском ↗</a>
 </p>

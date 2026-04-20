@@ -9,9 +9,9 @@ Yandex Market YML Feed Generator for Medusa
 </h1>
 
 <p align="center">
-  A Medusa plugin that generates a product feed in <a href="https://yandex.com/support/direct/feeds/requirements-yml.html">YML (Yandex Market Language)</a> format.
+  <a href="https://docs.gorgojs.com/medusa-plugins/yandex-yml-feed">Documentation</a>
   <br/>
-  <a href="https://docs.gorgojs.com/medusa-plugins/yandex-yml-feed">Documentation ↗</a>
+  A Medusa plugin that generates a product feed in <a href="https://yandex.com/support/direct/feeds/requirements-yml.html">YML (Yandex Market Language)</a> format.
   <br/>
   <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-feed-yandex/README.ru.md">Читать README на русском ↗</a>
 </p>

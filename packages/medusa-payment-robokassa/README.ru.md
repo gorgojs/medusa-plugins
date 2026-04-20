@@ -9,9 +9,9 @@
 </h1>
 
 <p align="center">
-  Плагин Medusa для приёма платежей через Robokassa. Готов к использованию в продакшене.
+  <a href="https://docs.gorgojs.ru/medusa-plugins/robokassa">Документация</a>
   <br/>
-  <a href="https://docs.gorgojs.ru/medusa-plugins/robokassa">Документация ↗</a>
+  Плагин Medusa для приёма платежей через Robokassa. Готов к использованию в продакшене.
   <br/>
   <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-payment-robokassa/README.md">Read README in English →</a>
 </p>

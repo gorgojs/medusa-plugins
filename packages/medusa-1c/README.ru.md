@@ -9,9 +9,9 @@
 </h1>
 
 <p align="center">
-  Синхронизация товаров и заказов между Medusa и 1С:Предприятие.
+  <a href="https://docs.gorgojs.com/medusa-plugins/1c-enterprise">Документация</a>
   <br/>
-  <a href="https://docs.gorgojs.com/medusa-plugins/1c-enterprise">Документация ↗</a>
+  Синхронизация товаров и заказов между Medusa и 1С:Предприятие.
   <br/>
   <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-1c/README.md">Read README in English ↗</a>
 </p>

@@ -9,9 +9,9 @@ Robokassa Payments for Medusa
 </h1>
 
 <p align="center">
-  A Medusa plugin that provides Robokassa payments. Production-ready.
+  <a href="https://docs.gorgojs.com/medusa-plugins/robokassa">Documentation</a>
   <br/>
-  <a href="https://docs.gorgojs.com/medusa-plugins/robokassa">Documentation ↗</a>
+  A Medusa plugin that provides Robokassa payments. Production-ready.
   <br/>
   <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-payment-robokassa/README.ru.md">Читать README на русском ↗</a>
 </p>

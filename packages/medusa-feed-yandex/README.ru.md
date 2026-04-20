@@ -9,9 +9,9 @@
 </h1>
 
 <p align="center">
-  Плагин Medusa, который генерирует фид товаров в формате <a href="https://yandex.com/support/direct/feeds/requirements-yml.html">YML (Yandex Market Language)</a>.
+  <a href="https://docs.gorgojs.com/medusa-plugins/yandex-yml-feed">Документация</a>
   <br/>
-  <a href="https://docs.gorgojs.com/medusa-plugins/yandex-yml-feed">Документация ↗</a>
+  Плагин Medusa, который генерирует фид товаров в формате <a href="https://yandex.com/support/direct/feeds/requirements-yml.html">YML (Yandex Market Language)</a>.
   <br/>
   <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-feed-yandex/README.md">Read README in English ↗</a>
 </p>
