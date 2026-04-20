@@ -45,7 +45,8 @@
   <a href="https://t.me/medusajs_tkassa">support on Telegram</a>
 </p>
 
-----
+##
+
 <br clear="left"/>
 
 <p>
@@ -60,7 +61,8 @@
   <a href="https://t.me/medusajs_robokassa">support on Telegram</a>
 </p>
 
-----
+##
+
 <br clear="left"/>
 
 <p>
@@ -75,7 +77,8 @@
   <a href="https://t.me/medusajs_apiship">support on Telegram</a>
 </p>
 
-----
+##
+
 <br clear="left"/>
 
 <p>
@@ -90,7 +93,8 @@
   <a href="https://t.me/medusajs_1c">support on Telegram</a>
 </p>
 
-----
+##
+
 <br clear="left"/>
 
 <p>
@@ -105,7 +109,8 @@
   <a href="https://t.me/medusajs_yandex">support on Telegram</a>
 </p>
 
-----
+##
+
 <br clear="left"/>
 
 ## Repo Structure
