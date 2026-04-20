@@ -9,4 +9,4 @@ Examples for the [`@gorgo/medusa-feed-yandex`](https://www.npmjs.com/package/@go
 
 ## Installation & Development
 
-Follow the [common instractions](../README.md#installation-development).
+Follow the [common instructions](../README.md#installation-development).

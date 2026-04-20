@@ -19,4 +19,4 @@ cp .env.template .env
 
 ## Installation & Development
 
-Follow the [common instractions](../README.md#installation-development).
+Follow the [common instructions](../README.md#installation-development).

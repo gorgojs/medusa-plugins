@@ -9,4 +9,4 @@ Examples for the [`@gorgo/medusa-1c`](https://www.npmjs.com/package/@gorgo/medus
 
 ## Installation & Development
 
-Follow the [common instractions](../README.md#installation-development).
+Follow the [common instructions](../README.md#installation-development).
