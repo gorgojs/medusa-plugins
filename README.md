@@ -33,83 +33,80 @@
 
 ## Medusa Plugins
 
-<table>
-  <tr>
-    <td width="80" align="center">
-      <a href="./packages/medusa-payment-tkassa">
-        <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/tkassa-logo.svg" alt="T-Kassa logo">
-      </a>
-    </td>
-    <td>
-      <strong><a href="./packages/medusa-payment-tkassa">T-Kassa Payments by T-Bank</a></strong><br/>
-      Payment provider with payment initialization, webhook handling, refunds, receipt support, and a storefront example.<br/>
-      <a href="https://docs.gorgojs.com/medusa-plugins/t-kassa">docs</a> |
-      <a href="https://www.npmjs.com/package/@gorgo/medusa-payment-tkassa">npm</a> |
-      <a href="./examples/payment-tkassa">example</a> |
-      <a href="https://t.me/medusajs_tkassa">support on Telegram</a>
-    </td>
-  </tr>
-  <tr>
-    <td width="80" align="center">
-      <a href="./packages/medusa-payment-robokassa">
-        <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/robokassa-logo.svg" alt="Robokassa logo">
-      </a>
-    </td>
-    <td>
-      <strong><a href="./packages/medusa-payment-robokassa">Robokassa Payments</a></strong><br/>
-      Payment provider with hosted checkout flows, notifications, refunds, receipt generation, and example storefront integration.<br/>
-      <a href="https://docs.gorgojs.com/medusa-plugins/robokassa">docs</a> |
-      <a href="https://www.npmjs.com/package/@gorgo/medusa-payment-robokassa">npm</a> |
-      <a href="./examples/payment-robokassa">example</a> |
-      <a href="https://t.me/medusajs_robokassa">support on Telegram</a>
-    </td>
-  </tr>
-  <tr>
-    <td width="80" align="center">
-      <a href="./packages/medusa-fulfillment-apiship">
-        <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/apiship-logo.svg" alt="ApiShip logo">
-      </a>
-    </td>
-    <td>
-      <strong><a href="./packages/medusa-fulfillment-apiship">ApiShip Fulfillment</a></strong><br/>
-      Fulfillment provider with delivery rate calculation, shipment creation, pickup-point delivery, document retrieval, and Admin tooling.<br/>
-      <a href="https://docs.gorgojs.com/medusa-plugins/apiship">docs</a> |
-      <a href="https://www.npmjs.com/package/@gorgo/medusa-fulfillment-apiship">npm</a> |
-      <a href="./examples/fulfillment-apiship">example</a> |
-      <a href="https://t.me/medusajs_apiship">support on Telegram</a>
-    </td>
-  </tr>
-  <tr>
-    <td width="80" align="center">
-      <a href="./packages/medusa-1c">
-        <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/1c-logo.svg" alt="1C:Enterprise logo">
-      </a>
-    </td>
-    <td>
-      <strong><a href="./packages/medusa-1c">1C:Enterprise</a></strong><br/>
-      Integration for synchronizing catalog and order data between Medusa and 1C:Enterprise, with an example backend.<br/>
-      <a href="https://docs.gorgojs.com/medusa-plugins/1c-enterprise">docs</a> |
-      <a href="https://www.npmjs.com/package/@gorgo/medusa-1c">npm</a> |
-      <a href="./examples/1c">example</a> |
-      <a href="https://t.me/medusajs_1c">support on Telegram</a>
-    </td>
-  </tr>
-  <tr>
-    <td width="80" align="center">
-      <a href="./packages/medusa-feed-yandex">
-        <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/yandex-logo.svg" alt="Yandex Market logo">
-      </a>
-    </td>
-    <td>
-      <strong><a href="./packages/medusa-feed-yandex">Yandex Market YML Feed</a></strong><br/>
-      Feed generator that exports catalog data in YML format and exposes feed management through Medusa Admin.<br/>
-      <a href="https://docs.gorgojs.com/medusa-plugins/yandex-yml-feed">docs</a> |
-      <a href="https://www.npmjs.com/package/@gorgo/medusa-feed-yandex">npm</a> |
-      <a href="./examples/feed-yandex">example</a> |
-      <a href="https://t.me/medusajs_yandex">support on Telegram</a>
-    </td>
-  </tr>
-</table>
+<p>
+  <a href="./packages/medusa-payment-tkassa">
+    <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/tkassa-logo.svg" width="80" align="left" alt="T-Kassa logo">
+  </a>
+  <strong><a href="./packages/medusa-payment-tkassa">T-Kassa Payments by T-Bank</a></strong><br/>
+  Payment provider with payment initialization, webhook handling, refunds, receipt support, and a storefront example.<br/>
+  <a href="https://docs.gorgojs.com/medusa-plugins/t-kassa">docs</a> |
+  <a href="https://www.npmjs.com/package/@gorgo/medusa-payment-tkassa">npm</a> |
+  <a href="./examples/payment-tkassa">example</a> |
+  <a href="https://t.me/medusajs_tkassa">support on Telegram</a>
+</p>
+
+----
+<br clear="left"/>
+
+<p>
+  <a href="./packages/medusa-payment-robokassa">
+    <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/robokassa-logo.svg" width="80" align="left" alt="Robokassa logo">
+  </a>
+  <strong><a href="./packages/medusa-payment-robokassa">Robokassa Payments</a></strong><br/>
+  Payment provider with hosted checkout flows, notifications, refunds, receipt generation, and example storefront integration.<br/>
+  <a href="https://docs.gorgojs.com/medusa-plugins/robokassa">docs</a> |
+  <a href="https://www.npmjs.com/package/@gorgo/medusa-payment-robokassa">npm</a> |
+  <a href="./examples/payment-robokassa">example</a> |
+  <a href="https://t.me/medusajs_robokassa">support on Telegram</a>
+</p>
+
+----
+<br clear="left"/>
+
+<p>
+  <a href="./packages/medusa-fulfillment-apiship">
+    <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/apiship-logo.svg" width="80" align="left" alt="ApiShip logo">
+  </a>
+  <strong><a href="./packages/medusa-fulfillment-apiship">ApiShip Fulfillment</a></strong><br/>
+  Fulfillment provider with delivery rate calculation, shipment creation, pickup-point delivery, document retrieval, and Admin tooling.<br/>
+  <a href="https://docs.gorgojs.com/medusa-plugins/apiship">docs</a> |
+  <a href="https://www.npmjs.com/package/@gorgo/medusa-fulfillment-apiship">npm</a> |
+  <a href="./examples/fulfillment-apiship">example</a> |
+  <a href="https://t.me/medusajs_apiship">support on Telegram</a>
+</p>
+
+----
+<br clear="left"/>
+
+<p>
+  <a href="./packages/medusa-1c">
+    <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/1c-logo.svg" width="80" align="left" alt="1C:Enterprise logo">
+  </a>
+  <strong><a href="./packages/medusa-1c">1C:Enterprise</a></strong><br/>
+  Integration for synchronizing catalog and order data between Medusa and 1C:Enterprise, with an example backend.<br/>
+  <a href="https://docs.gorgojs.com/medusa-plugins/1c-enterprise">docs</a> |
+  <a href="https://www.npmjs.com/package/@gorgo/medusa-1c">npm</a> |
+  <a href="./examples/1c">example</a> |
+  <a href="https://t.me/medusajs_1c">support on Telegram</a>
+</p>
+
+----
+<br clear="left"/>
+
+<p>
+  <a href="./packages/medusa-feed-yandex">
+    <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/yandex-logo.svg" width="80" align="left" alt="Yandex Market logo">
+  </a>
+  <strong><a href="./packages/medusa-feed-yandex">Yandex Market YML Feed</a></strong><br/>
+  Feed generator that exports catalog data in YML format and exposes feed management through Medusa Admin.<br/>
+  <a href="https://docs.gorgojs.com/medusa-plugins/yandex-yml-feed">docs</a> |
+  <a href="https://www.npmjs.com/package/@gorgo/medusa-feed-yandex">npm</a> |
+  <a href="./examples/feed-yandex">example</a> |
+  <a href="https://t.me/medusajs_yandex">support on Telegram</a>
+</p>
+
+----
+<br clear="left"/>
 
 ## Repo Structure
 
