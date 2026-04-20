@@ -1,5 +1,11 @@
 # @gorgo/medusa-1c
 
+## 0.1.1
+
+### Patch Changes
+
+- [#212](https://github.com/gorgojs/medusa-plugins/pull/212) [`7232152`](https://github.com/gorgojs/medusa-plugins/commit/7232152af5fcdcf57bc6ca53ade54327e55ee605) Thanks [@gorgohead](https://github.com/gorgohead)! - improve readme
+
 ## 0.1.0
 
 ### Minor Changes
