@@ -97,7 +97,7 @@
   <tr>
     <td width="80" align="center">
       <a href="./packages/medusa-feed-yandex">
-        <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/yandex-market-medusa-logo.svg" alt="Yandex Market logo">
+        <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/yandex-logo.svg" alt="Yandex Market logo">
       </a>
     </td>
     <td>
