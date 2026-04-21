@@ -1,10 +1,28 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with code in this repository.
 
-## Repository Overview
+## Repository Structure
 
-Yarn 4 monorepo of Medusa v2 plugins published under the `@gorgo` npm scope. Each package in `packages/` is an independent Medusa plugin; `examples/` contains full Medusa backend + storefront apps used for manual testing and CI integration tests.
+This repository is organized as a Yarn v4 monorepo with shared workspaces for plugin packages.
+
+```text
+├── examples/
+│   ├── 1c/
+│   ├── feed-yandex/
+│   ├── fulfillment-apiship/
+│   ├── payment-robokassa/
+│   └── payment-tkassa/
+├── packages/
+│   ├── medusa-1c/
+│   ├── medusa-feed-yandex/
+│   ├── medusa-fulfillment-apiship/
+│   ├── medusa-payment-robokassa/
+│   └── medusa-payment-tkassa/
+├── scripts/
+└── www/
+    └── docs/
+```
 
 ## Essential Commands
 
@@ -23,7 +41,7 @@ yarn changeset version                # Bump versions and update CHANGELOGs
 yarn changeset publish                # Publish packages to npm
 ```
 
-### Per-Package Commands
+### Per-Package (Per-Plugin) Commands
 
 Run inside `packages/<name>/`:
 
@@ -45,6 +63,14 @@ yarn dev:tunnel                       # Run in development mode with tunneling
 yarn test:integration:http            # HTTP integration tests 
 yarn test:integration:modules         # Module integration tests
 yarn test:unit                        # Unit tests
+```
+
+Run inside `examples/<name>/medusa-storefront`:
+
+```bash
+yarn install                          # Install all dependencies 
+yarn dev                              # Run in development mode
+yarn dev:tunnel                       # Run in development mode with tunneling
 ```
 
 ## Commit Conventions
@@ -77,45 +103,19 @@ Scope maps directly to changeset bump type: `feat` → minor, `fix/perf/refactor
 
 ## Package Architecture
 
-### Build output
-
-All packages build to `.medusa/server/` (Medusa CLI output, not Webpack/Vite). Only this directory is published (`"files": [".medusa/server"]`).
-
-### Exports convention
-
-Each package exposes sub-path exports matching Medusa plugin conventions:
-
-```json
-"exports": {
-  "./package.json": "./package.json",
-  "./workflows": "./.medusa/server/src/workflows/index.js",
-  "./.medusa/server/src/modules/*": "./.medusa/server/src/modules/*/index.js",
-  "./modules/*": "./.medusa/server/src/modules/*/index.js",
-  "./providers/*": "./.medusa/server/src/providers/*/index.js",
-  "./types": {
-    "types": "./src/types/index.ts",
-    "default": "./.medusa/server/src/types/index.js"
-  },
-  "./admin": {
-    "import": "./.medusa/server/src/admin/index.mjs",
-    "require": "./.medusa/server/src/admin/index.js",
-    "default": "./.medusa/server/src/admin/index.js"
-  },
-  "./*": "./.medusa/server/src/*.js"
-}
-```
-
-### Source structure (inside src/)
+### Source structure (inside package/<name>/src/)
 
 Not every package uses every directory — include only what the plugin needs.
 
 ```
 src/
 ├── admin/          # React admin UI
-│   ├── routes/         # pages (defineRouteConfig + default export)
+│   ├── routes/         # UI-routes extending Medusa Admin
 │   ├── components/     # shared UI
+│       └── /gorgo-widgets      # Components for Gorgo UI-widgets
 │   ├── hooks/          # React hooks
 │   ├── lib/            # admin-only helpers (e.g. sdk.ts)
+│   ├── widgets/        # UI-widgets extending Medusa Admin
 │   └── i18n/           # i18next JSON locales
 ├── api/            # REST route handlers
 │   ├── admin/          # authenticated admin endpoints
@@ -136,6 +136,7 @@ src/
 │   │   ├── index.ts            # createWorkflow(...)
 │   │   └── steps/              # createStep(...)
 │   └── index.ts                # barrel re-export
+├── gorgo-widgets/  # Gorgo UI-widgets extending Gorgo plugins
 ├── jobs/           # scheduled background jobs
 ├── lib/            # cross-cutting libraries used by the package
 ├── utils/          # small utility helpers
@@ -149,7 +150,7 @@ All packages target ES2021, Module Node16, with SWC for ts-node. Build output in
 
 ## MCP
 
-Repo ships an `.mcp.json` with **context7** — use it to look up Medusa v2 APIs and patterns (`docs.medusajs.com`) and third-party SDK docs before guessing from memory. Prefer context7 over `web-search-researcher` when the answer lives in official docs: it's faster and returns canonical snippets.
+Use the **medusa** MCP (`docs.medusajs.com`) for Medusa v2 APIs and patterns, and **context7** (shipped in `.mcp.json`) for third-party SDK docs — prefer both over memory.
 
 ## CI/CD
 
