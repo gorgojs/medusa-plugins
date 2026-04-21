@@ -36,6 +36,19 @@ When you receive a research query, you will:
    - Highlight any conflicting information or version-specific details
    - Note any gaps in available information
 
+## Authoritative Sources for This Repo
+
+Prefer these domains (use `site:` operator) before generic blog posts:
+
+- **Medusa v2 core**: `docs.medusajs.com`, `github.com/medusajs/medusa` (source, changelogs, examples)
+- **Payment — T-Kassa (Т-Касса)**: `www.tbank.ru/kassa/dev/`
+- **Payment — Robokassa**: `docs.robokassa.ru`
+- **Fulfillment — ApiShip**: `api.apiship.ru/doc/`
+- **Feed — Yandex Market**: `yandex.ru/support/marketplace/`, `yandex.ru/dev/market/`
+- **1C integration**: `v8.1c.ru`, `its.1c.ru`
+
+When the question is about Medusa v2 APIs/patterns, check whether the `context7` MCP is available in the caller's environment — it may answer faster than web search.
+
 ## Search Strategies
 
 ### For API/Library Documentation:

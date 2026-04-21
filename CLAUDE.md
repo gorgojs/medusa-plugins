@@ -107,15 +107,40 @@ Each package exposes sub-path exports matching Medusa plugin conventions:
 
 ### Source structure (inside src/)
 
+Not every package uses every directory — include only what the plugin needs.
+
 ```
-admin/          # React admin UI (routes, components, hooks, i18n via i18next)
-api/            # REST route handlers (admin/ and public/)
-lib/            # Libraries used across the package
-modules/        # Medusa modules (service + loader)
-providers/      # Medusa provider implementations (fulfillment, payment, etc.)
-types/          # Collection of TypeScript types used across the package
-workflows/      # Medusa workflows + steps
-jobs/           # Scheduled background jobs
+src/
+├── admin/          # React admin UI
+│   ├── routes/         # pages (defineRouteConfig + default export)
+│   ├── components/     # shared UI
+│   ├── hooks/          # React hooks
+│   ├── lib/            # admin-only helpers (e.g. sdk.ts)
+│   └── i18n/           # i18next JSON locales
+├── api/            # REST route handlers
+│   ├── admin/          # authenticated admin endpoints
+│   └── {store,hooks}/  # public / webhook endpoints
+├── modules/        # Medusa modules
+│   └── <name>/
+│       ├── index.ts            # Module(<NAME>, { service })
+│       ├── service.ts          # extends MedusaService({ Model })
+│       ├── models/             # model.define(...)
+│       ├── migrations/         # generated migrations
+│       └── loaders/            # optional module loaders
+├── providers/      # Medusa providers (payment / fulfillment / ...)
+│   └── <name>/
+│       ├── index.ts            # ModuleProvider(Modules.X, { services })
+│       └── service.ts          # extends AbstractXProvider
+├── workflows/      # Medusa workflows + steps
+│   ├── <name>/
+│   │   ├── index.ts            # createWorkflow(...)
+│   │   └── steps/              # createStep(...)
+│   └── index.ts                # barrel re-export
+├── jobs/           # scheduled background jobs
+├── lib/            # cross-cutting libraries used by the package
+├── utils/          # small utility helpers
+├── data/           # static data / fixtures / seed files
+└── types/          # shared TypeScript types (barrel via index.ts)
 ```
 
 ### TypeScript
@@ -247,6 +272,10 @@ To run a workflow directly in tests: `myWorkflow(getContainer()).run({ input })`
 ```ts
 throw new MedusaError(MedusaError.Types.NOT_FOUND, `Feed ${id} not found`)
 ```
+
+## MCP
+
+Repo ships an `.mcp.json` with **context7** — use it to look up Medusa v2 APIs and patterns (`docs.medusajs.com`) and third-party SDK docs before guessing from memory. Prefer context7 over `web-search-researcher` when the answer lives in official docs: it's faster and returns canonical snippets.
 
 ## CI/CD
 
