@@ -6,44 +6,45 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Yarn 4 monorepo of Medusa v2 plugins published under the `@gorgo` npm scope. Each package in `packages/` is an independent Medusa plugin; `examples/` contains full Medusa backend + storefront apps used for manual testing and CI integration tests.
 
-## Commands
+## Essential Commands
 
-### Monorepo
+### Monorepo Commands
 
 ```bash
 yarn install                          # Install all dependencies (triggers husky setup)
-```
 
-### Per-Package (run inside packages/<name>/)
-
-```bash
-yarn build                            # Build plugin via medusa plugin:build → .medusa/server/
-yarn dev                              # Publish locally then start dev watch mode
-yarn prepublishOnly                   # Build before publishing (some packages also generate OpenAPI)
-```
-
-### Update Medusa version across examples
-
-```bash
+ # Update Medusa version across examples
 yarn update <version> [example] [-s|--single] [--skip-build]
 # e.g.: yarn update 2.14.0 feed-yandex --single --skip-build
-```
 
-### Changesets (versioning & publishing)
-
-```bash
+# Changesets (versioning & publishing)
 yarn changeset                        # Interactively create a changeset
-node scripts/generate-changesets.js   # Auto-generate changesets from conventional commits (used in CI)
 yarn changeset version                # Bump versions and update CHANGELOGs
 yarn changeset publish                # Publish packages to npm
 ```
 
-### Integration tests (inside examples/<name>/medusa/)
+### Per-Package Commands
+
+Run inside `packages/<name>/`:
 
 ```bash
-TEST_TYPE=integration:http yarn test
-TEST_TYPE=integration:modules yarn test
-TEST_TYPE=unit yarn test
+# development
+yarn dev                              # Publish locally then start dev watch mode
+```
+
+### Per-Example Commands
+
+Run inside `examples/<name>/medusa`:
+
+```bash
+yarn install                          # Install all dependencies 
+yarn dev                              # Run in development mode
+yarn dev:tunnel                       # Run in development mode with tunneling
+
+# testing
+yarn test:integration:http            # HTTP integration tests 
+yarn test:integration:modules         # Module integration tests
+yarn test:unit                        # Unit tests
 ```
 
 ## Commit Conventions
@@ -51,17 +52,28 @@ TEST_TYPE=unit yarn test
 Commits must follow [Conventional Commits](https://www.conventionalcommits.org/) — enforced by commitlint.
 
 **Scope is required** and must be one of:
-- Package scope (strip `medusa-` prefix): `1c`, `feed-yandex`, `fulfillment-apiship`, `payment-robokassa`, `payment-tkassa`
-- Repo-level: `deps`, `release`, `docs`, `root`
+
+- Package scope (strip `medusa-` prefix):
+  - `1c`
+  - `feed-yandex`
+  - `fulfillment-apiship`
+  - `payment-robokassa`
+  - `payment-tkassa`
+- Repo-level:
+  - `deps`
+  - `release`
+  - `docs`
+  - `root`
 
 Examples:
+
 ```
 feat(feed-yandex): add price filter support
 fix(payment-robokassa): handle webhook timeout
 chore(deps): bump @medusajs/medusa to 2.14.0
 ```
 
-Scope maps directly to changeset bump type: `feat` → minor, `fix/perf/refactor/docs` → patch, breaking (`!`) → major.
+Scope maps directly to changeset bump type: `feat` → minor, `fix/perf/refactor/docs/revert/test` → patch, breaking (`!`) → major.
 
 ## Package Architecture
 
@@ -75,10 +87,21 @@ Each package exposes sub-path exports matching Medusa plugin conventions:
 
 ```json
 "exports": {
+  "./package.json": "./package.json",
   "./workflows": "./.medusa/server/src/workflows/index.js",
+  "./.medusa/server/src/modules/*": "./.medusa/server/src/modules/*/index.js",
   "./modules/*": "./.medusa/server/src/modules/*/index.js",
   "./providers/*": "./.medusa/server/src/providers/*/index.js",
-  "./admin": "./.medusa/server/src/admin/index.mjs"
+  "./types": {
+    "types": "./src/types/index.ts",
+    "default": "./.medusa/server/src/types/index.js"
+  },
+  "./admin": {
+    "import": "./.medusa/server/src/admin/index.mjs",
+    "require": "./.medusa/server/src/admin/index.js",
+    "default": "./.medusa/server/src/admin/index.js"
+  },
+  "./*": "./.medusa/server/src/*.js"
 }
 ```
 
@@ -87,8 +110,10 @@ Each package exposes sub-path exports matching Medusa plugin conventions:
 ```
 admin/          # React admin UI (routes, components, hooks, i18n via i18next)
 api/            # REST route handlers (admin/ and public/)
+lib/            # Libraries used across the package
 modules/        # Medusa modules (service + loader)
 providers/      # Medusa provider implementations (fulfillment, payment, etc.)
+types/          # Collection of TypeScript types used across the package
 workflows/      # Medusa workflows + steps
 jobs/           # Scheduled background jobs
 ```
