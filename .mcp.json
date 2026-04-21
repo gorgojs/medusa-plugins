@@ -1,8 +1,12 @@
 {
   "mcpServers": {
+    "medusa": {
+      "type": "http",
+      "url": "https://docs.medusajs.com/mcp"
+    },
     "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"]
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
     }
   }
 }

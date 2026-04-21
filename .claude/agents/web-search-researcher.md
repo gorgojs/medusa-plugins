@@ -47,7 +47,7 @@ Prefer these domains (use `site:` operator) before generic blog posts:
 - **Feed — Yandex Market**: `yandex.ru/support/marketplace/`, `yandex.ru/dev/market/`
 - **1C integration**: `v8.1c.ru`, `its.1c.ru`
 
-When the question is about Medusa v2 APIs/patterns, check whether the `context7` MCP is available in the caller's environment — it may answer faster than web search.
+When the question is about Medusa v2 APIs/patterns, check whether MCP is available in the caller's environment — it may answer faster than web search.
 
 ## Search Strategies
 
