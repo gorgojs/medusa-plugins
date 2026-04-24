@@ -1,7 +1,13 @@
 import { useCallback, useRef } from "react"
-import type { BrowserTelemetryEvent, PluginInfo } from "../types.js"
+import {
+  severityForEvent,
+  toOtlpAttributes,
+  type OtlpLogsPayload,
+} from "../otlp.js"
 
 const TELEMETRY_ENDPOINT = "https://telemetry.gorgojs.com"
+const SCOPE_NAME = "gorgo.telemetry"
+const SCOPE_VERSION = "0.1.0"
 
 // import.meta.env is injected by Vite at build time; fall back to false in non-Vite environments
 const VERBOSE: boolean = (() => {
@@ -15,32 +21,27 @@ const VERBOSE: boolean = (() => {
 })()
 
 export interface UseTelemetryOptions {
-  /** Plugin package name, e.g. "@gorgo/medusa-marketplace" */
+  /** Plugin package name, e.g. "@gorgo/medusa-payment-tkassa" */
   plugin: string
   /** Plugin version, e.g. "0.1.0" */
   version: string
-  /** Active feature context for events sent via this hook instance */
-  feature?: string
   /** Override the telemetry endpoint */
   endpoint?: string
 }
 
 export interface UseTelemetryReturn {
   /**
-   * Track an admin button click.
-   *
-   * @param buttonName  Human-readable button identifier, e.g. "add-marketplace"
-   * @param properties  Optional extra data
+   * Track a button click. Emits the `button.click` event with
+   * `{ name, location, ...properties }`.
    */
-  trackButtonClick(buttonName: string, properties?: Record<string, unknown>): void
+  trackButtonClick(
+    name: string,
+    location: string,
+    properties?: Record<string, unknown>
+  ): void
 
-  /**
-   * Track a generic admin UI event.
-   *
-   * @param eventType   Dot-separated event name, e.g. "modal.opened"
-   * @param properties  Optional extra data
-   */
-  trackEvent(eventType: string, properties?: Record<string, unknown>): void
+  /** Track an arbitrary admin UI event. */
+  trackEvent(eventName: string, properties?: Record<string, unknown>): void
 }
 
 /** Returns a short random ID for the current browser session. */
@@ -57,61 +58,51 @@ function getSessionId(): string {
 
 /**
  * React hook for tracking admin UI events in Medusa plugins.
- *
- * Events are sent directly to the telemetry endpoint via `fetch`.
- * Errors are silently swallowed so telemetry never disrupts the UI.
- *
- * @example
- * ```tsx
- * import { useTelemetry } from "@gorgo/medusa-plugin-telemetry/react"
- *
- * const AddMarketplaceButton = () => {
- *   const { trackButtonClick } = useTelemetry({
- *     plugin: "@gorgo/medusa-marketplace",
- *     version: "0.1.0",
- *     feature: "marketplace-list",
- *   })
- *
- *   return (
- *     <Button onClick={() => {
- *       trackButtonClick("add-marketplace")
- *       // ... actual logic
- *     }}>
- *       Add marketplace
- *     </Button>
- *   )
- * }
- * ```
+ * Fire-and-forget; errors are swallowed so telemetry never disrupts the UI.
  */
 export function useTelemetry(options: UseTelemetryOptions): UseTelemetryReturn {
-  // Use a ref so the stable callbacks don't need to re-create on option changes
   const optionsRef = useRef(options)
   optionsRef.current = options
 
-  const send = useCallback((eventType: string, properties: Record<string, unknown>) => {
-    const { plugin, version, feature, endpoint = TELEMETRY_ENDPOINT } = optionsRef.current
+  const send = useCallback((eventName: string, properties: Record<string, unknown>) => {
+    const { plugin, version, endpoint = TELEMETRY_ENDPOINT } = optionsRef.current
+    const severity = severityForEvent(eventName)
 
-    const pluginInfo: PluginInfo = { name: plugin, version, feature }
-
-    const event: BrowserTelemetryEvent = {
-      id: `te_${crypto.randomUUID()}`,
-      type: eventType,
-      timestamp: new Date().toISOString(),
-      session_id: getSessionId(),
-      plugin: pluginInfo,
-      properties,
+    const payload: OtlpLogsPayload = {
+      resourceLogs: [
+        {
+          resource: {
+            attributes: toOtlpAttributes({
+              "plugin.name": plugin,
+              "plugin.version": version,
+              session_id: getSessionId(),
+            }),
+          },
+          scopeLogs: [
+            {
+              scope: { name: SCOPE_NAME, version: SCOPE_VERSION },
+              logRecords: [
+                {
+                  timeUnixNano: `${Date.now()}000000`,
+                  severityNumber: severity.number,
+                  severityText: severity.text,
+                  attributes: toOtlpAttributes({ "event.name": eventName, ...properties }),
+                },
+              ],
+            },
+          ],
+        },
+      ],
     }
 
     if (VERBOSE) {
-      console.log("[gorgo/telemetry]", eventType, event)
+      console.log("[gorgo/telemetry]", eventName, payload)
     }
 
-    // Fire-and-forget; keepalive ensures the request completes even if the
-    // user navigates away immediately after clicking.
-    void fetch(`${endpoint}/events`, {
+    void fetch(`${endpoint}/batch`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ events: [event] }),
+      body: JSON.stringify(payload),
       keepalive: true,
     }).catch((err) => {
       if (VERBOSE) console.error("[gorgo/telemetry] send failed:", err)
@@ -119,15 +110,15 @@ export function useTelemetry(options: UseTelemetryOptions): UseTelemetryReturn {
   }, [])
 
   const trackButtonClick = useCallback(
-    (buttonName: string, properties?: Record<string, unknown>) => {
-      send("button.click", { button: buttonName, ...properties })
+    (name: string, location: string, properties?: Record<string, unknown>) => {
+      send("button.click", { name, location, ...properties })
     },
     [send]
   )
 
   const trackEvent = useCallback(
-    (eventType: string, properties?: Record<string, unknown>) => {
-      send(eventType, properties ?? {})
+    (eventName: string, properties?: Record<string, unknown>) => {
+      send(eventName, properties ?? {})
     },
     [send]
   )
