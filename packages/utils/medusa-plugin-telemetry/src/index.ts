@@ -1,10 +1,15 @@
 export { TelemetryClient } from "./client.js"
-export { getMachineId, isTelemetryEnabled, setTelemetryEnabled } from "./config-store.js"
+export {
+  getMachineId,
+  isTelemetryEnabled,
+  setTelemetryEnabled,
+  markPluginStarted,
+} from "./config-store.js"
+export { collectEnvInfo, findPackageJson } from "./env.js"
 export type {
   PluginInfo,
-  OsInfo,
+  EnvInfo,
   TelemetryEvent,
-  BrowserTelemetryEvent,
   TelemetryClientOptions,
 } from "./types.js"
 
@@ -14,17 +19,15 @@ import type { TelemetryClientOptions } from "./types.js"
 /**
  * Create a server-side telemetry client for a Medusa plugin.
  *
+ * Pass `packageDir: __dirname` to auto-discover the plugin's `name` + `version`
+ * from the nearest `package.json`, or supply an explicit `plugin` object.
+ *
  * @example
  * ```ts
- * // In your plugin's module or job:
  * import { createTelemetryClient } from "@gorgo/medusa-plugin-telemetry"
  *
- * const telemetry = createTelemetryClient({
- *   plugin: "@gorgo/medusa-marketplace",
- *   version: "0.1.0",
- * })
- *
- * telemetry.track("sync.completed", { orders: 42, feature: "sync-orders" })
+ * const telemetry = createTelemetryClient({ packageDir: __dirname })
+ * telemetry.track("plugin.started", { first_run: true, config_keys: ["terminalKey"] })
  * ```
  */
 export function createTelemetryClient(options: TelemetryClientOptions): TelemetryClient {

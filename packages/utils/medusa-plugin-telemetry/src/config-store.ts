@@ -9,6 +9,7 @@ const CONFIG_FILE = path.join(CONFIG_DIR, "telemetry.json")
 interface Config {
   machine_id?: string
   enabled?: boolean
+  plugins_seen?: string[]
 }
 
 function readConfig(): Config {
@@ -33,13 +34,17 @@ function writeConfig(config: Config): void {
   }
 }
 
-/** Returns the persistent anonymous machine ID, creating one if it doesn't exist yet. */
+/**
+ * Returns the persistent anonymous machine ID, creating one if missing.
+ * Per EVENTS.md the identifier is a sha256 hash, produced here from 32
+ * random bytes — plenty of entropy, no reversible machine fingerprint.
+ */
 export function getMachineId(): string {
   const config = readConfig()
   if (config.machine_id) {
     return config.machine_id
   }
-  const machineId = crypto.randomUUID()
+  const machineId = crypto.createHash("sha256").update(crypto.randomBytes(32)).digest("hex")
   writeConfig({ ...config, machine_id: machineId })
   return machineId
 }
@@ -63,4 +68,18 @@ export function isTelemetryEnabled(): boolean {
 export function setTelemetryEnabled(enabled: boolean): void {
   const config = readConfig()
   writeConfig({ ...config, enabled })
+}
+
+/**
+ * Mark a plugin as started for this machine. Returns `true` if this is the
+ * first start ever recorded for that plugin — used by the `plugin.started`
+ * event to set `first_run`.
+ */
+export function markPluginStarted(pluginName: string): boolean {
+  const config = readConfig()
+  const seen = new Set(config.plugins_seen ?? [])
+  if (seen.has(pluginName)) return false
+  seen.add(pluginName)
+  writeConfig({ ...config, plugins_seen: Array.from(seen) })
+  return true
 }
