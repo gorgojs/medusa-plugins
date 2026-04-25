@@ -206,12 +206,27 @@ jobs:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
+      - name: Resolve GitHub App bot identity
+        id: app-user
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token-pr.outputs.token }}
+        run: |
+          set -euo pipefail
+          APP_SLUG="$(gh api /app --jq .slug)"
+          USER_INFO="$(gh api "/users/${APP_SLUG}[bot]")"
+          USER_ID="$(echo "$USER_INFO" | jq -r .id)"
+          USER_LOGIN="$(echo "$USER_INFO" | jq -r .login)"
+          echo "name=${USER_LOGIN}" >> "$GITHUB_OUTPUT"
+          echo "email=${USER_ID}+${USER_LOGIN}@users.noreply.github.com" >> "$GITHUB_OUTPUT"
+
       - name: Create pull request
         id: cpr
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ steps.app-token-pr.outputs.token }}
           commit-message: "chore: update Medusa to v${{ needs.check_medusa_version.outputs.new_medusa_version }}"
+          committer: "${{ steps.app-user.outputs.name }} <${{ steps.app-user.outputs.email }}>"
+          author: "${{ steps.app-user.outputs.name }} <${{ steps.app-user.outputs.email }}>"
           title: "chore: update Medusa to v${{ needs.check_medusa_version.outputs.new_medusa_version }}"
           body: |
             Automated daily Medusa update.
@@ -256,3 +271,4 @@ jobs:
       #         ].join('\n'),
       #         labels: ['ci', 'automation', 'needs-attention']
       #       })
+
