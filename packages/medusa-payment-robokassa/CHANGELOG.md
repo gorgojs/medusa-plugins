@@ -1,5 +1,11 @@
 # @gorgo/medusa-payment-robokassa
 
+## 0.2.16
+
+### Patch Changes
+
+- [#230](https://github.com/gorgojs/medusa-plugins/pull/230) [`433f939`](https://github.com/gorgojs/medusa-plugins/commit/433f9399809b19b43ac5386a41674f78e99db264) Thanks [@gorgo-app](https://github.com/apps/gorgo-app)! - test on Medusa v2.14.1 and update readme
+
 ## 0.2.15
 
 ### Patch Changes
