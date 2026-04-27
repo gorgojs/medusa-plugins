@@ -216,9 +216,9 @@ jobs:
         id: app-user
         env:
           GITHUB_TOKEN: ${{ steps.app-token-pr.outputs.token }}
+          APP_SLUG: ${{ steps.app-token-pr.outputs.app-slug }}
         run: |
           set -euo pipefail
-          APP_SLUG="$(gh api /app --jq .slug)"
           USER_INFO="$(gh api "/users/${APP_SLUG}[bot]")"
           USER_ID="$(echo "$USER_INFO" | jq -r .id)"
           USER_LOGIN="$(echo "$USER_INFO" | jq -r .login)"
