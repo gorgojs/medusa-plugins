@@ -1,4 +1,6 @@
 export { TelemetryClient } from "./client.js"
+export { TelemetryDispatcher, getDispatcher } from "./dispatcher.js"
+export type { DispatcherOptions } from "./dispatcher.js"
 export {
   getMachineId,
   isTelemetryEnabled,
@@ -21,6 +23,9 @@ import type { TelemetryClientOptions } from "./types.js"
  *
  * Pass `packageDir: __dirname` to auto-discover the plugin's `name` + `version`
  * from the nearest `package.json`, or supply an explicit `plugin` object.
+ * All clients in the same process share one {@link TelemetryDispatcher} —
+ * events from N plugins are batched into a single OTLP request with
+ * `resourceLogs[]` per plugin.
  *
  * @example
  * ```ts

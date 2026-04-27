@@ -18,6 +18,7 @@ export type OtlpLogRecord = {
   timeUnixNano: string
   severityNumber: number
   severityText: string
+  body: OtlpAnyValue
   attributes: OtlpAttribute[]
 }
 

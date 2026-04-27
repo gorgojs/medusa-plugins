@@ -86,6 +86,7 @@ export function useTelemetry(options: UseTelemetryOptions): UseTelemetryReturn {
                   timeUnixNano: `${Date.now()}000000`,
                   severityNumber: severity.number,
                   severityText: severity.text,
+                  body: { stringValue: eventName },
                   attributes: toOtlpAttributes({ "event.name": eventName, ...properties }),
                 },
               ],
