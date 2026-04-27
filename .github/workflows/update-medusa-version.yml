@@ -182,6 +182,7 @@ jobs:
         run: corepack yarn install --immutable
 
       - name: Run update script only for outdated packages
+        id: update
         shell: bash
         run: |
           set -euo pipefail
@@ -192,12 +193,17 @@ jobs:
 
           # Strip leading "medusa-" prefix to get the example directory name
           IFS=',' read -ra PACKAGES <<< "$OUTDATED_PACKAGES"
+          SCOPES=()
           for package in "${PACKAGES[@]}"; do
             [ -z "$package" ] && continue
             example="${package#medusa-}"
             echo "Updating example '$example' for package '$package'"
             ./scripts/update.sh "$TARGET_VERSION" "$example" --single --skip-build
+            SCOPES+=("$example")
           done
+
+          SCOPE=$(IFS=,; echo "${SCOPES[*]}")
+          echo "commit_scope=${SCOPE}" >> "$GITHUB_OUTPUT"
 
       - name: Generate GitHub App token for PR
         id: app-token-pr
@@ -224,10 +230,10 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ steps.app-token-pr.outputs.token }}
-          commit-message: "chore: update Medusa to v${{ needs.check_medusa_version.outputs.new_medusa_version }}"
+          commit-message: "docs(${{ steps.update.outputs.commit_scope }}): test on Medusa v${{ needs.check_medusa_version.outputs.new_medusa_version }} and update readme"
           committer: "${{ steps.app-user.outputs.name }} <${{ steps.app-user.outputs.email }}>"
           author: "${{ steps.app-user.outputs.name }} <${{ steps.app-user.outputs.email }}>"
-          title: "chore: update Medusa to v${{ needs.check_medusa_version.outputs.new_medusa_version }}"
+          title: "docs(${{ steps.update.outputs.commit_scope }}): test on Medusa v${{ needs.check_medusa_version.outputs.new_medusa_version }} and update readme"
           body: |
             Automated daily Medusa update.
 
