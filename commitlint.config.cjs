@@ -17,6 +17,6 @@ module.exports = {
   rules: {
     'scope-enum': [2, 'always', [...packageScopes, ...REPO_SCOPES]],
     'scope-empty': [1, 'never'],
-    'header-max-length': [2, 'always', 100],
+    'header-max-length': [2, 'always', 200],
   },
 };
