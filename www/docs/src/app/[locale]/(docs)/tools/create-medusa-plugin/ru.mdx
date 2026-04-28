@@ -32,7 +32,7 @@ npx create-medusa-plugin [plugin-name] [options]
 
 ## Примеры
 
-* **Базовое использование**
+### Базовое использование
 
   ```bash
   npx create-medusa-plugin
@@ -40,7 +40,7 @@ npx create-medusa-plugin [plugin-name] [options]
 
   Эта команда в интерактивном режиме запросит имя плагина и другие параметры конфигурации.
 
-* **С опциями**
+### С параметрами
 
   ```bash
   npx create-medusa-plugin my-plugin -r my-plugin-monorepo -e my-plugin-example --skip-example-db
@@ -48,7 +48,7 @@ npx create-medusa-plugin [plugin-name] [options]
 
   Эта команда создаст следующую структуру монорепозитория и установит в нее проекты Medusa:
 
-  ```
+  ```txt
   /
   └── my-plugin-monorepo/
       ├── examples/
@@ -61,7 +61,7 @@ npx create-medusa-plugin [plugin-name] [options]
       └── README.md
   ```
 
-* **С областью имен плагина**
+### Со scope плагина
 
   ```bash
   npx create-medusa-plugin @my-scope/my-plugin -r my-plugin-monorepo -e my-plugin-example --skip-example-db
@@ -70,7 +70,7 @@ npx create-medusa-plugin [plugin-name] [options]
   Эта команда создаст следующую структуру монорепозитория, поместит scoped-плагин во вложенную папку внутри `packages` и установит в нее проекты Medusa:
 
 
-  ```
+  ```txt
   /
   └── my-plugin-monorepo/
       ├── examples/

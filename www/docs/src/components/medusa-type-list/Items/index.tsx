@@ -9,6 +9,7 @@ import { InlineCode } from "../InlineCode"
 import { MarkdownContent } from "../MarkdownContent"
 import { Copy } from "@medusajs/ui"
 import clsx from "clsx"
+import { useTranslations } from "next-intl"
 
 function renderInline(text: string): React.ReactNode[] {
   const parts: React.ReactNode[] = []
@@ -22,12 +23,7 @@ function renderInline(text: string): React.ReactNode[] {
     const m = match[0]
     if (m.startsWith("`")) {
       parts.push(
-        <code
-          key={match.index}
-          className="text-medusa-tag-neutral-text bg-medusa-tag-neutral-bg border border-medusa-tag-neutral-border font-monospace text-code-label rounded-docs_sm py-0 px-[5px]"
-        >
-          {m.slice(1, -1)}
-        </code>
+        <InlineCode key={match.index}>{m.slice(1, -1)}</InlineCode>
       )
     } else if (m.startsWith("**")) {
       parts.push(<strong key={match.index}>{m.slice(2, -2)}</strong>)
@@ -107,6 +103,7 @@ const TypeListItem = ({
   referenceType = "method",
   openedLevel = 0,
 }: TypeListItemProps) => {
+  const t = useTranslations("components.medusaTypeList")
   const { isBrowser } = useIsBrowser()
   const pathname = usePathname()
   const {
@@ -198,13 +195,13 @@ const TypeListItem = ({
                 <InlineMarkdown text={item.description} />
               )}
               {item.defaultValue && (
-                <p className="mt-0.5 mb-0">
-                  Default: <InlineCode>{item.defaultValue}</InlineCode>
+                <p className="mt-2 mb-0">
+                  {t("default")}: <InlineCode>{item.defaultValue}</InlineCode>
                 </p>
               )}
               {item.example && (
-                <div className="mt-0.5">
-                  Example: <InlineCode>{item.example}</InlineCode>
+                <div className="mt-2">
+                  {t("example")}: <InlineCode>{item.example}</InlineCode>
                 </div>
               )}
             </>
@@ -254,7 +251,7 @@ const TypeListItem = ({
                 e.stopPropagation()
               }}
             >
-              <Copy content={typeUrl}>
+              <Copy content={typeUrl} className="cursor-pointer">
                 <Link
                   className={clsx(
                     "text-medusa-fg-interactive hover:text-medusa-fg-interactive-hover"
@@ -283,7 +280,7 @@ const TypeListItem = ({
                 )}
                 data-testid="type-optional"
               >
-                Optional
+                {t("optional")}
               </span>
             )}
             {item.featureFlag && (

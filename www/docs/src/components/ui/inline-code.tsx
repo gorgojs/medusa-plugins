@@ -10,11 +10,11 @@ export type InlineCodeProps = React.ComponentProps<'code'> & {
 
 export const InlineCode = ({ variant = 'default', ...props }: InlineCodeProps) => {
   return (
-    <Copy content={props.children as string} className="text-start inline not-prose">
+    <Copy content={props.children as string} className="text-start inline not-prose cursor-pointer">
       <code
         {...props}
         className={cn(
-          'not-prose',
+          'not-prose not-italic',
           'text-ui-tag-neutral-text border whitespace-break-spaces break-all',
           'font-monospace text-code-label rounded-sm py-0 px-[5px]',
           variant === 'default' && [

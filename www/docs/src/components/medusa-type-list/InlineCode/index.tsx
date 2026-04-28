@@ -17,7 +17,7 @@ export const InlineCode = ({
       content={props.children as string}
       className={clsx(
         "bg-transparent border-0 p-0 inline text-medusa-fg-subtle group",
-        "font-monospace"
+        "font-monospace cursor-pointer",
       )}
     >
       <code
