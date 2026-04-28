@@ -1,6 +1,7 @@
 import crypto from "node:crypto"
 import { getMachineId, isTelemetryEnabled, setTelemetryEnabled } from "./config-store.js"
 import { collectEnvInfo } from "./env.js"
+import { maybeShowFirstRunNotice } from "./notice.js"
 import {
   severityForEvent,
   toOtlpAttributes,
@@ -24,7 +25,11 @@ export interface DispatcherOptions {
   flushInterval?: number
   /** Hard cap on total queued events across all plugins. Oldest are dropped on overflow. */
   maxQueueSize?: number
+  /** Heartbeat interval for `plugin.ping` events (default 24h). Set to 0 to disable. */
+  pingInterval?: number
 }
+
+const DEFAULT_PING_INTERVAL_MS = 24 * 60 * 60 * 1000
 
 interface QueuedEvent {
   eventName: string
@@ -83,6 +88,13 @@ export class TelemetryDispatcher {
   /** Monotonic wall-clock nanosecond cursor — bumped by 1 ns when collisions would occur. */
   private lastNano = 0n
 
+  /** Plugins that have created a TelemetryClient on this dispatcher. Used as the ping roster. */
+  private registeredPlugins = new Map<string, PluginInfo>()
+  private readonly pingInterval: number
+  private readonly startedAt = Date.now()
+  private pingIndex = 0
+  private pingTimer?: ReturnType<typeof setInterval>
+
   private nextTimeUnixNano(): string {
     const candidate = BigInt(Date.now()) * 1_000_000n
     this.lastNano = candidate > this.lastNano ? candidate : this.lastNano + 1n
@@ -94,9 +106,11 @@ export class TelemetryDispatcher {
     this.flushAt = Math.max(options.flushAt ?? 20, 1)
     this.flushInterval = options.flushInterval ?? 30_000
     this.maxQueueSize = Math.max(options.maxQueueSize ?? 1000, 1)
+    this.pingInterval = options.pingInterval ?? DEFAULT_PING_INTERVAL_MS
     this.sessionId = crypto.randomUUID()
 
     this.registerExitHandlers()
+    maybeShowFirstRunNotice()
   }
 
   // ------------------------------------------------------------------
@@ -140,6 +154,45 @@ export class TelemetryDispatcher {
   // ------------------------------------------------------------------
   // Public surface (used by TelemetryClient)
   // ------------------------------------------------------------------
+
+  /**
+   * Register a plugin so it receives `plugin.ping` heartbeats. Idempotent.
+   * Called from the {@link TelemetryClient} constructor — even silent plugins
+   * (which never call `track`) must show up in the ping roster so that
+   * "active install" metrics see them.
+   */
+  registerPlugin(plugin: PluginInfo): void {
+    try {
+      const key = `${plugin.name}@${plugin.version}`
+      if (this.registeredPlugins.has(key)) return
+      this.registeredPlugins.set(key, plugin)
+      this.armPingTimer()
+    } catch (err) {
+      if (VERBOSE) console.warn("[gorgo/telemetry] registerPlugin failed:", err)
+    }
+  }
+
+  private armPingTimer(): void {
+    if (this.pingTimer || this.pingInterval <= 0) return
+    this.pingTimer = setInterval(() => this.emitPing(), this.pingInterval)
+    // Don't keep the process alive just for heartbeats.
+    this.pingTimer.unref?.()
+  }
+
+  private emitPing(): void {
+    try {
+      this.pingIndex++
+      const uptimeSeconds = Math.floor((Date.now() - this.startedAt) / 1000)
+      for (const plugin of this.registeredPlugins.values()) {
+        this.enqueue(plugin, "plugin.ping", {
+          uptime_seconds: uptimeSeconds,
+          ping_index: this.pingIndex,
+        })
+      }
+    } catch (err) {
+      if (VERBOSE) console.warn("[gorgo/telemetry] emitPing failed:", err)
+    }
+  }
 
   enqueue(plugin: PluginInfo, eventName: string, properties: Record<string, unknown> = {}): void {
     try {
@@ -228,11 +281,6 @@ export class TelemetryDispatcher {
         )
       }
 
-      // Debug
-      if (VERBOSE) {
-        console.log("[gorgo/telemetry] payload:", JSON.stringify(payload, null, 2))
-      }
-
       await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -269,12 +317,18 @@ export class TelemetryDispatcher {
       clearTimeout(this.timer)
       this.timer = undefined
     }
+    if (this.pingTimer) {
+      clearInterval(this.pingTimer)
+      this.pingTimer = undefined
+    }
     this.buckets.clear()
     this.totalCount = 0
     this.envCache = undefined
     this.machineIdCache = undefined
     this.telemetryEnabledCache = undefined
     this.flushing = false
+    this.registeredPlugins.clear()
+    this.pingIndex = 0
   }
 
   // ------------------------------------------------------------------

@@ -10,6 +10,7 @@ interface Config {
   machine_id?: string
   enabled?: boolean
   plugins_seen?: string[]
+  notification_shown?: boolean
 }
 
 function readConfig(): Config {
@@ -82,4 +83,15 @@ export function markPluginStarted(pluginName: string): boolean {
   seen.add(pluginName)
   writeConfig({ ...config, plugins_seen: Array.from(seen) })
   return true
+}
+
+/** Whether the first-run telemetry notice has already been printed on this machine. */
+export function wasNotificationShown(): boolean {
+  return readConfig().notification_shown === true
+}
+
+/** Persist the fact that the first-run telemetry notice has been printed. */
+export function markNotificationShown(): void {
+  const config = readConfig()
+  writeConfig({ ...config, notification_shown: true })
 }

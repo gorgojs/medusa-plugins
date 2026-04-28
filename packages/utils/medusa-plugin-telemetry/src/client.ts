@@ -58,6 +58,7 @@ export class TelemetryClient {
       flushAt: options.flushAt,
       flushInterval: options.flushInterval,
     })
+    this.dispatcher.registerPlugin(this.pluginInfo)
   }
 
   /**

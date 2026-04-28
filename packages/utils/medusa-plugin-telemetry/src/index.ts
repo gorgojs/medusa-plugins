@@ -6,7 +6,10 @@ export {
   isTelemetryEnabled,
   setTelemetryEnabled,
   markPluginStarted,
+  wasNotificationShown,
+  markNotificationShown,
 } from "./config-store.js"
+export { maybeShowFirstRunNotice } from "./notice.js"
 export { collectEnvInfo, findPackageJson } from "./env.js"
 export type {
   PluginInfo,
