@@ -77,7 +77,7 @@ export function PluginsSection({
                       >
                         <div className="flex items-center gap-3">
                           <div
-                            className="shrink-0 flex size-7 items-center justify-center rounded-md overflow-clip text-sm font-bold"
+                            className="shrink-0 flex size-7 items-center justify-center rounded-md overflow-hidden text-sm font-bold [&>svg]:size-full"
                             style={
                               plugin.iconBgColor
                                 ? { backgroundColor: plugin.iconBgColor }
