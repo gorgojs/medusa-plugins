@@ -133,6 +133,7 @@ async function mdxToPlainText(
     source: mdxContent,
     components: {
       TypeList: SearchIndexTypeList,
+      MedusaTypeList: SearchIndexTypeList,
     },
     options: {
       parseFrontmatter: true,

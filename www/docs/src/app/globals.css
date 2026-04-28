@@ -3,12 +3,6 @@
 
 @config "../../tailwind.config.js";
 
-.dark {
-  --border-base: #323235;
-  --button-inverted: rgba(255, 255, 255, 1);
-  --contrast-fg-primary: rgba(0, 0, 0, 0.88);
-}
-
 :root {
   --gorgo-text-gradient: linear-gradient(
     127.93deg,
@@ -18,6 +12,97 @@
   );
   --buttons-accent: 0px 0.75px 0px 0px rgba(255, 255, 255, 0.2) inset,
     0px 1px 2px 0px rgba(158, 96, 68, 0.4), 0px 0px 0px 1px rgba(158, 96, 68, 1);
+
+  /* Medusa docs CSS variables (light) */
+  --docs-bg-base: rgba(255, 255, 255, 1);
+  --docs-bg-subtle: rgba(250, 250, 250, 1);
+  --docs-bg-subtle-hover: rgba(244, 244, 245, 1);
+  --docs-bg-subtle-pressed: rgba(228, 228, 231, 1);
+  --docs-bg-component: rgba(250, 250, 250, 1);
+  --docs-bg-component-hover: rgba(244, 244, 245, 1);
+  --docs-bg-component-pressed: rgba(228, 228, 231, 1);
+  --docs-bg-switch-off: rgba(228, 228, 231, 1);
+  --docs-bg-switch-off-hover: rgba(212, 212, 216, 1);
+  --docs-fg-base: rgba(24, 24, 27, 1);
+  --docs-fg-subtle: rgba(82, 82, 91, 1);
+  --docs-fg-muted: rgba(113, 113, 122, 1);
+  --docs-fg-disabled: rgba(161, 161, 170, 1);
+  --docs-fg-interactive: rgba(37, 99, 235, 1);
+  --docs-fg-interactive-hover: rgba(59, 130, 246, 1);
+  --docs-border-base: rgba(228, 228, 231, 1);
+  --docs-border-strong: rgba(212, 212, 216, 1);
+  --docs-tags-neutral-bg: rgba(244, 244, 245, 1);
+  --docs-tags-neutral-bg-hover: rgba(228, 228, 231, 1);
+  --docs-tags-neutral-text: rgba(82, 82, 91, 1);
+  --docs-tags-neutral-border: rgba(228, 228, 231, 1);
+  --docs-tags-blue-bg: rgba(219, 234, 254, 1);
+  --docs-tags-blue-text: rgba(30, 64, 175, 1);
+  --docs-tags-blue-border: rgba(191, 219, 254, 1);
+  --docs-tags-green-bg: rgba(209, 250, 229, 1);
+  --docs-tags-green-text: rgba(6, 95, 70, 1);
+  --docs-tags-green-border: rgba(167, 243, 208, 1);
+  --docs-tags-orange-bg: rgba(255, 237, 213, 1);
+  --docs-tags-orange-text: rgba(154, 52, 18, 1);
+  --docs-tags-orange-border: rgba(254, 215, 170, 1);
+  --docs-tags-red-bg: rgba(255, 228, 230, 1);
+  --docs-tags-red-text: rgba(159, 18, 57, 1);
+  --docs-tags-red-border: rgba(254, 205, 211, 1);
+  --docs-tags-purple-bg: rgba(237, 233, 254, 1);
+  --docs-tags-purple-text: rgba(91, 33, 182, 1);
+  --docs-tags-purple-border: rgba(221, 214, 254, 1);
+  --docs-contrast-bg-subtle: rgba(39, 39, 42, 1);
+  --docs-contrast-fg-primary: rgba(255, 255, 255, 0.88);
+  --docs-contrast-fg-secondary: rgba(255, 255, 255, 0.56);
+  --docs-contrast-border-bot: rgba(255, 255, 255, 0.10);
+  --docs-bg-highlight: rgba(239, 246, 255, 1);
+}
+
+.dark {
+  --border-base: #323235;
+  --button-inverted: rgba(255, 255, 255, 1);
+  --contrast-fg-primary: rgba(0, 0, 0, 0.88);
+  /* Medusa docs CSS variables (dark) */
+  --docs-bg-base: rgba(33, 33, 36, 1);
+  --docs-bg-subtle: rgba(24, 24, 27, 1);
+  --docs-bg-subtle-hover: rgba(33, 33, 36, 1);
+  --docs-bg-subtle-pressed: rgba(39, 39, 42, 1);
+  --docs-bg-component: rgba(39, 39, 42, 1);
+  --docs-bg-component-hover: rgba(255, 255, 255, 0.1);
+  --docs-bg-component-pressed: rgba(255, 255, 255, 0.16);
+  --docs-bg-switch-off: rgba(63, 63, 70, 1);
+  --docs-bg-switch-off-hover: rgba(82, 82, 91, 1);
+  --docs-fg-base: rgba(244, 244, 245, 1);
+  --docs-fg-subtle: rgba(161, 161, 170, 1);
+  --docs-fg-muted: rgba(113, 113, 122, 1);
+  --docs-fg-disabled: rgba(82, 82, 91, 1);
+  --docs-fg-interactive: rgba(96, 165, 250, 1);
+  --docs-fg-interactive-hover: rgba(147, 197, 253, 1);
+  --docs-border-base: rgba(255, 255, 255, 0.08);
+  --docs-border-strong: rgba(255, 255, 255, 0.16);
+  --docs-tags-neutral-bg: rgba(255, 255, 255, 0.08);
+  --docs-tags-neutral-bg-hover: rgba(255, 255, 255, 0.12);
+  --docs-tags-neutral-text: rgba(212, 212, 216, 1);
+  --docs-tags-neutral-border: rgba(255, 255, 255, 0.06);
+  --docs-tags-blue-bg: rgba(23, 37, 84, 1);
+  --docs-tags-blue-text: rgba(147, 197, 253, 1);
+  --docs-tags-blue-border: rgba(30, 58, 138, 1);
+  --docs-tags-green-bg: rgba(2, 44, 34, 1);
+  --docs-tags-green-text: rgba(52, 211, 153, 1);
+  --docs-tags-green-border: rgba(6, 78, 59, 1);
+  --docs-tags-orange-bg: rgba(67, 20, 7, 1);
+  --docs-tags-orange-text: rgba(253, 186, 116, 1);
+  --docs-tags-orange-border: rgba(124, 45, 18, 1);
+  --docs-tags-red-bg: rgba(76, 5, 25, 1);
+  --docs-tags-red-text: rgba(253, 164, 175, 1);
+  --docs-tags-red-border: rgba(136, 19, 55, 1);
+  --docs-tags-purple-bg: rgba(46, 16, 101, 1);
+  --docs-tags-purple-text: rgba(196, 181, 253, 1);
+  --docs-tags-purple-border: rgba(91, 33, 182, 1);
+  --docs-contrast-bg-subtle: rgba(39, 39, 42, 1);
+  --docs-contrast-fg-primary: rgba(255, 255, 255, 0.88);
+  --docs-contrast-fg-secondary: rgba(255, 255, 255, 0.56);
+  --docs-contrast-border-bot: rgba(255, 255, 255, 0.10);
+  --docs-bg-highlight: rgba(23, 37, 84, 1);
 }
 
 @layer utilities {
@@ -84,7 +169,7 @@
   @apply visible;
 }
 
-.prose a {
+.prose a:not(:where([class~="not-prose"],[class~="not-prose"] *)) {
   @apply underline transition-all text-ui-fg-subtle underline-offset-2 decoration-[0.1em];
 }
 
@@ -107,7 +192,7 @@
   @apply m-0;
 }
 
-.prose p {
+.prose p:not(:where([class~="not-prose"],[class~="not-prose"] *)) {
   @apply my-4 text-ui-fg-base;
 }
 
@@ -127,27 +212,27 @@
   @apply text-lg font-medium tracking-tight mt-5 mb-3 text-ui-fg-base;
 }
 
-.prose strong {
+.prose strong:not(:where([class~="not-prose"],[class~="not-prose"] *)) {
   @apply font-medium;
 }
 
-.prose ul {
+.prose ul:not(:where([class~="not-prose"],[class~="not-prose"] *)) {
   @apply list-disc pl-6;
 }
 
-.prose ol {
+.prose ol:not(:where([class~="not-prose"],[class~="not-prose"] *)) {
   @apply list-decimal pl-6;
 }
 
-.prose li {
+.prose li:not(:where([class~="not-prose"],[class~="not-prose"] *)) {
   @apply text-ui-fg-base;
 }
 
-.prose strong {
+.prose strong:not(:where([class~="not-prose"],[class~="not-prose"] *)) {
   @apply text-ui-fg-base;
 }
 
-.prose > :first-child {
+.prose > :first-child:not(:where([class~="not-prose"])) {
   /* Override removing top margin, causing layout shift */
   margin-top: 0 !important;
   margin-bottom: 1.25em !important;
@@ -190,4 +275,20 @@
 .text-h3 {
   line-height: 160%;
   font-weight: 500;
+}
+
+.no-marker {
+  list-style: none;
+}
+
+.no-marker::-webkit-details-marker {
+  display: none;
+}
+
+.flip-y {
+  transform: rotateY(180deg);
+}
+
+.animate-bg-surface {
+  --animation-color: var(--docs-bg-subtle-pressed);
 }

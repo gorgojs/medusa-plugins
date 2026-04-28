@@ -64,69 +64,87 @@ TKASSA_PASSWORD=supersecret
 
 ## Provider Options
 
-<TypeList
+<MedusaTypeList
   sectionTitle="ProviderOptions"
   types={[
     {
-      name: "terminalKey",
-      type: "string",
-      description: "Terminal key provided by T-Kassa (required for authentication)",
+      name: "options",
+      type: "object",
+      description: "Provider configuration options",
       optional: false,
-      children: []
-    },
-    {
-      name: "password",
-      type: "string",
-      description: "Password for request signing (required for authentication)",
-      optional: false,
-      children: []
-    },
-    {
-      name: "capture",
-      type: "boolean",
-      description: "Automatic payment capture:\n- `true` for one-step payment, passes `O` to T-Kassa API\n- `false` for two-step payment, passes `T` to T-Kassa API",
-      optional: true,
-      defaultValue: "true",
-      children: []
-    },
-    {
-      name: "useReceipt",
-      type: "boolean",
-      description: "Enable receipt generation according to Russian fiscal data format (FFD)",
-      optional: true,
-      defaultValue: "false",
-      children: []
-    },
-    {
-      name: "ffdVersion",
-      type: "enum",
-      description: "Fiscal data format version.\nApplicable only if `useReceipt` = `true`",
-      optional: true,
-      children: []
-    },
-    {
-      name: "taxation",
-      type: "enum",
-      description: "Tax system type:\n- `osn`: General\n- `usn_income`: Simplified (income)\n- `usn_income_outcome`: Simplified (income-expenses)\n- `esn`: Agricultural\n- `patent`: Patent\nApplicable only if `useReceipt` = `true`",
-      optional: true,
-      children: []
-    },
-    {
-      name: "taxItemDefault",
-      type: "enum",
-      description: "Default VAT rate for products:\n- `none`: No VAT\n- `vat0`: 0%\n- `vat5`: 5%\n- `vat7`: 7%\n- `vat10`: 10%\n- `vat20`: 20%\n- `vat105`: 5/105\n- `vat107`: 7/107\n- `vat110`: 10/110\n- `vat120`: 20/120\nApplicable only if `useReceipt` = `true`",
-      optional: true,
-      children: []
-    },
-    {
-      name: "taxShippingDefault",
-      type: "enum",
-      description: "Default VAT rate for shipping, same options as `taxItemDefault`.\nApplicable only if `useReceipt` = `true`",
-      optional: true,
-      children: []
+      expandable: false,
+      children: [
+        {
+          name: "terminalKey",
+          type: "string",
+          description: "Terminal key provided by T-Kassa (required for authentication)",
+          optional: false,
+          expandable: false,
+          children: []
+        },
+        {
+          name: "password",
+          type: "string",
+          description: "Password for request signing (required for authentication)",
+          optional: false,
+          expandable: false,
+          children: []
+        },
+        {
+          name: "capture",
+          type: "boolean",
+          description: "Automatic payment capture:\n- `true` for one-step payment, passes `O` to T-Kassa API\n- `false` for two-step payment, passes `T` to T-Kassa API",
+          optional: true,
+          defaultValue: "true",
+          expandable: false,
+          children: []
+        },
+        {
+          name: "useReceipt",
+          type: "boolean",
+          description: "Enable receipt generation according to Russian fiscal data format (FFD)",
+          optional: true,
+          defaultValue: "false",
+          expandable: false,
+          children: []
+        },
+        {
+          name: "ffdVersion",
+          type: "enum",
+          description: "Fiscal data format version.\nApplicable only if `useReceipt` = `true`",
+          optional: true,
+          expandable: false,
+          children: []
+        },
+        {
+          name: "taxation",
+          type: "enum",
+          description: "Tax system type:\n- `osn`: General\n- `usn_income`: Simplified (income)\n- `usn_income_outcome`: Simplified (income-expenses)\n- `esn`: Agricultural\n- `patent`: Patent\nApplicable only if `useReceipt` = `true`",
+          optional: true,
+          expandable: false,
+          children: []
+        },
+        {
+          name: "taxItemDefault",
+          type: "enum",
+          description: "Default VAT rate for products:\n- `none`: No VAT\n- `vat0`: 0%\n- `vat5`: 5%\n- `vat7`: 7%\n- `vat10`: 10%\n- `vat20`: 20%\n- `vat105`: 5/105\n- `vat107`: 7/107\n- `vat110`: 10/110\n- `vat120`: 20/120\nApplicable only if `useReceipt` = `true`",
+          optional: true,
+          expandable: false,
+          children: []
+        },
+        {
+          name: "taxShippingDefault",
+          type: "enum",
+          description: "Default VAT rate for shipping, same options as `taxItemDefault`.\nApplicable only if `useReceipt` = `true`",
+          optional: true,
+          expandable: false,
+          children: []
+        }
+      ]
     }
   ]}
 />
+
 
 ## Webhook Setup
 
