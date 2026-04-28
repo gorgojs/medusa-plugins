@@ -30,12 +30,14 @@ const HeadingLink = ({
       >
         {children}
         {Heading !== "h1" && (
-          <Copy
-            className="opacity-0 group-hover:opacity-100 ml-2 transition-opacity cursor-pointer bg-clip-text text-transparent bg-gorgo-text-gradient"
-            content={`${origin}${pathname}#${id}`}
-          >
-            #
-          </Copy>
+          <span onClickCapture={() => history.pushState(null, "", `#${id}`)}>
+            <Copy
+              className="opacity-0 group-hover:opacity-100 ml-2 transition-opacity cursor-pointer bg-clip-text text-transparent bg-gorgo-text-gradient"
+              content={`${origin}${pathname}#${id}`}
+            >
+              #
+            </Copy>
+          </span>
         )}
       </Heading>
     </div>

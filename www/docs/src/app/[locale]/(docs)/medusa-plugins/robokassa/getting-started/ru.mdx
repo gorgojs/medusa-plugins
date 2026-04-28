@@ -78,7 +78,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "string",
       description: "Идентификатор магазина Robokassa.",
       optional: false,
-      expandable: false,
       children: []
     },
     {
@@ -86,7 +85,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "enum",
       description: "Алгоритм подписи, используемый для расчёта и проверки подписей платежей:\n- `md5`\n- `sha1`\n- `sha256`\n- `sha384`\n- `sha512`",
       optional: false,
-      expandable: false,
       children: []
     },
     {
@@ -94,7 +92,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "string",
       description: "Технический пароль №1 для расчёта подписи при инициализации платежа.",
       optional: false,
-      expandable: false,
       children: []
     },
     {
@@ -102,7 +99,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "string",
       description: "Технический пароль №2 для проверки подписи в уведомлениях об оплате.",
       optional: false,
-      expandable: false,
       children: []
     },
     {
@@ -110,7 +106,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "string",
       description: "Тестовый пароль №1 для расчёта подписей в тестовом режиме.\nПрименимо только при `isTest` = `true`",
       optional: true,
-      expandable: false,
       children: []
     },
     {
@@ -118,7 +113,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "string",
       description: "Тестовый пароль №2 для проверки уведомлений в тестовом режиме.\nПрименимо только при `isTest` = `true`",
       optional: true,
-      expandable: false,
       children: []
     },
     {
@@ -127,7 +121,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       description: "Определяет тип проведения платежа:\n- `true` — одностадийная оплата\n- `false` — двухстадийная оплата (предавторизация)",
       optional: true,
       defaultValue: "true",
-      expandable: false,
       children: []
     },
     {
@@ -136,7 +129,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       description: "Включает тестовый режим.",
       optional: true,
       defaultValue: "false",
-      expandable: false,
       children: []
     },
     {
@@ -145,7 +137,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       description: "Включает формирование онлайн-чеков по 54-ФЗ.",
       optional: true,
       defaultValue: "false",
-      expandable: false,
       children: []
     },
     {
@@ -153,7 +144,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "enum",
       description: "Система налогообложения:\n- `osn` — общая СН\n- `usn_income` — упрощенная СН (доходы)\n- `usn_income_outcome` — упрощенная СН (доходы минус расходы)\n- `esn` — единый сельскохозяйственный налог\n- `patent` — патентная СН\nПрименимо только при `useReceipt` = `true`",
       optional: true,
-      expandable: false,
       children: []
     },
     {
@@ -161,7 +151,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "enum",
       description: "Ставка НДС по умолчанию для товаров:\n- `none` — без НДС\n- `vat0` — 0%\n- `vat5` — 5%\n- `vat7` — 7%\n- `vat10` — 10%\n- `vat20` — 20%\n- `vat105` — 5/105\n- `vat107` — 7/107\n- `vat110` — 10/110\n- `vat120` — 20/120\nПрименимо только при `useReceipt` = `true`",
       optional: true,
-      expandable: false,
       children: []
     },
     {
@@ -169,7 +158,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "enum",
       description: "Ставка НДС по умолчанию для доставки, аналогично `taxItemDefault`.\nПрименимо только при `useReceipt` = `true`",
       optional: true,
-      expandable: false,
       children: []
     }
   ]}

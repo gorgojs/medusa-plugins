@@ -12,14 +12,7 @@ export type Type = {
   defaultValue?: string
   example?: string
   description?: string
-  featureFlag?: string
-  expandable: boolean
   children?: Type[]
-  deprecated?: {
-    is_deprecated: boolean
-    description?: string
-  }
-  since?: string
 }
 
 export type TypeListProps = {
@@ -135,16 +128,6 @@ function TypeListItem({
           {typeItem.optional === true && (
             <span className="text-xs text-ui-tag-blue-text">
               optional
-            </span>
-          )}
-          {typeItem.since && (
-            <span className="text-xs text-ui-tag-green-text">
-              Since {typeItem.since}
-            </span>
-          )}
-          {typeItem.deprecated?.is_deprecated && (
-            <span className="text-xs text-ui-tag-orange-text">
-              Deprecated
             </span>
           )}
         </div>

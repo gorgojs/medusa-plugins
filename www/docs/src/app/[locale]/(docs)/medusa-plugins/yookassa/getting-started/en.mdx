@@ -73,7 +73,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       type: "string",
       description: "The SHOP_ID of YooKassa.",
       optional: false,
-      expandable: false,
       children: []
     },
     {
@@ -81,7 +80,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       type: "string",
       description: "The secret key of YooKassa.",
       optional: false,
-      expandable: false,
       children: []
     },
     {
@@ -89,7 +87,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       type: "string",
       description: "Default description shown on the payment page in YooKassa if the context does not provide one.",
       optional: true,
-      expandable: false,
       children: []
     },
     {
@@ -98,7 +95,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       description: "Automatic payment capture:\n- `true` for one-step payment\n- `false` for two-step payment (pre-authorization)",
       optional: true,
       defaultValue: "true",
-      expandable: false,
       children: []
     },
     {
@@ -107,7 +103,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       description: "Enable receipt generation according to Russian fiscal data format (FFD).",
       optional: true,
       defaultValue: "false",
-      expandable: false,
       children: []
     },
     {
@@ -116,7 +111,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       description: "Enable when Atol Online FFD 1.2 sales register is used.\nApplicable only if `useReceipt` = `true`",
       optional: true,
       defaultValue: "false",
-      expandable: false,
       children: []
     },
     {
@@ -124,7 +118,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       type: "enum",
       description: "Store tax system:\n- `1`: General taxation system\n- `2`: Simplified (income)\n- `3`: Simplified (income minus expenses)\n- `4`: Single tax on imputed income\n- `5`: Single agricultural tax\n- `6`: Patent taxation system\nRequired if you use the Atol Online FFD 1.2 sales register.\nApplicable only if `useReceipt` = `true`",
       optional: true,
-      expandable: false,
       children: []
     },
     {
@@ -132,7 +125,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       type: "enum",
       description: "Default VAT rate for products:\n- `1`: No VAT\n- `2`: 0%\n- `3`: 10%\n- `4`: 20%\n- `5`: 10/110\n- `6`: 20/110\n- `7`: 5%\n- `8`: 7%\n- `9`: 5/105\n- `10`: 7/107\nFor receipts for self-employed — fixed value `1`.\nApplicable only if `useReceipt` = `true`",
       optional: true,
-      expandable: false,
       children: []
     },
     {
@@ -140,7 +132,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       type: "enum",
       description: "Default VAT rate for shipping, same options as `taxItemDefault`.\nApplicable only if `useReceipt` = `true`",
       optional: true,
-      expandable: false,
       children: []
     }
   ]}
