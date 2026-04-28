@@ -32,7 +32,7 @@ Replace `[plugin-name]` with your desired plugin name.
 
 ## Examples
 
-* **Basic usage**
+### Basic usage
 
   ```bash
   npx create-medusa-plugin
@@ -40,7 +40,7 @@ Replace `[plugin-name]` with your desired plugin name.
 
   This command will prompt you for the plugin name and other configuration options interactively.
 
-* **With options**
+### With options
 
   ```bash
   npx create-medusa-plugin my-plugin -r my-plugin-monorepo -e my-plugin-example --skip-example-db
@@ -48,7 +48,7 @@ Replace `[plugin-name]` with your desired plugin name.
 
   This command scaffolds the following monorepo structur, installing the Medusa projects within it:
 
-  ```
+  ```txt
   /
   └── my-plugin-monorepo/
       ├── examples/
@@ -61,7 +61,7 @@ Replace `[plugin-name]` with your desired plugin name.
       └── README.md
   ```
 
-* **With a plugin scope**
+### With a plugin scope
 
   ```bash
   npx create-medusa-plugin @my-scope/my-plugin -r my-plugin-monorepo -e my-plugin-example --skip-example-db
@@ -70,7 +70,7 @@ Replace `[plugin-name]` with your desired plugin name.
   This command scaffolds the following monorepo structure, placing your scoped plugin in a nested folder under `packages` and installing the Medusa projects within it:
 
 
-  ```
+  ```txt
   /
   └── my-plugin-monorepo/
       ├── examples/

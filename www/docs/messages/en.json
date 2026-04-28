@@ -48,5 +48,12 @@
   "toc": {
     "onThisPage": "On This Page",
     "backToTop": "Back to Top"
+  },
+  "components": {
+    "medusaTypeList": {
+      "default": "Default",
+      "example": "Example",
+      "optional": "optional"
+    }
   }
 }

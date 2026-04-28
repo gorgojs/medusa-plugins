@@ -64,7 +64,7 @@ TKASSA_PASSWORD=supersecret
 
 ## Параметры провайдера
 
-<TypeList
+<MedusaTypeList
   sectionTitle="ProviderOptions"
   types={[
     {
@@ -72,6 +72,7 @@ TKASSA_PASSWORD=supersecret
       type: "string",
       description: "Ключ терминала, предоставленный Т-Касса (обязателен для аутентификации)",
       optional: false,
+      expandable: false,
       children: []
     },
     {
@@ -79,14 +80,16 @@ TKASSA_PASSWORD=supersecret
       type: "string",
       description: "Пароль для подписи запросов (обязателен для аутентификации)",
       optional: false,
+      expandable: false,
       children: []
     },
     {
       name: "capture",
       type: "boolean",
-      description: "Определяет тип проведения платежа:\n- `true` — одностадийная оплата (`O` в API)\n- `false` — двухстадийная оплата (`T` в API)",
+      description: "Определяет тип проведения платежа:\n- `true` - одностадийная оплата (`O` в API)\n- `false` - двухстадийная оплата (`T` в API)",
       optional: true,
       defaultValue: "true",
+      expandable: false,
       children: []
     },
     {
@@ -95,6 +98,7 @@ TKASSA_PASSWORD=supersecret
       description: "Включает формирование онлайн-чеков по 54-ФЗ",
       optional: true,
       defaultValue: "false",
+      expandable: false,
       children: []
     },
     {
@@ -102,20 +106,23 @@ TKASSA_PASSWORD=supersecret
       type: "enum",
       description: "Версия формата фискальных данных (ФФД).\nПрименимо только при `useReceipt` = `true`",
       optional: true,
+      expandable: false,
       children: []
     },
     {
       name: "taxation",
       type: "enum",
-      description: "Система налогообложения:\n- `osn` — общая СН\n- `usn_income` — упрощенная СН (доходы)\n- `usn_income_outcome` — упрощенная СН (доходы минус расходы)\n- `esn` — единый сельскохозяйственный налог\n- `patent` — патентная СН\nПрименимо только при `useReceipt` = `true`",
+      description: "Система налогообложения:\n- `osn` - общая СН\n- `usn_income` - упрощенная СН (доходы)\n- `usn_income_outcome` - упрощенная СН (доходы минус расходы)\n- `esn` - единый сельскохозяйственный налог\n- `patent` - патентная СН\nПрименимо только при `useReceipt` = `true`",
       optional: true,
+      expandable: false,
       children: []
     },
     {
       name: "taxItemDefault",
       type: "enum",
-      description: "Ставка НДС по умолчанию для товаров:\n- `none` — без НДС\n- `vat0` — 0%\n- `vat5` — 5%\n- `vat7` — 7%\n- `vat10` — 10%\n- `vat20` — 20%\n- `vat105` — 5/105\n- `vat107` — 7/107\n- `vat110` — 10/110\n- `vat120` — 20/120\nПрименимо только при `useReceipt` = `true`",
+      description: "Ставка НДС по умолчанию для товаров:\n- `none` - без НДС\n- `vat0` - 0%\n- `vat5` - 5%\n- `vat7` - 7%\n- `vat10` - 10%\n- `vat20` - 20%\n- `vat105` - 5/105\n- `vat107` - 7/107\n- `vat110` - 10/110\n- `vat120` - 20/120\nПрименимо только при `useReceipt` = `true`",
       optional: true,
+      expandable: false,
       children: []
     },
     {
@@ -123,6 +130,7 @@ TKASSA_PASSWORD=supersecret
       type: "enum",
       description: "Ставка НДС по умолчанию для доставки, аналогично `taxItemDefault`.\nПрименимо только при `useReceipt` = `true`",
       optional: true,
+      expandable: false,
       children: []
     }
   ]}
