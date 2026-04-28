@@ -2,6 +2,7 @@ import { Table } from "@medusajs/ui";
 import type { MDXComponents } from "mdx/types";
 import { CodeMdx } from "@/components/mdx/code-mdx";
 import HeadingLink from "./components/mdx/heading-link";
+import { TypeList } from "@/components/ui/type-list";
 
 const components: MDXComponents = {
   h1: ({ children, className, ...props }) => {
@@ -59,8 +60,16 @@ const components: MDXComponents = {
   tbody: ({ children }) => <Table.Body>{children}</Table.Body>,
   thead: ({ children }) => <Table.Header>{children}</Table.Header>,
 
+  // lists
+  ul: ({ children }) => <ul className="list-disc pl-6 my-4 space-y-1">{children}</ul>,
+  ol: ({ children }) => <ol className="list-decimal pl-6 my-4 space-y-1">{children}</ol>,
+  li: ({ children }) => <li className="text-ui-fg-base">{children}</li>,
+
   //code
   code: CodeMdx,
+
+  // custom components available in all MDX files
+  TypeList
 };
 
 export function useMDXComponents(): MDXComponents {

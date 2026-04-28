@@ -65,17 +65,86 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
 
 ## Provider Options
 
-| Option                | Description                                                                                                                                                                                                                                                                                                                                            | Required                                    | Default |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------- | ------- |
-| `shopId`              | The SHOP_ID of YooKassa                                                                                                                                                                                                                                                                                                                                | Yes                                         | -       |
-| `secretKey`           | The secret key of YooKassa                                                                                                                                                                                                                                                                                                                             | Yes                                         | -       |
-| `paymentDescription`  | Default description on the payment if the context does not provide on YooKassa                                                                                                                                                                                                                                                                         | No                                          | -       |
-| `capture`             | Automatic payment capture (`true` for one-step payment, `false` for two-step payment)                                                                                                                                                                                                                                                                  | No                                          | `true`  |
-| `useReceipt`          | Enable receipt generation according to Russian fiscal data format (FFD)                                                                                                                                                                                                                                                                                | No                                          | `false` |
-| `useAtolOnlineFFD120` | Enable when Atol Online FFD 1.2 sales register is used<br />Applicable only if `useReceipt` = `true`                                                                                                                                                                                                                                                     | No                                          | `false` |
-| `taxSystemCode`       | Store tax system:<br />- `1`: General taxation system<br />- `2`: Simplified (income)<br />- `3`: Simplified (income minus expenses)<br />- `4`: Single tax on imputed income<br />- `5`: Single agricultural tax<br />- `6`: Patent taxation system<br /><br />Required if you use the Atol Online FFD 1.2 sales register<br />Applicable only if `useReceipt` = `true` | No (Yes if you use the Atol Online FFD 1.2) | -       |
-| `taxItemDefault`      | Default VAT rate for products:<br />- `1`: No VAT<br />- `2`: 0%<br />- `3`: 10%<br />- `4`: 20%<br />- `5`: 10/110<br />- `6`: 20/110<br />- `7`: 5%<br />- `8`: 7%<br />- `9`: 5/105<br />- `10`: 7/107<br /><br />For receips for self-employed - fixed value `1`<br />Applicable only if `useReceipt` = `true`                                                               | No                                          | -       |
-| `taxShippingDefault`  | Default VAT rate for shipping, same options as `taxItemDefault` <br /><br />Applicable only if `useReceipt` = `true`                                                                                                                                                                                                                                       | No                                          | -       |
+<TypeList
+  sectionTitle="ProviderOptions"
+  types={[
+    {
+      name: "shopId",
+      type: "string",
+      description: "The SHOP_ID of YooKassa.",
+      optional: false,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "secretKey",
+      type: "string",
+      description: "The secret key of YooKassa.",
+      optional: false,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "paymentDescription",
+      type: "string",
+      description: "Default description shown on the payment page in YooKassa if the context does not provide one.",
+      optional: true,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "capture",
+      type: "boolean",
+      description: "Automatic payment capture:\n- `true` for one-step payment\n- `false` for two-step payment (pre-authorization)",
+      optional: true,
+      defaultValue: "true",
+      expandable: false,
+      children: []
+    },
+    {
+      name: "useReceipt",
+      type: "boolean",
+      description: "Enable receipt generation according to Russian fiscal data format (FFD).",
+      optional: true,
+      defaultValue: "false",
+      expandable: false,
+      children: []
+    },
+    {
+      name: "useAtolOnlineFFD120",
+      type: "boolean",
+      description: "Enable when Atol Online FFD 1.2 sales register is used.\nApplicable only if `useReceipt` = `true`",
+      optional: true,
+      defaultValue: "false",
+      expandable: false,
+      children: []
+    },
+    {
+      name: "taxSystemCode",
+      type: "enum",
+      description: "Store tax system:\n- `1`: General taxation system\n- `2`: Simplified (income)\n- `3`: Simplified (income minus expenses)\n- `4`: Single tax on imputed income\n- `5`: Single agricultural tax\n- `6`: Patent taxation system\nRequired if you use the Atol Online FFD 1.2 sales register.\nApplicable only if `useReceipt` = `true`",
+      optional: true,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "taxItemDefault",
+      type: "enum",
+      description: "Default VAT rate for products:\n- `1`: No VAT\n- `2`: 0%\n- `3`: 10%\n- `4`: 20%\n- `5`: 10/110\n- `6`: 20/110\n- `7`: 5%\n- `8`: 7%\n- `9`: 5/105\n- `10`: 7/107\nFor receipts for self-employed — fixed value `1`.\nApplicable only if `useReceipt` = `true`",
+      optional: true,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "taxShippingDefault",
+      type: "enum",
+      description: "Default VAT rate for shipping, same options as `taxItemDefault`.\nApplicable only if `useReceipt` = `true`",
+      optional: true,
+      expandable: false,
+      children: []
+    }
+  ]}
+/>
 
 ## Webhook Setup
 

@@ -70,20 +70,110 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
 
 ## Параметры провайдера
 
-| Опция            | Описание                                                                 | Обязательный | По умолчанию |
-|------------------|--------------------------------------------------------------------------|-------------|--------------|
-| `merchantLogin`  | Идентификатор магазина Robokassa                                         | Да          | -            |
-| `hashAlgorithm`  | Алгоритм подписи: `md5`, `sha1`, `sha256`, `sha384`, `sha512`            | Да          | -            |
-| `password1`      | Технический пароль №1 для расчёта подписи при инициализации платежа      | Да         | -            |
-| `password2`      | Технический пароль №2 для проверки подписи в уведомлениях об оплате      | Да         | -            |
-| `testPassword1`  | Тестовый пароль №1 для подписи в тестовом режиме *(если `isTest=true`)*  | Нет         | -            |
-| `testPassword2`  | Тестовый пароль №2 для уведомлений в тестовом режиме *(если `isTest=true`)* | Нет       | -            |
-| `capture`        | Автосписание: `true` — 1‑стадийно; `false` — предавторизация (двухстадийно) | Нет       | `true`       |
-| `isTest`         | Включает тестовый режим                                                   | Нет         | `false`      |
-| `useReceipt`     | Включает формирование онлайн-чеков по 54-ФЗ                                                    | Нет         | `false`      |
-| `taxation`         | Система налогообложения:<br />- `osn` — общая СН<br />- `usn_income` — упрощенная СН (доходы)<br />- `usn_income_outcome` — упрощенная СН (доходы минус расходы)<br />- `esn` — единый сельскохозяйственный налог<br />- `patent` — патентная СН<br /><br />Применимо только при `useReceipt=true`                                                  | Нет         | -      |
-| `taxItemDefault`         | Ставка НДС по товарам:<br />- `none` — без НДС<br />- `vat0` — 0%<br />- `vat5` — 5%<br />- `vat7` — 7%<br />- `vat10` — 10%<br />- `vat20` — 20%<br />- `vat105` — 5/105<br />- `vat107` — 7/107<br />- `vat110` — 10/110<br />- `vat120` — 20/120<br /><br />Применимо только при `useReceipt=true`                                                  | Нет         | -     |
-| `taxShippingDefault`         | Ставка НДС для доставки (аналогично `taxItemDefault`)<br /><br />Применимо только при `useReceipt=true`                                                   | Нет         | -      |
+<TypeList
+  sectionTitle="ProviderOptions"
+  types={[
+    {
+      name: "merchantLogin",
+      type: "string",
+      description: "Идентификатор магазина Robokassa.",
+      optional: false,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "hashAlgorithm",
+      type: "enum",
+      description: "Алгоритм подписи, используемый для расчёта и проверки подписей платежей:\n- `md5`\n- `sha1`\n- `sha256`\n- `sha384`\n- `sha512`",
+      optional: false,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "password1",
+      type: "string",
+      description: "Технический пароль №1 для расчёта подписи при инициализации платежа.",
+      optional: false,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "password2",
+      type: "string",
+      description: "Технический пароль №2 для проверки подписи в уведомлениях об оплате.",
+      optional: false,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "testPassword1",
+      type: "string",
+      description: "Тестовый пароль №1 для расчёта подписей в тестовом режиме.\nПрименимо только при `isTest` = `true`",
+      optional: true,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "testPassword2",
+      type: "string",
+      description: "Тестовый пароль №2 для проверки уведомлений в тестовом режиме.\nПрименимо только при `isTest` = `true`",
+      optional: true,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "capture",
+      type: "boolean",
+      description: "Определяет тип проведения платежа:\n- `true` — одностадийная оплата\n- `false` — двухстадийная оплата (предавторизация)",
+      optional: true,
+      defaultValue: "true",
+      expandable: false,
+      children: []
+    },
+    {
+      name: "isTest",
+      type: "boolean",
+      description: "Включает тестовый режим.",
+      optional: true,
+      defaultValue: "false",
+      expandable: false,
+      children: []
+    },
+    {
+      name: "useReceipt",
+      type: "boolean",
+      description: "Включает формирование онлайн-чеков по 54-ФЗ.",
+      optional: true,
+      defaultValue: "false",
+      expandable: false,
+      children: []
+    },
+    {
+      name: "taxation",
+      type: "enum",
+      description: "Система налогообложения:\n- `osn` — общая СН\n- `usn_income` — упрощенная СН (доходы)\n- `usn_income_outcome` — упрощенная СН (доходы минус расходы)\n- `esn` — единый сельскохозяйственный налог\n- `patent` — патентная СН\nПрименимо только при `useReceipt` = `true`",
+      optional: true,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "taxItemDefault",
+      type: "enum",
+      description: "Ставка НДС по умолчанию для товаров:\n- `none` — без НДС\n- `vat0` — 0%\n- `vat5` — 5%\n- `vat7` — 7%\n- `vat10` — 10%\n- `vat20` — 20%\n- `vat105` — 5/105\n- `vat107` — 7/107\n- `vat110` — 10/110\n- `vat120` — 20/120\nПрименимо только при `useReceipt` = `true`",
+      optional: true,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "taxShippingDefault",
+      type: "enum",
+      description: "Ставка НДС по умолчанию для доставки, аналогично `taxItemDefault`.\nПрименимо только при `useReceipt` = `true`",
+      optional: true,
+      expandable: false,
+      children: []
+    }
+  ]}
+/>
 
 ## Настройка вебхуков
 
