@@ -73,7 +73,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       type: "string",
       description: "Идентификатор вашего магазина в ЮKassa.",
       optional: false,
-      expandable: false,
       children: []
     },
     {
@@ -81,7 +80,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       type: "string",
       description: "Секретный ключ для проведения операций через ЮKassa.",
       optional: false,
-      expandable: false,
       children: []
     },
     {
@@ -89,7 +87,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       type: "string",
       description: "Описание платежа по умолчанию, отображаемое в ЮKassa, если контекст не задан.",
       optional: true,
-      expandable: false,
       children: []
     },
     {
@@ -98,7 +95,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       description: "Определяет тип проведения платежа:\n- `true` — одностадийная оплата\n- `false` — двухстадийная оплата (предавторизация)",
       optional: true,
       defaultValue: "true",
-      expandable: false,
       children: []
     },
     {
@@ -107,7 +103,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       description: "Включает формирование онлайн-чеков по 54-ФЗ.",
       optional: true,
       defaultValue: "false",
-      expandable: false,
       children: []
     },
     {
@@ -116,7 +111,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       description: "Включается, если вы используете онлайн-кассу Атол Онлайн с ФФД 1.2.\nПрименимо только при `useReceipt` = `true`",
       optional: true,
       defaultValue: "false",
-      expandable: false,
       children: []
     },
     {
@@ -124,7 +118,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       type: "enum",
       description: "Система налогообложения:\n- `1` — общая СН\n- `2` — упрощенная СН (доходы)\n- `3` — упрощенная СН (доходы минус расходы)\n- `4` — единый налог на вмененный доход\n- `5` — единый сельскохозяйственный налог\n- `6` — патентная СН\nОбязателен при использовании онлайн-кассы Атол Онлайн с ФФД 1.2.\nПрименимо только при `useReceipt` = `true`",
       optional: true,
-      expandable: false,
       children: []
     },
     {
@@ -132,7 +125,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       type: "enum",
       description: "Ставка НДС по умолчанию для товаров:\n- `1` — без НДС\n- `2` — 0%\n- `3` — 10%\n- `4` — 20%\n- `5` — 10/110\n- `6` — 20/110\n- `7` — 5%\n- `8` — 7%\n- `9` — 5/105\n- `10` — 7/107\nДля самозанятых — фиксированное значение `1`.\nПрименимо только при `useReceipt` = `true`",
       optional: true,
-      expandable: false,
       children: []
     },
     {
@@ -140,7 +132,6 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
       type: "enum",
       description: "Ставка НДС по умолчанию для доставки, аналогично `taxItemDefault`.\nПрименимо только при `useReceipt` = `true`",
       optional: true,
-      expandable: false,
       children: []
     }
   ]}

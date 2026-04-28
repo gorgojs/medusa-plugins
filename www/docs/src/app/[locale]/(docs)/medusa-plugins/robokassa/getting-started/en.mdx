@@ -78,7 +78,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "string",
       description: "The Robokassa store ID that you created when creating the store.",
       optional: false,
-      expandable: false,
       children: []
     },
     {
@@ -86,7 +85,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "enum",
       description: "Signature algorithm used to compute and verify payment signatures:\n- `md5`\n- `sha1`\n- `sha256`\n- `sha384`\n- `sha512`",
       optional: false,
-      expandable: false,
       children: []
     },
     {
@@ -94,7 +92,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "string",
       description: "Technical password #1 used to compute the signature when initiating a payment.",
       optional: false,
-      expandable: false,
       children: []
     },
     {
@@ -102,7 +99,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "string",
       description: "Technical password #2 used to verify the signature in the payment notification.",
       optional: false,
-      expandable: false,
       children: []
     },
     {
@@ -110,7 +106,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "string",
       description: "Test password #1 (from store settings) used to compute signatures in test mode.\nApplicable only if `isTest` = `true`",
       optional: true,
-      expandable: false,
       children: []
     },
     {
@@ -118,7 +113,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "string",
       description: "Test password #2 used to verify notifications in test mode.\nApplicable only if `isTest` = `true`",
       optional: true,
-      expandable: false,
       children: []
     },
     {
@@ -127,7 +121,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       description: "Automatic payment capture:\n- `true` for one-step payment\n- `false` for two-step payment (pre-authorization)",
       optional: true,
       defaultValue: "true",
-      expandable: false,
       children: []
     },
     {
@@ -136,7 +129,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       description: "Enables test mode.",
       optional: true,
       defaultValue: "false",
-      expandable: false,
       children: []
     },
     {
@@ -145,7 +137,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       description: "Enable receipt generation according to Russian fiscal data format (FFD).",
       optional: true,
       defaultValue: "false",
-      expandable: false,
       children: []
     },
     {
@@ -153,7 +144,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "enum",
       description: "Tax system type:\n- `osn`: General\n- `usn_income`: Simplified (income)\n- `usn_income_outcome`: Simplified (income-expenses)\n- `esn`: Agricultural\n- `patent`: Patent\nApplicable only if `useReceipt` = `true`",
       optional: true,
-      expandable: false,
       children: []
     },
     {
@@ -161,7 +151,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "enum",
       description: "Default VAT rate for products:\n- `none`: No VAT\n- `vat0`: 0%\n- `vat5`: 5%\n- `vat7`: 7%\n- `vat10`: 10%\n- `vat20`: 20%\n- `vat105`: 5/105\n- `vat107`: 7/107\n- `vat110`: 10/110\n- `vat120`: 20/120\nApplicable only if `useReceipt` = `true`",
       optional: true,
-      expandable: false,
       children: []
     },
     {
@@ -169,7 +158,6 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
       type: "enum",
       description: "Default VAT rate for shipping, same options as `taxItemDefault`.\nApplicable only if `useReceipt` = `true`",
       optional: true,
-      expandable: false,
       children: []
     }
   ]}
