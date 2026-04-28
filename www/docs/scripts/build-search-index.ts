@@ -3,6 +3,7 @@ import path from "node:path";
 import { convert } from "html-to-text";
 import MiniSearch from "minisearch";
 import { renderToString } from "react-dom/server";
+import { createElement, type ReactElement } from "react";
 import { pluginsSidebar, toolsSidebar } from "../src/lib/sidebar";
 import {
   type ContentItem,
@@ -10,6 +11,69 @@ import {
   type LocalizedString,
   locales,
 } from "../src/types";
+
+type SearchIndexType = {
+  name: string;
+  type: string;
+  optional?: boolean;
+  defaultValue?: string;
+  example?: string;
+  description?: string;
+  children?: SearchIndexType[];
+};
+
+type SearchIndexTypeListProps = {
+  types: SearchIndexType[];
+  sectionTitle?: string;
+};
+
+function renderTypeItem(
+  typeItem: SearchIndexType,
+  key: string,
+): ReactElement {
+  const details = [
+    typeItem.description && createElement("p", { key: `${key}-description` }, typeItem.description),
+    typeItem.defaultValue &&
+      createElement("p", { key: `${key}-default` }, `Default: ${typeItem.defaultValue}`),
+    typeItem.example &&
+      createElement("p", { key: `${key}-example` }, `Example: ${typeItem.example}`),
+    (typeItem.children?.length ?? 0) > 0 &&
+      createElement(
+        "ul",
+        { key: `${key}-children` },
+        typeItem.children?.map((child, index) =>
+          renderTypeItem(child, `${key}-child-${index}`),
+        ),
+      ),
+  ].filter(Boolean);
+
+  return createElement(
+    "li",
+    { key },
+    createElement(
+      "p",
+      null,
+      `${typeItem.name} (${typeItem.type})${typeItem.optional ? " optional" : ""}`,
+    ),
+    ...details,
+  );
+}
+
+function SearchIndexTypeList({
+  types,
+  sectionTitle,
+}: SearchIndexTypeListProps): ReactElement {
+  return createElement(
+    "section",
+    null,
+    sectionTitle ? createElement("h3", null, sectionTitle) : null,
+    createElement(
+      "ul",
+      null,
+      types.map((typeItem, index) => renderTypeItem(typeItem, `type-${index}`)),
+    ),
+  );
+}
 
 const miniSearchOptions = {
   fields: ["title", "content", "section", "sectionHierarchy"],
@@ -67,6 +131,9 @@ async function mdxToPlainText(
     description: string;
   }>({
     source: mdxContent,
+    components: {
+      TypeList: SearchIndexTypeList,
+    },
     options: {
       parseFrontmatter: true,
     },
