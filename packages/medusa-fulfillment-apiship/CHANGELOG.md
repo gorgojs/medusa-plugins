@@ -1,5 +1,11 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 0.5.0
+
+### Minor Changes
+
+- [#236](https://github.com/gorgojs/medusa-plugins/pull/236) [`a58f4e5`](https://github.com/gorgojs/medusa-plugins/commit/a58f4e5b57fcc450558c622fe823065aaca1dead) Thanks [@gorgohead](https://github.com/gorgohead)! - improve naming and requests
+
 ## 0.4.4
 
 ### Patch Changes
