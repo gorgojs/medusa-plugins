@@ -1,14 +1,14 @@
 ---
 title: "Integrate ApiShip to Storefront"
-description: "Learn how to integrate the ApiShip Fulfillment provider into a Next.js storefront for Medusa."
+description: "Learn how to integrate the ApiShip plugin into a Next.js storefront for Medusa."
 ---
 
 # {frontmatter.title}
 
-To integrate the ApiShip fulfillment provider into a Next.js storefront, you need to extend the checkout shipping step to support pickup point delivery.
+To integrate the ApiShip plugin into a Next.js storefront, you need to extend the checkout shipping step to support pickup point delivery.
 
 ApiShip shipping differs from regular shipping methods in that it requires additional data to be collected during checkout, such as the selected pickup point and delivery tariff.
-This data must be loaded dynamically from the backend, presented to the customer in a convenient form, and then persisted in the cart so it can be used later by the fulfillment provider when creating an order in the ApiShip.
+This data must be loaded dynamically from the backend, presented to the customer in a convenient form, and then persisted in the cart so it can be used later by the plugin when creating an order in ApiShip.
 
 For the storefront on Next.js, you need to make the following changes:
 

@@ -32,6 +32,11 @@ export const createApishipClient = ({
   const configuration = new Configuration({
     basePath,
     apiKey: token,
+    baseOptions: {
+      headers: {
+        platform: "medusajs",
+      },
+    },
   })
 
   return {

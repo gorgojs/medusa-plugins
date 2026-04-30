@@ -5,7 +5,7 @@
 </p>
 
 <h1 align="center">
-ApiShip Fulfillment for Medusa
+ApiShip Integration for Medusa
 </h1>
 
 <p align="center">
@@ -47,20 +47,22 @@ ApiShip Fulfillment for Medusa
 
 ## Plugin Features
 
-- **Shipping Rate Calculation**  
-  Real-time delivery rates from multiple carriers at checkout.
+- **40+ Shipping Carriers**  
+  Work with multiple carriers under direct contracts through a single integration.
+- **Automatic Shipping Rate Calculation**  
+  Considers package dimensions, weight, personal discounts, and carrier rates.
 - **Pickup Point Delivery**  
-  Pickup point selection from a list or interactive map.
+  Select a pickup point from a list or on an interactive map.
 - **One-Click Order Creation**  
   Create shipments in ApiShip directly from Medusa Admin, no manual data entry needed.
-- **Shipment Documents**  
-  Labels, waybills, and other documents retrieved directly from ApiShip.
+- **Shipment Documents Printing**  
+  Labels, waybills, and other documents available in Medusa Admin.
+- **Storefront Example**  
+  A ready-to-use [Next.js storefront example](https://github.com/gorgojs/medusa-plugins/tree/main/examples/fulfillment-apiship/medusa-storefront) you can use as a reference.
 - **Test Mode**  
   Simulate calculations and orders without affecting real data.
 - **Detailed Logging**  
   Request and response logs for debugging and support in development mode.
-- **Storefront Example**  
-  A complete [Next.js storefront](https://github.com/gorgojs/medusa-plugins/tree/main/examples/fulfillment-apiship/medusa-storefront) ready to use as a reference.
 
 ## What is ApiShip?
 

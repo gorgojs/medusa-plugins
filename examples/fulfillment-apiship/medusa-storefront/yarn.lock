@@ -571,8 +571,8 @@ __metadata:
   linkType: hard
 
 "@gorgo/medusa-fulfillment-apiship@file:../../../packages/medusa-fulfillment-apiship::locator=medusa-next%40workspace%3A.":
-  version: 0.2.4
-  resolution: "@gorgo/medusa-fulfillment-apiship@file:../../../packages/medusa-fulfillment-apiship#../../../packages/medusa-fulfillment-apiship::hash=74ee9b&locator=medusa-next%40workspace%3A."
+  version: 0.4.4
+  resolution: "@gorgo/medusa-fulfillment-apiship@file:../../../packages/medusa-fulfillment-apiship#../../../packages/medusa-fulfillment-apiship::hash=ae5111&locator=medusa-next%40workspace%3A."
   dependencies:
     axios: ^1.13.2
     axios-rate-limit: ^1.4.0
@@ -585,7 +585,7 @@ __metadata:
     "@medusajs/medusa": ^2.13.0
     "@medusajs/test-utils": ^2.13.0
     "@medusajs/ui": ^4.0.25
-  checksum: adc0593b9b1814fe2a59ae10e3305864ab57419e4dd0113fa42ad05d5a47ebb5141bdeed78345e1e562a63cebce63842dde47f8299f0c6409afebbc90d9b6960
+  checksum: 55a548962bf2ab391a8dc46273d33360249331c4eebe00225903eb1ac77764e4d96b363d1392dd2b7283952b3ebde60cef907f183d965c5b6599f38a44ea2814
   languageName: node
   linkType: hard
 

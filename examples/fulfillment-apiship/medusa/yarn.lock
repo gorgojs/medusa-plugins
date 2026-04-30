@@ -1600,29 +1600,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gorgo/medusa-fulfillment-apiship@npm:latest":
-  version: 0.2.3
-  resolution: "@gorgo/medusa-fulfillment-apiship@npm:0.2.3"
+"@gorgo/medusa-fulfillment-apiship@file:.yalc/@gorgo/medusa-fulfillment-apiship::locator=medusa%40workspace%3A.":
+  version: 0.4.4
+  resolution: "@gorgo/medusa-fulfillment-apiship@file:.yalc/@gorgo/medusa-fulfillment-apiship#.yalc/@gorgo/medusa-fulfillment-apiship::hash=a96379&locator=medusa%40workspace%3A."
   dependencies:
     axios: "npm:^1.13.2"
     axios-rate-limit: "npm:^1.4.0"
     axios-retry: "npm:^4.5.0"
   peerDependencies:
-    "@medusajs/admin-sdk": ^2.7.1
-    "@medusajs/cli": ^2.7.1
-    "@medusajs/framework": ^2.7.1
-    "@medusajs/icons": ^2.7.1
-    "@medusajs/medusa": ^2.7.1
-    "@medusajs/test-utils": ^2.7.1
-    "@medusajs/ui": ^4.0.8
-    "@mikro-orm/cli": 6.4.3
-    "@mikro-orm/core": 6.4.3
-    "@mikro-orm/knex": 6.4.3
-    "@mikro-orm/migrations": 6.4.3
-    "@mikro-orm/postgresql": 6.4.3
-    awilix: ^8.0.1
-    pg: ^8.14.1
-  checksum: 10c0/de14fd02ab7c0317d079721610e6f015753631e259bbe5d63985755901e380d4bc214d29c2e28feb05eeca042b4974369c2e9b2c4ab263e025a362a6883efb14
+    "@medusajs/admin-sdk": ^2.13.0
+    "@medusajs/cli": ^2.13.0
+    "@medusajs/framework": ^2.13.0
+    "@medusajs/icons": ^2.13.0
+    "@medusajs/medusa": ^2.13.0
+    "@medusajs/test-utils": ^2.13.0
+    "@medusajs/ui": ^4.0.25
+  checksum: 10c0/81277360d3781fb86c6cddabed04aba0dfe1a97bcf8f3dcceb84097a635ae8e2befb5a27fd21b718a41ee56067e834d4ac7e8f3f22ecded1dc57c10d00cb3a7a
   languageName: node
   linkType: hard
 
@@ -13005,7 +12998,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "medusa@workspace:."
   dependencies:
-    "@gorgo/medusa-fulfillment-apiship": "npm:latest"
+    "@gorgo/medusa-fulfillment-apiship": "file:.yalc/@gorgo/medusa-fulfillment-apiship"
     "@medusajs/admin-sdk": "npm:2.14.1"
     "@medusajs/cli": "npm:2.14.1"
     "@medusajs/framework": "npm:2.14.1"
