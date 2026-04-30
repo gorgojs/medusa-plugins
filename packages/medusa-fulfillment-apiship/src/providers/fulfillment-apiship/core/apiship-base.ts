@@ -180,7 +180,6 @@ class ApishipBase extends AbstractFulfillmentProviderService {
       cartId,
       ...calculatorRequest
     })
-    console.log("hash", hash)
     const key = `apiship:calc:${hash}:${shippingOptionId}`
 
     const { result: cache } = await getCalculationWorkflow().run({

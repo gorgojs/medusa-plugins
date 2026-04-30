@@ -24,8 +24,6 @@ export const POST = async (
   req: MedusaRequest<AdminCreateApishipConnectionType>,
   res: MedusaResponse<AdminApishipConnectionResponse>
 ) => {
-  console.log(req.validatedBody)
-  console.log(req.body)
   const { result } = await createApishipConnectionsWorkflow(req.scope).run({
     input: { connections: [req.validatedBody] },
   })
