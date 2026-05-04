@@ -1,4 +1,4 @@
-import { MarketplaceInjectionZone, isValidInjectionZone } from "./marketplace"
+import { IntegrationInjectionZone, isValidInjectionZone } from "./integration"
 import fs from "fs/promises"
 import {
   File,
@@ -15,7 +15,7 @@ import { getWidgetFilesFromSources, transformPath } from "./helpers"
 
 type WidgetConfig = {
   Component: string
-  zone: MarketplaceInjectionZone[]
+  zone: IntegrationInjectionZone[]
 }
 
 type ParsedWidgetConfig = {
@@ -94,7 +94,7 @@ async function parseFile(
     return null
   }
 
-  let zone: MarketplaceInjectionZone[] | null
+  let zone: IntegrationInjectionZone[] | null
 
   try {
     zone = await getWidgetZone(ast, file)
@@ -137,7 +137,7 @@ function generateImport(file: string, index: number): string {
   )}, { config as ${generateWidgetConfigName(index)} } from "${path}"`
 }
 
-function generateWidget(zone: MarketplaceInjectionZone[], index: number): WidgetConfig {
+function generateWidget(zone: IntegrationInjectionZone[], index: number): WidgetConfig {
   return {
     Component: generateWidgetComponentName(index),
     zone: zone,
@@ -147,7 +147,7 @@ function generateWidget(zone: MarketplaceInjectionZone[], index: number): Widget
 async function getWidgetZone(
   ast: ParseResult<File>,
   file: string
-): Promise<MarketplaceInjectionZone[] | null> {
+): Promise<IntegrationInjectionZone[] | null> {
   const zones: string[] = []
 
   /**
@@ -253,7 +253,7 @@ async function getWidgetZone(
     return null
   }
 
-  return validatedZones as MarketplaceInjectionZone[]
+  return validatedZones as IntegrationInjectionZone[]
 }
 
 function extractZoneValues(value: Node, zones: string[], file: string) {
