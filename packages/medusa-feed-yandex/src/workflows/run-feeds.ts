@@ -131,7 +131,7 @@ export const GenerateFeedFilesStep = createStep(
       const fileDTO = await fileModuleService.createFiles({
         filename: `${feed.file_name}.xml.gz`,
         mimeType: "application/gzip",
-        content: gzipedBuffer.toString("binary"),
+        content: gzipedBuffer.toString("base64"),
         access: "public",
       })
 
