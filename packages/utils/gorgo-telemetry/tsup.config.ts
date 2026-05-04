@@ -8,6 +8,7 @@ export default defineConfig([
     clean: true,
     platform: "node",
     target: "node20",
+    shims: true,
     tsconfig: "tsconfig.json",
   }
 ])

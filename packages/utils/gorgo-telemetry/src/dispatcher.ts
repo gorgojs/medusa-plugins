@@ -1,6 +1,6 @@
 import crypto from "node:crypto"
 import { getMachineId, isTelemetryEnabled, setTelemetryEnabled } from "./config-store.js"
-import { collectEnvInfo } from "./env.js"
+import { collectEnvInfo, findPackageJson } from "./env.js"
 import { maybeShowFirstRunNotice } from "./notice.js"
 import {
   severityForEvent,
@@ -12,10 +12,13 @@ import {
 import type { EnvInfo, PluginInfo } from "./types.js"
 
 const TELEMETRY_ENDPOINT = "https://telemetry.gorgojs.com"
-const SCOPE_NAME = "gorgo.telemetry"
-const SCOPE_VERSION = "0.1.0"
 const VERBOSE =
   process.env.GORGO_TELEMETRY_VERBOSE === "1" || process.env.GORGO_TELEMETRY_VERBOSE === "true"
+
+const { name: SCOPE_NAME, version: SCOPE_VERSION } = findPackageJson(__dirname) ?? {
+  name: "@gorgo/telemetry",
+  version: "0.0.0",
+}
 
 const DISPATCHER_KEY = Symbol.for("@gorgo/telemetry/dispatcher@v1")
 
@@ -393,6 +396,7 @@ export class TelemetryDispatcher {
     machineId: string
   ): OtlpAttribute[] {
     return toOtlpAttributes({
+      "service.name": process.env.WORKER_MODE ?? "medusa",
       "plugin.name": plugin.name,
       "plugin.version": plugin.version,
       machine_id: machineId,
