@@ -54,6 +54,12 @@
       "default": "Default",
       "example": "Example",
       "optional": "optional"
+    },
+    "note": {
+      "default": "Note",
+      "warning": "Warning",
+      "success": "Success",
+      "error": "Error"
     }
   }
 }
