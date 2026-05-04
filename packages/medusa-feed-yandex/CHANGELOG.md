@@ -1,5 +1,13 @@
 # @gorgo/medusa-feed-yandex
 
+## 0.2.24
+
+### Patch Changes
+
+- [`277466a`](https://github.com/gorgojs/medusa-plugins/commit/277466a7b2bafe155cf5f7f5f2ef139d634c68fa) Thanks [@ttokyose](https://github.com/ttokyose)! - fix internal server error and improve docs
+
+- [#239](https://github.com/gorgojs/medusa-plugins/pull/239) [`bcd8eaf`](https://github.com/gorgojs/medusa-plugins/commit/bcd8eafeed495dbb752840322fafe9be84a8fd57) Thanks [@gorgo-app](https://github.com/apps/gorgo-app)! - test on Medusa v2.14.2 and update readme
+
 ## 0.2.23
 
 ### Patch Changes
