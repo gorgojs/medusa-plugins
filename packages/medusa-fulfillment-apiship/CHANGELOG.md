@@ -1,5 +1,11 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 0.5.1
+
+### Patch Changes
+
+- [#239](https://github.com/gorgojs/medusa-plugins/pull/239) [`bcd8eaf`](https://github.com/gorgojs/medusa-plugins/commit/bcd8eafeed495dbb752840322fafe9be84a8fd57) Thanks [@gorgo-app](https://github.com/apps/gorgo-app)! - test on Medusa v2.14.2 and update readme
+
 ## 0.5.0
 
 ### Minor Changes
