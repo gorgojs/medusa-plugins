@@ -36,43 +36,78 @@ import {
   getAmountFromSmallestUnit,
   getSmallestUnit,
 } from "../utils"
+import { createTelemetryClient, markPluginStarted, type TelemetryClient } from "@gorgo/telemetry"
 
 abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
   static identifier = "tkassa"
+  private static telemetry_: TelemetryClient | undefined
+  private static getTelemetry_(): TelemetryClient {
+    if (!TkassaBase.telemetry_) {
+      TkassaBase.telemetry_ = createTelemetryClient({ packageDir: __dirname })
+    }
+    return TkassaBase.telemetry_
+  }
+
   protected serverUrl_ = "https://securepay.tinkoff.ru"
   protected options_: TKassaOptions
   protected client_: TKassa
   protected logger_: Logger
 
   static validateOptions(options: TKassaOptions): void {
+    const missing: string[] = []
+    let firstError: Error | undefined
+
+    const fail = (err: Error) => {
+      if (!firstError) firstError = err
+    }
+
     if (!isDefined(options.terminalKey)) {
-      throw new Error("Required option `terminalKey` is missing in T-Kassa provider")
+      missing.push("terminalKey")
+      fail(new Error("Required option `terminalKey` is missing in T-Kassa provider"))
     }
     if (!isDefined(options.password)) {
-      throw new Error("Required option `password` is missing in T-Kassa provider")
+      missing.push("password")
+      fail(new Error("Required option `password` is missing in T-Kassa provider"))
     }
     if (isDefined(options.useReceipt)) {
       if (!isDefined(options.taxation)) {
-        throw new Error("Required option `taxation` is missing in T-Kassa provider")
+        missing.push("taxation")
+        fail(new Error("Required option `taxation` is missing in T-Kassa provider"))
       } else if (!Taxations.includes(options.taxation)) {
-        throw new Error(`Invalid option \`taxation\` provided in T-Kassa provider. Valid values are: ${Taxations.join(", ")}`)
+        fail(new Error(`Invalid option \`taxation\` provided in T-Kassa provider. Valid values are: ${Taxations.join(", ")}`))
       }
       if (!isDefined(options.taxItemDefault)) {
-        throw new Error("Required option `taxItemDefault` is missing in T-Kassa provider")
+        missing.push("taxItemDefault")
+        fail(new Error("Required option `taxItemDefault` is missing in T-Kassa provider"))
       } else if (!TaxItem.includes(options.taxItemDefault)) {
-        throw new Error(`Invalid option \`taxItemDefault\` provided in T-Kassa provider. Valid values are: ${TaxItem.join(", ")}`)
+        fail(new Error(`Invalid option \`taxItemDefault\` provided in T-Kassa provider. Valid values are: ${TaxItem.join(", ")}`))
       }
       if (!isDefined(options.taxShippingDefault)) {
-        throw new Error("Required option `taxShippingDefault` is missing in T-Kassa provider")
+        missing.push("taxShippingDefault")
+        fail(new Error("Required option `taxShippingDefault` is missing in T-Kassa provider"))
       } else if (!TaxShipping.includes(options.taxShippingDefault)) {
-        throw new Error(`Invalid option \`taxShippingDefault\` provided in T-Kassa provider. Valid values are: ${TaxShipping.join(", ")}`)
+        fail(new Error(`Invalid option \`taxShippingDefault\` provided in T-Kassa provider. Valid values are: ${TaxShipping.join(", ")}`))
       }
       if (!isDefined(options.ffdVersion)) {
-        throw new Error("Required option `ffdVersion` is missing in T-Kassa provider")
+        missing.push("ffdVersion")
+        fail(new Error("Required option `ffdVersion` is missing in T-Kassa provider"))
       } else if (!FfdVersions.includes(options.ffdVersion)) {
-        throw new Error(`Invalid option \`ffdVersion\` provided in T-Kassa provider. Valid values are: ${FfdVersions.join(", ")}`)
+        fail(new Error(`Invalid option \`ffdVersion\` provided in T-Kassa provider. Valid values are: ${FfdVersions.join(", ")}`))
       }
     }
+
+    const { name } = TkassaBase.getTelemetry_().getPluginInfo()
+    TkassaBase.getTelemetry_().track("plugin.started", {
+      first_run: markPluginStarted(name),
+      config_keys: Object.keys(options ?? {}),
+    })
+    TkassaBase.getTelemetry_().track("plugin.config.validated", {
+      valid: !firstError,
+      ...(missing.length ? { missing_fields: missing } : {}),
+      mode: "production",
+    })
+
+    if (firstError) throw firstError
   }
 
   constructor(container: { logger: Logger }, options: TKassaOptions) {

@@ -45,6 +45,7 @@
     "prepublishOnly": "medusa plugin:build"
   },
   "dependencies": {
+    "@gorgo/telemetry": "workspace:^",
     "t-kassa-api": "^1.0.6"
   },
   "devDependencies": {

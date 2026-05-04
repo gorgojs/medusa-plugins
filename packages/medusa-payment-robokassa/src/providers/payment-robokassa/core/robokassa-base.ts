@@ -33,9 +33,18 @@ import {
   stringToNumberHash
 } from "../utils"
 import { createHash } from "crypto"
+import { createTelemetryClient, markPluginStarted, type TelemetryClient } from "@gorgo/telemetry"
 
 abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
   static identifier = "robokassa"
+  private static telemetry_: TelemetryClient | undefined
+  private static getTelemetry_(): TelemetryClient {
+    if (!RobokassaBase.telemetry_) {
+      RobokassaBase.telemetry_ = createTelemetryClient({ packageDir: __dirname })
+    }
+    return RobokassaBase.telemetry_
+  }
+
   protected options_: RobokassaOptions
   protected logger_: Logger
   protected baseUrl_ = "https://auth.robokassa.ru"
@@ -44,35 +53,62 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
   protected capturePaymentUrl_ = `${this.baseUrl_}/Merchant/Payment/Confirm`
 
   static validateOptions(options: RobokassaOptions): void {
+    const missing: string[] = []
+    let firstError: Error | undefined
+
+    const fail = (err: Error) => {
+      if (!firstError) firstError = err
+    }
+
     if (!isDefined(options.merchantLogin)) {
-      throw new Error("Required option `merchantLogin` is missing in Robokassa provider")
+      missing.push("merchantLogin")
+      fail(new Error("Required option `merchantLogin` is missing in Robokassa provider"))
     }
     if (!isDefined(options.password1)) {
-      throw new Error("Required option `password1` is missing in Robokassa provider")
+      missing.push("password1")
+      fail(new Error("Required option `password1` is missing in Robokassa provider"))
     }
     if (!isDefined(options.password2)) {
-      throw new Error("Required option `password2` is missing in Robokassa provider")
+      missing.push("password2")
+      fail(new Error("Required option `password2` is missing in Robokassa provider"))
     }
     if (!isDefined(options.hashAlgorithm) || !HashAlgorithms.includes(options.hashAlgorithm as (typeof HashAlgorithms)[number])) {
-      throw new Error("Required option `hashAlgorithm` is missing in Robokassa provider")
+      missing.push("hashAlgorithm")
+      fail(new Error("Required option `hashAlgorithm` is missing in Robokassa provider"))
     }
     if (options.useReceipt == true) {
       if (!isDefined(options.taxation)) {
-        throw new Error("Required option `taxation` is missing in Robokassa provider")
+        missing.push("taxation")
+        fail(new Error("Required option `taxation` is missing in Robokassa provider"))
       } else if (!taxations.includes(options.taxation)) {
-        throw new Error(`Invalid option \`taxation\` provided in Robokassa provider. Valid values are: ${taxations.join(", ")}`)
+        fail(new Error(`Invalid option \`taxation\` provided in Robokassa provider. Valid values are: ${taxations.join(", ")}`))
       }
       if (!isDefined(options.taxItemDefault)) {
-        throw new Error("Required option `taxItemDefault` is missing in Robokassa provider")
+        missing.push("taxItemDefault")
+        fail(new Error("Required option `taxItemDefault` is missing in Robokassa provider"))
       } else if (!taxes.includes(options.taxItemDefault)) {
-        throw new Error(`Invalid option \`taxItemDefault\` provided in Robokassa provider. Valid values are: ${taxes.join(", ")}`)
+        fail(new Error(`Invalid option \`taxItemDefault\` provided in Robokassa provider. Valid values are: ${taxes.join(", ")}`))
       }
       if (!isDefined(options.taxShippingDefault)) {
-        throw new Error("Required option `taxShippingDefault` is missing in Robokassa provider")
+        missing.push("taxShippingDefault")
+        fail(new Error("Required option `taxShippingDefault` is missing in Robokassa provider"))
       } else if (!taxes.includes(options.taxShippingDefault)) {
-        throw new Error(`Invalid option \`taxShippingDefault\` provided in Robokassa provider. Valid values are: ${taxes.join(", ")}`)
+        fail(new Error(`Invalid option \`taxShippingDefault\` provided in Robokassa provider. Valid values are: ${taxes.join(", ")}`))
       }
     }
+
+    const { name } = RobokassaBase.getTelemetry_().getPluginInfo()
+    RobokassaBase.getTelemetry_().track("plugin.started", {
+      first_run: markPluginStarted(name),
+      config_keys: Object.keys(options ?? {}),
+    })
+    RobokassaBase.getTelemetry_().track("plugin.config.validated", {
+      valid: !firstError,
+      ...(missing.length ? { missing_fields: missing } : {}),
+      mode: options?.isTest ? "test" : "production",
+    })
+
+    if (firstError) throw firstError
   }
 
   constructor(container: { logger: Logger }, options: RobokassaOptions) {
