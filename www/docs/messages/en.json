@@ -59,7 +59,7 @@
       "default": "Note",
       "warning": "Warning",
       "success": "Success",
-      "error": "Error"
+      "error": "Important"
     }
   }
 }
