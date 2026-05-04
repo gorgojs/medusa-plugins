@@ -4,6 +4,7 @@ import { CodeMdx } from "@/components/mdx/code-mdx";
 import HeadingLink from "./components/mdx/heading-link";
 import { TypeList } from "@/components/ui/type-list";
 import { MedusaTypeList } from "@/components/medusa-type-list";
+import { Note } from "@/components/mdx/note";
 
 const components: MDXComponents = {
   h1: ({ children, className, ...props }) => {
@@ -72,6 +73,7 @@ const components: MDXComponents = {
   // custom components available in all MDX files
   TypeList,
   MedusaTypeList,
+  Note,
 };
 
 export function useMDXComponents(): MDXComponents {

@@ -3,7 +3,7 @@ import path from "node:path";
 import { convert } from "html-to-text";
 import MiniSearch from "minisearch";
 import { renderToString } from "react-dom/server";
-import { createElement, type ReactElement } from "react";
+import { createElement, type ReactElement, type ReactNode } from "react";
 import { pluginsSidebar, toolsSidebar } from "../src/lib/sidebar";
 import {
   type ContentItem,
@@ -134,6 +134,8 @@ async function mdxToPlainText(
     components: {
       TypeList: SearchIndexTypeList,
       MedusaTypeList: SearchIndexTypeList,
+      Note: ({ children }: { children?: ReactNode }) =>
+        createElement("div", null, children),
     },
     options: {
       parseFrontmatter: true,
