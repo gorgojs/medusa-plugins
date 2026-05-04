@@ -4,7 +4,7 @@ import path from "node:path"
 import crypto from "node:crypto"
 
 const CONFIG_DIR = path.join(os.homedir(), ".gorgo")
-const CONFIG_FILE = path.join(CONFIG_DIR, "telemetry.json")
+const CONFIG_FILE = path.join(CONFIG_DIR, "config.json")
 
 interface Config {
   machine_id?: string

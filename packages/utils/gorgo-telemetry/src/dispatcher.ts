@@ -17,7 +17,7 @@ const SCOPE_VERSION = "0.1.0"
 const VERBOSE =
   process.env.GORGO_TELEMETRY_VERBOSE === "1" || process.env.GORGO_TELEMETRY_VERBOSE === "true"
 
-const DISPATCHER_KEY = Symbol.for("@gorgo/medusa-plugin-telemetry/dispatcher@v1")
+const DISPATCHER_KEY = Symbol.for("@gorgo/telemetry/dispatcher@v1")
 
 export interface DispatcherOptions {
   endpoint?: string

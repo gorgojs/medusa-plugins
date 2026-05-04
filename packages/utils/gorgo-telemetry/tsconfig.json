@@ -10,7 +10,6 @@
     "declaration": true,
     "sourceMap": true,
     "esModuleInterop": true,
-    "jsx": "react-jsx",
     "lib": ["ES2020", "DOM"],
     "types": ["node"]
   },

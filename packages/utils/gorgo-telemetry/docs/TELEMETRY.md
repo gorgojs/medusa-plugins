@@ -70,6 +70,6 @@ Telemetry is disabled automatically when variable is set. The file-based setting
 
 ## Source code
 
-This module is fully open source. The complete implementation is available at [`packages/utils/medusa-plugin-telemetry`](https://github.com/gorgojs/medusa-plugins/tree/main/packages/utils/medusa-plugin-telemetry) in the monorepo.
+This module is fully open source. The complete implementation is available at [`packages/utils/telemetry`](https://github.com/gorgojs/medusa-plugins/tree/main/packages/utils/telemetry) in the monorepo.
 
 All events are sent to `https://telemetry.gorgojs.com/batch`.

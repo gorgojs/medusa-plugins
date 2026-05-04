@@ -32,7 +32,7 @@ import type { TelemetryClientOptions } from "./types.js"
  *
  * @example
  * ```ts
- * import { createTelemetryClient } from "@gorgo/medusa-plugin-telemetry"
+ * import { createTelemetryClient } from "@gorgo/telemetry"
  *
  * const telemetry = createTelemetryClient({ packageDir: __dirname })
  * telemetry.track("plugin.started", { first_run: true, config_keys: ["terminalKey"] })

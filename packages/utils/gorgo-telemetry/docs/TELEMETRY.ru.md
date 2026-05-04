@@ -70,6 +70,6 @@ GORGO_DISABLE_TELEMETRY=true
 
 ## Исходный код
 
-Этот модуль полностью открыт. Вся реализация доступна в [`packages/utils/medusa-plugin-telemetry`](https://github.com/gorgojs/medusa-plugins/tree/main/packages/utils/medusa-plugin-telemetry) в монорепозитории.
+Этот модуль полностью открыт. Вся реализация доступна в [`packages/utils/telemetry`](https://github.com/gorgojs/medusa-plugins/tree/main/packages/utils/telemetry) в монорепозитории.
 
 Все события отправляются на `https://telemetry.gorgojs.com/batch`.

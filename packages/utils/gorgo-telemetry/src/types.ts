@@ -17,6 +17,7 @@ export interface EnvInfo {
   docker: boolean
   /** "production" | "development" | "test" */
   node_env: string
+  
   /** POSIX locale, e.g. "en_US.UTF-8" */
   locale: string
   /** IANA timezone, e.g. "Europe/Moscow" */
