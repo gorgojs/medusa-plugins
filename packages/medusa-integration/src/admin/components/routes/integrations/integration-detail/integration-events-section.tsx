@@ -13,7 +13,7 @@ import { sdk } from "../../../../lib/sdk"
 import { getFullDate, getRelativeDate } from "../../../../utils"
 import { Container } from "../../../common/container"
 import { Header } from "../../../common/header"
-import { MarketplaceHttpTypes } from "../../../../../types"
+import { IntegrationHttpTypes } from "../../../../../types"
 
 const PAGE_SIZE = 5
 
@@ -34,7 +34,7 @@ const EventsActivityItem = ({
   const { getFullDate, getRelativeDate } = useLocalDate()
 
   return (
-    <Link to={`/settings/marketplaces/events/${id}`}>
+    <Link to={`/settings/integrations/events/${id}`}>
       <div className="grid grid-cols-[20px_1fr] items-start gap-2">
         <div className="flex size-full flex-col items-center gap-y-0.5">
           <div className="flex size-5 items-center justify-center">
@@ -77,39 +77,39 @@ const useLocalDate = () => {
   return { getFullDate, getRelativeDate }
 }
 
-type MarketplaceEventsSectionProps = {
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
+type IntegrationEventsSectionProps = {
+  integration: IntegrationHttpTypes.AdminIntegration
 }
 
-export const MarketplaceEventsSection = ({
-  marketplace
-}: MarketplaceEventsSectionProps) => {
+export const IntegrationEventsSection = ({
+  integration
+}: IntegrationEventsSectionProps) => {
   const limit = PAGE_SIZE
 
   // TODO: reactor to listAndCount service factory method
-  const { data } = useQuery<MarketplaceHttpTypes.AdminMarketplaceEventListResponse>({
-    queryKey: ["admin-marketplace-events", { limit, marketplace_id: marketplace.id }],
+  const { data } = useQuery<IntegrationHttpTypes.AdminIntegrationEventListResponse>({
+    queryKey: ["admin-integration-events", { limit, integration_id: integration.id }],
     queryFn: () =>
-      sdk.client.fetch(`/admin/marketplaces/events`, {
+      sdk.client.fetch(`/admin/integrations/events`, {
         query: {
           limit,
           offset: 0,
-          marketplace_id: marketplace.id,
+          integration_id: integration.id,
           order: "-created_at"
         },
       }),
   })
 
-  const marketplace_events = (data?.marketplace_events ?? []) as MarketplaceHttpTypes.AdminMarketplaceEvent[]
+  const integration_events = (data?.integration_events ?? []) as IntegrationHttpTypes.AdminIntegrationEvent[]
   const total = data?.count ?? 0
-  const shown = marketplace_events.length
+  const shown = integration_events.length
 
-  const items = marketplace_events.map((marketplace_event: MarketplaceHttpTypes.AdminMarketplaceEvent) => ({
-    id: marketplace_event.id,
-    title: `${marketplace_event.action} ${marketplace_event.entity_type}`,
+  const items = integration_events.map((integration_event: IntegrationHttpTypes.AdminIntegrationEvent) => ({
+    id: integration_event.id,
+    title: `${integration_event.action} ${integration_event.entity_type}`,
     timestamp:
-      marketplace_event.started_at ??
-      marketplace_event.created_at,
+      integration_event.started_at ??
+      integration_event.created_at,
     children: null,
   }))
 
@@ -146,7 +146,7 @@ export const MarketplaceEventsSection = ({
             <Text weight="plus" as="span"> {total} </Text>
             events
           </Text>
-          <Link to={`/settings/marketplaces/events/`}>
+          <Link to={`/settings/integrations/events/`}>
             <Button size="small" variant="transparent">
               Show all
             </Button>

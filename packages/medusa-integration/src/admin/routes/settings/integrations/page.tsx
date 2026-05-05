@@ -1,28 +1,28 @@
 import { useToggleState } from "@medusajs/ui"
 import { defineRouteConfig } from "@medusajs/admin-sdk"
 import {
-  MarketplaceAddModal,
-  MarketplaceListTable,
-} from "../../../components/routes/marketplaces"
+  IntegrationAddModal,
+  IntegrationListTable,
+} from "../../../components/routes/integrations"
 import { SingleColumnPageWithWidgets } from "../../../components/layout"
 import { WidgetProvider } from "../../../providers/widget-provider"
 
-const MarketplaceList = () => {
+const IntegrationList = () => {
   const [stateModal, openModal, closeModal] = useToggleState()
 
   return (
     <WidgetProvider>
       <SingleColumnPageWithWidgets
         widgets={{
-          before: "marketplace.list.before",
-          after: "marketplace.list.after"
+          before: "integration.list.before",
+          after: "integration.list.after"
         }}
       >
-        <MarketplaceListTable
+        <IntegrationListTable
           stateModal={stateModal}
           openModal={openModal}
         />
-        <MarketplaceAddModal
+        <IntegrationAddModal
           stateModal={stateModal}
           closeModal={closeModal}
         />
@@ -32,12 +32,12 @@ const MarketplaceList = () => {
 }
 
 export const config = defineRouteConfig({
-  label: "Marketplaces"
+  label: "Integrations",
 })
 
 export const handle = {
-  breadcrumb: () => "Marketplaces",
+  breadcrumb: () => "Integrations",
 }
 
-export default MarketplaceList
+export default IntegrationList
 

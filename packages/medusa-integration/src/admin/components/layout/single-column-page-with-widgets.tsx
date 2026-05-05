@@ -1,11 +1,11 @@
 import { ReactNode } from "react"
-import { MarketplaceInjectionZone } from "../../../types"
+import { IntegrationInjectionZone } from "../../../types"
 import { useWidgets } from "../../providers/widget-provider"
 import { JsonViewSection } from "../common/json-view-section"
 
 export interface WidgetProps {
-  before: MarketplaceInjectionZone
-  after: MarketplaceInjectionZone
+  before: IntegrationInjectionZone
+  after: IntegrationInjectionZone
 }
 
 

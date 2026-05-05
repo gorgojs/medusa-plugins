@@ -16,17 +16,17 @@ import { useQuery } from "@tanstack/react-query"
 import { Header } from "../../../common/header"
 import { sdk } from "../../../../lib/sdk"
 import type {
-  AdminMarketplaceListResponse,
-  MarketplaceDTO
+  AdminIntegrationListResponse,
+  IntegrationDTO
 } from "../../../../../types"
-import { MarketplaceActionMenu } from "./integration-action-menu"
-import { MarketplaceEditModal } from "../marketplace-detail/marketplace-edit-modal"
+import { IntegrationActionMenu } from "./integration-action-menu"
+import { IntegrationEditModal } from "../integration-detail/integration-edit-modal"
 
 const PAGE_SIZE = 20
 
-const columnHelper = createDataTableColumnHelper<MarketplaceDTO>()
+const columnHelper = createDataTableColumnHelper<IntegrationDTO>()
 
-export const MarketplaceListTable = ({
+export const IntegrationListTable = ({
   stateModal,
   openModal,
 }: {
@@ -35,7 +35,7 @@ export const MarketplaceListTable = ({
 }) => {
   const navigate = useNavigate()
   const [editOpen, setEditOpen] = useState(false)
-  const [editingMarketplace] = useState<MarketplaceDTO | null>(null)
+  const [editingIntegration] = useState<IntegrationDTO | null>(null)
 
   const limit = PAGE_SIZE
 
@@ -49,12 +49,12 @@ export const MarketplaceListTable = ({
     [pagination.pageIndex, limit]
   )
 
-  const { data, isLoading } = useQuery<AdminMarketplaceListResponse>({
+  const { data, isLoading } = useQuery<AdminIntegrationListResponse>({
     queryFn: () =>
-      sdk.client.fetch(`/admin/marketplaces`, {
+      sdk.client.fetch(`/admin/integrations`, {
         query: { limit, offset },
       }),
-    queryKey: ["marketplaces", limit, offset],
+    queryKey: ["integrations", limit, offset],
   })
 
   const columns = [
@@ -94,8 +94,8 @@ export const MarketplaceListTable = ({
       header: "",
       cell: ({ row }) => (
         <div className="flex w-full justify-end" onClick={(e) => e.stopPropagation()}>
-          <MarketplaceActionMenu
-            marketplace={row.original}
+          <IntegrationActionMenu
+            integration={row.original}
             onEdit={() => navigate(row.original.id, { state: { openEdit: true } })}
           />
         </div>
@@ -106,7 +106,7 @@ export const MarketplaceListTable = ({
 
   const table = useDataTable({
     columns,
-    data: data?.marketplaces || [],
+    data: data?.integrations || [],
     getRowId: (row) => row.id,
     rowCount: data?.count || 0,
     isLoading,
@@ -124,7 +124,7 @@ export const MarketplaceListTable = ({
       <DataTable instance={table}>
         <Header
           key={stateModal ? "create-open" : "create-closed"}
-          title="Marketplaces"
+          title="Integrations"
           actions={[
             {
               type: "button",
@@ -137,7 +137,7 @@ export const MarketplaceListTable = ({
             {
               type: "button",
               props: {
-                children: "Add marketplace",
+                children: "Add integration",
                 variant: "secondary",
                 onClick: () => openModal(),
               },
@@ -148,9 +148,9 @@ export const MarketplaceListTable = ({
         <DataTable.Table />
         <DataTable.Pagination />
 
-        {editingMarketplace && (
-          <MarketplaceEditModal
-            marketplace={editingMarketplace}
+        {editingIntegration && (
+          <IntegrationEditModal
+            integration={editingIntegration}
             open={editOpen}
             setOpen={setEditOpen}
           />

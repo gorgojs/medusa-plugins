@@ -3,41 +3,41 @@ import {
   Link
 } from "react-router-dom"
 import type {
-  MarketplaceHttpTypes
+  IntegrationHttpTypes
 } from "../../../../../types"
 import { Container } from "../../../common/container"
 import { Header } from "../../../common/header"
 import { SectionRow } from "../../../common/section-row"
 import { formatDateTime } from "../../../../utils"
 
-type MarketplaceEventGeneralSectionProps = {
-  marketplace_event: MarketplaceHttpTypes.AdminMarketplaceEvent
+type IntegrationEventGeneralSectionProps = {
+  integration_event: IntegrationHttpTypes.AdminIntegrationEvent
 }
 
-export const MarketplaceEventGeneralSection = ({
-  marketplace_event
-}: MarketplaceEventGeneralSectionProps) => {
+export const IntegrationEventGeneralSection = ({
+  integration_event
+}: IntegrationEventGeneralSectionProps) => {
   return (
     <Container>
       <Header
         title={
           <div className="flex items-center gap-x-2">
             <span className="text-ui-fg-subtle text-small truncate">
-              {marketplace_event.id}
+              {integration_event.id}
             </span>
-            <Copy content={marketplace_event.id} />
+            <Copy content={integration_event.id} />
           </div>
         }
         actions={[]}
       />
 
-      <SectionRow title="Marketplace ID"
+      <SectionRow title="Integration ID"
         value={
-          marketplace_event?.marketplace_id
+          integration_event?.integration_id
             ? (
-              <Link to={`/settings/marketplaces/${marketplace_event.marketplace_id}`}>
+              <Link to={`/settings/integrations/${integration_event.integration_id}`}>
                 <Badge size="xsmall" color="grey">
-                  <Text size="xsmall" className="text-ui-fg-subtle">{marketplace_event.marketplace_id}</Text>
+                  <Text size="xsmall" className="text-ui-fg-subtle">{integration_event.integration_id}</Text>
                 </Badge>
               </Link>
             )
@@ -46,11 +46,11 @@ export const MarketplaceEventGeneralSection = ({
       />
       <SectionRow title="Correlation ID"
         value={
-          marketplace_event?.correlation_id
+          integration_event?.correlation_id
             ? (
-              <Link to={`/settings/marketplaces/events/${marketplace_event.correlation_id}`}>
+              <Link to={`/settings/integrations/events/${integration_event.correlation_id}`}>
                 <Badge size="xsmall" color="grey">
-                  <Text size="xsmall" className="text-ui-fg-subtle">{marketplace_event.correlation_id}</Text>
+                  <Text size="xsmall" className="text-ui-fg-subtle">{integration_event.correlation_id}</Text>
                 </Badge>
               </Link>
             )
@@ -59,10 +59,10 @@ export const MarketplaceEventGeneralSection = ({
       />
       <SectionRow title="Direction"
         value={
-          marketplace_event?.direction
+          integration_event?.direction
             ? (
               <Badge size="xsmall" color="grey">
-                <Text size="xsmall" className="text-ui-fg-subtle">{marketplace_event.direction}</Text>
+                <Text size="xsmall" className="text-ui-fg-subtle">{integration_event.direction}</Text>
               </Badge>
             )
             : "-"
@@ -70,10 +70,10 @@ export const MarketplaceEventGeneralSection = ({
       />
       <SectionRow title="Entity type"
         value={
-          marketplace_event?.entity_type
+          integration_event?.entity_type
             ? (
               <Badge size="xsmall" color="grey">
-                <Text size="xsmall" className="text-ui-fg-subtle">{marketplace_event.entity_type}</Text>
+                <Text size="xsmall" className="text-ui-fg-subtle">{integration_event.entity_type}</Text>
               </Badge>
             )
             : "-"
@@ -81,10 +81,10 @@ export const MarketplaceEventGeneralSection = ({
       />
       <SectionRow title="Action"
         value={
-          marketplace_event?.action
+          integration_event?.action
             ? (
               <Badge size="xsmall" color="grey">
-                <Text size="xsmall" className="text-ui-fg-subtle">{marketplace_event.action}</Text>
+                <Text size="xsmall" className="text-ui-fg-subtle">{integration_event.action}</Text>
               </Badge>
             )
             : "-"
@@ -92,11 +92,11 @@ export const MarketplaceEventGeneralSection = ({
       />
       <SectionRow
         title="Started"
-        value={marketplace_event.started_at ? formatDateTime(marketplace_event.started_at) : "-"}
+        value={integration_event.started_at ? formatDateTime(integration_event.started_at) : "-"}
       />
       <SectionRow
         title="Finished"
-        value={marketplace_event.finished_at ? formatDateTime(marketplace_event.finished_at) : "-"}
+        value={integration_event.finished_at ? formatDateTime(integration_event.finished_at) : "-"}
       />
     </Container>
   )

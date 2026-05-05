@@ -1,1 +1,1 @@
-export * from "./marketplace-list"
+export * from "./integration-list"

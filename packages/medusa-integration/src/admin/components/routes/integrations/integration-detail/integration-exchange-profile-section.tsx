@@ -3,28 +3,28 @@ import { useQuery } from "@tanstack/react-query"
 import { sdk } from "../../../../lib/sdk"
 import { Container } from "../../../common/container"
 import { SectionRow } from "../../../common/section-row"
-import { MarketplaceHttpTypes } from "../../../../../types"
+import { IntegrationHttpTypes } from "../../../../../types"
 import { Header } from "../../../common/header"
 import { Pencil } from "@medusajs/icons"
 import { useState } from "react"
-import MarketplaceExchangeProfileEditModal from "./integration-exchange-profile-edit-modal"
+import IntegrationExchangeProfileEditModal from "./integration-exchange-profile-edit-modal"
 import { useOrderTypes, useWarehouses } from "../../../../hooks/api/exchange-profiles"
 
-type MarketplaceExchangeProfileSectionProps = {
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
+type IntegrationExchangeProfileSectionProps = {
+  integration: IntegrationHttpTypes.AdminIntegration
 }
 
-export const MarketplaceExchangeProfileSection = ({
-  marketplace
-}: MarketplaceExchangeProfileSectionProps) => {
+export const IntegrationExchangeProfileSection = ({
+  integration
+}: IntegrationExchangeProfileSectionProps) => {
   const [editOpen, setEditOpen] = useState(false)
 
   const limit = 1
 
-  const { data, isLoading, error } = useQuery<MarketplaceHttpTypes.AdminMarketplaceExchangeProfileListResponse>({
-    queryKey: ["admin-marketplace-exchange-profiles", { limit, marketplace_id: marketplace.id }],
+  const { data, isLoading, error } = useQuery<IntegrationHttpTypes.AdminIntegrationExchangeProfileListResponse>({
+    queryKey: ["admin-integration-exchange-profiles", { limit, integration_id: integration.id }],
     queryFn: () =>
-      sdk.client.fetch(`/admin/marketplaces/${marketplace.id}/exchange-profiles`, {
+      sdk.client.fetch(`/admin/integrations/${integration.id}/exchange-profiles`, {
         query: {
           limit,
           offset: 0,
@@ -34,13 +34,13 @@ export const MarketplaceExchangeProfileSection = ({
   })
 
   const { warehouses: warehousesData = [], isLoading: isWarehousesLoading } = useWarehouses(
-    marketplace.id,
+    integration.id,
     { limit: 50 },
     { staleTime: 5 * 60 * 1000 }
   )
 
   const { orderTypes: orderTypesData = [], isLoading: isOrderTypesLoading } = useOrderTypes(
-    marketplace.id,
+    integration.id,
     {},
     { staleTime: 5 * 60 * 1000 }
   )
@@ -88,13 +88,13 @@ export const MarketplaceExchangeProfileSection = ({
         ]}
       />
       <Text size="small" className="text-ui-fg-subtle px-6 py-3">
-        No exchange profile found for this marketplace.
+        No exchange profile found for this integration.
       </Text>
 
-      <MarketplaceExchangeProfileEditModal
+      <IntegrationExchangeProfileEditModal
         exchangeProfile={{
           id: "",
-          marketplace_id: marketplace.id,
+          integration_id: integration.id,
           warehouse_id: "",
           order_type: "FBS",
         }}
@@ -142,7 +142,7 @@ export const MarketplaceExchangeProfileSection = ({
           )}
         />
         <SectionRow
-          title="Marketplace warehouse"
+          title="Integration warehouse"
           value={exchange_profile?.warehouse_id ? (
             <div>
               <Badge size="xsmall" color="grey">
@@ -178,7 +178,7 @@ export const MarketplaceExchangeProfileSection = ({
         />
       </Container>
       
-      <MarketplaceExchangeProfileEditModal
+      <IntegrationExchangeProfileEditModal
         exchangeProfile={exchange_profile}
         open={editOpen}
         setOpen={setEditOpen} 

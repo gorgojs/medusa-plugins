@@ -6,53 +6,53 @@ import {
 import { SingleColumnPageWithWidgets } from "../../../../../components/layout"
 import { WidgetProvider } from "../../../../../providers/widget-provider"
 import type {
-  AdminMarketplaceEventResponse
+  AdminIntegrationEventResponse
 } from "../../../../../../types"
 import { sdk } from "../../../../../lib/sdk"
 import { OpenJsonSection } from "../../../../../components/common/open-json-section"
-import { MarketplaceEventGeneralSection } from "../../../../../components/routes/marketplaces/marketplace-events-detail"
+import { IntegrationEventGeneralSection } from "../../../../../components/routes/integrations/integration-events-detail"
 
-const MarketplaceEventDetail = () => {
-  const { marketplace_event } = useLoaderData() as AdminMarketplaceEventResponse
+const IntegrationEventDetail = () => {
+  const { integration_event } = useLoaderData() as AdminIntegrationEventResponse
 
   return (
     <WidgetProvider>
       <SingleColumnPageWithWidgets
         widgets={{
-          before: "marketplace_event.list.before",
-          after: "marketplace_event.list.after"
+          before: "integration_event.list.before",
+          after: "integration_event.list.after"
         }}
-        data={marketplace_event}
+        data={integration_event}
         showJSON={true}
       >
-        <MarketplaceEventGeneralSection marketplace_event={marketplace_event} />
-        <OpenJsonSection title="Request" data={marketplace_event.request_data ?? {}} />
-        <OpenJsonSection title="Response" data={marketplace_event.response_data ?? {}} />
+        <IntegrationEventGeneralSection integration_event={integration_event} />
+        <OpenJsonSection title="Request" data={integration_event.request_data ?? {}} />
+        <OpenJsonSection title="Response" data={integration_event.response_data ?? {}} />
       </SingleColumnPageWithWidgets>
     </WidgetProvider>
   )
 }
 
 const Breadcrumb = (
-  props: UIMatch<AdminMarketplaceEventResponse>
+  props: UIMatch<AdminIntegrationEventResponse>
 ) => {
-  const { marketplace_event } = props.data || {}
-  if (!marketplace_event)
+  const { integration_event } = props.data || {}
+  if (!integration_event)
     return null
 
-  return <span>{marketplace_event.id}</span>
+  return <span>{integration_event.id}</span>
 }
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params
-  const response = await sdk.client.fetch(`/admin/marketplaces/events/${id}`)
+  const response = await sdk.client.fetch(`/admin/integrations/events/${id}`)
 
   return response
 }
 
 export const handle = {
-  breadcrumb: (match: UIMatch<AdminMarketplaceEventResponse>) => <Breadcrumb {...match} />,
+  breadcrumb: (match: UIMatch<AdminIntegrationEventResponse>) => <Breadcrumb {...match} />,
 }
 
-export default MarketplaceEventDetail
+export default IntegrationEventDetail
 

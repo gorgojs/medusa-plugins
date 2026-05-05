@@ -14,19 +14,19 @@ import { useState, useEffect } from "react"
 import { useLocation } from "react-router-dom"
 import { useMutation } from "@tanstack/react-query"
 import { sdk } from "../../../../lib/sdk"
-import { MarketplaceActionMenu } from "../marketplace-list/marketplace-action-menu"
-import { MarketplaceEditModal } from "./integration-edit-modal"
-import { MarketplaceHttpTypes } from "../../../../../types"
+import { IntegrationActionMenu } from "../integration-list/integration-action-menu"
+import { IntegrationEditModal } from "./integration-edit-modal"
+import { IntegrationHttpTypes } from "../../../../../types"
 import { Container } from "../../../common/container"
 import { SectionRow } from "../../../common/section-row"
 
-type MarketplaceGeneralSectionProps = {
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
+type IntegrationGeneralSectionProps = {
+  integration: IntegrationHttpTypes.AdminIntegration
 }
 
-export const MarketplaceGeneralSection = ({
-  marketplace
-}: MarketplaceGeneralSectionProps) => {
+export const IntegrationGeneralSection = ({
+  integration
+}: IntegrationGeneralSectionProps) => {
 
   const [editOpen, setEditOpen] = useState(false)
   const location = useLocation()
@@ -40,7 +40,7 @@ export const MarketplaceGeneralSection = ({
 
   const syncProducts = useMutation({
     mutationFn: async () => {
-      return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}/products/sync`, {
+      return sdk.client.fetch(`/admin/integrations/${integration.id}/products/sync`, {
         method: "POST",
         body: {
           ids: [],
@@ -51,7 +51,7 @@ export const MarketplaceGeneralSection = ({
 
   const syncOrders = useMutation({
     mutationFn: async () => {
-      return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}/orders/sync`, {
+      return sdk.client.fetch(`/admin/integrations/${integration.id}/orders/sync`, {
         method: "POST"
       })
     },
@@ -62,12 +62,12 @@ export const MarketplaceGeneralSection = ({
       <Container>
         <div className="px-6 py-4 flex items-center justify-between gap-x-4">
           <Heading level="h1" className="truncate">
-            {marketplace.title || "Untitled"}
+            {integration.title || "Untitled"}
           </Heading>
 
           <div className="flex items-center gap-x-3">
-            <StatusBadge color={marketplace.is_enabled ? "green" : "red"}>
-              {marketplace.is_enabled ? "Enabled" : "Disabled"}
+            <StatusBadge color={integration.is_enabled ? "green" : "red"}>
+              {integration.is_enabled ? "Enabled" : "Disabled"}
             </StatusBadge>
 
             <DropdownMenu>
@@ -96,8 +96,8 @@ export const MarketplaceGeneralSection = ({
               </DropdownMenu.Content>
             </DropdownMenu>
 
-            <MarketplaceActionMenu
-              marketplace={marketplace}
+            <IntegrationActionMenu
+              integration={integration}
               onEdit={() => setEditOpen(true)}
               redirectOnDelete
             />
@@ -106,9 +106,9 @@ export const MarketplaceGeneralSection = ({
         <SectionRow
           title="Provider ID"
           value={
-            marketplace.provider_id ? (
+            integration.provider_id ? (
               <Badge size="xsmall" color="grey">
-                {marketplace.provider_id}
+                {integration.provider_id}
               </Badge>
             ) : (
               "-"
@@ -118,9 +118,9 @@ export const MarketplaceGeneralSection = ({
         <SectionRow
           title="Sales channel"
           value={
-            marketplace.sales_channel?.name ? (
+            integration.sales_channel?.name ? (
               <Badge size="xsmall" color="grey">
-                {marketplace.sales_channel.name}
+                {integration.sales_channel.name}
               </Badge>
             ) : (
               "-"
@@ -129,8 +129,8 @@ export const MarketplaceGeneralSection = ({
         />
       </Container>
 
-      <MarketplaceEditModal
-        marketplace={marketplace}
+      <IntegrationEditModal
+        integration={integration}
         open={editOpen}
         setOpen={setEditOpen}
       />

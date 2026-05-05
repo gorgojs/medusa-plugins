@@ -1,9 +1,9 @@
 import React, { PropsWithChildren, createContext, useContext, useMemo } from "react"
 import widgetModule from "virtual:gorgo/widgets"
-import { MarketplaceInjectionZone, WidgetConfig } from "../../types"
+import { IntegrationInjectionZone, WidgetConfig } from "../../types"
 
 type WidgetApi = {
-  getWidgets: (zone: MarketplaceInjectionZone) => React.ComponentType<any>[]
+  getWidgets: (zone: IntegrationInjectionZone) => React.ComponentType<any>[]
 }
 
 const WidgetContext = createContext<WidgetApi | null>(null)
@@ -15,7 +15,7 @@ export const useWidgets = () => {
 }
 
 function buildWidgetMap(widgetConfigs: WidgetConfig[] = []) {
-  const map = new Map<MarketplaceInjectionZone, React.ComponentType<any>[]>()
+  const map = new Map<IntegrationInjectionZone, React.ComponentType<any>[]>()
   widgetConfigs.forEach((cfg) => {
     (cfg.zone || []).forEach((zone) => {
       const list = map.get(zone)
@@ -31,7 +31,7 @@ export function WidgetProvider({ children }: PropsWithChildren<{}>) {
 
   const api = useMemo<WidgetApi>(() => {
     return {
-      getWidgets: (zone: MarketplaceInjectionZone) => widgetMap.get(zone) || [],
+      getWidgets: (zone: IntegrationInjectionZone) => widgetMap.get(zone) || [],
     }
   }, [widgetMap])
 

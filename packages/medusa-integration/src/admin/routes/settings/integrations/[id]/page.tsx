@@ -5,36 +5,36 @@ import {
   useLoaderData
 } from "react-router-dom"
 import { sdk } from "../../../../lib/sdk"
-import type { AdminMarketplaceResponse } from "../../../../../types"
+import type { AdminIntegrationResponse } from "../../../../../types"
 import {
-  MarketplaceGeneralSection,
-  MarketplaceEventsSection
-} from "../../../../components/routes/marketplaces/marketplace-detail"
+  IntegrationGeneralSection,
+  IntegrationEventsSection
+} from "../../../../components/routes/integrations/integration-detail"
 import { TwoColumnPageWithWidgets } from "../../../../components/layout"
 import { WidgetProvider } from "../../../../providers/widget-provider"
-import { MarketplaceExchangeProfileSection } from "../../../../components/routes/marketplaces/marketplace-detail/marketplace-exchange-profile-section"
+import { IntegrationExchangeProfileSection } from "../../../../components/routes/integrations/integration-detail/integration-exchange-profile-section"
 
-const MarketplaceDetail = () => {
-  const { marketplace } = useLoaderData() as AdminMarketplaceResponse
+const IntegrationDetail = () => {
+  const { integration } = useLoaderData() as AdminIntegrationResponse
 
   return (
     <WidgetProvider>
       <TwoColumnPageWithWidgets
         widgets={{
-          before: "marketplace.details.before",
-          after: "marketplace.details.after",
-          sideBefore: "marketplace.details.side.before",
-          sideAfter: "marketplace.details.side.after",
+          before: "integration.details.before",
+          after: "integration.details.after",
+          sideBefore: "integration.details.side.before",
+          sideAfter: "integration.details.side.after",
         }}
-        data={marketplace}
+        data={integration}
         showJSON={true}
         firstCol={
-          <MarketplaceGeneralSection marketplace={marketplace} />
+          <IntegrationGeneralSection integration={integration} />
         }
         secondCol={(
           <div className="flex flex-col gap-y-6">
-            <MarketplaceExchangeProfileSection marketplace={marketplace}/>
-            <MarketplaceEventsSection marketplace={marketplace}/>
+            <IntegrationExchangeProfileSection integration={integration}/>
+            <IntegrationEventsSection integration={integration}/>
           </div>
         )}
       />
@@ -43,25 +43,25 @@ const MarketplaceDetail = () => {
 }
 
 const Breadcrumb = (
-  props: UIMatch<AdminMarketplaceResponse>
+  props: UIMatch<AdminIntegrationResponse>
 ) => {
-  const { marketplace } = props.data || {}
-  if (!marketplace)
+  const { integration } = props.data || {}
+  if (!integration)
     return null
 
-  return <span>{marketplace.title}</span>
+  return <span>{integration.title}</span>
 }
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const { id } = params
 
-  const response = await sdk.client.fetch(`/admin/marketplaces/${id}`)
+  const response = await sdk.client.fetch(`/admin/integrations/${id}`)
 
   return response
 }
 
 export const handle = {
-  breadcrumb: (match: UIMatch<AdminMarketplaceResponse>) => <Breadcrumb {...match} />,
+  breadcrumb: (match: UIMatch<AdminIntegrationResponse>) => <Breadcrumb {...match} />,
 }
 
-export default MarketplaceDetail
+export default IntegrationDetail

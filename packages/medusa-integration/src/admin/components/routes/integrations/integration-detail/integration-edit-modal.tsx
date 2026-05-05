@@ -14,28 +14,28 @@ import { useEffect } from "react"
 import type { HttpTypes } from "@medusajs/framework/types"
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query"
 import { useRevalidator } from "react-router-dom"
-import { MarketplaceHttpTypes } from "../../../../../types"
+import { IntegrationHttpTypes } from "../../../../../types"
 import { sdk } from "../../../../lib/sdk"
 
-type MarketplaceEditModalProps = {
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
+type IntegrationEditModalProps = {
+  integration: IntegrationHttpTypes.AdminIntegration
   open: boolean
   setOpen: (open: boolean) => void
 }
 
-const MarketplaceEditSchema = z.object({
+const IntegrationEditSchema = z.object({
   title: z.string().trim().min(1, "Min 1 chars").max(20, "Max 20 chars"),
   is_enabled: z.boolean(),
   sales_channel_id: z.string().optional(),
 })
 
-type MarketplaceEditValues = z.infer<typeof MarketplaceEditSchema>
+type IntegrationEditValues = z.infer<typeof IntegrationEditSchema>
 
-export const MarketplaceEditModal = ({
-  marketplace,
+export const IntegrationEditModal = ({
+  integration,
   open,
   setOpen,
-}: MarketplaceEditModalProps) => {
+}: IntegrationEditModalProps) => {
   const queryClient = useQueryClient()
   const { revalidate } = useRevalidator()
 
@@ -49,50 +49,50 @@ export const MarketplaceEditModal = ({
 
   const salesChannels = salesChannelsData?.sales_channels ?? []
 
-  const form = useForm<MarketplaceEditValues>({
+  const form = useForm<IntegrationEditValues>({
     defaultValues: {
-      title: String(marketplace.title),
-      is_enabled: Boolean(marketplace.is_enabled),
-      sales_channel_id: marketplace.sales_channel?.id ?? "",
+      title: String(integration.title),
+      is_enabled: Boolean(integration.is_enabled),
+      sales_channel_id: integration.sales_channel?.id ?? "",
     },
-    resolver: zodResolver(MarketplaceEditSchema),
+    resolver: zodResolver(IntegrationEditSchema),
     mode: "onSubmit",
   })
 
   const resetForm = () =>
     form.reset({
-      title: String(marketplace.title),
-      is_enabled: Boolean(marketplace.is_enabled),
-      sales_channel_id: marketplace.sales_channel?.id ?? "",
+      title: String(integration.title),
+      is_enabled: Boolean(integration.is_enabled),
+      sales_channel_id: integration.sales_channel?.id ?? "",
     })
 
   useEffect(() => {
     resetForm()
-  }, [open, marketplace.id, marketplace.title, marketplace.is_enabled])
+  }, [open, integration.id, integration.title, integration.is_enabled])
 
-  const updateMarketplace = useMutation({
-    mutationFn: async (values: MarketplaceEditValues) => {
-      return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`, {
+  const updateIntegration = useMutation({
+    mutationFn: async (values: IntegrationEditValues) => {
+      return sdk.client.fetch(`/admin/integrations/${integration.id}`, {
         method: "POST",
         body: {
           title: values.title.trim(),
-          provider_id: marketplace.provider_id,
+          provider_id: integration.provider_id,
           is_enabled: values.is_enabled,
-          credentials: marketplace.credentials ?? {},
-          settings: marketplace.settings ?? {},
+          credentials: integration.credentials ?? {},
+          settings: integration.settings ?? {},
           sales_channel_id: values.sales_channel_id || null,
         },
       })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["marketplaces"] })
+      queryClient.invalidateQueries({ queryKey: ["integrations"] })
       revalidate()
       resetForm()
       setOpen(false)
     },
   })
 
-  const onSubmit = form.handleSubmit((values) => updateMarketplace.mutate(values))
+  const onSubmit = form.handleSubmit((values) => updateIntegration.mutate(values))
 
   return (
     <Drawer
@@ -104,7 +104,7 @@ export const MarketplaceEditModal = ({
       <Drawer.Content>
         <form onSubmit={onSubmit}>
           <Drawer.Header>
-            <Drawer.Title>Edit Marketplace</Drawer.Title>
+            <Drawer.Title>Edit Integration</Drawer.Title>
           </Drawer.Header>
 
           <Drawer.Body>
@@ -112,7 +112,7 @@ export const MarketplaceEditModal = ({
               <div className="flex flex-col gap-y-2">
                 <Label size="small">Provider ID</Label>
                 <Text size="small" className="text-ui-fg-subtle">
-                  {marketplace.provider_id}
+                  {integration.provider_id}
                 </Text>
               </div>
 
@@ -170,7 +170,7 @@ export const MarketplaceEditModal = ({
                     Enabled
                   </Text>
                   <Text size="small">
-                    Specify whether the marketplace is enabled.
+                    Specify whether the integration is enabled.
                   </Text>
                 </div>
 
@@ -201,7 +201,7 @@ export const MarketplaceEditModal = ({
               Cancel
             </Button>
 
-            <Button size="small" type="submit" disabled={updateMarketplace.isPending}>
+            <Button size="small" type="submit" disabled={updateIntegration.isPending}>
               Save
             </Button>
           </Drawer.Footer>

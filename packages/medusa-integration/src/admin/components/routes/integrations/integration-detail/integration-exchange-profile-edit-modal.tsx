@@ -5,12 +5,12 @@ import { z } from "@medusajs/framework/zod"
 import { useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { HttpTypes } from "@medusajs/framework/types"
-import { MarketplaceHttpTypes } from "../../../../../types"
+import { IntegrationHttpTypes } from "../../../../../types"
 import { sdk } from "../../../../lib/sdk"
 import { useOrderTypes, useWarehouses } from "../../../../hooks/api/exchange-profiles"
 
-type MarketplaceExchangeProfileEditModalProps = {
-  exchangeProfile: MarketplaceHttpTypes.AdminMarketplaceExchangeProfile
+type IntegrationExchangeProfileEditModalProps = {
+  exchangeProfile: IntegrationHttpTypes.AdminIntegrationExchangeProfile
   open: boolean
   setOpen: (open: boolean) => void
 }
@@ -23,11 +23,11 @@ const ExchangeProfileEditSchema = z.object({
 
 type ExchangeProfileEditValues = z.infer<typeof ExchangeProfileEditSchema>
 
-export const MarketplaceExchangeProfileEditModal = ({
+export const IntegrationExchangeProfileEditModal = ({
   exchangeProfile,
   open,
   setOpen
-}: MarketplaceExchangeProfileEditModalProps) => {
+}: IntegrationExchangeProfileEditModalProps) => {
   const queryClient = useQueryClient()
 
   const { data: stockLocationData, isLoading: isStockLocationsLoading } = useQuery<HttpTypes.AdminStockLocationListResponse>({
@@ -39,12 +39,12 @@ export const MarketplaceExchangeProfileEditModal = ({
   const stockLocations = stockLocationData?.stock_locations ?? []
 
   const { warehouses: warehousesData, isLoading: isWarehousesLoading } = useWarehouses(
-    exchangeProfile.marketplace_id, { limit: 50 }, { enabled: open, staleTime: 5 * 60 * 1000 }
+    exchangeProfile.integration_id, { limit: 50 }, { enabled: open, staleTime: 5 * 60 * 1000 }
   )
   const warehouses = warehousesData ?? []
 
   const { orderTypes: orderTypesData, isLoading: isOrderTypesLoading } = useOrderTypes(
-    exchangeProfile.marketplace_id, {}, { enabled: open, staleTime: 5 * 60 * 1000 }
+    exchangeProfile.integration_id, {}, { enabled: open, staleTime: 5 * 60 * 1000 }
   )
   const orderTypes = orderTypesData ?? []
 
@@ -74,7 +74,7 @@ export const MarketplaceExchangeProfileEditModal = ({
   const updateExchangeProfile = useMutation({
     mutationFn: async (values: ExchangeProfileEditValues) => {
       return sdk.client.fetch(
-        `/admin/marketplaces/${exchangeProfile.marketplace_id}/exchange-profiles/${exchangeProfile.id}`,
+        `/admin/integrations/${exchangeProfile.integration_id}/exchange-profiles/${exchangeProfile.id}`,
         {
           method: "POST",
           body: {
@@ -87,7 +87,7 @@ export const MarketplaceExchangeProfileEditModal = ({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["admin-marketplace-exchange-profiles"],
+        queryKey: ["admin-integration-exchange-profiles"],
       })
       resetForm()
       setOpen(false)
@@ -146,7 +146,7 @@ export const MarketplaceExchangeProfileEditModal = ({
 
                {/* Warehouse selector */}
               <div className="flex flex-col gap-y-2">
-                <Label size="small">Marketplace Warehouse</Label>
+                <Label size="small">Integration Warehouse</Label>
                 <Controller
                   control={form.control}
                   name="warehouse_id"
@@ -240,4 +240,4 @@ export const MarketplaceExchangeProfileEditModal = ({
   )
 }
 
-export default MarketplaceExchangeProfileEditModal
+export default IntegrationExchangeProfileEditModal

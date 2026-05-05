@@ -1,18 +1,18 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query"
-import { MarketplaceHttpTypes } from "../../../types"
+import { IntegrationHttpTypes } from "../../../types"
 import { sdk } from "../../lib/sdk"
 
 export const useWarehouses = (
-  marketplace_id: string,
+  integration_id: string,
   query?: Record<string, unknown>,
   options?: Omit<
-    UseQueryOptions<MarketplaceHttpTypes.AdminMarketplaceWarehouseListResponse>,
+    UseQueryOptions<IntegrationHttpTypes.AdminIntegrationWarehouseListResponse>,
     "queryKey" | "queryFn"
   >
 ) => {
-  const { data, ...rest } = useQuery<MarketplaceHttpTypes.AdminMarketplaceWarehouseListResponse>({
+  const { data, ...rest } = useQuery<IntegrationHttpTypes.AdminIntegrationWarehouseListResponse>({
     queryKey: ["admin-warehouses"],
-    queryFn: () => sdk.client.fetch(`/admin/marketplaces/${marketplace_id}/warehouses`, { query }),
+    queryFn: () => sdk.client.fetch(`/admin/integrations/${integration_id}/warehouses`, { query }),
     ...options
   })
 
@@ -20,16 +20,16 @@ export const useWarehouses = (
 }
 
 export const useOrderTypes = (
-  marketplace_id: string,
+  integration_id: string,
   query?: Record<string, unknown>,
   options?: Omit<
-    UseQueryOptions<MarketplaceHttpTypes.AdminMarketplaceOrderTypeListResponse>,
+    UseQueryOptions<IntegrationHttpTypes.AdminIntegrationOrderTypeListResponse>,
     "queryKey" | "queryFn"
   >
 ) => {
-  const { data, ...rest } = useQuery<MarketplaceHttpTypes.AdminMarketplaceOrderTypeListResponse>({
+  const { data, ...rest } = useQuery<IntegrationHttpTypes.AdminIntegrationOrderTypeListResponse>({
     queryKey: ["admin-order-types"],
-    queryFn: () => sdk.client.fetch(`/admin/marketplaces/${marketplace_id}/order-types`, { query }),
+    queryFn: () => sdk.client.fetch(`/admin/integrations/${integration_id}/order-types`, { query }),
     ...options
   })
 

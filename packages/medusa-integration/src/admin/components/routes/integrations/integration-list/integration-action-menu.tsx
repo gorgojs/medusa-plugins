@@ -4,16 +4,16 @@ import { PencilSquare, Trash } from "@medusajs/icons"
 import { sdk } from "../../../../lib/sdk"
 import { useNavigate } from "react-router-dom"
 import { ActionMenu } from "../../../common/action-menu"
-import type { MarketplaceDTO } from "../../../../../types"
+import type { IntegrationDTO } from "../../../../../types"
 
 type Props = {
-  marketplace: MarketplaceDTO
+  integration: IntegrationDTO
   onEdit?: () => void
   redirectOnDelete?: boolean
 }
 
-export const MarketplaceActionMenu = ({
-  marketplace,
+export const IntegrationActionMenu = ({
+  integration,
   onEdit,
   redirectOnDelete,
 }: Props) => {
@@ -21,16 +21,16 @@ export const MarketplaceActionMenu = ({
   const queryClient = useQueryClient()
   const prompt = usePrompt()
 
-  const deleteMarketplace = useMutation({
+  const deleteIntegration = useMutation({
     mutationFn: async (id: string) => {
-      return sdk.client.fetch(`/admin/marketplaces/${id}`, {
+      return sdk.client.fetch(`/admin/integrations/${id}`, {
         method: "DELETE",
       })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["marketplaces"] })
-      toast.success("Marketplace connection deleted", {
-        description: `${marketplace.title} was successfully deleted`,
+      queryClient.invalidateQueries({ queryKey: ["integrations"] })
+      toast.success("Integration connection deleted", {
+        description: `${integration.title} was successfully deleted`,
       })
       if (redirectOnDelete) {
         navigate("..")
@@ -60,14 +60,14 @@ export const MarketplaceActionMenu = ({
                 onClick: async () => {
                   const confirmed = await prompt({
                     title: "Are you sure?",
-                    description: `You are about to delete the marketplace connection ${marketplace.title}. This action cannot be undone.`,
+                    description: `You are about to delete the integration connection ${integration.title}. This action cannot be undone.`,
                   })
 
                   if (confirmed) {
-                    deleteMarketplace.mutate(marketplace.id)
+                    deleteIntegration.mutate(integration.id)
                   }
                 },
-                disabled: deleteMarketplace.isPending,
+                disabled: deleteIntegration.isPending,
               },
             ],
           },

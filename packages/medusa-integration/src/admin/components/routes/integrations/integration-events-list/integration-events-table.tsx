@@ -13,14 +13,14 @@ import { sdk } from "../../../../lib/sdk"
 import { Header } from "../../../common/header"
 import { useNavigate } from "react-router-dom"
 import type {
-  AdminMarketplaceEventListResponse,
-  MarketplaceEventDTO
+  AdminIntegrationEventListResponse,
+  IntegrationEventDTO
 } from "../../../../../types"
 import { formatDateTime, jsonPreview } from "../../../../utils"
 
 const PAGE_SIZE = 20
 
-const columnHelper = createDataTableColumnHelper<MarketplaceEventDTO>()
+const columnHelper = createDataTableColumnHelper<IntegrationEventDTO>()
 
 const columns = [
   columnHelper.accessor("id", {
@@ -34,13 +34,13 @@ const columns = [
       )
     },
   }),
-  columnHelper.accessor("marketplace.id", {
-    header: "Marketplace ID",
+  columnHelper.accessor("integration_id", {
+    header: "Integration ID",
     cell: ({ getValue }) => {
-      const marketplace_id = getValue() as string
-      return marketplace_id ? (
+      const integration_id = getValue() as string
+      return integration_id ? (
         <Badge size="xsmall">
-          {marketplace_id}
+          {integration_id}
         </Badge>
       )
         : "-"
@@ -120,7 +120,7 @@ const columns = [
   }),
 ]
 
-export const MarketplaceEventsTable = () => {
+export const IntegrationEventsTable = () => {
   const navigate = useNavigate()
   const limit = PAGE_SIZE
 
@@ -131,20 +131,20 @@ export const MarketplaceEventsTable = () => {
 
   const offset = useMemo(() => pagination.pageIndex * limit, [pagination.pageIndex, limit])
 
-  const { data, isLoading } = useQuery<AdminMarketplaceEventListResponse>({
-    queryKey: ["admin-marketplace-events", limit, offset],
+  const { data, isLoading } = useQuery<AdminIntegrationEventListResponse>({
+    queryKey: ["admin-integration-events", limit, offset],
     queryFn: () =>
-      sdk.client.fetch(`/admin/marketplaces/events`, {
+      sdk.client.fetch(`/admin/integrations/events`, {
         query: { limit, offset },
       }),
   })
 
-  const marketplace_events = data?.marketplace_events ?? []
+  const integration_events = data?.integration_events ?? []
   const rowCount = data?.count ?? 0
 
   const table = useDataTable({
     columns,
-    data: marketplace_events,
+    data: integration_events,
     getRowId: (row) => row.id,
     rowCount: rowCount || 0,
     isLoading,

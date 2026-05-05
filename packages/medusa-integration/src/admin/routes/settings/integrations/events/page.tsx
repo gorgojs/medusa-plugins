@@ -1,18 +1,18 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
-import { MarketplaceEventsTable } from "../../../../components/routes/marketplaces/marketplace-events-list"
+import { IntegrationEventsTable } from "../../../../components/routes/integrations/integration-events-list"
 import { SingleColumnPageWithWidgets } from "../../../../components/layout"
 import { WidgetProvider } from "../../../../providers/widget-provider"
 
-const MarketplaceEventsList = () => {
+const IntegrationEventsList = () => {
   return (
     <WidgetProvider>
       <SingleColumnPageWithWidgets
         widgets={{
-          before: "marketplace_event.list.before",
-          after: "marketplace_event.list.after"
+          before: "integration_event.list.before",
+          after: "integration_event.list.after"
         }}
       >
-        <MarketplaceEventsTable />
+        <IntegrationEventsTable />
       </SingleColumnPageWithWidgets>
     </WidgetProvider>
   )
@@ -26,5 +26,5 @@ export const handle = {
   breadcrumb: () => "Events"
 }
 
-export default MarketplaceEventsList
+export default IntegrationEventsList
 

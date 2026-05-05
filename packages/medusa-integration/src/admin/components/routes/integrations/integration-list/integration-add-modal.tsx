@@ -14,19 +14,19 @@ import { z } from "@medusajs/framework/zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { sdk } from "../../../../lib/sdk"
-import type { AdminMarketplaceProviderList, AdminMarketplaceResponse } from "../../../../../types"
+import type { AdminIntegrationProviderList, AdminIntegrationResponse } from "../../../../../types"
 import type { HttpTypes } from "@medusajs/framework/types"
 
-const MarketplaceAddSchema = z.object({
+const IntegrationAddSchema = z.object({
   provider_id: z.string().min(1, "Provider is required"),
   sales_channel_id: z.string().min(1, "Provider is required"),
   title: z.string().trim().min(1, "Title is required").max(20, "Max 20 chars"),
   is_enabled: z.boolean().default(true),
 })
 
-type MarketplaceAddValues = z.infer<typeof MarketplaceAddSchema>
+type IntegrationAddValues = z.infer<typeof IntegrationAddSchema>
 
-export const MarketplaceAddModal = ({
+export const IntegrationAddModal = ({
   stateModal,
   closeModal,
 }: {
@@ -35,18 +35,18 @@ export const MarketplaceAddModal = ({
 }) => {
   const queryClient = useQueryClient()
 
-  const form = useForm<MarketplaceAddValues>({
+  const form = useForm<IntegrationAddValues>({
     defaultValues: { provider_id: "", sales_channel_id: "", title: "", is_enabled: true },
-    resolver: zodResolver(MarketplaceAddSchema),
+    resolver: zodResolver(IntegrationAddSchema),
     mode: "onSubmit",
   })
 
   const resetForm = () => form.reset({ provider_id: "", sales_channel_id: "", title: "", is_enabled: true })
 
   const { data: providersData, isLoading: isProvidersLoading } =
-    useQuery<AdminMarketplaceProviderList>({
-      queryKey: ["marketplace-providers"],
-      queryFn: () => sdk.client.fetch("/admin/marketplaces/providers"),
+    useQuery<AdminIntegrationProviderList>({
+      queryKey: ["integration-providers"],
+      queryFn: () => sdk.client.fetch("/admin/integrations/providers"),
       enabled: stateModal,
       staleTime: 5 * 60 * 1000,
     })
@@ -63,13 +63,13 @@ export const MarketplaceAddModal = ({
 
   const salesChannels = salesChannelsData?.sales_channels ?? []
 
-  const createMarketplace = useMutation<
-    AdminMarketplaceResponse,
+  const createIntegration = useMutation<
+    AdminIntegrationResponse,
     Error,
-    MarketplaceAddValues
+    IntegrationAddValues
   >({
     mutationFn: async (values) => {
-      return sdk.client.fetch<AdminMarketplaceResponse>("/admin/marketplaces", {
+      return sdk.client.fetch<AdminIntegrationResponse>("/admin/integrations", {
         method: "POST",
         body: {
           title: values.title.trim(),
@@ -82,8 +82,8 @@ export const MarketplaceAddModal = ({
       })
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["marketplaces"] })
-      toast.success("Marketplace connection added", {
+      queryClient.invalidateQueries({ queryKey: ["integrations"] })
+      toast.success("Integration connection added", {
         description: `${variables.title} was successfully added`
       })
       resetForm()
@@ -92,7 +92,7 @@ export const MarketplaceAddModal = ({
   })
 
   const onSubmit = form.handleSubmit((values) => {
-    createMarketplace.mutate(values)
+    createIntegration.mutate(values)
   })
 
   return (
@@ -113,9 +113,9 @@ export const MarketplaceAddModal = ({
             <div className="mx-auto flex w-full max-w-lg flex-col gap-y-6 px-2 py-8">
               <div className="flex flex-col gap-y-4">
                 <div className="flex flex-col gap-y-1">
-                  <Heading>Add marketplace connection</Heading>
+                  <Heading>Add integration connection</Heading>
                   <Text size="small" className="text-ui-fg-subtle">
-                    Create a new marketplace connection to sell your products on.
+                    Create a new integration connection to sell your products on.
                   </Text>
                 </div>
 
@@ -214,7 +214,7 @@ export const MarketplaceAddModal = ({
                     </Text>
 
                     <Text size="small" className="text-ui-fg-subtle">
-                      Specify whether the marketplace is enabled.
+                      Specify whether the integration is enabled.
                     </Text>
                   </div>
                   <Controller
@@ -249,7 +249,7 @@ export const MarketplaceAddModal = ({
               <Button
                 size="small"
                 type="submit"
-                disabled={createMarketplace.isPending}
+                disabled={createIntegration.isPending}
               >
                 Add
               </Button>
