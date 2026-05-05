@@ -1,8 +1,8 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { createOrderWorkflow } from "@medusajs/medusa/core-flows"
 import { MedusaOrder } from "../../../types"
-import { MARKETPLACE_MODULE } from "../../../modules/integration"
-import { MarketplaceModuleService } from "../../../modules/integration/services"
+import { INTEGRATION_MODULE } from "../../../modules/integration"
+import { IntegrationModuleService } from "../../../modules/integration/services"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import { CreateOrderDTO, OrderDTO } from "@medusajs/framework/types"
 import { Link } from "@medusajs/modules-sdk"
@@ -17,7 +17,7 @@ export const createOrdersStep = createStep(
   async (input: CreateOrdersStepInput, { container }) => {
     const { orders } = input
 
-    const marketplaceService = container.resolve<MarketplaceModuleService>(MARKETPLACE_MODULE)
+    const integrationService = container.resolve<IntegrationModuleService>(INTEGRATION_MODULE)
     const link = container.resolve<Link>(ContainerRegistrationKeys.LINK)
 
     if (!orders.length) {
@@ -27,10 +27,10 @@ export const createOrdersStep = createStep(
     const createOrdersResults: OrderDTO[] = []
 
     for (const order of orders) {
-      const { marketplace_order: marketplaceOrder, ...medusaOrder } = order
+      const { integration_order: integrationOrder, ...medusaOrder } = order
 
-      const [existingOrder] = await marketplaceService.listMarketplaceOrders({
-        order_id: marketplaceOrder.order_id
+      const [existingOrder] = await integrationService.listIntegrationOrders({
+        order_id: integrationOrder.order_id
       }, { take: 1 })
 
       if (existingOrder) {
@@ -43,13 +43,13 @@ export const createOrdersStep = createStep(
         }
       })
 
-      await marketplaceService.createMarketplaceOrders({
-        ...marketplaceOrder
+      await integrationService.createIntegrationOrders({
+        ...integrationOrder
       })
 
       await link.create({
-        marketplace: {
-          marketplace_order_id: marketplaceOrder.order_id
+        integration: {
+          integration_order_id: integrationOrder.order_id
         },
         order: {
           order_id: result.id

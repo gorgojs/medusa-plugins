@@ -1,12 +1,12 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import { RemoteQueryFunction } from "@medusajs/framework/types"
-import { MarketplaceModuleService } from "../../../modules/integration/services"
-import { MARKETPLACE_MODULE } from "../../../modules/integration"
+import { IntegrationModuleService } from "../../../modules/integration/services"
+import { INTEGRATION_MODULE } from "../../../modules/integration"
 
 export type UpdateExchangeProfileStepInput = {
   id: string
-  marketplace_id: string
+  integration_id: string
   warehouse_id?: string
   order_type?: string
   stock_location_id?: string
@@ -16,12 +16,12 @@ export const updateExchangeProfileStep = createStep(
   "update-exchange-profile",
   async (input: UpdateExchangeProfileStepInput, { container }) => {
     const query = container.resolve<RemoteQueryFunction>(ContainerRegistrationKeys.QUERY)
-    const service = container.resolve<MarketplaceModuleService>(MARKETPLACE_MODULE)
+    const service = container.resolve<IntegrationModuleService>(INTEGRATION_MODULE)
     console.log("input", input)
 
     const { data } = await query.graph({
-      entity: "marketplace_exchange_profile",
-      fields: ["id", "marketplace_id", "warehouse_id", "order_type", "stock_location.id"],
+      entity: "integration_exchange_profile",
+      fields: ["id", "integration_id", "warehouse_id", "order_type", "stock_location.id"],
       filters: {
         id: input.id
       }
@@ -29,7 +29,7 @@ export const updateExchangeProfileStep = createStep(
     const prevData = data[0]
     console.log("prevData", prevData)
 
-    const exchangeProfile = await service.updateMarketplaceExchangeProfiles(input)
+    const exchangeProfile = await service.updateIntegrationExchangeProfiles(input)
 
     return new StepResponse({
       exchangeProfile,
@@ -39,10 +39,10 @@ export const updateExchangeProfileStep = createStep(
   async (prevData, { container }) => {
     if (!prevData) return
 
-    const service = container.resolve<MarketplaceModuleService>(MARKETPLACE_MODULE)
-    service.updateMarketplaceExchangeProfiles({
+    const service = container.resolve<IntegrationModuleService>(INTEGRATION_MODULE)
+    service.updateIntegrationExchangeProfiles({
       id: prevData.id,
-      marketplace_id: prevData.marketplace_id,
+      integration_id: prevData.integration_id,
       warehouse_id: prevData.warehouse_id,
       order_type: prevData.order_type
     })

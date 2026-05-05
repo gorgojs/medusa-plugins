@@ -16,8 +16,8 @@ export const updateExchangeProfileWorkflow = createWorkflow(
       ( { input, stock_location_id } ) => !!input.stock_location_id  && !!stock_location_id && input.stock_location_id !== stock_location_id
     ).then(() => {
       dismissRemoteLinkStep([{
-        marketplace: { 
-          marketplace_exchange_profile_id: exchangeProfile.id
+        integration: { 
+          integration_exchange_profile_id: exchangeProfile.id
         },
         [Modules.STOCK_LOCATION]: {
           stock_location_id: stock_location_id
@@ -32,8 +32,8 @@ export const updateExchangeProfileWorkflow = createWorkflow(
       }
     ).then(() => {
       createRemoteLinkStep([{
-        marketplace: { 
-          marketplace_exchange_profile_id: exchangeProfile.id
+        integration: { 
+          integration_exchange_profile_id: exchangeProfile.id
         },
         [Modules.STOCK_LOCATION]: {
           stock_location_id: input.stock_location_id

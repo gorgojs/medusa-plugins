@@ -1,25 +1,25 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
-import { GetMarketplaceOrdersInput } from "../../../types"
-import { MARKETPLACE_MODULE } from "../../../modules/integration"
-import { MarketplaceModuleService } from "../../../modules/integration/services"
+import { GetIntegrationOrdersInput } from "../../../types"
+import { INTEGRATION_MODULE } from "../../../modules/integration"
+import { IntegrationModuleService } from "../../../modules/integration/services"
 
 export type GetOrdersByTypeStepInput = {
   providerId: string
-} & Omit<GetMarketplaceOrdersInput, "container">
+} & Omit<GetIntegrationOrdersInput, "container">
 
-export const getMarketplaceOrdersStep = createStep(
+export const getIntegrationOrdersStep = createStep(
   "get-orders-by-type",
   async (input: GetOrdersByTypeStepInput, { container }) => {
-    const marketplaceService: MarketplaceModuleService = container.resolve(MARKETPLACE_MODULE)
+    const integrationService: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
     const { providerId, orderType, ...data } = input
 
-    const marketplaceOrders = await marketplaceService.getMarketplaceOrders(providerId, {
+    const integrationOrders = await integrationService.getIntegrationOrders(providerId, {
       container,
       orderType,
       ...data
     })
     
-    return new StepResponse(marketplaceOrders)
+    return new StepResponse(integrationOrders)
   }
 )
 

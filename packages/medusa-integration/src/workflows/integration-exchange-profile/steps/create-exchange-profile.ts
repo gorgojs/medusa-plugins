@@ -1,23 +1,23 @@
 import { createStep, StepResponse } from "@medusajs/workflows-sdk"
-import { MarketplaceModuleService } from "../../../modules/integration/services"
-import { MARKETPLACE_MODULE } from "../../../modules/integration"
-import { MarketplaceExchangeProfileDTO } from "../../../types"
+import { IntegrationModuleService } from "../../../modules/integration/services"
+import { INTEGRATION_MODULE } from "../../../modules/integration"
+import { IntegrationExchangeProfileDTO } from "../../../types"
 
-export type CreateExchangeProfileStepInput = Omit<MarketplaceExchangeProfileDTO, "id" | "stock_location_id">
+export type CreateExchangeProfileStepInput = Omit<IntegrationExchangeProfileDTO, "id" | "stock_location_id">
 
 export const createExchangeProfileStep = createStep(
   "create-exchange-profile",
   async (input: CreateExchangeProfileStepInput, { container }) => {
-    const service = container.resolve<MarketplaceModuleService>(MARKETPLACE_MODULE)
+    const service = container.resolve<IntegrationModuleService>(INTEGRATION_MODULE)
 
-    const exchangeProfile = await service.createMarketplaceExchangeProfiles(input)
+    const exchangeProfile = await service.createIntegrationExchangeProfiles(input)
     
     return new StepResponse(exchangeProfile, exchangeProfile.id)
   },
   async (id, { container }) => {
     if (!id) return
 
-    const service = container.resolve<MarketplaceModuleService>(MARKETPLACE_MODULE)
-    service.deleteMarketplaceExchangeProfiles(id)
+    const service = container.resolve<IntegrationModuleService>(INTEGRATION_MODULE)
+    service.deleteIntegrationExchangeProfiles(id)
   }
 )

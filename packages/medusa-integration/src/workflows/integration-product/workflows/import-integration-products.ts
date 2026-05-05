@@ -4,45 +4,45 @@ import {
   WorkflowResponse
 } from "@medusajs/framework/workflows-sdk"
 import {
-  getMarketplaceProductsStep,
+  getIntegrationProductsStep,
   importProductsStep,
   mapToMedusaProductsStep
 } from "../steps"
-import { logMarketplaceEventWorkflow } from "../../integration-event"
-import { ImportMarketplaceProductsWorkflowInput } from "../../../types"
+import { logIntegrationEventWorkflow } from "../../integration-event"
+import { ImportIntegrationProductsWorkflowInput } from "../../../types"
 
-export const importMarketplaceProductsWorkflowId = "import-marketplace-products"
+export const importIntegrationProductsWorkflowId = "import-integration-products"
 
-export const importMarketplaceProductsWorkflow = createWorkflow(
-  importMarketplaceProductsWorkflowId,
-  (input: ImportMarketplaceProductsWorkflowInput) => {   
-    const marketplace = input.marketplace
+export const importIntegrationProductsWorkflow = createWorkflow(
+  importIntegrationProductsWorkflowId,
+  (input: ImportIntegrationProductsWorkflowInput) => {   
+    const integration = input.integration
 
-    const marketplaceProducts = getMarketplaceProductsStep({
-      providerId: marketplace.provider_id,
-      marketplace,
+    const integrationProducts = getIntegrationProductsStep({
+      providerId: integration.provider_id,
+      integration,
       ids: input.ids
     })
     const products = mapToMedusaProductsStep({
-      providerId: marketplace.provider_id,
-      marketplace,
-      marketplaceProducts,
+      providerId: integration.provider_id,
+      integration,
+      integrationProducts,
     })
     
     const startedAt = transform({}, () => new Date())
     const importResult = importProductsStep({
-      providerId: marketplace.provider_id,
-      marketplace,
+      providerId: integration.provider_id,
+      integration,
       products
     })
     const finishedAt = transform({}, () => new Date())
-    const logResult = logMarketplaceEventWorkflow.runAsStep({
+    const logResult = logIntegrationEventWorkflow.runAsStep({
       input: {
-        marketplaceId: input.marketplace.id,
+        integrationId: input.integration.id,
         startedAt,
         finishedAt,
         action: "UPDATE",
-        direction: "MARKETPLACE_TO_MEDUSA",
+        direction: "INTEGRATION_TO_MEDUSA",
         entityType: "PRODUCT",
         requestData: input,
         responseData: importResult,

@@ -2,26 +2,26 @@ import {
   createStep,
   StepResponse
 } from "@medusajs/workflows-sdk"
-import { MarketplaceModuleService } from "../../../modules/integration/services"
-import { MARKETPLACE_MODULE } from "../../../modules/integration"
-import { MapToMarketplaceProductsInput, MapToMedusaProductsInput } from "../../../types"
+import { IntegrationModuleService } from "../../../modules/integration/services"
+import { INTEGRATION_MODULE } from "../../../modules/integration"
+import { MapToIntegrationProductsInput, MapToMedusaProductsInput } from "../../../types"
 
-export type MapToMarketplaceProductsStepInput = {
+export type MapToIntegrationProductsStepInput = {
   providerId: string
-} & Omit<MapToMarketplaceProductsInput, "container">
+} & Omit<MapToIntegrationProductsInput, "container">
 
-export const mapToMarketplaceProductsStep = createStep(
-  "map-to-marketplace-products",
-  async (input: MapToMarketplaceProductsStepInput, { container }) => {
-    const marketplaceService: MarketplaceModuleService = container.resolve(MARKETPLACE_MODULE)
+export const mapToIntegrationProductsStep = createStep(
+  "map-to-integration-products",
+  async (input: MapToIntegrationProductsStepInput, { container }) => {
+    const integrationService: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
     const { providerId, ...data } = input
 
-    const marketplaceProducts = await marketplaceService.mapToMarketplaceProducts(providerId, {
+    const integrationProducts = await integrationService.mapToIntegrationProducts(providerId, {
       container,
       ...data
     })
-    
-    return new StepResponse(marketplaceProducts)
+
+    return new StepResponse(integrationProducts)
   }
 )
 
@@ -32,10 +32,10 @@ export type MapToMedusaProductsStepInput = {
 export const mapToMedusaProductsStep = createStep(
   "map-to-medusa-products",
   async (input: MapToMedusaProductsStepInput, { container }) => {
-    const marketplaceService: MarketplaceModuleService = container.resolve(MARKETPLACE_MODULE)
+    const integrationService: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
     const { providerId, ...data } = input
 
-    const products = await marketplaceService.mapToMedusaProducts(providerId, {
+    const products = await integrationService.mapToMedusaProducts(providerId, {
       container,
       ...data
     })

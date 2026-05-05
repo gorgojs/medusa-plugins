@@ -16,8 +16,8 @@ export const createExchangeProfileWorkflow = createWorkflow(
       (input) => !!input.stock_location_id
     ).then(() => {
       createRemoteLinkStep([{
-        marketplace: { 
-          marketplace_exchange_profile_id: result.id
+        integration: { 
+          integration_exchange_profile_id: result.id
         },
         [Modules.STOCK_LOCATION]: {
           stock_location_id: input.stock_location_id

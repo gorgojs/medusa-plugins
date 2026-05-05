@@ -1,24 +1,24 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
-import { MarketplaceDTO, MedusaOrder } from "../../../types"
-import { MARKETPLACE_MODULE } from "../../../modules/integration"
-import { MarketplaceModuleService } from "../../../modules/integration/services"
+import { IntegrationDTO, MedusaOrder } from "../../../types"
+import { INTEGRATION_MODULE } from "../../../modules/integration"
+import { IntegrationModuleService } from "../../../modules/integration/services"
 
 export type MapToMedusaOrdersStepInput = {
-  marketplace: MarketplaceDTO
+  integration: IntegrationDTO
   providerId: string
-  marketplaceOrders: any[]
+  integrationOrders: any[]
 }
 
 export const mapToMedusaOrdersStep = createStep(
   "map-to-medusa-orders",
   async (input: MapToMedusaOrdersStepInput, { container }) => {
-    const marketplaceService: MarketplaceModuleService = container.resolve(MARKETPLACE_MODULE)
-    const { marketplace, providerId, marketplaceOrders } = input
+    const integrationService: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
+    const { integration, providerId, integrationOrders } = input
 
-    const orders = await marketplaceService.mapToMedusaOrders(providerId, {
+    const orders = await integrationService.mapToMedusaOrders(providerId, {
       container,
-      marketplace,
-      marketplaceOrders: marketplaceOrders
+      integration,
+      integrationOrders: integrationOrders
     })
 
     return new StepResponse<MedusaOrder[]>(orders)

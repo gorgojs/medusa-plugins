@@ -2,9 +2,9 @@ import {
   createStep,
   StepResponse
 } from "@medusajs/workflows-sdk"
-import { MARKETPLACE_MODULE } from "../../../modules/integration"
-import { MarketplaceModuleService } from "../../../modules/integration/services"
-import { GetMarketplaceProductsInput, GetProductsInput } from "../../../types"
+import { INTEGRATION_MODULE } from "../../../modules/integration"
+import { IntegrationModuleService } from "../../../modules/integration/services"
+import { GetIntegrationProductsInput, GetProductsInput } from "../../../types"
 
 export type GetProductsStepInput = {
   providerId: string
@@ -13,10 +13,10 @@ export type GetProductsStepInput = {
 export const getProductsStep = createStep(
   "get-products",
   async (input: GetProductsStepInput, { container }) => {
-    const marketplaceService: MarketplaceModuleService = container.resolve(MARKETPLACE_MODULE)
+    const integrationService: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
     const { providerId, ...data } = input
 
-    const products = await marketplaceService.getProducts(providerId, {
+    const products = await integrationService.getProducts(providerId, {
       container,
       ...data
     })
@@ -25,17 +25,17 @@ export const getProductsStep = createStep(
   }
 )
 
-export type GetMarketplaceProductsStepInput = {
+export type GetIntegrationProductsStepInput = {
   providerId: string
-} & Omit<GetMarketplaceProductsInput, "container">
+} & Omit<GetIntegrationProductsInput, "container">
 
-export const getMarketplaceProductsStep = createStep(
-  "get-marketplace-products",
-  async (input: GetMarketplaceProductsStepInput, { container }) => {
-    const marketplaceService: MarketplaceModuleService = container.resolve(MARKETPLACE_MODULE)
+export const getIntegrationProductsStep = createStep(
+  "get-integration-products",
+  async (input: GetIntegrationProductsStepInput, { container }) => {
+    const integrationService: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
     const { providerId, ...data } = input
 
-    const products = await marketplaceService.getMarketplaceProducts(providerId, {
+    const products = await integrationService.getIntegrationProducts(providerId, {
       container,
       ...data
     })

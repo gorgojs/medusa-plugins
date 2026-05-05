@@ -2,8 +2,8 @@ import {
   createStep,
   StepResponse
 } from "@medusajs/workflows-sdk"
-import { MARKETPLACE_MODULE } from "../../../modules/integration"
-import { MarketplaceModuleService } from "../../../modules/integration/services"
+import { INTEGRATION_MODULE } from "../../../modules/integration"
+import { IntegrationModuleService } from "../../../modules/integration/services"
 import { ExportProductsInput } from "../../../types"
 
 export type ExportProductsStepInput = {
@@ -13,10 +13,10 @@ export type ExportProductsStepInput = {
 export const exportProductsStep = createStep(
   "export-products",
   async (input: ExportProductsStepInput, { container }) => {
-    const marketplaceService: MarketplaceModuleService = container.resolve(MARKETPLACE_MODULE)
+    const integrationService: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
     const { providerId, ...data } = input
 
-    const result = await marketplaceService.exportProducts(providerId, {
+    const result = await integrationService.exportProducts(providerId, {
       container,
       ...data
     })

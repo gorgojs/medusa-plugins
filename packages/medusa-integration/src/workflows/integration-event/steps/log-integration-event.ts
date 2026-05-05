@@ -2,16 +2,16 @@ import {
   createStep,
   StepResponse
 } from "@medusajs/workflows-sdk"
-import { MARKETPLACE_MODULE } from "../../../modules/integration"
+import { INTEGRATION_MODULE } from "../../../modules/integration"
 import { LogEventInput } from "../../../types"
-import { MarketplaceModuleService } from "../../../modules/integration/services"
+import { IntegrationModuleService } from "../../../modules/integration/services"
 
-export type LogMarketplaceEventStepInput = LogEventInput
+export type LogIntegrationEventStepInput = LogEventInput
 
-export const logMarketplaceEventStep = createStep(
-  "log-marketplace-event",
-  async (input: LogMarketplaceEventStepInput, { container }) => {
-    const service = container.resolve<MarketplaceModuleService>(MARKETPLACE_MODULE)
+export const logIntegrationEventStep = createStep(
+  "log-integration-event",
+  async (input: LogIntegrationEventStepInput, { container }) => {
+    const service = container.resolve<IntegrationModuleService>(INTEGRATION_MODULE)
     const result = await service.logEvent(input)
     
     return new StepResponse(result)

@@ -5,43 +5,43 @@ import {
 } from "@medusajs/framework/workflows-sdk"
 import {
   getProductsStep,
-  mapToMarketplaceProductsStep,
+  mapToIntegrationProductsStep,
   exportProductsStep,
 } from "../steps"
-import { logMarketplaceEventWorkflow } from "../../integration-event"
-import { ExportMarketplaceProductsWorkflowInput } from "../../../types"
+import { logIntegrationEventWorkflow } from "../../integration-event"
+import { ExportIntegrationProductsWorkflowInput } from "../../../types"
 
-export const exportMarketplaceProductsWorkflowId = "export-marketplace-products"
+export const exportIntegrationProductsWorkflowId = "export-integration-products"
 
-export const exportMarketplaceProductsWorkflow = createWorkflow(
-  exportMarketplaceProductsWorkflowId,
-  (input: ExportMarketplaceProductsWorkflowInput) => {
-    const marketplace = input.marketplace
+export const exportIntegrationProductsWorkflow = createWorkflow(
+  exportIntegrationProductsWorkflowId,
+  (input: ExportIntegrationProductsWorkflowInput) => {
+    const integration = input.integration
 
     const products = getProductsStep({
-      providerId: marketplace.provider_id,
-      marketplace,
+      providerId: integration.provider_id,
+      integration,
       ids: input.ids
     })
-    const marketplaceProducts = mapToMarketplaceProductsStep({
-      providerId: marketplace.provider_id,
-      marketplace,
+    const integrationProducts = mapToIntegrationProductsStep({
+      providerId: integration.provider_id,
+      integration,
       products
     })
     const startedAt = transform({}, () => new Date())
     const exportResult = exportProductsStep({
-      providerId: marketplace.provider_id,
-      marketplace,
-      marketplaceProducts,
+      providerId: integration.provider_id,
+      integration,
+      integrationProducts,
     })
     const finishedAt = transform({}, () => new Date())
-    const logResult = logMarketplaceEventWorkflow.runAsStep({
+    const logResult = logIntegrationEventWorkflow.runAsStep({
       input: {
-        marketplaceId: input.marketplace.id,
+        integrationId: input.integration.id,
         startedAt,
         finishedAt,
         action: "UPDATE",
-        direction: "MEDUSA_TO_MARKETPLACE",
+        direction: "MEDUSA_TO_INTEGRATION",
         entityType: "PRODUCT",
         requestData: input,
         responseData: exportResult
