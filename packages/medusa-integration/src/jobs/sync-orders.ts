@@ -1,30 +1,30 @@
 import { MedusaContainer } from "@medusajs/framework/types"
-import { MARKETPLACE_MODULE } from "../modules/integration"
-import { MarketplaceModuleService } from "../modules/integration/services"
-import { importMarketplaceOrdersWorkflow } from "../workflows/integration-orders"
+import { INTEGRATION_MODULE } from "../modules/integration"
+import { IntegrationModuleService } from "../modules/integration/services"
+import { importIntegrationOrdersWorkflow } from "../workflows/integration-orders"
 
 export default async function (container: MedusaContainer) {
   const logger = container.resolve("logger")
-  const marketplaceService = container.resolve<MarketplaceModuleService>(MARKETPLACE_MODULE)
+  const integrationService = container.resolve<IntegrationModuleService>(INTEGRATION_MODULE)
 
-  const marketplaces = await marketplaceService.listMarketplaces({ is_enabled: true })
+  const integrations = await integrationService.listIntegrations({ is_enabled: true })
 
-  for (const marketplace of marketplaces) {
+  for (const integration of integrations) {
     try {
-      const { result } = await importMarketplaceOrdersWorkflow(container).run({
+      const { result } = await importIntegrationOrdersWorkflow(container).run({
         input: { 
-          marketplace,
-          orderType: marketplace.exchange_profiles[0]?.order_type
+          integration,
+          orderType: integration.exchange_profiles[0]?.order_type
         }
       })
-      logger.info(`Imported orders from marketplace ${marketplace.id}: ${JSON.stringify(result, null, 2)}`)
+      logger.info(`Imported orders from integration ${integration.id}: ${JSON.stringify(result, null, 2)}`)
     } catch (e) {
-      logger.error(`Failed to import orders from marketplace ${marketplace.id}: ${e.message}`)
+      logger.error(`Failed to import orders from integration ${integration.id}: ${e.message}`)
     }
   }
 }
 
 export const config = {
-  name: "sync-marketplace-orders",
+  name: "sync-integration-orders",
   schedule: "0 0 * * *", // change to desired schedule
 }

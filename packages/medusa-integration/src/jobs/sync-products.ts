@@ -1,12 +1,12 @@
 import { MedusaContainer } from "@medusajs/framework/types"
-import { syncMarketplaceProductsWorkflow } from "../workflows/integration-product"
+import { syncIntegrationProductsWorkflow } from "../workflows/integration-product"
 
 export default async function (container: MedusaContainer) {
   const logger = container.resolve("logger")
 
-  const { result } = await syncMarketplaceProductsWorkflow(container).run({
+  const { result } = await syncIntegrationProductsWorkflow(container).run({
     input: { 
-      marketplace: {
+      integration: {
         id: "",
         title: "",
         provider_id: "mp_system_default",
@@ -18,10 +18,10 @@ export default async function (container: MedusaContainer) {
       }
     }
   })
-  logger.info(`Exported products to marketplace: ${JSON.stringify(result, null, 2)}`)
+  logger.info(`Exported products to integration: ${JSON.stringify(result, null, 2)}`)
 }
 
 export const config = {
-  name: "sync-marketplace-products",
+  name: "sync-integration-products",
   schedule: "0 0 * * *", // change to * * * * * for debugging
 }
