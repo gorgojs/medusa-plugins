@@ -74,8 +74,8 @@ export const pluginCategories: PluginCategory[] = [
           ru: "ApiShip",
         },
         description: {
-          en: "Ship orders with ApiShip",
-          ru: "Отправляйте заказы с помощью ApiShip",
+          en: "Ship orders with multiple providers via ApiShip",
+          ru: "Отправляйте заказы различными способами через ApiShip",
         },
         icon: <ApishipIcon />,
       },
@@ -114,7 +114,7 @@ export const pluginCategories: PluginCategory[] = [
     },
     description: {
       en: "Plugins for integrating third-party services and extending functionality.",
-      ru: "Плагины интеграции сторонних сервисов и расширенния функциональности.",
+      ru: "Плагины интеграции различных сервисов и расширения функциональности.",
     },
     plugins: [
       {
