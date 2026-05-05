@@ -1,4 +1,4 @@
-import { AbstractMarketplaceProvider } from "@gorgo/medusa-marketplace/modules/marketplace/utils"
+import { AbstractIntegrationProvider } from "@gorgo/medusa-integration/modules/integration/utils"
 import { V3FbsPosting, V3ImportProductsRequestItem } from "../../../lib/ozon-seller-api"
 import { productApi, withAuth, warehousesApi, fbsApi } from "../../../lib/ozon-client"
 import { MedusaContainer } from "@medusajs/framework"
@@ -7,31 +7,31 @@ import {
   ExportProductsOutput,
   GetProductsInput,
   GetProductsOutput,
-  GetMarketplaceProductsInput,
-  GetMarketplaceProductsOutput,
+  GetIntegrationProductsInput,
+  GetIntegrationProductsOutput,
   MapToMedusaProductsInput,
   MapToMedusaProductsOutput,
   ImportProductsInput,
   ImportProductsOutput,
-  MapToMarketplaceProductsInput,
-  MapToMarketplaceProductsOutput,
-  GetMarketplaceWarehousesInput,
-  GetMarketplaceWarehousesOutput,
-  GetMarketplaceOrdersInput,
-  GetMarketplaceOrdersOutput,
-  GetMarketplaceOrderTypesInput,
-  GetMarketplaceOrderTypesOutput,
+  MapToIntegrationProductsInput,
+  MapToIntegrationProductsOutput,
+  GetIntegrationWarehousesInput,
+  GetIntegrationWarehousesOutput,
+  GetIntegrationOrdersInput,
+  GetIntegrationOrdersOutput,
+  GetIntegrationOrderTypesInput,
+  GetIntegrationOrderTypesOutput,
   MapToMedusaOrdersInput,
   MapToMedusaOrdersOutput
-} from "@gorgo/medusa-marketplace/types"
+} from "@gorgo/medusa-integration/types"
 import {
-  importMarketplaceProductsWorkflow,
-  exportMarketplaceProductsWorkflow
+  importIntegrationProductsWorkflow,
+  exportIntegrationProductsWorkflow
 } from "../../../workflows/provider"
 import { mapObject } from "../utils"
-import { MarketplaceOzonCredentialsType, ORDER_TYPES } from "../types"
+import { IntegrationOzonCredentialsType, ORDER_TYPES } from "../types"
 
-export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
+export class OzonIntegrationProvider extends AbstractIntegrationProvider {
   static identifier = "ozon"
 
   async getProducts(data: GetProductsInput): Promise<GetProductsOutput> {
@@ -64,26 +64,26 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
   }
 
   async importProducts(data: ImportProductsInput): Promise<ImportProductsOutput> {
-    const { container, marketplace, ...input } = data
+    const { container, integration, ...input } = data
 
-    const { result } = await importMarketplaceProductsWorkflow(container).run({ input: { credentials: marketplace.credentials as MarketplaceOzonCredentialsType, ...input } })
+    const { result } = await importIntegrationProductsWorkflow(container).run({ input: { credentials: integration.credentials as IntegrationOzonCredentialsType, ...input } })
 
     return result
   }
 
   async exportProducts(data: ExportProductsInput): Promise<ExportProductsOutput> {
-    const { container, marketplace, marketplaceProducts } = data
-    const { result } = await exportMarketplaceProductsWorkflow(container).run({
+    const { container, integration, integrationProducts } = data
+    const { result } = await exportIntegrationProductsWorkflow(container).run({
       input: {
-        credentials: marketplace.credentials as MarketplaceOzonCredentialsType,
-        create: marketplaceProducts as V3ImportProductsRequestItem[]
+        credentials: integration.credentials as IntegrationOzonCredentialsType,
+        create: integrationProducts as V3ImportProductsRequestItem[]
       }
     })
 
     return result
   }
 
-  async getMarketplaceProducts(data: GetMarketplaceProductsInput): Promise<GetMarketplaceProductsOutput> {
+  async getIntegrationProducts(data: GetIntegrationProductsInput): Promise<GetIntegrationProductsOutput> {
     const { container, ...input } = data
 
     const query = await container.resolve("query")
@@ -113,12 +113,12 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
     return products
   }
 
-  async mapToMarketplaceProducts(data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput> {
-    const marketplace = data.marketplace
-    const rawSettings = marketplace?.settings || {}
+  async mapToIntegrationProducts(data: MapToIntegrationProductsInput): Promise<MapToIntegrationProductsOutput> {
+    const integration = data.integration
+    const rawSettings = integration?.settings || {}
     const mapping: Record<string, any> = rawSettings.mapping || {}
 
-    const marketplaceProducts: V3ImportProductsRequestItem[] = []
+    const integrationProducts: V3ImportProductsRequestItem[] = []
     const products = data.products
 
     for (const ruleId of Object.keys(mapping)) {
@@ -258,19 +258,19 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
 
           ozonItem.type_id = typeId.type_id
           ozonItem.description_category_id = descriptionCategoryId.description_category_id
-          marketplaceProducts.push(ozonItem)
+          integrationProducts.push(ozonItem)
         })
       })
     }
 
-    return { create: marketplaceProducts }
+    return { create: integrationProducts }
   }
 
-  async getMarketplaceWarehouses(data: GetMarketplaceWarehousesInput): Promise<GetMarketplaceWarehousesOutput> {
-    const { marketplace } = data
+  async getIntegrationWarehouses(data: GetIntegrationWarehousesInput): Promise<GetIntegrationWarehousesOutput> {
+    const { integration } = data
 
     const { data: warehouses } = await warehousesApi.warehouseListV2(
-      withAuth(marketplace.credentials as MarketplaceOzonCredentialsType, {
+      withAuth(integration.credentials as IntegrationOzonCredentialsType, {
         v2WarehouseListV2Request: {
           limit: 200
         }
@@ -283,12 +283,12 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
     }))
   }
 
-  async getMarketplaceOrderTypes(data: GetMarketplaceOrderTypesInput): Promise<GetMarketplaceOrderTypesOutput> {
+  async getIntegrationOrderTypes(data: GetIntegrationOrderTypesInput): Promise<GetIntegrationOrderTypesOutput> {
     return Object.values(ORDER_TYPES) as string[]
   }
 
-  async getMarketplaceOrders(data: GetMarketplaceOrdersInput): Promise<GetMarketplaceOrdersOutput> {
-    const { marketplace, orderType } = data
+  async getIntegrationOrders(data: GetIntegrationOrdersInput): Promise<GetIntegrationOrdersOutput> {
+    const { integration, orderType } = data
 
     const to = new Date()
     const since = new Date(to)
@@ -304,7 +304,7 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
 
         while (hasNext) {
           const realFbsResult = await fbsApi.postingAPIGetFbsPostingListV3(
-            withAuth(marketplace.credentials as MarketplaceOzonCredentialsType, {
+            withAuth(integration.credentials as IntegrationOzonCredentialsType, {
               postingv3GetFbsPostingListRequest: {
                 filter: {
                   since: since.toISOString(),
@@ -336,11 +336,11 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
   }
 
   async mapToMedusaOrders(data: MapToMedusaOrdersInput): Promise<MapToMedusaOrdersOutput> {
-    const { marketplace, marketplaceOrders } = data
+    const { integration, integrationOrders } = data
 
-    const medusaOrders = (marketplaceOrders as any[]).map(order => {
+    const medusaOrders = (integrationOrders as any[]).map(order => {
       const mappedOrder: MapToMedusaOrdersOutput[number] = {
-        sales_channel_id: marketplace.sales_channel?.id,
+        sales_channel_id: integration.sales_channel?.id,
         email: order.customer?.customer_email || `ozon_customer_${String(order.order_id)}@example.com`,
         shipping_address: {
           address_1: order.customer?.address?.address_tail ?? "",
@@ -356,8 +356,8 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
           quantity: order.products?.[0]?.quantity ?? 1,
           unit_price: order.products?.[0]?.price ?? 0
         }],
-        marketplace_order: {
-          marketplace_id: marketplace.id,
+        integration_order: {
+          integration_id: integration.id,
           order_id: String(order.order_id),
           status: "New",
           type: "realFBS",
@@ -372,7 +372,7 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
 
   async mapToMedusaProducts(input: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput> {
     const settings = {
-      "marketplaceToMedusaMappingSchema": {
+      "integrationToMedusaMappingSchema": {
         "fields": [
           {
             "from": "id",
@@ -393,8 +393,8 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
       }
     }
 
-    const schema = settings.marketplaceToMedusaMappingSchema
-    const products = input.marketplaceProducts
+    const schema = settings.integrationToMedusaMappingSchema
+    const products = input.integrationProducts
     const limit = 100
 
     if (!products.length) return []
@@ -416,7 +416,7 @@ export class OzonMarketplaceProvider extends AbstractMarketplaceProvider {
 
     do {
       const ozonAttributesResponse = await productApi.productAPIGetProductAttributesV4(
-        withAuth(input.marketplace.credentials as MarketplaceOzonCredentialsType, {
+        withAuth(input.integration.credentials as IntegrationOzonCredentialsType, {
           productv4GetProductAttributesV4Request: {
             filter: {
               offer_id: offerIdsToFetch,

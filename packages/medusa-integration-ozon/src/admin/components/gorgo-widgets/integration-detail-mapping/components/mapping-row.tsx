@@ -9,7 +9,7 @@ import {
 import { CategorySelectors } from "./category-selectors"
 import { AttributesMapping } from "./attributes-mapping"
 import { sdk } from "../../../../lib/sdk"
-import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
+import { IntegrationHttpTypes } from "@gorgo/medusa-integration/types"
 import { useComboboxData } from "../../../../hooks/use-combobox-data"
 import {
   buildOzonCategoryTypeSelectOptionsDeep,
@@ -19,13 +19,13 @@ import {
 type MappingRowProps = {
   form: UseFormReturn<MappingFormValues>
   ozonTreeByValueRef: any
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
+  integration: IntegrationHttpTypes.AdminIntegration
 }
 
 export const MappingRow = ({
   form,
   ozonTreeByValueRef,
-  marketplace,
+  integration,
 }: MappingRowProps) => {
   const { resetField } = form
 
@@ -72,10 +72,10 @@ export const MappingRow = ({
   })
 
   const rootOzonCategoriesCombobox = useComboboxData<any, any>({
-    queryKey: ["ozon_root_categories", marketplace.id],
+    queryKey: ["ozon_root_categories", integration.id],
     enabled: true,
     queryFn: async () => {
-      return sdk.client.fetch(`/admin/ozon/${marketplace.id}/categories`)
+      return sdk.client.fetch(`/admin/ozon/${integration.id}/categories`)
     },
     defaultValue: undefined,
     getOptions: (data) => {
@@ -90,10 +90,10 @@ export const MappingRow = ({
   })
 
   const ozonCategoriesCombobox = useComboboxData<any, any>({
-    queryKey: ["ozon_categories", marketplace.id, rootOzonCategoryId],
+    queryKey: ["ozon_categories", integration.id, rootOzonCategoryId],
     enabled: Boolean(rootOzonCategoryId),
     queryFn: async () => {
-      return sdk.client.fetch(`/admin/ozon/${marketplace.id}/categories`)
+      return sdk.client.fetch(`/admin/ozon/${integration.id}/categories`)
     },
     defaultValue: undefined,
     getOptions: (data) => {
@@ -168,7 +168,7 @@ export const MappingRow = ({
 
     const load = async () => {
       const params = new URLSearchParams({ description_category_id, type_id })
-      const res = await sdk.client.fetch<any>(`/admin/ozon/${marketplace.id}/attributes?${params.toString()}`)
+      const res = await sdk.client.fetch<any>(`/admin/ozon/${integration.id}/attributes?${params.toString()}`)
       const result = (res?.result ?? []) as any[]
       setOzonAttributes(result)
 
@@ -195,7 +195,7 @@ export const MappingRow = ({
     selectedOzonCategoryTypeValue,
     ozonIds.description_category_id,
     ozonIds.type_id,
-    marketplace.id,
+    integration.id,
     replaceAttr,
     forceRebuildMappings,
   ])
@@ -237,7 +237,7 @@ export const MappingRow = ({
           medusaCategoryNameById={medusaCategoryNameById}
           selectedMedusaValues={selectedMedusaValues}
           selectedOzonValues={selectedOzonValues}
-          marketplace={marketplace}
+          integration={integration}
           ozonAttributes={ozonAttributes}
           watchedRules={watchedRules}
         />

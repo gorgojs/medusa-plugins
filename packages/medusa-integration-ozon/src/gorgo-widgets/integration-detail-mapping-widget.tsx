@@ -1,18 +1,18 @@
 import type { DetailWidgetProps } from "@medusajs/framework/types"
 import {
-  MarketplaceDetailMappingSection
+  IntegrationDetailMappingSection
 } from "../admin/components/gorgo-widgets"
 
-const MarketplaceDetailMappingWidget = ({
-  data: marketplace,
+const IntegrationDetailMappingWidget = ({
+  data: integration,
 }: DetailWidgetProps<any>) => {
   return (
-    <MarketplaceDetailMappingSection marketplace={marketplace} />
+    <IntegrationDetailMappingSection integration={integration} />
   )
 }
 
 export const config = {
-  zone: ["marketplace.details.after",]
+  zone: ["integration.details.after",]
 }
 
-export default MarketplaceDetailMappingWidget
+export default IntegrationDetailMappingWidget

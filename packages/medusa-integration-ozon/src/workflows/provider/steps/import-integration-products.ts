@@ -2,13 +2,13 @@ import { ProductDTO } from "@medusajs/framework/types"
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { updateProductsWorkflow, updateProductVariantsWorkflow } from "@medusajs/medusa/core-flows"
 
-export type ImportMarketplaceProductsStepInput = {
+export type ImportIntegrationProductsStepInput = {
   products: ProductDTO[]
 }
 
-export const importMarketplaceProductsStep = createStep(
+export const importIntegrationProductsStep = createStep(
   "import-ozon-products",
-  async (input: ImportMarketplaceProductsStepInput, { container }) => {
+  async (input: ImportIntegrationProductsStepInput, { container }) => {
     const products = input.products
     if (!products?.length) {
       return new StepResponse({

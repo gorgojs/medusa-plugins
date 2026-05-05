@@ -8,7 +8,7 @@ import {
 import { Pencil, Trash } from "@medusajs/icons"
 import { useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
+import { IntegrationHttpTypes } from "@gorgo/medusa-integration/types"
 import { Header } from "../../../common/header"
 import { CategoryMappingRule } from "../../../../types"
 import { sdk } from "../../../../lib/sdk"
@@ -19,7 +19,7 @@ type CategoryMappingRulesTableProps = {
   openModal: () => void
   onEdit: (id: string) => void
   onDelete: (id: string) => void
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
+  integration: IntegrationHttpTypes.AdminIntegration
 }
 
 const PAGE_SIZE = 20
@@ -29,7 +29,7 @@ export const CategoryMappingRulesTable = ({
   openModal,
   onEdit,
   onDelete,
-  marketplace,
+  integration,
 }: CategoryMappingRulesTableProps) => {
   const limit = PAGE_SIZE
 
@@ -40,7 +40,7 @@ export const CategoryMappingRulesTable = ({
 
   const offset = useMemo(() => pagination.pageIndex * limit, [pagination.pageIndex, limit])
 
-  const mapping = useMemo(() => marketplace?.settings?.mapping ?? {}, [marketplace])
+  const mapping = useMemo(() => integration?.settings?.mapping ?? {}, [integration])
 
   const categoryIds = useMemo(() => {
     const ids = new Set<string>()

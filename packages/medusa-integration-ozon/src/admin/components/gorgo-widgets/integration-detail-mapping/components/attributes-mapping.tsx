@@ -6,7 +6,7 @@ import { useComboboxData } from "../../../../hooks/use-combobox-data"
 import { extractMedusaAttributeTitles } from "../../../../utils"
 import { sdk } from "../../../../lib/sdk"
 import { UseFormReturn, FieldArrayWithId, UseFieldArrayAppend, UseFieldArrayRemove } from "react-hook-form"
-import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
+import { IntegrationHttpTypes } from "@gorgo/medusa-integration/types"
 
 type AttributeMappingProps = {
   form: UseFormReturn<MappingFormValues>
@@ -20,7 +20,7 @@ type AttributeMappingProps = {
   selectedMedusaValues: string[]
   selectedOzonValues: string[]
   ozonAttributes: any
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
+  integration: IntegrationHttpTypes.AdminIntegration
   watchedRules: any
 }
 
@@ -35,19 +35,19 @@ export const AttributesMapping = ({
   medusaCategoryNameById,
   selectedMedusaValues,
   selectedOzonValues,
-  marketplace,
+  integration,
   ozonAttributes,
   watchedRules,
 }: AttributeMappingProps) => {
   const ozonAttributesComboboxData = useComboboxData<any, any>({
-    queryKey: ["ozon-attributes", marketplace.id, ozonIds.description_category_id, ozonIds.type_id],
+    queryKey: ["ozon-attributes", integration.id, ozonIds.description_category_id, ozonIds.type_id],
     enabled: Boolean(ozonIds.description_category_id && ozonIds.type_id),
     queryFn: async () => {
       const params = new URLSearchParams({
         description_category_id: ozonIds.description_category_id,
         type_id: ozonIds.type_id,
       })
-      const res = await sdk.client.fetch<any>(`/admin/ozon/${marketplace.id}/attributes?${params.toString()}`)
+      const res = await sdk.client.fetch<any>(`/admin/ozon/${integration.id}/attributes?${params.toString()}`)
       const result = res?.result ?? []
       return { offset: 0, limit: result.length, count: result.length, result }
     },

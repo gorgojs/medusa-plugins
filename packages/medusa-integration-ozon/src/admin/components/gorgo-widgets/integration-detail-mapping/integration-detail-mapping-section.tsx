@@ -2,28 +2,28 @@ import { useToggleState, Container } from "@medusajs/ui"
 import { useState } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { useRevalidator } from "react-router-dom"
-import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
+import { IntegrationHttpTypes } from "@gorgo/medusa-integration/types"
 import { CategoryMappingRulesTable } from "./components/category-mapping-rules-table"
 import { CategoryMappingRuleAddModal } from "./components/category-mapping-rule-add-modal"
 import { sdk } from "../../../lib/sdk"
 
-type MarketplaceDetailMappingSectionProps = {
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
+type IntegrationDetailMappingSectionProps = {
+  integration: IntegrationHttpTypes.AdminIntegration
 }
 
-export const MarketplaceDetailMappingSection = ({
-  marketplace,
-}: MarketplaceDetailMappingSectionProps) => {
+export const IntegrationDetailMappingSection = ({
+  integration,
+}: IntegrationDetailMappingSectionProps) => {
   const [stateModal, openModal, closeModal] = useToggleState()
   const [editingId, setEditingId] = useState<string | null>(null)
   const { revalidate } = useRevalidator()
 
   const deleteMapping = useMutation({
     mutationFn: async (ruleId: string) => {
-      const settings = (marketplace.settings || {}) as any
+      const settings = (integration.settings || {}) as any
       const mapping = { ...(settings.mapping || {}) }
 
-      await sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`, {
+      await sdk.client.fetch(`/admin/integrations/${integration.id}`, {
         method: "POST",
         body: {
           settings: { mapping: "" },
@@ -32,7 +32,7 @@ export const MarketplaceDetailMappingSection = ({
 
       delete mapping[ruleId]
 
-      const res = await sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`,
+      const res = await sdk.client.fetch(`/admin/integrations/${integration.id}`,
         {
           method: "POST",
           body: {
@@ -69,7 +69,7 @@ export const MarketplaceDetailMappingSection = ({
         openModal={handleAdd}
         onEdit={onEdit}
         onDelete={onDelete}
-        marketplace={marketplace}
+        integration={integration}
       />
       <CategoryMappingRuleAddModal
         stateModal={stateModal}
@@ -77,7 +77,7 @@ export const MarketplaceDetailMappingSection = ({
           setEditingId(null)
           closeModal()
         }}
-        marketplace={marketplace}
+        integration={integration}
         editingId={editingId}
       />
     </Container>

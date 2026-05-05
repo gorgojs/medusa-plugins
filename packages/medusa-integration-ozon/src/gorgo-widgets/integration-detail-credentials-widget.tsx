@@ -1,19 +1,19 @@
 import type { DetailWidgetProps } from "@medusajs/framework/types"
-import { MarketplaceDetailCredentialsSection } from "../admin/components/gorgo-widgets"
+import { IntegrationDetailCredentialsSection } from "../admin/components/gorgo-widgets"
 
-const MarketplaceDetailCredentialsWidget = ({
-  data: marketplace,
+const IntegrationDetailCredentialsWidget = ({
+  data: integration,
 }: DetailWidgetProps<any>) => {
 
   return (
-    <MarketplaceDetailCredentialsSection
-      marketplace={marketplace}
+    <IntegrationDetailCredentialsSection
+      integration={integration}
     />
   )
 }
 
 export const config = {
-  zone: ["marketplace.details.after"]
+  zone: ["integration.details.after"]
 }
 
-export default MarketplaceDetailCredentialsWidget
+export default IntegrationDetailCredentialsWidget

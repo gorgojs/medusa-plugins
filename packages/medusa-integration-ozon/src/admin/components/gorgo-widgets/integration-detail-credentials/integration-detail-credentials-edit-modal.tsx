@@ -11,60 +11,60 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRevalidator } from "react-router-dom"
-import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
+import { IntegrationHttpTypes } from "@gorgo/medusa-integration/types"
 import { sdk } from "../../../lib/sdk"
 
-type MarketplaceDetailCredentialsEditModalProps = {
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
+type IntegrationDetailCredentialsEditModalProps = {
+  integration: IntegrationHttpTypes.AdminIntegration
   open: boolean
   setOpen: (open: boolean) => void
 }
 
-const MarketplaceDetailCredentialsEditSchema = z.object({
+const IntegrationDetailCredentialsEditSchema = z.object({
   apiKey: z.string().trim(),
   clientId: z.string().trim(),
 })
 
-type MarketplaceDetailCredentialsEditValues = z.infer<typeof MarketplaceDetailCredentialsEditSchema>
+type IntegrationDetailCredentialsEditValues = z.infer<typeof IntegrationDetailCredentialsEditSchema>
 
-export const MarketplaceDetailCredentialsEditModal = ({
-  marketplace,
+export const IntegrationDetailCredentialsEditModal = ({
+  integration,
   open,
   setOpen,
-}: MarketplaceDetailCredentialsEditModalProps) => {
+}: IntegrationDetailCredentialsEditModalProps) => {
   const queryClient = useQueryClient()
   const { revalidate } = useRevalidator()
 
-  const form = useForm<MarketplaceDetailCredentialsEditValues>({
+  const form = useForm<IntegrationDetailCredentialsEditValues>({
     defaultValues: {
-      apiKey: String(marketplace.credentials?.apiKey ?? ""),
-      clientId: String(marketplace.credentials?.clientId ?? "")
+      apiKey: String(integration.credentials?.apiKey ?? ""),
+      clientId: String(integration.credentials?.clientId ?? "")
     },
-    resolver: zodResolver(MarketplaceDetailCredentialsEditSchema),
+    resolver: zodResolver(IntegrationDetailCredentialsEditSchema),
     mode: "onSubmit",
   })
 
   const resetForm = () =>
     form.reset({
-      apiKey: String(marketplace.credentials?.apiKey ?? ""),
-      clientId: String(marketplace.credentials?.clientId ?? "")
+      apiKey: String(integration.credentials?.apiKey ?? ""),
+      clientId: String(integration.credentials?.clientId ?? "")
     })
 
   useEffect(() => {
     resetForm()
-  }, [open, marketplace.id, marketplace.title, marketplace.is_enabled])
+  }, [open, integration.id, integration.title, integration.is_enabled])
 
-  const updateMarketplace = useMutation({
-    mutationFn: async (values: MarketplaceDetailCredentialsEditValues) => {
-      return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`, {
+  const updateIntegration = useMutation({
+    mutationFn: async (values: IntegrationDetailCredentialsEditValues) => {
+      return sdk.client.fetch(`/admin/integrations/${integration.id}`, {
         method: "POST",
         body: {
-          title: marketplace.title,
-          provider_id: marketplace.provider_id,
-          is_enabled: marketplace.is_enabled,
-          settings: marketplace.settings ?? {},
+          title: integration.title,
+          provider_id: integration.provider_id,
+          is_enabled: integration.is_enabled,
+          settings: integration.settings ?? {},
           credentials: {
-            ...(marketplace.credentials ?? {}),
+            ...(integration.credentials ?? {}),
             apiKey: values.apiKey.trim(),
             clientId: values.clientId.trim(),
           },
@@ -72,14 +72,14 @@ export const MarketplaceDetailCredentialsEditModal = ({
       })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["marketplaces"] })
+      queryClient.invalidateQueries({ queryKey: ["integrations"] })
       revalidate()
       resetForm()
       setOpen(false)
     },
   })
 
-  const onSubmit = form.handleSubmit((values) => updateMarketplace.mutate(values))
+  const onSubmit = form.handleSubmit((values) => updateIntegration.mutate(values))
 
   return (
     <Drawer
@@ -137,7 +137,7 @@ export const MarketplaceDetailCredentialsEditModal = ({
               Cancel
             </Button>
 
-            <Button size="small" type="submit" disabled={updateMarketplace.isPending}>
+            <Button size="small" type="submit" disabled={updateIntegration.isPending}>
               Save
             </Button>
           </Drawer.Footer>

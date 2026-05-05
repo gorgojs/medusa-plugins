@@ -4,7 +4,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { useForm } from "react-hook-form"
 import { useQueryClient, useMutation } from "@tanstack/react-query"
 import { useRevalidator } from "react-router-dom"
-import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
+import { IntegrationHttpTypes } from "@gorgo/medusa-integration/types"
 import { Form } from "../../../common/form"
 import { MappingRow } from "./mapping-row"
 import {
@@ -20,7 +20,7 @@ import { sdk } from "../../../../lib/sdk"
 type CategoryMappingRuleAddModalProps = {
   stateModal: boolean
   closeModal: () => void
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
+  integration: IntegrationHttpTypes.AdminIntegration
   editingId: string | null
 }
 
@@ -82,7 +82,7 @@ const makeDefaultsFromSettingsRule = (
 export const CategoryMappingRuleAddModal = ({
   stateModal,
   closeModal,
-  marketplace,
+  integration,
   editingId,
 }: CategoryMappingRuleAddModalProps) => {
   const form = useForm<MappingFormValues>({
@@ -95,7 +95,7 @@ export const CategoryMappingRuleAddModal = ({
   const { revalidate } = useRevalidator()
   const ozonTreeByValueRef = useRef(new Map<string, OzonCategoryNode>())
 
-  const mapping = marketplace.settings?.mapping as any
+  const mapping = integration.settings?.mapping as any
 
   useEffect(() => {
     if (!stateModal) return
@@ -121,13 +121,13 @@ export const CategoryMappingRuleAddModal = ({
           const [descriptionCategoryId, typeId] = selectedValue.split(":").map(Number)
           if (descriptionCategoryId && typeId) {
             const data = await queryClient.ensureQueryData<OzonAttributesResponse>({
-              queryKey: ["ozon-attributes", marketplace.id, descriptionCategoryId, typeId],
+              queryKey: ["ozon-attributes", integration.id, descriptionCategoryId, typeId],
               queryFn: async () => {
                 const params = new URLSearchParams({
                   description_category_id: String(descriptionCategoryId),
                   type_id: String(typeId),
                 })
-                return sdk.client.fetch(`/admin/ozon/${marketplace.id}/attributes?${params.toString()}`)
+                return sdk.client.fetch(`/admin/ozon/${integration.id}/attributes?${params.toString()}`)
               },
             })
 
@@ -171,7 +171,7 @@ export const CategoryMappingRuleAddModal = ({
         medusaOptions
       )
 
-      return sdk.client.fetch(`/admin/marketplaces/${marketplace.id}`, {
+      return sdk.client.fetch(`/admin/integrations/${integration.id}`, {
         method: "POST",
         body: { settings: payload },
       })
@@ -205,7 +205,7 @@ export const CategoryMappingRuleAddModal = ({
             </FocusModal.Header>
             <FocusModal.Body className="flex size-full flex-col overflow-auto">
               <div className="mx-auto flex w-full max-w-3xl flex-col gap-y-6 px-2 py-8">
-                <MappingRow form={form} ozonTreeByValueRef={ozonTreeByValueRef} marketplace={marketplace} />
+                <MappingRow form={form} ozonTreeByValueRef={ozonTreeByValueRef} integration={integration} />
               </div>
             </FocusModal.Body>
             <FocusModal.Footer>

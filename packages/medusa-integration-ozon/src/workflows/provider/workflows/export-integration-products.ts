@@ -1,17 +1,17 @@
 import { createWorkflow, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
-import { createMarketplaceProductsStep } from "../steps"
-import { MarketplaceOzonCredentialsType } from "../../../providers/integration-ozon/types"
+import { createIntegrationProductsStep } from "../steps"
+import { IntegrationOzonCredentialsType } from "../../../providers/integration-ozon/types"
 import { V3ImportProductsRequestItem } from "../../../lib/ozon-seller-api"
 
-export type ExportMarketplaceProductsOzonWorkflowInput = {
+export type ExportIntegrationProductsOzonWorkflowInput = {
   create: V3ImportProductsRequestItem[]
-  credentials: MarketplaceOzonCredentialsType
+  credentials: IntegrationOzonCredentialsType
 }
 
-export const exportMarketplaceProductsWorkflow = createWorkflow(
+export const exportIntegrationProductsWorkflow = createWorkflow(
   "export-ozon-products",
-  (input: ExportMarketplaceProductsOzonWorkflowInput) => {
-    const createResponse  = createMarketplaceProductsStep({ products: input.create, credentials: input.credentials })
+  (input: ExportIntegrationProductsOzonWorkflowInput) => {
+    const createResponse  = createIntegrationProductsStep({ products: input.create, credentials: input.credentials })
     const result = {
       createResponse
     }

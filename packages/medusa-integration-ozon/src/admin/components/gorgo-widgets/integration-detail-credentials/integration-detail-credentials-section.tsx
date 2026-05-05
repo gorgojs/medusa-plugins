@@ -1,15 +1,15 @@
 import { Badge, Toaster, toast } from "@medusajs/ui"
 import { useState, useEffect } from "react"
 import { useLocation } from "react-router-dom"
-import { MarketplaceHttpTypes } from "@gorgo/medusa-marketplace/types"
+import { IntegrationHttpTypes } from "@gorgo/medusa-integration/types"
 import { Eye, EyeSlash, Pencil } from "@medusajs/icons"
 import { Container } from "../../common/container"
 import { Header } from "../../common/header"
 import { SectionRow } from "../../common/section-row"
-import { MarketplaceDetailCredentialsEditModal } from "./integration-detail-credentials-edit-modal"
+import { IntegrationDetailCredentialsEditModal } from "./integration-detail-credentials-edit-modal"
 
-type MarketplaceDetailCredentialsSectionProps = {
-  marketplace: MarketplaceHttpTypes.AdminMarketplace
+type IntegrationDetailCredentialsSectionProps = {
+  integration: IntegrationHttpTypes.AdminIntegration
 }
 
 function getRedactedKey(key?: string): string {
@@ -28,9 +28,9 @@ function getRedactedKey(key?: string): string {
   return `${firstThree}${"•".repeat(bulletsCount)}${lastTwo}`
 }
 
-export const MarketplaceDetailCredentialsSection = ({
-  marketplace,
-}: MarketplaceDetailCredentialsSectionProps) => {
+export const IntegrationDetailCredentialsSection = ({
+  integration,
+}: IntegrationDetailCredentialsSectionProps) => {
   const [editOpen, setEditOpen] = useState(false)
   const [showFullKey, setShowFullKey] = useState(false)
   const location = useLocation()
@@ -40,7 +40,7 @@ export const MarketplaceDetailCredentialsSection = ({
       setEditOpen(true)
     }
   }, [location.state])
-  const apiKey = marketplace.credentials?.apiKey as string
+  const apiKey = integration.credentials?.apiKey as string
   const displayedKey = showFullKey ? apiKey : getRedactedKey(apiKey)
   const handleCopy = () => {
     navigator.clipboard.writeText(apiKey)
@@ -98,9 +98,9 @@ export const MarketplaceDetailCredentialsSection = ({
         <SectionRow
           title="Client ID"
           value={
-            marketplace.credentials.clientId ? (
+            integration.credentials.clientId ? (
               <Badge size="xsmall" color="grey">
-                {marketplace.credentials.clientId as React.ReactNode}
+                {integration.credentials.clientId as React.ReactNode}
               </Badge>
             ) : (
               "-"
@@ -109,8 +109,8 @@ export const MarketplaceDetailCredentialsSection = ({
         />
       </Container>
 
-      <MarketplaceDetailCredentialsEditModal
-        marketplace={marketplace}
+      <IntegrationDetailCredentialsEditModal
+        integration={integration}
         open={editOpen}
         setOpen={setEditOpen}
       />

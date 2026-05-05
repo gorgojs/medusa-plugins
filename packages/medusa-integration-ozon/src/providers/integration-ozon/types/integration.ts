@@ -1,6 +1,6 @@
-import { MarketplaceCredentialsType } from  "@gorgo/medusa-marketplace/types"
+import { IntegrationCredentialsType } from  "@gorgo/medusa-integration/types"
 
-export interface MarketplaceOzonCredentialsType extends MarketplaceCredentialsType {
+export interface IntegrationOzonCredentialsType extends IntegrationCredentialsType {
   apiKey: string;
   clientId: string;
 }

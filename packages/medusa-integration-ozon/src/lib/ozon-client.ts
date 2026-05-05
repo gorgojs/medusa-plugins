@@ -1,4 +1,4 @@
-import { MarketplaceOzonCredentialsType } from '../providers/integration-ozon/types';
+import { IntegrationOzonCredentialsType } from '../providers/integration-ozon/types';
 import { Configuration, ProductAPIApi, CategoryAPIApi, FBSWarehouseAPIApi, FboPostingAPIApi, FBSApi } from './ozon-seller-api';
 
 const BASE_URL="https://api-seller.ozon.ru"
@@ -8,7 +8,7 @@ const config = new Configuration({
 })
 
 // TODO: find better way to pass auth
-export const withAuth = <T extends object>(credentials: MarketplaceOzonCredentialsType, body: T) => ({
+export const withAuth = <T extends object>(credentials: IntegrationOzonCredentialsType, body: T) => ({
   apiKey: credentials.apiKey,
   clientId: credentials.clientId,
   ...body,
