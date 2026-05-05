@@ -1,7 +1,7 @@
 {
-  "name": "@gorgo/medusa-marketplace",
+  "name": "@gorgo/medusa-integration",
   "version": "0.1.0",
-  "description": "Marketplace integration core-plugin for Medusa",
+  "description": "Integration core-plugin for Medusa",
   "files": [
     ".medusa/server"
   ],
@@ -29,7 +29,7 @@
     "medusa-plugin-other",
     "medusa-plugin",
     "medusa-v2",
-    "marketplace"
+    "integration"
   ],
   "scripts": {
     "build": "medusa plugin:build",
