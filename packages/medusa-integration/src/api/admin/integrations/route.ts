@@ -1,26 +1,26 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
-import { MARKETPLACE_MODULE } from "../../../modules/integration"
-import { MarketplaceModuleService } from "../../../modules/integration/services"
-import { AdminCreateMarketplaceType, AdminMarketplaceDefaultFindParams } from "./validators"
-import { AdminMarketplaceListResponse, AdminMarketplaceResponse } from "../../../types"
+import { INTEGRATION_MODULE } from "../../../modules/integration"
+import { IntegrationModuleService } from "../../../modules/integration/services"
+import { AdminCreateIntegrationType, AdminIntegrationDefaultFindParams } from "./validators"
+import { AdminIntegrationListResponse, AdminIntegrationResponse } from "../../../types"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import { createExchangeProfileWorkflow } from "../../../workflows/integration-exchange-profile/workflows"
 
 export const GET = async (
   req: MedusaRequest,
-  res: MedusaResponse<AdminMarketplaceListResponse>
+  res: MedusaResponse<AdminIntegrationListResponse>
 ) => {
-  const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
+  const integrationService: IntegrationModuleService = await req.scope.resolve(INTEGRATION_MODULE)
   // TODO: do we need caching here with the query module? 
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
 
-  const { data: marketplaces, metadata: { skip, take, count } = {} } = await query.graph({
-    entity: "marketplace",
+  const { data: integrations, metadata: { skip, take, count } = {} } = await query.graph({
+    entity: "integration",
     ...req.queryConfig
   })
 
   res.status(200).json({
-    marketplaces,
+    integrations,
     count: count!,
     limit: take!,
     offset: skip!
@@ -28,17 +28,17 @@ export const GET = async (
 }
 
 export const POST = async (
-  req: MedusaRequest<AdminCreateMarketplaceType>,
-  res: MedusaResponse<AdminMarketplaceResponse>
+  req: MedusaRequest<AdminCreateIntegrationType>,
+  res: MedusaResponse<AdminIntegrationResponse>
 ) => {
-  const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
-  const marketplace = await marketplaceService.createMarketplaces(req.validatedBody)
+  const integrationService: IntegrationModuleService = await req.scope.resolve(INTEGRATION_MODULE)
+  const integration = await integrationService.createIntegrations(req.validatedBody)
 
   if (req.validatedBody.sales_channel_id) {
     const link = req.scope.resolve(ContainerRegistrationKeys.LINK)
     await link.create({
-      marketplace: {
-        marketplace_id: marketplace.id
+      integration: {
+        integration_id: integration.id
       },
       [Modules.SALES_CHANNEL]: {
         sales_channel_id: req.validatedBody.sales_channel_id
@@ -48,12 +48,12 @@ export const POST = async (
 
   const exchangeProfile = await createExchangeProfileWorkflow(req.scope).run({
     input: {
-      marketplace_id: marketplace.id,
+      integration_id: integration.id,
       warehouse_id: "",
       stock_location_id: "",
       order_type: "",
     }
   })
 
-  res.status(200).json({ marketplace })
+  res.status(200).json({ integration })
 }

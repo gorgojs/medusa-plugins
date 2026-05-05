@@ -1,4 +1,4 @@
-export const defaultAdminMarketplaceFields = [
+export const defaultAdminIntegrationFields = [
   "id",
   "title",
   "provider_id",
@@ -8,21 +8,21 @@ export const defaultAdminMarketplaceFields = [
   "sales_channel.*"
 ]
 
-export const retrieveMarketplaceQueryConfig = {
-  defaults: defaultAdminMarketplaceFields,
+export const retrieveIntegrationQueryConfig = {
+  defaults: defaultAdminIntegrationFields,
   isList: false
 }
 
-export const listMarketplaceQueryConfig = {
-  ...retrieveMarketplaceQueryConfig,
+export const listIntegrationQueryConfig = {
+  ...retrieveIntegrationQueryConfig,
   defaultLimit: 20,
   isList: true,
 }
 
-export const defaultAdminMarketplaceEventFields = [
+export const defaultAdminIntegrationEventFields = [
   "id",
-  "marketplace.*",
-  "marketplace_id",
+  "integration.*",
+  "integration_id",
   "correlation_id",
   "direction",
   "entity_type",
@@ -34,7 +34,7 @@ export const defaultAdminMarketplaceEventFields = [
 ]
 
 export const retrieveEventQueryConfig = {
-  defaults: defaultAdminMarketplaceEventFields,
+  defaults: defaultAdminIntegrationEventFields,
   isList: false
 }
 
@@ -44,16 +44,16 @@ export const listEventQueryConfig = {
   isList: true,
 }
 
-export const defaultAdminMarketplaceExchangeProfileFields = [
+export const defaultAdminIntegrationExchangeProfileFields = [
   "id",
-  "marketplace_id",
+  "integration_id",
   "warehouse_id",
   "order_type",
   "stock_location.*"
 ]
 
 export const retrieveExchangeProfileQueryConfig = {
-  defaults: defaultAdminMarketplaceExchangeProfileFields,
+  defaults: defaultAdminIntegrationExchangeProfileFields,
   isList: false
 }
 

@@ -1,21 +1,21 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 import { createExchangeProfileWorkflow } from "../../../../../workflows/integration-exchange-profile/workflows"
-import { AdminMarketplaceCreateExchangeProfileType } from "../../validators"
+import { AdminIntegrationCreateExchangeProfileType } from "../../validators"
 import {
-  AdminMarketplaceExchangeProfileListResponse,
-  AdminMarketplaceExchangeProfileResponse
+  AdminIntegrationExchangeProfileListResponse,
+  AdminIntegrationExchangeProfileResponse
 } from "../../../../../types"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
 export const GET = async (
   req: MedusaRequest,
-  res: MedusaResponse<AdminMarketplaceExchangeProfileListResponse>
+  res: MedusaResponse<AdminIntegrationExchangeProfileListResponse>
 ) => {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
   
   const { data: exchange_profiles, metadata: { skip, take, count } = {} } = await query.graph({
-    entity: "marketplace_exchange_profile",
-    filters: { marketplace_id: req.params.id },
+    entity: "integration_exchange_profile",
+    filters: { integration_id: req.params.id },
     ...req.queryConfig
   })
 
@@ -28,12 +28,12 @@ export const GET = async (
 }
 
 export const POST = async (
-  req: MedusaRequest<AdminMarketplaceCreateExchangeProfileType>,
-  res: MedusaResponse<AdminMarketplaceExchangeProfileResponse>
+  req: MedusaRequest<AdminIntegrationCreateExchangeProfileType>,
+  res: MedusaResponse<AdminIntegrationExchangeProfileResponse>
 ) => {
   const { result } = await createExchangeProfileWorkflow(req.scope).run({
     input: {
-      marketplace_id: req.params.id,
+      integration_id: req.params.id,
       ...req.validatedBody
     }
   })

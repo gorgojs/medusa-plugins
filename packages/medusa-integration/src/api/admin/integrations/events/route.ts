@@ -1,37 +1,37 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
-import { MarketplaceModuleService } from "../../../../modules/integration/services"
-import { MARKETPLACE_MODULE } from "../../../../modules/integration"
-import { AdminMarketplaceCreateEventsType, AdminMarketplaceDefaultFindParams } from "../validators"
-import { AdminMarketplaceEventListResponse, AdminMarketplaceEventResponse } from "../../../../types"
+import { IntegrationModuleService } from "../../../../modules/integration/services"
+import { INTEGRATION_MODULE } from "../../../../modules/integration"
+import { AdminIntegrationCreateEventsType, AdminIntegrationDefaultFindParams } from "../validators"
+import { AdminIntegrationEventListResponse, AdminIntegrationEventResponse } from "../../../../types"
 
 export const GET = async (
   req: MedusaRequest,
-  res: MedusaResponse<AdminMarketplaceEventListResponse>
+  res: MedusaResponse<AdminIntegrationEventListResponse>
 ) => {
-  const marketplaceService: MarketplaceModuleService = req.scope.resolve(MARKETPLACE_MODULE)
-  const { marketplace_id } = req.validatedQuery
-  const [marketplace_events, count] = await marketplaceService.listAndCountMarketplaceEvents({
-    marketplace_id: marketplace_id ? [marketplace_id] : undefined
+  const integrationService: IntegrationModuleService = req.scope.resolve(INTEGRATION_MODULE)
+  const { integration_id } = req.validatedQuery
+  const [integration_events, count] = await integrationService.listAndCountIntegrationEvents({
+    integration_id: integration_id ? [integration_id] : undefined
   }, {
     select: req.queryConfig.fields,
     ...req.queryConfig.pagination,
   })
 
   res.status(200).json({
-    marketplace_events,
+    integration_events,
     count,
-    limit: req.queryConfig.pagination.take ?? AdminMarketplaceDefaultFindParams.limit,
+    limit: req.queryConfig.pagination.take ?? AdminIntegrationDefaultFindParams.limit,
     offset: req.queryConfig.pagination.skip
   })
 }
 
 export const POST = async (
-  req: MedusaRequest<AdminMarketplaceCreateEventsType>,
-  res: MedusaResponse<AdminMarketplaceEventResponse>
+  req: MedusaRequest<AdminIntegrationCreateEventsType>,
+  res: MedusaResponse<AdminIntegrationEventResponse>
 ) => {
-  const marketplaceService: MarketplaceModuleService = req.scope.resolve(MARKETPLACE_MODULE)
-  const marketplace_event = await marketplaceService.createMarketplaceEvents(req.validatedBody)
+  const integrationService: IntegrationModuleService = req.scope.resolve(INTEGRATION_MODULE)
+  const integration_event = await integrationService.createIntegrationEvents(req.validatedBody)
 
-  res.status(200).json({ marketplace_event })
+  res.status(200).json({ integration_event })
 }
 

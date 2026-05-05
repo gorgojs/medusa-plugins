@@ -1,16 +1,16 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
-import { MARKETPLACE_MODULE } from "../../../../modules/integration"
-import { MarketplaceModuleService } from "../../../../modules/integration/services"
-import { AdminMarketplaceProviderList } from "../../../../types"
+import { INTEGRATION_MODULE } from "../../../../modules/integration"
+import { IntegrationModuleService } from "../../../../modules/integration/services"
+import { AdminIntegrationProviderList } from "../../../../types"
 
 export const GET = async (
   req: MedusaRequest,
-  res: MedusaResponse<AdminMarketplaceProviderList>
+  res: MedusaResponse<AdminIntegrationProviderList>
 ) => {
 
-  const marketplaceService: MarketplaceModuleService = req.scope.resolve(MARKETPLACE_MODULE)
+  const integrationService: IntegrationModuleService = req.scope.resolve(INTEGRATION_MODULE)
 
-  const providers = marketplaceService.getProvidersList()
+  const providers = integrationService.getProvidersList()
 
   res.status(200).json({ providers })
 }

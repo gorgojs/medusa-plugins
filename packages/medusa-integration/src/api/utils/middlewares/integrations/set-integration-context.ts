@@ -1,13 +1,13 @@
 import { AuthenticatedMedusaRequest, MedusaNextFunction } from "@medusajs/framework/http"
 
-export function setMarketplaceContext() {
+export function setIntegrationContext() {
   return async (req: AuthenticatedMedusaRequest, _, next: MedusaNextFunction) => {
 
     const query = req.scope.resolve("query")
 
     const { data, metadata } = await query.graph(
       {
-        entity: "marketplace",
+        entity: "integration",
         fields: ["id", "provider_id", "credentials", "settings", "is_active", "sales_channel.*", "exchange_profiles.*"],
         filters: {
           id: [req.params.id]
@@ -20,7 +20,7 @@ export function setMarketplaceContext() {
       }
     )
 
-    req["marketplaceContext"] = data[0]
+    req["integrationContext"] = data[0]
 
     return next()
   }

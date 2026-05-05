@@ -1,16 +1,16 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
-import { MarketplaceModuleService } from "../../../../../modules/integration/services"
-import { MARKETPLACE_MODULE } from "../../../../../modules/integration"
-import { AdminMarketplaceEventResponse } from "../../../../../types"
+import { IntegrationModuleService } from "../../../../../modules/integration/services"
+import { INTEGRATION_MODULE } from "../../../../../modules/integration"
+import { AdminIntegrationEventResponse } from "../../../../../types"
 
 export const GET = async (
   req: MedusaRequest,
-  res: MedusaResponse<AdminMarketplaceEventResponse>
+  res: MedusaResponse<AdminIntegrationEventResponse>
 ) => {
-  const marketplaceService: MarketplaceModuleService = await req.scope.resolve(MARKETPLACE_MODULE)
-  const marketplace_event = await marketplaceService.retrieveMarketplaceEvent(req.params.id, {
+  const integrationService: IntegrationModuleService = await req.scope.resolve(INTEGRATION_MODULE)
+  const integration_event = await integrationService.retrieveIntegrationEvent(req.params.id, {
     select: req.queryConfig.fields
   })
 
-  return res.status(200).json({ marketplace_event })
+  return res.status(200).json({ integration_event })
 }

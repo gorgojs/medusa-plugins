@@ -1,114 +1,114 @@
 import { MiddlewareRoute, validateAndTransformBody, validateAndTransformQuery } from "@medusajs/framework/http"
 import { 
-  AdminCreateMarketplace,
-  AdminGetMarketplaceParams,
-  AdminMarketplaceCreateEvents,
-  AdminMarketplaceCreateExchangeProfile,
-  AdminMarketplaceGetEventsParams,
-  AdminMarketplaceListExchangeProfileParams,
-  AdminMarketplaceSyncProducts,
-  AdminMarketplaceUpdateExchangeProfile,
-  AdminUpdateMarketplace
+  AdminCreateIntegration,
+  AdminGetIntegrationParams,
+  AdminIntegrationCreateEvents,
+  AdminIntegrationCreateExchangeProfile,
+  AdminIntegrationGetEventsParams,
+  AdminIntegrationListExchangeProfileParams,
+  AdminIntegrationSyncProducts,
+  AdminIntegrationUpdateExchangeProfile,
+  AdminUpdateIntegration
 } from "./validators"
 import * as QueryConfig from "./query-config"
-import { setMarketplaceContext } from "../../utils/middlewares/integrations/set-integration-context"
+import { setIntegrationContext } from "../../utils/middlewares/integrations/set-integration-context"
 
-export const adminMarketplaceRoutesMiddlewares: MiddlewareRoute[] = [
+export const adminIntegrationRoutesMiddlewares: MiddlewareRoute[] = [
   {
     methods: ["GET"],
-    matcher: "/admin/marketplaces",
+    matcher: "/admin/integrations",
     middlewares: [
       validateAndTransformQuery(
-        AdminGetMarketplaceParams,
-        QueryConfig.listMarketplaceQueryConfig
+        AdminGetIntegrationParams,
+        QueryConfig.listIntegrationQueryConfig
       )
     ]
   },
   {
     methods: ["POST"],
-    matcher: "/admin/marketplaces",
+    matcher: "/admin/integrations",
     middlewares: [
-      validateAndTransformBody(AdminCreateMarketplace)
+      validateAndTransformBody(AdminCreateIntegration)
     ]
   },
   {
     methods: ["GET"],
-    matcher: "/admin/marketplaces/:id",
+    matcher: "/admin/integrations/:id",
     middlewares: [
       validateAndTransformQuery(
-        AdminGetMarketplaceParams,
-        QueryConfig.retrieveMarketplaceQueryConfig
+        AdminGetIntegrationParams,
+        QueryConfig.retrieveIntegrationQueryConfig
       )
     ]
   },
   {
     methods: ["POST"],
-    matcher: "/admin/marketplaces/:id",
+    matcher: "/admin/integrations/:id",
     middlewares: [
-      validateAndTransformBody(AdminUpdateMarketplace),
-      setMarketplaceContext()
+      validateAndTransformBody(AdminUpdateIntegration),
+      setIntegrationContext()
     ]
   },
   {
-    matcher: "/admin/marketplaces/:id/*",
+    matcher: "/admin/integrations/:id/*",
     middlewares: [
-      setMarketplaceContext()
+      setIntegrationContext()
     ]
   },
   {
-    matcher: "/admin/marketplaces/:id/exchange-profiles",
+    matcher: "/admin/integrations/:id/exchange-profiles",
     methods: ["GET"],
     middlewares: [
       validateAndTransformQuery(
-        AdminMarketplaceListExchangeProfileParams,
+        AdminIntegrationListExchangeProfileParams,
         QueryConfig.listExchangeProfileQueryConfig
       )
     ]
   },
   {
-    matcher: "/admin/marketplaces/:id/exchange-profiles",
+    matcher: "/admin/integrations/:id/exchange-profiles",
     methods: ["POST"],
     middlewares: [
-      validateAndTransformBody(AdminMarketplaceCreateExchangeProfile)
+      validateAndTransformBody(AdminIntegrationCreateExchangeProfile)
     ]
   },
   {
-    matcher: "/admin/marketplaces/:id/exchange-profiles/:ep_id",
+    matcher: "/admin/integrations/:id/exchange-profiles/:ep_id",
     methods: ["POST"],
     middlewares: [
-      validateAndTransformBody(AdminMarketplaceUpdateExchangeProfile)
+      validateAndTransformBody(AdminIntegrationUpdateExchangeProfile)
     ]
   },
   {
     methods: ["POST"],
-    matcher: "/admin/marketplaces/:id/products/sync",
+    matcher: "/admin/integrations/:id/products/sync",
     middlewares: [
-      validateAndTransformBody(AdminMarketplaceSyncProducts),
+      validateAndTransformBody(AdminIntegrationSyncProducts),
     ]
   },
   {
     methods: ["GET"],
-    matcher: "/admin/marketplaces/events",
+    matcher: "/admin/integrations/events",
     middlewares: [
       validateAndTransformQuery(
-        AdminMarketplaceGetEventsParams,
+        AdminIntegrationGetEventsParams,
         QueryConfig.listEventQueryConfig
       )
     ]
   },
   {
     methods: ["POST"],
-    matcher: "/admin/marketplaces/events",
+    matcher: "/admin/integrations/events",
     middlewares: [
-      validateAndTransformBody(AdminMarketplaceCreateEvents)
+      validateAndTransformBody(AdminIntegrationCreateEvents)
     ]
   },
   {
     methods: ["GET"],
-    matcher: "/admin/marketplaces/events/:id",
+    matcher: "/admin/integrations/events/:id",
     middlewares: [
       validateAndTransformQuery(
-        AdminMarketplaceGetEventsParams,
+        AdminIntegrationGetEventsParams,
         QueryConfig.retrieveEventQueryConfig
       ),
     ],

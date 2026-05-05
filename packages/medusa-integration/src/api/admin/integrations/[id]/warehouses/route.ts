@@ -1,19 +1,19 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
-import { MARKETPLACE_MODULE } from "../../../../../modules/integration"
-import { MarketplaceModuleService } from "../../../../../modules/integration/services"
-import { AdminMarketplaceWarehouseListResponse, MarketplaceDTO } from "../../../../../types"
+import { INTEGRATION_MODULE } from "../../../../../modules/integration"
+import { IntegrationModuleService } from "../../../../../modules/integration/services"
+import { AdminIntegrationWarehouseListResponse, IntegrationDTO } from "../../../../../types"
 
 export const GET = async (
   req: MedusaRequest,
-  res: MedusaResponse<AdminMarketplaceWarehouseListResponse>
+  res: MedusaResponse<AdminIntegrationWarehouseListResponse>
 ) => {
-  const marketplaceModuleService: MarketplaceModuleService = req.scope.resolve(MARKETPLACE_MODULE)
+  const integrationModuleService: IntegrationModuleService = req.scope.resolve(INTEGRATION_MODULE)
 
-  const marketplace: MarketplaceDTO = req["marketplaceContext"]
+  const integration: IntegrationDTO = req["integrationContext"]
 
-  const warehouses = await marketplaceModuleService.getWarehouses(marketplace.provider_id, {
+  const warehouses = await integrationModuleService.getIntegrationWarehouses(integration.provider_id, {
     container: req.scope,
-    marketplace
+    integration
   })
 
   res.status(200).json({ warehouses })
