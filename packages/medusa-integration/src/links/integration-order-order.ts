@@ -1,8 +1,8 @@
-import MarketplaceModule from "../modules/integration"
+import IntegrationModule from "../modules/integration"
 import OrderModule from "@medusajs/medusa/order"
 import { defineLink } from "@medusajs/framework/utils"
 
 export default defineLink(
-  MarketplaceModule.linkable.marketplaceOrder,
+  IntegrationModule.linkable.integrationOrder,
   OrderModule.linkable.order
 )

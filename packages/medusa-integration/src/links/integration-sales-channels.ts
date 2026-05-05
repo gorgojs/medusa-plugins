@@ -1,10 +1,10 @@
-import MarketplaceModule from "../modules/integration"
+import IntegrationModule from "../modules/integration"
 import SalesChannelModule from "@medusajs/medusa/sales-channel"
 import { defineLink } from "@medusajs/framework/utils"
 
 export default defineLink(
   {
-    linkable: MarketplaceModule.linkable.marketplace,
+    linkable: IntegrationModule.linkable.integration,
     isList: true
   },
   SalesChannelModule.linkable.salesChannel
