@@ -1,2 +1,2 @@
-export * as MarketplaceHttpTypes from "./http"
-export * as MarketplaceWorkflowTypes from "./workflow"
+export * as IntegrationHttpTypes from "./http"
+export * as IntegrationWorkflowTypes from "./workflow"

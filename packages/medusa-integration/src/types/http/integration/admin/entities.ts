@@ -1,7 +1,7 @@
-import { MarketplaceDTO, MarketplaceEventDTO, MarketplaceExchangeProfileDTO } from "../../.."
+import { IntegrationDTO, IntegrationEventDTO, IntegrationExchangeProfileDTO } from "../../.."
 
-export interface AdminMarketplace extends MarketplaceDTO { }
+export interface AdminIntegration extends IntegrationDTO { }
 
-export interface AdminMarketplaceEvent extends MarketplaceEventDTO { }
+export interface AdminIntegrationEvent extends IntegrationEventDTO { }
 
-export interface AdminMarketplaceExchangeProfile extends MarketplaceExchangeProfileDTO { }
+export interface AdminIntegrationExchangeProfile extends IntegrationExchangeProfileDTO { }

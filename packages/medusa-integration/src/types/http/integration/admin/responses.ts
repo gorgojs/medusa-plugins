@@ -1,48 +1,48 @@
 import { DeleteResponse, PaginatedResponse } from "@medusajs/framework/types"
-import { AdminMarketplace, AdminMarketplaceEvent, AdminMarketplaceExchangeProfile } from "./entities"
-import { GetMarketplaceWarehousesOutput } from "../../../integration"
+import { AdminIntegration, AdminIntegrationEvent, AdminIntegrationExchangeProfile } from "./entities"
+import { GetIntegrationWarehousesOutput } from "../../../integration"
 
-export interface AdminMarketplaceListResponse
+export interface AdminIntegrationListResponse
   extends PaginatedResponse<{
-    marketplaces: AdminMarketplace[]
+    integrations: AdminIntegration[]
   }> {}
 
-export interface AdminMarketplaceResponse {
-  marketplace: AdminMarketplace
+export interface AdminIntegrationResponse {
+  integration: AdminIntegration
 }
 
-export interface AdminMarketplaceDeleteResponse extends DeleteResponse<"marketplace"> {}
+export interface AdminIntegrationDeleteResponse extends DeleteResponse<"integration"> {}
 
-export interface AdminMarketplaceProductSyncResponse {
+export interface AdminIntegrationProductSyncResponse {
   result: Record<string, unknown>
 }
 
-export interface AdminMarketplaceEventListResponse
+export interface AdminIntegrationEventListResponse
   extends PaginatedResponse<{
-    marketplace_events: AdminMarketplaceEvent[]
+    integration_events: AdminIntegrationEvent[]
   }> {}
 
-export interface AdminMarketplaceEventResponse {
-  marketplace_event: AdminMarketplaceEvent
+export interface AdminIntegrationEventResponse {
+  integration_event: AdminIntegrationEvent
 }
 
-export interface AdminMarketplaceProviderList {
+export interface AdminIntegrationProviderList {
   providers: string[]
 }
 
-export interface AdminMarketplaceExchangeProfileListResponse
+export interface AdminIntegrationExchangeProfileListResponse
   extends PaginatedResponse<{
-    exchange_profiles: AdminMarketplaceExchangeProfile[]
+    exchange_profiles: AdminIntegrationExchangeProfile[]
   }> {}
 
-export interface AdminMarketplaceExchangeProfileResponse {
-  exchange_profile: AdminMarketplaceExchangeProfile
+export interface AdminIntegrationExchangeProfileResponse {
+  exchange_profile: AdminIntegrationExchangeProfile
 }
 
-export interface AdminMarketplaceOrderTypeListResponse {
+export interface AdminIntegrationOrderTypeListResponse {
   orderTypes: string[]
 }
 
-export interface AdminMarketplaceWarehouseListResponse {
-  warehouses: GetMarketplaceWarehousesOutput
+export interface AdminIntegrationWarehouseListResponse {
+  warehouses: GetIntegrationWarehousesOutput
 }

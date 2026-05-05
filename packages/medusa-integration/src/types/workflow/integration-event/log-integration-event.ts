@@ -1,3 +1,3 @@
 import { LogEventInput } from "../../integration";
 
-export type LogMarketplaceEventWorkflowInput = LogEventInput
+export type LogIntegrationEventWorkflowInput = LogEventInput

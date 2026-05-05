@@ -1,8 +1,8 @@
 import { CreateOrderDTO } from "@medusajs/framework/types"
-import { CreateMarketplaceOrderDTO, EventActionType, EventDirectionType, EventEntityType } from "./common"
+import { CreateIntegrationOrderDTO, EventActionType, EventDirectionType, EventEntityType } from "./common"
 
 export type LogEventInput = {
-  marketplaceId: string
+  integrationId: string
   correlationId?: string
   direction: EventDirectionType
   entityType: EventEntityType
@@ -14,5 +14,5 @@ export type LogEventInput = {
 }
 
 export interface MedusaOrder extends CreateOrderDTO {
-  marketplace_order: CreateMarketplaceOrderDTO
+  integration_order: CreateIntegrationOrderDTO
 }

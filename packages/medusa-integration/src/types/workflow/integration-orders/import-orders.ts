@@ -1,6 +1,6 @@
-import { MarketplaceDTO } from "../../integration"
+import { IntegrationDTO } from "../../integration"
 
-export type ImportMarketplaceOrdersWorkflowInput = {
-  marketplace: MarketplaceDTO
+export type ImportIntegrationOrdersWorkflowInput = {
+  integration: IntegrationDTO
   orderType?: string
 }

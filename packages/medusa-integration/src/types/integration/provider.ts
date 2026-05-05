@@ -1,8 +1,8 @@
 import { MedusaContainer } from "@medusajs/framework"
 import { ProductDTO } from "@medusajs/framework/types"
-import {MarketplaceDTO, MarketplaceProductDTO, MarketplaceWarehouseType, MedusaOrder} from ".."
+import {IntegrationDTO, IntegrationProductDTO, IntegrationWarehouseType, MedusaOrder} from ".."
 
-export interface IMarketplaceProvider {
+export interface IIntegrationProvider {
   getIdentifier(): string
 
   exportProducts(data: ExportProductsInput): Promise<ExportProductsOutput>
@@ -11,79 +11,79 @@ export interface IMarketplaceProvider {
 
   getProducts(data: GetProductsInput): Promise<GetProductsOutput>
 
-  getMarketplaceProducts(data: GetMarketplaceProductsInput): Promise<GetMarketplaceProductsOutput>
+  getIntegrationProducts(data: GetIntegrationProductsInput): Promise<GetIntegrationProductsOutput>
 
-  getMarketplaceOrderTypes(data: GetMarketplaceOrderTypesInput): Promise<GetMarketplaceOrderTypesOutput>
+  getIntegrationOrderTypes(data: GetIntegrationOrderTypesInput): Promise<GetIntegrationOrderTypesOutput>
 
-  getMarketplaceOrders(data: GetMarketplaceOrdersInput): Promise<GetMarketplaceOrdersOutput>
+  getIntegrationOrders(data: GetIntegrationOrdersInput): Promise<GetIntegrationOrdersOutput>
 
-  getMarketplaceWarehouses(data: GetMarketplaceWarehousesInput): Promise<GetMarketplaceWarehousesOutput>
+  getIntegrationWarehouses(data: GetIntegrationWarehousesInput): Promise<GetIntegrationWarehousesOutput>
 
   mapToMedusaOrders(data: MapToMedusaOrdersInput): Promise<MapToMedusaOrdersOutput>
 
-  mapToMarketplaceProducts(data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput>
+  mapToIntegrationProducts(data: MapToIntegrationProductsInput): Promise<MapToIntegrationProductsOutput>
 
   mapToMedusaProducts(data: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput>
 }
 
-export type MarketplaceProviderInput = {
-  marketplace: MarketplaceDTO
+export type IntegrationProviderInput = {
+  integration: IntegrationDTO
   container: MedusaContainer
   // data?: unknown  // if additional provider-specific data is required
 }
 
-export type ExportProductsInput = MarketplaceProviderInput & {
-  marketplaceProducts: unknown
+export type ExportProductsInput = IntegrationProviderInput & {
+  integrationProducts: unknown
 }
 
-export type GetProductsInput = MarketplaceProviderInput & {
+export type GetProductsInput = IntegrationProviderInput & {
   ids?: string[]
 }
 
-export type GetMarketplaceProductsInput = MarketplaceProviderInput & {
+export type GetIntegrationProductsInput = IntegrationProviderInput & {
   ids?: string[]
 }
 
-export type ImportProductsInput = MarketplaceProviderInput & {
+export type ImportProductsInput = IntegrationProviderInput & {
   products: ProductDTO[]
 }
 
-export type MapToMedusaOrdersInput = MarketplaceProviderInput & {
-  marketplaceOrders: Record<string, unknown>[]
+export type MapToMedusaOrdersInput = IntegrationProviderInput & {
+  integrationOrders: Record<string, unknown>[]
 }
 
-export type MapToMarketplaceProductsInput = MarketplaceProviderInput & {
+export type MapToIntegrationProductsInput = IntegrationProviderInput & {
   products: ProductDTO[]
 }
 
-export type MapToMedusaProductsInput = MarketplaceProviderInput & {
-  marketplaceProducts: any
+export type MapToMedusaProductsInput = IntegrationProviderInput & {
+  integrationProducts: any
 }
 
-export type GetMarketplaceOrderTypesInput = MarketplaceProviderInput
+export type GetIntegrationOrderTypesInput = IntegrationProviderInput
 
-export type GetMarketplaceOrdersInput = MarketplaceProviderInput & {
+export type GetIntegrationOrdersInput = IntegrationProviderInput & {
   orderType?: string
 }
 
-export type GetMarketplaceWarehousesInput = MarketplaceProviderInput
+export type GetIntegrationWarehousesInput = IntegrationProviderInput
 
 export type ExportProductsOutput = Record<string, unknown>
 
 export type GetProductsOutput = ProductDTO[]
 
-export type GetMarketplaceProductsOutput = MarketplaceProductDTO[]
+export type GetIntegrationProductsOutput = IntegrationProductDTO[]
 
 export type ImportProductsOutput = Record<string, unknown>
 
 export type MapToMedusaOrdersOutput = MedusaOrder[]
 
-export type MapToMarketplaceProductsOutput = Record<string, unknown>
+export type MapToIntegrationProductsOutput = Record<string, unknown>
 
 export type MapToMedusaProductsOutput = ProductDTO[] 
 
-export type GetMarketplaceOrderTypesOutput = string[]
+export type GetIntegrationOrderTypesOutput = string[]
 
-export type GetMarketplaceOrdersOutput = Record<string, unknown>[]
+export type GetIntegrationOrdersOutput = Record<string, unknown>[]
 
-export type GetMarketplaceWarehousesOutput = MarketplaceWarehouseType[]
+export type GetIntegrationWarehousesOutput = IntegrationWarehouseType[]
