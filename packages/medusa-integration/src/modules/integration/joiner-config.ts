@@ -1,23 +1,23 @@
 import { defineJoinerConfig } from "@medusajs/framework/utils"
-import Marketplace from "./models/marketplace"
-import MarketplaceEvent from "./models/marketplace-event"
-import MarketplaceExchangeProfile from "./models/marketplace-exchange-profile"
-import MarketplaceOrder from "./models/marketplace-order"
+import Integration from "./models/integration"
+import IntegrationEvent from "./models/integration-event"
+import IntegrationExchangeProfile from "./models/integration-exchange-profile"
+import IntegrationOrder from "./models/integration-order"
 
-export const joinerConfig = defineJoinerConfig("marketplace", {
-  models: [Marketplace, MarketplaceEvent, MarketplaceExchangeProfile, MarketplaceOrder],
+export const joinerConfig = defineJoinerConfig("integration", {
+  models: [Integration, IntegrationEvent, IntegrationExchangeProfile, IntegrationOrder],
   // alias: [
   //   {
-  //     name: ["marketplace", "marketplaces"],
-  //     args: { entity: "Marketplace" },
+  //     name: ["integration", "integrations"],
+  //     args: { entity: "Integration" },
   //   },
   //   {
-  //     name: ["marketplace_event", "marketplace_events"],
-  //     args: { entity: "MarketplaceEvent" },
+  //     name: ["integration_event", "integration_events"],
+  //     args: { entity: "IntegrationEvent" },
   //   },
   //   {
-  //     name: ["marketplace_exchange_profile", "marketplace_exchange_profiles"],
-  //     args: { entity: "MarketplaceExchangeProfile" },
+  //     name: ["integration_exchange_profile", "integration_exchange_profiles"],
+  //     args: { entity: "IntegrationExchangeProfile" },
   //   },
   // ],
 })

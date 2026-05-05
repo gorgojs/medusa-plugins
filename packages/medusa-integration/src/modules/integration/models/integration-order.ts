@@ -1,12 +1,12 @@
 import { model } from "@medusajs/framework/utils"
-import Marketplace from "./marketplace"
+import Integration from "./integration"
 
-const MarketplaceOrder = model.define("marketplace_order", {
+const IntegrationOrder = model.define("integration_order", {
   id: model.id({
-    prefix: "mporder"
+    prefix: "intorder"
   }).primaryKey(),
   order_id: model.text(),
-  marketplace: model.belongsTo(() => Marketplace, {
+  integration: model.belongsTo(() => Integration, {
     mappedBy: "orders",
   }),
   status: model.text(),
@@ -14,4 +14,4 @@ const MarketplaceOrder = model.define("marketplace_order", {
   data: model.json().default({})
 })
 
-export default MarketplaceOrder
+export default IntegrationOrder

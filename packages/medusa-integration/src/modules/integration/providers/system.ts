@@ -1,11 +1,11 @@
-import { AbstractMarketplaceProvider } from "../utils";
+import { AbstractIntegrationProvider } from "../utils";
 
-export class SystemMarketplaceProvider extends AbstractMarketplaceProvider {
+export class SystemIntegrationProvider extends AbstractIntegrationProvider {
   static identifier = "system"
 
   async get(): Promise<string> {
-    return "SystemMarketplaceProvider"
+    return "SystemIntegrationProvider"
   }
 }
 
-export default SystemMarketplaceProvider
+export default SystemIntegrationProvider

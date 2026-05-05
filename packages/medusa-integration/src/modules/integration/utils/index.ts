@@ -1,1 +1,1 @@
-export * from "./abstract-marketplace-provider"
+export * from "./abstract-integration-provider"

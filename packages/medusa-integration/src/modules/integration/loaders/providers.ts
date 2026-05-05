@@ -6,14 +6,14 @@ import {
   ModulesSdkTypes,
 } from "@medusajs/framework/types"
 import {
-  MarketplaceProviderRegistrationKey,
-  MarketplaceProviderRegistrationPrefix
+  IntegrationProviderRegistrationKey,
+  IntegrationProviderRegistrationPrefix
 } from "../types"
 
 import * as providers from "../providers"
 
 const registrationFn = async (klass, container, pluginOptions) => {
-  const key = `${MarketplaceProviderRegistrationPrefix}${klass.identifier}${
+  const key = `${IntegrationProviderRegistrationPrefix}${klass.identifier}${
     pluginOptions.id ? `_${pluginOptions.id}` : ""
   }`
 
@@ -23,7 +23,7 @@ const registrationFn = async (klass, container, pluginOptions) => {
     }),
   })
 
-  container.registerAdd(MarketplaceProviderRegistrationKey, asValue(key))
+  container.registerAdd(IntegrationProviderRegistrationKey, asValue(key))
 }
 
 export default async ({
@@ -35,7 +35,7 @@ export default async ({
     | ModulesSdkTypes.ModuleServiceInitializeCustomDataLayerOptions
   ) & { providers: ModuleProvider[] }
 >): Promise<void> => {
-  await registrationFn(providers.SystemMarketplaceProvider, container, {
+  await registrationFn(providers.SystemIntegrationProvider, container, {
     id: "default",
   })
 

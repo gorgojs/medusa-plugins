@@ -4,33 +4,33 @@ import {
   ExportProductsOutput,
   GetProductsInput,
   GetProductsOutput,
-  GetMarketplaceProductsInput,
-  GetMarketplaceProductsOutput,
-  IMarketplaceProvider,
+  GetIntegrationProductsInput,
+  GetIntegrationProductsOutput,
+  IIntegrationProvider,
   ImportProductsInput,
   ImportProductsOutput,
-  MapToMarketplaceProductsInput,
-  MapToMarketplaceProductsOutput,
+  MapToIntegrationProductsInput,
+  MapToIntegrationProductsOutput,
   MapToMedusaProductsInput,
   MapToMedusaProductsOutput,
-  GetMarketplaceWarehousesInput,
-  GetMarketplaceWarehousesOutput,
-  GetMarketplaceOrderTypesOutput,
-  GetMarketplaceOrderTypesInput,
-  GetMarketplaceOrdersInput,
-  GetMarketplaceOrdersOutput,
+  GetIntegrationWarehousesInput,
+  GetIntegrationWarehousesOutput,
+  GetIntegrationOrderTypesOutput,
+  GetIntegrationOrderTypesInput,
+  GetIntegrationOrdersInput,
+  GetIntegrationOrdersOutput,
   MapToMedusaOrdersInput,
   MapToMedusaOrdersOutput
 } from "../../../types"
-import { MarketplaceProviderRegistrationPrefix } from "../types"
+import { IntegrationProviderRegistrationPrefix } from "../types"
 import { Logger } from "@medusajs/framework/types"
 
 type InjectedDependencies = {
   logger?: Logger
-  [key: `${typeof MarketplaceProviderRegistrationPrefix}${string}`]: IMarketplaceProvider
+  [key: `${typeof IntegrationProviderRegistrationPrefix}${string}`]: IIntegrationProvider
 }
 
-export default class MarketplaceProviderService {
+export default class IntegrationProviderService {
   protected dependencies: InjectedDependencies
   #logger: Logger
 
@@ -41,19 +41,19 @@ export default class MarketplaceProviderService {
       : (console as unknown as Logger)
   }
 
-  retrieveProvider(providerId: string): IMarketplaceProvider {
+  retrieveProvider(providerId: string): IIntegrationProvider {
     try {
-      return this.dependencies[providerId as any] as IMarketplaceProvider
+      return this.dependencies[providerId as any] as IIntegrationProvider
     } catch (err) {
       if (err instanceof AwilixResolutionError) {
         const errMessage = `
-Unable to retrieve the marketplace provider with id: ${providerId}
+Unable to retrieve the integration provider with id: ${providerId}
 Please make sure that the provider is registered in the container and it is configured correctly in your project configuration file.`
 
         throw new Error(errMessage)
       }
 
-      const errMessage = `Unable to retrieve the marketplace provider with id: ${providerId}, the following error occurred: ${err instanceof Error ? err.message : String(err)}`
+      const errMessage = `Unable to retrieve the integration provider with id: ${providerId}, the following error occurred: ${err instanceof Error ? err.message : String(err)}`
       this.#logger.error(errMessage)
 
       throw new Error(errMessage)
@@ -61,7 +61,7 @@ Please make sure that the provider is registered in the container and it is conf
   }
 
   getProvidersList(): string[] {
-    const prefix = MarketplaceProviderRegistrationPrefix
+    const prefix = IntegrationProviderRegistrationPrefix
     return Object.keys(this.dependencies).filter(key => key.startsWith(prefix))
   }
 
@@ -83,40 +83,40 @@ Please make sure that the provider is registered in the container and it is conf
     return provider.getProducts(input)
   }
 
-  async getMarketplaceProducts(
+  async getIntegrationProducts(
     providerId: string,
-    input: GetMarketplaceProductsInput
-  ): Promise<GetMarketplaceProductsOutput> {
+    input: GetIntegrationProductsInput
+  ): Promise<GetIntegrationProductsOutput> {
     const provider = this.retrieveProvider(providerId)
 
-    return provider.getMarketplaceProducts(input)
+    return provider.getIntegrationProducts(input)
   }
 
-  async getOrderTypes(
+  async getIntegrationOrderTypes(
     providerId: string,
-    input: GetMarketplaceOrderTypesInput
-  ): Promise<GetMarketplaceOrderTypesOutput> {
+    input: GetIntegrationOrderTypesInput
+  ): Promise<GetIntegrationOrderTypesOutput> {
     const provider = this.retrieveProvider(providerId)
 
-    return provider.getMarketplaceOrderTypes(input)
+    return provider.getIntegrationOrderTypes(input)
   }
 
-  async getMarketplaceOrders(
+  async getIntegrationOrders(
     providerId: string,
-    input: GetMarketplaceOrdersInput
-  ): Promise<GetMarketplaceOrdersOutput> {
+    input: GetIntegrationOrdersInput
+  ): Promise<GetIntegrationOrdersOutput> {
     const provider = this.retrieveProvider(providerId)
 
-    return provider.getMarketplaceOrders(input)
+    return provider.getIntegrationOrders(input)
   }
 
   async getWarehouses(
     providerId: string,
-    input: GetMarketplaceWarehousesInput
-  ): Promise<GetMarketplaceWarehousesOutput> {
+    input: GetIntegrationWarehousesInput
+  ): Promise<GetIntegrationWarehousesOutput> {
     const provider = this.retrieveProvider(providerId)
 
-    return provider.getMarketplaceWarehouses(input)
+    return provider.getIntegrationWarehouses(input)
   }
 
   async importProducts(
@@ -137,13 +137,13 @@ Please make sure that the provider is registered in the container and it is conf
     return provider.mapToMedusaOrders(input)
   }
 
-  async mapToMarketplaceProducts(
+  async mapToIntegrationProducts(
     providerId: string,
-    input: MapToMarketplaceProductsInput
-  ): Promise<MapToMarketplaceProductsOutput> {
+    input: MapToIntegrationProductsInput
+  ): Promise<MapToIntegrationProductsOutput> {
     const provider = this.retrieveProvider(providerId)
 
-    return provider.mapToMarketplaceProducts(input)
+    return provider.mapToIntegrationProducts(input)
   }
 
   async mapToMedusaProducts(

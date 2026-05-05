@@ -1,16 +1,16 @@
 import { model } from "@medusajs/framework/utils"
-import Marketplace from "./marketplace"
+import Integration from "./integration"
 
-const MarketplaceEvent = model.define("marketplace_event", {
+const IntegrationEvent = model.define("integration_event", {
   id: model.id({
-    prefix: "mpevent"
+    prefix: "intevent"
   }).primaryKey(),
-  marketplace: model.belongsTo(() => Marketplace, {
+  integration: model.belongsTo(() => Integration, {
     mappedBy: "events",
   }),
   correlation_id: model.text().nullable(),
   direction: model.enum([
-    "MEDUSA_TO_MARKETPLACE", "MARKETPLACE_TO_MEDUSA",
+    "MEDUSA_TO_INTEGRATION", "INTEGRATION_TO_MEDUSA",
   ]),
   entity_type: model.enum([
     "PRODUCT", "PRODUCT_MEDIA", "PRODUCT_PRICE", "PRODUCT_STOCK", "ORDER",
@@ -24,4 +24,4 @@ const MarketplaceEvent = model.define("marketplace_event", {
   response_data: model.json().default({})
 })
 
-export default MarketplaceEvent
+export default IntegrationEvent

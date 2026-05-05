@@ -1,1 +1,1 @@
-export { SystemMarketplaceProvider } from "./system"
+export { SystemIntegrationProvider } from "./system"

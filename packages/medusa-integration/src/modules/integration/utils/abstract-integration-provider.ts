@@ -3,26 +3,26 @@ import {
   ExportProductsOutput,
   GetProductsInput,
   GetProductsOutput,
-  GetMarketplaceProductsInput,
-  GetMarketplaceProductsOutput,
-  IMarketplaceProvider,
+  GetIntegrationProductsInput,
+  GetIntegrationProductsOutput,
+  IIntegrationProvider,
   ImportProductsInput,
   ImportProductsOutput,
-  MapToMarketplaceProductsInput,
-  MapToMarketplaceProductsOutput,
+  MapToIntegrationProductsInput,
+  MapToIntegrationProductsOutput,
   MapToMedusaProductsInput,
   MapToMedusaProductsOutput,
-  GetMarketplaceWarehousesInput,
-  GetMarketplaceWarehousesOutput,
-  GetMarketplaceOrderTypesInput,
-  GetMarketplaceOrderTypesOutput,
-  GetMarketplaceOrdersInput,
-  GetMarketplaceOrdersOutput,
+  GetIntegrationWarehousesInput,
+  GetIntegrationWarehousesOutput,
+  GetIntegrationOrderTypesInput,
+  GetIntegrationOrderTypesOutput,
+  GetIntegrationOrdersInput,
+  GetIntegrationOrdersOutput,
   MapToMedusaOrdersInput,
   MapToMedusaOrdersOutput
 } from "../../../types"
 
-export class AbstractMarketplaceProvider implements IMarketplaceProvider {
+export class AbstractIntegrationProvider implements IIntegrationProvider {
   static identifier: string
   static validateOptions(options: Record<any, any>): void | never { }
 
@@ -30,15 +30,15 @@ export class AbstractMarketplaceProvider implements IMarketplaceProvider {
     return (this.constructor as any).identifier
   }
 
-  async getMarketplaceOrderTypes(data: GetMarketplaceOrderTypesInput): Promise<GetMarketplaceOrderTypesOutput> {
+  async getIntegrationOrderTypes(data: GetIntegrationOrderTypesInput): Promise<GetIntegrationOrderTypesOutput> {
     throw Error("getOrderTypes must be overridden by the child class")
   }
 
-  async getMarketplaceOrders(data: GetMarketplaceOrdersInput): Promise<GetMarketplaceOrdersOutput> {
+  async getIntegrationOrders(data: GetIntegrationOrdersInput): Promise<GetIntegrationOrdersOutput> {
     throw Error("getOrders must be overridden by the child class")
   }
 
-  async getMarketplaceWarehouses(data: GetMarketplaceWarehousesInput): Promise<GetMarketplaceWarehousesOutput> {
+  async getIntegrationWarehouses(data: GetIntegrationWarehousesInput): Promise<GetIntegrationWarehousesOutput> {
     throw Error("getWarehouses must be overridden by the child class")
   }
 
@@ -50,8 +50,8 @@ export class AbstractMarketplaceProvider implements IMarketplaceProvider {
     throw Error("getProducts must be overridden by the child class")
   }
 
-  async getMarketplaceProducts(data: GetMarketplaceProductsInput): Promise<GetMarketplaceProductsOutput> {
-    throw Error("getMarketplaceProducts must be overridden by the child class")
+  async getIntegrationProducts(data: GetIntegrationProductsInput): Promise<GetIntegrationProductsOutput> {
+    throw Error("getIntegrationProducts must be overridden by the child class")
   }
 
   async importProducts(data: ImportProductsInput): Promise<ImportProductsOutput> {
@@ -62,8 +62,8 @@ export class AbstractMarketplaceProvider implements IMarketplaceProvider {
     throw Error("mapToMedusaOrders must be overridden by the child class")
   }
 
-  async mapToMarketplaceProducts(data: MapToMarketplaceProductsInput): Promise<MapToMarketplaceProductsOutput> {
-    throw Error("mapToMarketplaceProducts must be overridden by the child class")
+  async mapToIntegrationProducts(data: MapToIntegrationProductsInput): Promise<MapToIntegrationProductsOutput> {
+    throw Error("mapToIntegrationProducts must be overridden by the child class")
   }
 
   async mapToMedusaProducts(data: MapToMedusaProductsInput): Promise<MapToMedusaProductsOutput> {
