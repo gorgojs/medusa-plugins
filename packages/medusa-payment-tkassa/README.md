@@ -61,6 +61,18 @@ T-Kassa Payments by T-Bank for Medusa
 
 T-Kassa is an internet acquiring service by T-Bank (formerly Tinkoff Bank), one of Russia's largest digital banks. It lets online stores accept card payments, SBP (Faster Payments System), T-Pay, SberPay, Alfa Pay, Mir Pay, and more. Learn more at the <a href="https://www.tbank.ru/business/online-payments/internet-acquiring/" target="_blank">T-Bank website</a>.
 
+## Who uses our plugin?
+
+<p>
+  <a href="https://solidno.shop/">
+    <img src="https://static.gorgojs.com/www/medusa-cases/solidno/solidno-logo.svg" width="40" height="40" hspace="10" align="left" alt="solidno.shop logo"/>
+  </a>
+  <strong><a href="https://solidno.shop/">solidno.shop</a></strong><br/>
+  Men's clothing brand
+</p>
+
+Want to add your project to this list? Make a [Pull Request](https://github.com/gorgojs/medusa-plugins#contribution) or write to [support chat](https://t.me/gorgojs_bot) on Telegram.
+
 ## 💬  Support & Community
 
 Got questions or ideas about the plugin? Join the Telegram support chat — [@medusajs_tkassa](https://t.me/medusajs_tkassa)
