@@ -5,6 +5,7 @@ import HeadingLink from "./components/mdx/heading-link";
 import { TypeList } from "@/components/ui/type-list";
 import { MedusaTypeList } from "@/components/medusa-type-list";
 import { Note } from "@/components/mdx/note";
+import { UsedByList } from "@/components/mdx/usedby-list";
 
 const components: MDXComponents = {
   h1: ({ children, className, ...props }) => {
@@ -74,6 +75,7 @@ const components: MDXComponents = {
   TypeList,
   MedusaTypeList,
   Note,
+  UsedByList,
 };
 
 export function useMDXComponents(): MDXComponents {

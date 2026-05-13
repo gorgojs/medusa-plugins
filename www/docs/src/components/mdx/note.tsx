@@ -25,9 +25,9 @@ const PUNCTUATIONS = [".", ":", ";", ",", "!", "?"];
 export function Note({ type = "default", title, children, forceMultiline = false }: NoteProps) {
   const t = useTranslations("components.note");
 
-  const resolvedTitle = title ?? t(type);
+  const resolvedTitle = title === "" ? "" : (title ?? t(type));
   const lastChar = resolvedTitle.charAt(resolvedTitle.length - 1);
-  const showColon = !PUNCTUATIONS.includes(lastChar);
+  const showColon = resolvedTitle.length > 0 && !PUNCTUATIONS.includes(lastChar);
 
   return (
     <div
@@ -39,10 +39,12 @@ export function Note({ type = "default", title, children, forceMultiline = false
     >
       <span className={cn("rounded-full w-docs_0.25 shrink-0", INDICATOR_CLASSES[type])} />
       <div className="flex-1 min-w-0 text-compact-small text-medusa-fg-subtle [&_ol]:!mb-0 [&_ul]:!mb-0">
-        <span className="text-compact-small-plus text-medusa-fg-base font-medium">
-          {resolvedTitle}
-          {showColon ? ":" : ""}&nbsp;
-        </span>
+        {resolvedTitle.length > 0 && (
+          <span className="text-compact-small-plus text-medusa-fg-base font-medium">
+            {resolvedTitle}
+            {showColon ? ":" : ""}&nbsp;
+          </span>
+        )}
         <span
           className={cn(
             forceMultiline
