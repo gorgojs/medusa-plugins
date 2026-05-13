@@ -33,9 +33,12 @@ import {
   stringToNumberHash
 } from "../utils"
 import { createHash } from "crypto"
+import { createTelemetryClient } from "@gorgo/telemetry"
 
 abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
   static identifier = "robokassa"
+  private static telemetry_ = createTelemetryClient({ packageDir: __dirname })
+
   protected options_: RobokassaOptions
   protected logger_: Logger
   protected baseUrl_ = "https://auth.robokassa.ru"
@@ -44,6 +47,8 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
   protected capturePaymentUrl_ = `${this.baseUrl_}/Merchant/Payment/Confirm`
 
   static validateOptions(options: RobokassaOptions): void {
+    RobokassaBase.telemetry_.track("plugin.started")
+
     if (!isDefined(options.merchantLogin)) {
       throw new Error("Required option `merchantLogin` is missing in Robokassa provider")
     }
