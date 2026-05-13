@@ -36,20 +36,25 @@ import {
   getAmountFromSmallestUnit,
   getSmallestUnit,
 } from "../utils"
+import { createTelemetryClient } from "@gorgo/telemetry"
 
 abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
   static identifier = "tkassa"
+  private static telemetry_ = createTelemetryClient({ packageDir: __dirname })
+
   protected serverUrl_ = "https://securepay.tinkoff.ru"
   protected options_: TKassaOptions
   protected client_: TKassa
   protected logger_: Logger
 
   static validateOptions(options: TKassaOptions): void {
+    TkassaBase.telemetry_.track("plugin.started")
+    
     if (!isDefined(options.terminalKey)) {
       throw new Error("Required option `terminalKey` is missing in T-Kassa provider")
     }
     if (!isDefined(options.password)) {
-      throw new Error("Required option `password` is missing in T-Kassa provider")
+      throw new Error("Required option `password` is missing in T-Kassa provider")  
     }
     if (isDefined(options.useReceipt)) {
       if (!isDefined(options.taxation)) {
