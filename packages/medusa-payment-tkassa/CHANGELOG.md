@@ -1,5 +1,11 @@
 # @gorgo/medusa-payment-tkassa
 
+## 0.4.0
+
+### Minor Changes
+
+- [#249](https://github.com/gorgojs/medusa-plugins/pull/249) [`7f4fca9`](https://github.com/gorgojs/medusa-plugins/commit/7f4fca92882ec00ae3c17d3e61eaee742a073f64) Thanks [@gorgohead](https://github.com/gorgohead)! - add telemetry
+
 ## 0.3.22
 
 ### Patch Changes
