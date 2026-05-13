@@ -60,17 +60,17 @@
 
 Т-Касса — сервис интернет-эквайринга от Т-Банка (ранее Тинькофф Банк), одного из крупнейших цифровых банков России. Позволяет интернет-магазинам принимать оплату картами, через CБП, T-Pay, SberPay, Alfa Pay, Mir Pay и другими способами. Подробнее на <a href="https://www.tbank.ru/business/online-payments/internet-acquiring/" target="_blank">сайте Т-Банка</a>.
 
-## Кто использует наш плагин?
+## Кто использует этот плагин
 
 <p>
   <a href="https://solidno.shop/">
-    <img src="https://static.gorgojs.com/www/medusa-cases/solidno/solidno-logo.svg" width="40" height="40" hspace="10" align="left" alt="Логотип solidno.shop"/>
+    <img src="https://static.gorgojs.com/www/medusa-cases/solidno/solidno-logo.svg" width="50" hspace="5" align="left" alt="Логотип solidno.shop"/>
   </a>
-  <strong><a href="https://solidno.shop/">solidno.shop</a></strong><br/>
-  Бренд мужской одежды
+  <b>Solidno</b><br/>
+  <a href="https://solidno.shop/">solidno.shop</a> · Бренд мужской одежды
 </p>
 
-Хотите добавить ваш проект в этот список? Сделайте [Pull Request](https://github.com/gorgojs/medusa-plugins#contribution) или напишите в [чат поддержки](https://t.me/gorgojs_bot) в Telegram.
+**Хотите добавить ваш проект в этот список?** Сделайте [Pull Request](https://github.com/gorgojs/medusa-plugins#contribution) или напишите в [чат поддержки](https://t.me/gorgojs_bot) в Telegram.
 
 ## 💬  Поддержка и сообщество
 

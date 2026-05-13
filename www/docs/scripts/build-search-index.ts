@@ -136,6 +136,7 @@ async function mdxToPlainText(
       MedusaTypeList: SearchIndexTypeList,
       Note: ({ children }: { children?: ReactNode }) =>
         createElement("div", null, children),
+      UsedByList: () => createElement("div", null),
     },
     options: {
       parseFrontmatter: true,
