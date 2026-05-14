@@ -1,7 +1,10 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import { Logger } from "@medusajs/framework/types"
 import { getWbApi } from "../../../lib/wildberries-client"
 import { ContentV2CardsUploadAddPostRequest, CreatingProductCardsApi } from "../../../lib/wildberries-products-client"
 import { IntegrationWildberriesCredentialsType } from "../../../providers/integration-wildberries/types"
+
 
 export type MergeProductCardsStepInput = {
   productCards: Array<ContentV2CardsUploadAddPostRequest>,
@@ -13,7 +16,7 @@ export const mergeProductCardsStepId = "merge-product-cards"
 export const mergeProductCardsStep = createStep(
   mergeProductCardsStepId,
   async (input: MergeProductCardsStepInput, { container }) => {
-    const logger = container.resolve("logger")
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
     const productCards = input.productCards
 
     const creatingProductsApi = getWbApi("CreatingProductCards", input.credentials) as CreatingProductCardsApi

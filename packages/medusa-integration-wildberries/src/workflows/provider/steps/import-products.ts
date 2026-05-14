@@ -1,8 +1,11 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { batchProductsWorkflow, batchProductVariantsWorkflow } from "@medusajs/medusa/core-flows"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import { Query } from "@medusajs/framework/types"
 import { getWbApi } from "../../../lib/wildberries-client"
 import { IntegrationWildberriesCredentialsType } from "../../../providers/integration-wildberries/types"
 import { ProductCardsApi } from "../../../lib/wildberries-products-client"
+
 
 export type ImportProductsStepInput = {
   credentials: IntegrationWildberriesCredentialsType
@@ -13,7 +16,7 @@ export const importProductsStepId = "import-products"
 export const importProductsStep = createStep(
   importProductsStepId,
   async (input: ImportProductsStepInput, { container }) => {
-    const query = container.resolve("query")
+    const query = container.resolve<Query>(ContainerRegistrationKeys.QUERY)
 
     const updatedVariantsIds: string[] = []
     const updatedProductsIds: string[] = []

@@ -41,7 +41,6 @@ module.exports = defineConfig({
           alias: [
             { find: /^react$/, replacement: require.resolve("react") },
             { find: /^react-dom$/, replacement: require.resolve("react-dom") },
-            // Добавляем эту строку:
             { find: /^@tanstack\/react-query$/, replacement: require.resolve("@tanstack/react-query") },
             { find: /^react-router-dom$/, replacement: require.resolve("react-router-dom") },
           ],

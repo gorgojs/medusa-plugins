@@ -2,6 +2,10 @@ import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { getWbApi } from "../../../lib/wildberries-client"
 import { ContentV2CardsUploadPostRequestInner, CreatingProductCardsApi } from "../../../lib/wildberries-products-client"
 import { IntegrationWildberriesCredentialsType } from "../../../providers/integration-wildberries/types"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import {
+  Logger,
+} from "@medusajs/framework/types"
 
 const BATCH_SIZE = 100
 
@@ -15,7 +19,7 @@ export const createProductsStepId = "create-products"
 export const createProductsStep = createStep(
   createProductsStepId,
   async (input: CreateProductsStepInput, { container }) => {
-    const logger = container.resolve("logger")
+    const logger = container.resolve<Logger>(ContainerRegistrationKeys.LOGGER)
     const products = input.products
 
     const creatingProductsApi = getWbApi("CreatingProductCards", input.credentials) as CreatingProductCardsApi
