@@ -1,5 +1,11 @@
 # @gorgo/medusa-feed-yandex
 
+## 0.2.27
+
+### Patch Changes
+
+- [#253](https://github.com/gorgojs/medusa-plugins/pull/253) [`98e79cd`](https://github.com/gorgojs/medusa-plugins/commit/98e79cd66117c0be832c4cafa265d2653d1754cc) Thanks [@ttokyose](https://github.com/ttokyose)! - add plugins logo
+
 ## 0.2.26
 
 ### Patch Changes
