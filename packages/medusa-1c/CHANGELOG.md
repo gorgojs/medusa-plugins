@@ -1,5 +1,11 @@
 # @gorgo/medusa-1c
 
+## 0.1.5
+
+### Patch Changes
+
+- [`6586436`](https://github.com/gorgojs/medusa-plugins/commit/65864366a1e75568cd70f4674e73789f30f527fa) Thanks [@gorgohead](https://github.com/gorgohead)! - align telemetry
+
 ## 0.1.4
 
 ### Patch Changes
