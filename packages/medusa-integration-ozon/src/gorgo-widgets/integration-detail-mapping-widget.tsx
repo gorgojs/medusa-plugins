@@ -12,7 +12,7 @@ const IntegrationDetailMappingWidget = ({
 }
 
 export const config = {
-  zone: ["integration.details.after",]
+  zone: ["integration.details.after"]
 }
 
 export default IntegrationDetailMappingWidget

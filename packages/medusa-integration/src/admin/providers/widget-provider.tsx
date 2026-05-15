@@ -3,7 +3,7 @@ import widgetModule from "virtual:gorgo/widgets"
 import { IntegrationInjectionZone, WidgetConfig } from "../../types"
 
 type WidgetApi = {
-  getWidgets: (zone: IntegrationInjectionZone) => React.ComponentType<any>[]
+  getWidgets: (zone: IntegrationInjectionZone, providerFilter?: string) => React.ComponentType<any>[]
 }
 
 const WidgetContext = createContext<WidgetApi | null>(null)
@@ -15,12 +15,12 @@ export const useWidgets = () => {
 }
 
 function buildWidgetMap(widgetConfigs: WidgetConfig[] = []) {
-  const map = new Map<IntegrationInjectionZone, React.ComponentType<any>[]>()
+  const map = new Map<IntegrationInjectionZone, WidgetConfig[]>()
   widgetConfigs.forEach((cfg) => {
     (cfg.zone || []).forEach((zone) => {
       const list = map.get(zone)
-      if (!list) map.set(zone, [cfg.Component])
-      else list.push(cfg.Component)
+      if (!list) map.set(zone, [cfg])
+      else list.push(cfg)
     })
   })
   return map
@@ -31,7 +31,13 @@ export function WidgetProvider({ children }: PropsWithChildren<{}>) {
 
   const api = useMemo<WidgetApi>(() => {
     return {
-      getWidgets: (zone: IntegrationInjectionZone) => widgetMap.get(zone) || [],
+      getWidgets: (zone: IntegrationInjectionZone, providerFilter?: string) => {
+        const configs = widgetMap.get(zone) || []
+        const filtered = providerFilter
+          ? configs.filter((cfg) => !cfg.provider || providerFilter.startsWith(`int_${cfg.provider}`))
+          : configs
+        return filtered.map((cfg) => cfg.Component)
+      },
     }
   }, [widgetMap])
 

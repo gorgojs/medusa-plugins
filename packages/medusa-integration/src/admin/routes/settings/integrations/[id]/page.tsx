@@ -26,6 +26,7 @@ const IntegrationDetail = () => {
           sideBefore: "integration.details.side.before",
           sideAfter: "integration.details.side.after",
         }}
+        providerFilter={integration.provider_id}
         data={integration}
         showJSON={true}
         firstCol={

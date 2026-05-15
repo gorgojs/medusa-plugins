@@ -16,6 +16,7 @@ export interface PageProps<TData> {
   widgets: WidgetProps
   data?: TData
   showJSON?: boolean
+  providerFilter?: string
 }
 
 export const TwoColumnPageWithWidgets = <TData,>({
@@ -30,6 +31,10 @@ export const TwoColumnPageWithWidgets = <TData,>({
    * Whether to show JSON view of the data. Defaults to false.
    */
   showJSON,
+  /**
+   * If set, only widgets whose `.provider` matches this integration provider_id are rendered.
+   */
+  providerFilter,
 }: PageProps<TData>) => {
   const { before, after, sideBefore, sideAfter } = widgets
   const widgetProps = { data }
@@ -48,22 +53,22 @@ export const TwoColumnPageWithWidgets = <TData,>({
     <div className="flex flex-col gap-y-3">
       <div className="flex flex-col gap-y-3 xl:flex-row xl:gap-x-4 xl:items-start">
         <div className="flex w-full flex-col gap-y-3">
-          {getWidgets(before).map((Component, i) => (
+          {getWidgets(before, providerFilter).map((Component, i) => (
             <Component {...widgetProps} key={`before-${i}`} />
           ))}
           {firstCol}
-          {getWidgets(after).map((Component, i) => (
+          {getWidgets(after, providerFilter).map((Component, i) => (
             <Component {...widgetProps} key={`after-${i}`} />
           ))}
           {showJSON && <JsonViewSection data={data!} />}
         </div>
 
         <div className="flex w-full max-w-[100%] flex-col gap-y-3 xl:mt-0 xl:max-w-[440px]">
-          {getWidgets(sideBefore).map((Component, i) => (
+          {getWidgets(sideBefore, providerFilter).map((Component, i) => (
             <Component {...widgetProps} key={`side-before-${i}`} />
           ))}
           {secondCol}
-          {getWidgets(sideAfter).map((Component, i) => (
+          {getWidgets(sideAfter, providerFilter).map((Component, i) => (
             <Component {...widgetProps} key={`side-after-${i}`} />
           ))}
         </div>

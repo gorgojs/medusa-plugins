@@ -11,11 +11,12 @@ import {
   traverse,
 } from "../babel"
 import { getParserOptions, hasDefaultExport, normalizePath } from "../utils"
-import { getWidgetFilesFromSources, transformPath } from "./helpers"
+import { getWidgetFilesFromSourcesWithProvider, transformPath } from "./helpers"
 
 type WidgetConfig = {
   Component: string
   zone: IntegrationInjectionZone[]
+  provider?: string
 }
 
 type ParsedWidgetConfig = {
@@ -24,8 +25,14 @@ type ParsedWidgetConfig = {
 }
 
 export async function generateWidgets(sources: Set<string>) {
-  const files = await getWidgetFilesFromSources(sources)
-  const results = await getWidgetResults(files)
+  const sourceGroups = await getWidgetFilesFromSourcesWithProvider(sources)
+
+  // Flatten into {file, provider} pairs preserving per-source provider
+  const fileEntries = sourceGroups.flatMap(({ files, provider }) =>
+    files.map((file) => ({ file, provider }))
+  )
+
+  const results = await getWidgetResults(fileEntries)
 
   const imports = results.map((r) => r.import)
   const code = generateCode(results)
@@ -37,11 +44,11 @@ export async function generateWidgets(sources: Set<string>) {
 }
 
 async function getWidgetResults(
-  files: string[]
+  entries: { file: string; provider?: string }[]
 ): Promise<ParsedWidgetConfig[]> {
-  return (await Promise.all(files.map(parseFile))).filter(
-    (r) => r !== null
-  ) as ParsedWidgetConfig[]
+  return (
+    await Promise.all(entries.map(({ file, provider }, index) => parseFile(file, index, provider)))
+  ).filter((r) => r !== null) as ParsedWidgetConfig[]
 }
 
 function generateCode(results: ParsedWidgetConfig[]): string {
@@ -53,17 +60,19 @@ function generateCode(results: ParsedWidgetConfig[]): string {
 }
 
 function formatWidget(widget: WidgetConfig): string {
+  const providerPart = widget.provider ? `,\n        provider: "${widget.provider}"` : ""
   return `
     {
         Component: ${widget.Component},
-        zone: [${widget.zone.map((z) => `"${z}"`).join(", ")}]
+        zone: [${widget.zone.map((z) => `"${z}"`).join(", ")}]${providerPart}
     }
   `
 }
 
 async function parseFile(
   file: string,
-  index: number
+  index: number,
+  provider?: string
 ): Promise<ParsedWidgetConfig | null> {
   const code = await fs.readFile(file, "utf-8")
   let ast: ParseResult<File>
@@ -114,7 +123,7 @@ async function parseFile(
   console.log("Widget loaded: ", file)
 
   const import_ = generateImport(file, index)
-  const widget = generateWidget(zone, index)
+  const widget = generateWidget(zone, index, provider)
 
   return {
     widget,
@@ -137,10 +146,11 @@ function generateImport(file: string, index: number): string {
   )}, { config as ${generateWidgetConfigName(index)} } from "${path}"`
 }
 
-function generateWidget(zone: IntegrationInjectionZone[], index: number): WidgetConfig {
+function generateWidget(zone: IntegrationInjectionZone[], index: number, provider?: string): WidgetConfig {
   return {
     Component: generateWidgetComponentName(index),
     zone: zone,
+    provider,
   }
 }
 
