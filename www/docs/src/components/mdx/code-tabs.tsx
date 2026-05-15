@@ -116,7 +116,7 @@ export function CodeTabs({ children }: CodeTabsProps) {
                 ref={(el) => { tabRefs.current[i] = el; }}
                 onClick={() => setSelectedValue(tab.value)}
                 className={cn(
-                  "txt-compact-xsmall pb-4 transition-colors shrink-0",
+                  "txt-compact-xsmall pb-4 transition-colors shrink-0 cursor-pointer",
                   isActive
                     ? "text-medusa-contrast-fg-primary"
                     : "text-medusa-contrast-fg-secondary hover:text-medusa-contrast-fg-primary"
