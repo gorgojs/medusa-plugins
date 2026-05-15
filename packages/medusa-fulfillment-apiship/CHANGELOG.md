@@ -1,5 +1,11 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 0.5.3
+
+### Patch Changes
+
+- [`6586436`](https://github.com/gorgojs/medusa-plugins/commit/65864366a1e75568cd70f4674e73789f30f527fa) Thanks [@gorgohead](https://github.com/gorgohead)! - align telemetry
+
 ## 0.5.2
 
 ### Patch Changes
