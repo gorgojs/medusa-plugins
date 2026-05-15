@@ -122,7 +122,7 @@ export default async function DynamicDocsPage({ params }: PageProps) {
           <Breadcrumbs
             section={section}
             baseSlugs={baseSlugs}
-            className="hidden xl:flex lg:mb-3"
+            className="hidden xl:flex lg:mb-6"
           />
           <div className="prose txt-medium" suppressHydrationWarning={true}>
             <Post />
