@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
+import { EditButton } from "@/components/layout/edit-button";
 import PaginationCards from "@/components/layout/pagination-cards";
+import editDates from "@/generated/edit-dates.json";
 import PluginLinks from "@/components/layout/plugin-links";
 import PluginStats from "@/components/layout/plugin-stats";
 import RightSidebar from "@/components/layout/right-sidebar";
@@ -126,6 +128,11 @@ export default async function DynamicDocsPage({ params }: PageProps) {
             <Post />
           </div>
           <PaginationCards section={section} baseSlugs={baseSlugs} />
+          <EditButton
+            filePath={`/www/docs/src/app/%5Blocale%5D/(docs)/${path}/${locale}.mdx`}
+            editDate={(editDates as Record<string, string>)[`src/app/[locale]/(docs)/${path}/${locale}.mdx`]}
+            locale={locale}
+          />
         </div>
       </div>
       <nav className="h-full realtive sticky md:top-24 xl:top-14">
