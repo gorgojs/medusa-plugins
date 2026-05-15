@@ -8,6 +8,7 @@ const PATHS_TO_DIR = ['packages', 'packages/utils']
 const BUMP_BY_TYPE = {
   feat:     'minor',
   fix:      'patch',
+  chore:    'patch',
   perf:     'patch',
   refactor: 'patch',
   docs:     'patch',
