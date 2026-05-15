@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://docs.gorgojs.com/medusa-plugins/robokassa">
-    <img alt="Medusa-Robokassa logo" src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/robokassa-medusa-logo.png" width="270">
+    <img alt="Medusa-Robokassa logo" src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/robokassa-medusa-logo.svg" width="270">
   </a>
 </p>
 

@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://docs.gorgojs.ru/medusa-plugins/1c-enterprise">
-    <img alt="Medusa-1C logo" src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/1c-medusa-logo.png" width="270">
+    <img alt="Medusa-1C logo" src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/1c-medusa-logo.svg" width="270">
   </a>
 </p>
 

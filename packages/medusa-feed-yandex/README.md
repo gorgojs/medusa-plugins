@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://docs.gorgojs.com/medusa-plugins/yandex-yml-feed">
-    <img alt="Medusa-Yandex Market logo" src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/yandex-medusa-logo.png" width="270">
+    <img alt="Medusa-Yandex Market logo" src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/yandex-medusa-logo.svg" width="270">
   </a>
 </p>
 

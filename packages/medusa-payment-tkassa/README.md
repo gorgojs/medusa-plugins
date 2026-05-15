@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://docs.gorgojs.com/medusa-plugins/t-kassa">
-    <img alt="Medusa-T-Kassa logo" src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/tkassa-medusa-logo.png" width="270">
+    <img alt="Medusa-T-Kassa logo" src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/tkassa-medusa-logo.svg" width="270">
   </a>
 </p>
 
