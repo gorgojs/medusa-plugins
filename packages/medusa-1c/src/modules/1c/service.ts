@@ -1,9 +1,17 @@
 import { MedusaService } from "@medusajs/framework/utils"
+import { createTelemetryClient } from "@gorgo/telemetry"
 import { Onec } from "./models/onec"
 
 class OnecService extends MedusaService({
 	Onec,
 }) {
+	private static telemetry_ = createTelemetryClient({ packageDir: __dirname })
+
+	constructor(...args: any[]) {
+		super(...args)
+		OnecService.telemetry_.track("plugin.started")
+	}
+
 	async updateSettings(data) {
 		try {
 			const settings = await super.retrieveOnec("1");

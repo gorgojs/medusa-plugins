@@ -49,6 +49,7 @@
 		"prepublishOnly": "medusa plugin:build"
 	},
 	"dependencies": {
+		"@gorgo/telemetry": "^1.0.0",
 		"commerceml-parser": "^3.0.3",
 		"lodash": "^4.17.21",
 		"sluga": "^0.2.1",

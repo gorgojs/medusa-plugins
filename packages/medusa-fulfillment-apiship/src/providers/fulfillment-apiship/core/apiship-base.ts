@@ -2,6 +2,7 @@ import {
   AbstractFulfillmentProviderService,
   isDefined
 } from "@medusajs/framework/utils"
+import { createTelemetryClient } from "@gorgo/telemetry"
 import {
   Logger,
   CalculateShippingOptionPriceDTO,
@@ -43,7 +44,12 @@ type InjectedDependencies = {
 import axios, { AxiosError } from "axios"
 
 class ApishipBase extends AbstractFulfillmentProviderService {
+  private static telemetry_ = createTelemetryClient({ packageDir: __dirname })
   protected logger_: Logger
+
+  static validateOptions(): void {
+    ApishipBase.telemetry_.track("plugin.started")
+  }
 
   constructor({ logger }: InjectedDependencies, _options: unknown) {
     super()
