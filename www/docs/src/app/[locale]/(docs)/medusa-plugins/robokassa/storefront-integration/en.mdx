@@ -21,7 +21,7 @@ Open [`src/lib/constants.tsx`](https://github.com/gorgojs/medusa-plugins/blob/f2
 
 ![Directory structure in the Medusa Storefront after updating the file for constants](https://github.com/user-attachments/assets/0aee001e-958f-40c6-b329-618e318ff019)
 
-```ts
+```ts title="src/lib/constants.tsx"
 export const paymentInfoMap: Record<
   string,
   { title: string; icon: React.ReactNode }
@@ -51,7 +51,7 @@ Open [`src/lib/data/cookies.ts`](https://github.com/gorgojs/medusa-plugins/blob/
 
 ![Directory structure in the Medusa Storefront after updating the file for cookies](https://github.com/user-attachments/assets/4274d249-6994-4d9f-b4b6-98f2016f0e9f)
 
-```ts
+```ts title="src/lib/data/cookies.ts"
 export const setCartId = async (cartId: string) => {
   cookies.set("_medusa_cart_id", cartId, {
     // ... other cookie settings
@@ -72,7 +72,7 @@ Open [`src/modules/checkout/components/payment/index.tsx`](https://github.com/go
 
 ![Directory structure in the Medusa Storefront after updating the file for payment component](https://github.com/user-attachments/assets/5c4dfcf9-57e7-48f6-956c-0e0a91ec6c8f)
 
-```ts
+```ts title="src/modules/checkout/components/payment/index.tsx"
 import { getBaseURL } from "@lib/util/env"
 
 const Payment = ({
@@ -115,7 +115,7 @@ Open [`src/modules/checkout/components/payment-button/index.tsx`](https://github
 
 ![Directory structure in the Medusa Storefront after updating the file for payment button component](https://github.com/user-attachments/assets/4b76ee52-747f-452e-9160-6365f742e33e)
 
-```ts
+```ts title="src/modules/checkout/components/payment-button/index.tsx"
 import { 
   // ...
   isRobokassa
@@ -210,7 +210,7 @@ Create the [`src/app/api/capture-payment/[cartId]/route.ts`](https://github.com/
 
 ![Directory structure in the Medusa Storefront after creating the file for API route](https://github.com/user-attachments/assets/89ac89de-62ad-4b6c-af61-ab6299587dbf)
 
-```ts
+```ts title="src/app/api/capture-payment/[cartId]/route.ts"
 import { NextRequest, NextResponse } from "next/server"
 import { revalidateTag } from "next/cache"
 import {
@@ -272,7 +272,7 @@ You can refer to the modifications made in the [Medusa Next.js Starter Template]
 
 The complete integration diff can be viewed in the [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-payment-robokassa%400.0.1...main), open the `Files changed` tab, and explore the differences under the `examples/payment-robokassa/medusa-storefront` directory. Or run diff in the terminal:
 
-```bash
+```bash title="Terminal"
 git clone https://github.com/gorgojs/medusa-plugins
 cd medusa-plugins
 git diff @gorgo/medusa-payment-robokassa@0.0.1...main -- examples/payment-robokassa/medusa-storefront

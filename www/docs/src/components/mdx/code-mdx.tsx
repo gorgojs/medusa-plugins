@@ -1,40 +1,25 @@
 "use client";
 
-import { CodeBlock } from "@medusajs/ui";
 import type React from "react";
 import { InlineCode } from "@/components/ui/inline-code";
+import { CodeBlock } from "@/components/mdx/code-block";
 
 export type CodeMdxProps = {
   className?: string;
   children?: React.ReactNode;
+  title?: string;
 };
 
-export const CodeMdx = ({ className, children, ...rest }: CodeMdxProps) => {
+export const CodeMdx = ({ className, children, title }: CodeMdxProps) => {
   if (!children) {
     return <></>;
   }
 
   const match = /language-(\w+)/.exec(className || "");
-  let code = children as string;
-
-  code = code.replace(/\n$/, "");
+  const code = ((Array.isArray(children) ? children[0] : children) as string).replace(/\n$/, "");
 
   if (match) {
-    return (
-      <CodeBlock
-        snippets={[
-          {
-            label: "Code",
-            code,
-            language: match[1],
-            hideLineNumbers: true,
-          },
-        ]}
-        {...rest}
-      >
-        <CodeBlock.Body />
-      </CodeBlock>
-    );
+    return <CodeBlock code={code} language={match[1]} title={title} />;
   }
 
   return <InlineCode>{code}</InlineCode>;

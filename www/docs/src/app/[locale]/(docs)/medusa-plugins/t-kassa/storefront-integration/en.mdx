@@ -15,13 +15,13 @@ For the storefront on Next.js, you need to make the following changes:
 
 ## Step 1: Configure Payment Provider
 
-To make T-Kassa available as a payment method on the storefront checkout page, you must add its configuration to the payment provider mapping in your storefront’s constants file. This mapping determines how each payment provider is displayed in the UI.
+To make T-Kassa available as a payment method on the storefront checkout page, you must add its configuration to the payment provider mapping in your storefront's constants file. This mapping determines how each payment provider is displayed in the UI.
 
 Open [`src/lib/constants.tsx`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/lib/constants.tsx#L33-L36) and add the following:
 
 ![Directory structure in the Medusa Storefront after updating the file for constants](https://github.com/user-attachments/assets/0aee001e-958f-40c6-b329-618e318ff019)
 
-```ts
+```ts title="src/lib/constants.tsx"
 export const paymentInfoMap: Record<
   string,
   { title: string; icon: React.ReactNode }
@@ -51,7 +51,7 @@ Open [`src/lib/data/cookies.ts`](https://github.com/gorgojs/medusa-plugins/blob/
 
 ![Directory structure in the Medusa Storefront after updating the file for cookies](https://github.com/user-attachments/assets/4274d249-6994-4d9f-b4b6-98f2016f0e9f)
 
-```ts
+```ts title="src/lib/data/cookies.ts"
 export const setCartId = async (cartId: string) => {
   cookies.set("_medusa_cart_id", cartId, {
     // ... other cookie settings
@@ -68,11 +68,11 @@ The `sameSite` option is set to `lax` instead of `strict`. This change ensures t
 
 To redirect a customer to T-Kassa, the payment session must be properly initialized with the required parameters, including the return URLs for both success and failure outcomes.
 
-Open [`src/modules/checkout/components/payment/index.tsx`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/modules/checkout/components/payment/index.tsx#L90-L91) and update the payment initialization logic to include T-Kassa’s redirect URLs:
+Open [`src/modules/checkout/components/payment/index.tsx`](https://github.com/gorgojs/medusa-plugins/blob/616703d5b2af2b3a9efc1a418632301585daac4b/examples/payment-tkassa/medusa-storefront/src/modules/checkout/components/payment/index.tsx#L90-L91) and update the payment initialization logic to include T-Kassa's redirect URLs:
 
 ![Directory structure in the Medusa Storefront after updating the file for payment component](https://github.com/user-attachments/assets/5c4dfcf9-57e7-48f6-956c-0e0a91ec6c8f)
 
-```ts
+```ts title="src/modules/checkout/components/payment/index.tsx"
 import { getBaseURL } from "@lib/util/env"
 
 const Payment = ({
@@ -99,7 +99,7 @@ const Payment = ({
 }
 ```
 
-When initiating the payment session for T-Kassa, the `SuccessURL` and `FailURL` parameters define where the customer will be redirected after attempting payment. Both URLs are dynamically constructed using the storefront’s base URL, the cart ID, and the selected country code.
+When initiating the payment session for T-Kassa, the `SuccessURL` and `FailURL` parameters define where the customer will be redirected after attempting payment. Both URLs are dynamically constructed using the storefront's base URL, the cart ID, and the selected country code.
 
 The `cart` object is included in the initialization data to build a receipt in accordance with Federal Law No. 54.
 
@@ -111,7 +111,7 @@ Open [`src/modules/checkout/components/payment-button/index.tsx`](https://github
 
 ![Directory structure in the Medusa Storefront after updating the file for payment button component](https://github.com/user-attachments/assets/4b76ee52-747f-452e-9160-6365f742e33e)
 
-```ts
+```ts title="src/modules/checkout/components/payment-button/index.tsx"
 import { 
   // ...
   isTkassa
@@ -196,7 +196,7 @@ If the `PaymentURL` is missing, the component displays an error message without 
 
 The `PaymentButton` component determines whether the current payment session belongs to T-Kassa by using the `isTkassa` helper function. If it does, it renders the `TkassaPaymentButton` to handle the payment flow.
 
-Integrating this component ensures that T-Kassa’s payment process is seamlessly triggered from the checkout flow.
+Integrating this component ensures that T-Kassa's payment process is seamlessly triggered from the checkout flow.
 
 ## Step 5: Create Payment Capture API Route
 
@@ -206,7 +206,7 @@ Create the [`src/app/api/capture-payment/[cartId]/route.ts`](https://github.com/
 
 ![Directory structure in the Medusa Storefront after creating the file for API route](https://github.com/user-attachments/assets/89ac89de-62ad-4b6c-af61-ab6299587dbf)
 
-```ts
+```ts title="src/app/api/capture-payment/[cartId]/route.ts"
 import { NextRequest, NextResponse } from "next/server"
 import { revalidateTag } from "next/cache"
 import {
@@ -268,7 +268,7 @@ You can refer to the modifications made in the [Medusa Next.js Starter Template]
 
 The complete integration diff can be viewed in the [comparison page](https://github.com/gorgojs/medusa-plugins/compare/%40gorgo/medusa-payment-tkassa%400.0.1...main), open the "Files changed" tab, and explore the differences under the `examples/payment-tkassa/medusa-storefront` directory. Or run diff in the terminal:
 
-```bash
+```bash title="Terminal"
 git clone https://github.com/gorgojs/medusa-plugins
 cd medusa-plugins
 git diff @gorgo/medusa-payment-tkassa@0.0.1...main -- examples/payment-tkassa/medusa-storefront

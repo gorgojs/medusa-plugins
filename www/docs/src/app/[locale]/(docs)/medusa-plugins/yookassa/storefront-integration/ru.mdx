@@ -21,7 +21,7 @@ description: "Узнайте, как интегрировать платежны
 
 ![Структура проекта Medusa Storefront после обновления файла с константами](https://github.com/user-attachments/assets/0aee001e-958f-40c6-b329-618e318ff019)
 
-```ts
+```ts title="src/lib/constants.tsx"
 export const paymentInfoMap: Record<
   string,
   { title: string; icon: React.ReactNode }
@@ -52,7 +52,7 @@ export const isYookassa = (providerId?: string) => {
 
 ![Структура проекта Medusa Storefront после обновления файлов cookie](https://github.com/user-attachments/assets/4274d249-6994-4d9f-b4b6-98f2016f0e9f)
 
-```ts
+```ts title="src/lib/data/cookies.ts"
 export const setCartId = async (cartId: string) => {
   cookies.set("_medusa_cart_id", cartId, {
     // ... другие настройки cookie
@@ -73,7 +73,7 @@ export const setCartId = async (cartId: string) => {
 
 ![Структура проекта Medusa Storefront после обновления файла для компонента оплаты](https://github.com/user-attachments/assets/5c4dfcf9-57e7-48f6-956c-0e0a91ec6c8f)
 
-```ts
+```ts title="src/modules/checkout/components/payment/index.tsx"
 import { getBaseURL } from "@lib/util/env"
 
 const Payment = ({
@@ -116,7 +116,7 @@ const Payment = ({
 
 ![Структура проекта Medusa Storefront после обновления файла для компонента кнопки оплаты](https://github.com/user-attachments/assets/4b76ee52-747f-452e-9160-6365f742e33e)
 
-```ts
+```ts title="src/modules/checkout/components/payment-button/index.tsx"
 import { 
   // ...
   isYookassa
@@ -204,7 +204,7 @@ const YookassaPaymentButton = ({
 
 ![Структура проекта Medusa Storefront после создания файла для API route](https://github.com/user-attachments/assets/89ac89de-62ad-4b6c-af61-ab6299587dbf)
 
-```ts
+```ts title="src/app/api/capture-payment/[cartId]/route.ts"
 import { NextRequest, NextResponse } from "next/server"
 import { revalidateTag } from "next/cache"
 import {
@@ -266,7 +266,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
 
 Полный код интеграции можно посмотреть в разделе [comparison page](https://github.com/sergkoudi/medusa-payment-yookassa/compare/v0.0.3...main), откройте вкладку `Files changed` и изучите различия в каталоге `examples/medusa-storefront`. Или запустите `diff` в терминале:
 
-```bash
+```bash title="Terminal"
 git clone https://github.com/sergkoudi/medusa-payment-yookassa
 cd medusa-payment-yookassa
 git diff v0.0.3...main -- examples/medusa-storefront

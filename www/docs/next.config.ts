@@ -1,6 +1,7 @@
 import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { resolve } from "node:path";
 import { redirects } from "@/lib/redirects";
 
 const withNextIntl = createNextIntlPlugin();
@@ -76,6 +77,7 @@ const withMDX = createMDX({
       "remark-gfm",
       "remark-mdx-frontmatter",
       "remark-frontmatter",
+      resolve("src/lib/remark-code-title.mjs"),
     ],
     rehypePlugins: [
       "rehype-slug",

@@ -15,17 +15,24 @@ In this document, you'll learn how to install and configure the YooKassa payment
 
 ## Installation
 
-```bash
-yarn add medusa-payment-yookassa
-# or
-npm install medusa-payment-yookassa
-```
+<CodeTabs>
+  <CodeTab label="yarn" value="yarn">
+    ```bash
+    yarn add medusa-payment-yookassa
+    ```
+  </CodeTab>
+  <CodeTab label="npm" value="npm">
+    ```bash
+    npm install medusa-payment-yookassa
+    ```
+  </CodeTab>
+</CodeTabs>
 
 ## Configuration
 
 Add the provider configuration in your `medusa-config.js` file of the Medusa Admin application:
 
-```ts
+```ts title="medusa-config.js"
 // ...
 module.exports = defineConfig({
   // ...
@@ -58,7 +65,7 @@ module.exports = defineConfig({
 
 Add environment variables with your shop identifier `shopId` and a secret API key `secretKey`:
 
-```text
+```text title=".env"
 YOOKASSA_SHOP_ID=1234567
 YOOKASSA_SECRET_KEY=live_secret_api_key
 ```
@@ -152,7 +159,7 @@ To properly handle payment notifications from YooKassa, configure the webhook UR
 
 1. Navigate to your YooKassa merchant account at [yookassa.ru/my/merchant/integration/http-notifications](https://yookassa.ru/my/merchant/integration/http-notifications)
 2. Add a new webhook URL in the following format:
-    ```text
+    ```text title="Webhook URL"
     https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/yookassa_yookassa
     ```
     Change `{YOUR_MEDUSA_DOMAIN}` with your medusa store domain.

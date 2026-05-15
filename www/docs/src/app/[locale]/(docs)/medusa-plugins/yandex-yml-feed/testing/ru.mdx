@@ -7,19 +7,19 @@ description: "Запуск тестов для генератора YML-фида
 
 Для запуска тестов перейдите в каталог [`examples/feed-yandex/medusa`](https://github.com/gorgojs/medusa-plugins/tree/main/examples/feed-yandex/medusa):
 
-```bash
+```bash title="Terminal"
 cd examples/feed-yandex/medusa
 ```
 
 Убедитесь, что в файле `.env.test` присутствуют следующие переменные: `DB_USERNAME`, `DB_PASSWORD`:
 
-```bash
+```bash title="Terminal"
 cp .env.test.example .env.test
 ```
 
 Затем, запустите тесты:
 
-```bash
+```bash title="Terminal"
 # Run module tests
 # These verify the internal logic, such as services and models
 yarn test:integration:modules
