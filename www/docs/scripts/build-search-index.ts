@@ -12,6 +12,23 @@ import {
   locales,
 } from "../src/types";
 
+function remarkCodeTitle() {
+  return (tree: any) => {
+    function walk(node: any) {
+      if (node.type === "code" && node.meta) {
+        const m = node.meta.match(/title="([^"]+)"/);
+        if (m) {
+          node.data = node.data ?? {};
+          node.data.hProperties = node.data.hProperties ?? {};
+          node.data.hProperties.title = m[1];
+        }
+      }
+      node.children?.forEach(walk);
+    }
+    walk(tree);
+  };
+}
+
 type SearchIndexType = {
   name: string;
   type: string;
@@ -121,6 +138,7 @@ function getAllMdxFiles(
   return arrayOfFiles;
 }
 
+
 async function mdxToPlainText(
   mdxContent: string,
 ): Promise<{ title: string; description: string; content: string }> {
@@ -137,9 +155,14 @@ async function mdxToPlainText(
       Note: ({ children }: { children?: ReactNode }) =>
         createElement("div", null, children),
       UsedByList: () => createElement("div", null),
+      CodeTabs: ({ children }: { children?: ReactNode }) => createElement("div", null, children),
+      CodeTab: ({ children }: { children?: ReactNode }) => createElement("div", null, children),
     },
     options: {
       parseFrontmatter: true,
+      mdxOptions: {
+        remarkPlugins: [remarkCodeTitle],
+      },
     },
   });
 

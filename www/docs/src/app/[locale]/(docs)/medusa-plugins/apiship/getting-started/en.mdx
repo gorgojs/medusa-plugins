@@ -15,17 +15,24 @@ In this document, you’ll learn how to install and configure the ApiShip plugin
 
 ## Installation
 
-```bash
-yarn add @gorgo/medusa-fulfillment-apiship
-# or
-npm install @gorgo/medusa-fulfillment-apiship
-```
+<CodeTabs>
+  <CodeTab label="yarn" value="yarn">
+    ```bash
+    yarn add @gorgo/medusa-fulfillment-apiship
+    ```
+  </CodeTab>
+  <CodeTab label="npm" value="npm">
+    ```bash
+    npm install @gorgo/medusa-fulfillment-apiship
+    ```
+  </CodeTab>
+</CodeTabs>
 
 ## Configuration
 
 Add the provider configuration in your `medusa-config.ts` file of the Medusa admin application:
 
-```ts
+```ts title="medusa-config.ts"
 // ...
 module.exports = defineConfig({
   // ...

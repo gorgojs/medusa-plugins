@@ -15,17 +15,24 @@ description: "Узнайте, как установить и настроить 
 
 ## Установка
 
-```bash
-yarn add medusa-payment-yookassa
-# или
-npm install medusa-payment-yookassa
-```
+<CodeTabs>
+  <CodeTab label="yarn" value="yarn">
+    ```bash
+    yarn add medusa-payment-yookassa
+    ```
+  </CodeTab>
+  <CodeTab label="npm" value="npm">
+    ```bash
+    npm install medusa-payment-yookassa
+    ```
+  </CodeTab>
+</CodeTabs>
 
 ## Настройка
 
 Добавьте конфигурацию провайдера в файл `medusa-config.js` в приложении Medusa Admin:
 
-```ts
+```ts title="medusa-config.js"
 // ...
 module.exports = defineConfig({
   // ...
@@ -58,7 +65,7 @@ module.exports = defineConfig({
 
 Добавьте следующие переменные окружения: идентификатор магазина `shopId` и секретный ключ `secretKey`:
 
-```text
+```text title=".env"
 YOOKASSA_SHOP_ID=1234567
 YOOKASSA_SECRET_KEY=live_secret_api_key
 ```
@@ -152,7 +159,7 @@ YOOKASSA_SECRET_KEY=live_secret_api_key
 
 1. Перейдите в личный кабинет ЮKassa по адресу [yookassa.ru/my/merchant/integration/http-notifications](https://yookassa.ru/my/merchant/integration/http-notifications)
 2. Добавьте новый URL вебхука в следующем формате:
-    ```
+    ``` title="Webhook URL"
     https://{YOUR_MEDUSA_DOMAIN}/hooks/payment/yookassa_yookassa
     ```
     Замените `{YOUR_MEDUSA_DOMAIN}` на домен вашей витрины Medusa.

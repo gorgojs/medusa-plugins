@@ -14,17 +14,24 @@ In this document, you'll learn how to install and configure the Yandex Market YM
 
 ## Installation
 
-```bash
-yarn add @gorgo/medusa-feed-yandex
-# or
-npm install @gorgo/medusa-feed-yandex
-```
+<CodeTabs>
+  <CodeTab label="yarn" value="yarn">
+    ```bash
+    yarn add @gorgo/medusa-feed-yandex
+    ```
+  </CodeTab>
+  <CodeTab label="npm" value="npm">
+    ```bash
+    npm install @gorgo/medusa-feed-yandex
+    ```
+  </CodeTab>
+</CodeTabs>
 
 ## Configuration
 
 Add the plugin configuration in your `medusa-config.js` file of the Medusa admin application:
 
-```ts
+```ts title="medusa-config.js"
 # ...
 module.exports = defineConfig({
   # ...
@@ -61,8 +68,15 @@ module.exports = defineConfig({
 
 Run the following command to apply the plugin's database migrations:
 
-```bash
-yarn db:migrate
-# or
-npx medusa db:migrate
-```
+<CodeTabs>
+  <CodeTab label="yarn" value="yarn">
+    ```bash
+    yarn db:migrate
+    ```
+  </CodeTab>
+  <CodeTab label="npx" value="npx">
+    ```bash
+    npx medusa db:migrate
+    ```
+  </CodeTab>
+</CodeTabs>
