@@ -30,7 +30,7 @@
     "build": "tsup",
     "watch": "tsup --watch",
     "dev": "yarn build && yalc publish",
-    "prepublishOnly": "tsup"
+    "prepare": "tsup"
   },
   "dependencies": {
     "configstore": "^5.0.1"
