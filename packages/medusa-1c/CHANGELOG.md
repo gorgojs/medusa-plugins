@@ -1,5 +1,11 @@
 # @gorgo/medusa-1c
 
+## 0.1.7
+
+### Patch Changes
+
+- [`0f244bd`](https://github.com/gorgojs/medusa-plugins/commit/0f244bdea75ac83e232dd57ee7a2666036962741) Thanks [@Ghost1863](https://github.com/Ghost1863)! - test
+
 ## 0.1.6
 
 ### Patch Changes

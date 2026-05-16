@@ -1,5 +1,11 @@
 # @gorgo/medusa-payment-tkassa
 
+## 0.4.3
+
+### Patch Changes
+
+- [`3f81cec`](https://github.com/gorgojs/medusa-plugins/commit/3f81cec1dd7beb8787f123a2bdc3f199cadd0061) Thanks [@Ghost1863](https://github.com/Ghost1863)! - test
+
 ## 0.4.2
 
 ### Patch Changes
