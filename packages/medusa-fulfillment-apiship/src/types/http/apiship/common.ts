@@ -57,7 +57,7 @@ export interface BaseDefaultProductSizes {
 
 export interface BaseApishipConnection {
   id: string
-  name: string
+  name?: string
   provider_key: string
   provider_connect_id: string
   point_in_id?: string
@@ -113,7 +113,7 @@ export interface BaseApishipOptions {
 export interface BaseApishipAccountConnection {
   id: string
   provider_key: string
-  name: string
+  name?: string
 }
 
 export interface BaseApishipProvider {

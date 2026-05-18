@@ -1,7 +1,7 @@
 import { AdminApishipOptions } from "./entities"
 
 export interface AdminCreateApishipConnection {
-  name: string
+  name?: string
   provider_key: string
   provider_connect_id: string
   point_in_id?: string

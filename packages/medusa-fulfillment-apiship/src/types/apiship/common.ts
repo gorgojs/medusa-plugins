@@ -55,7 +55,7 @@ interface DefaultProductSizesDTO {
 
 export interface ApishipConnectionDTO {
   id: string
-  name: string
+  name?: string
   provider_key: string
   provider_connect_id: string
   point_in_id?: string
@@ -111,5 +111,5 @@ export interface ApishipOptionsDTO {
 export interface ApishipAccountConnectionDTO {
   id: string
   provider_key: string
-  name: string
+  name?: string
 }
