@@ -11,7 +11,7 @@ export const useWarehouses = (
   >
 ) => {
   const { data, ...rest } = useQuery<IntegrationHttpTypes.AdminIntegrationWarehouseListResponse>({
-    queryKey: ["admin-warehouses"],
+    queryKey: ["admin-warehouses", integration_id],
     queryFn: () => sdk.client.fetch(`/admin/integrations/${integration_id}/warehouses`, { query }),
     ...options
   })
@@ -28,7 +28,7 @@ export const useOrderTypes = (
   >
 ) => {
   const { data, ...rest } = useQuery<IntegrationHttpTypes.AdminIntegrationOrderTypeListResponse>({
-    queryKey: ["admin-order-types"],
+    queryKey: ["admin-order-types", integration_id],
     queryFn: () => sdk.client.fetch(`/admin/integrations/${integration_id}/order-types`, { query }),
     ...options
   })
