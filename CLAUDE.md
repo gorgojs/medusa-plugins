@@ -158,7 +158,7 @@ Use the **medusa** MCP (`docs.medusajs.com`) for Medusa v2 APIs and patterns, an
 |---|---|---|
 | `publish.yml` | Push to main (packages/**) | Auto-generate changesets → version → publish to npm |
 | `update-medusa-version.yml` | Daily 6 AM + manual | Check latest Medusa, run integration tests, open update PR |
-| `notify-deploy.yml` | Push to main (www/docs/**) | Notify internal-scripts repo to deploy docs |
+| `notify-deploy.yml` | Push to main (www/docs/**) | Notify automation repo to deploy docs |
 
 ## Workflow: Research → Plan → Implement
 
