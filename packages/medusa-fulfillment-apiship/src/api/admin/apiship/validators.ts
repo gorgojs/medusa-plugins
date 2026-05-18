@@ -23,7 +23,7 @@ export const AdminGetApishipPointsParams = createFindParams({
 
 export type AdminCreateApishipConnectionType = z.infer<typeof AdminCreateApishipConnection>
 export const AdminCreateApishipConnection = z.object({
-  name: z.string(),
+  name: z.string().optional(),
   provider_key: z.string(),
   provider_connect_id: z.string(),
   point_in_id: z.string().optional(),
@@ -49,7 +49,7 @@ export const AdminUpdateApishipOptions = z.object({
   settings: z.object({
     connections: z.array(z.object({
       id: z.string(),
-      name: z.string(),
+      name: z.string().optional(),
       provider_key: z.string(),
       provider_connect_id: z.string(),
       point_in_id: z.string().optional(),

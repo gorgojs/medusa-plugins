@@ -88,7 +88,7 @@ export const ApishipConnectionCreateForm = ({
 
       return {
         value: connection.id,
-        label: `${providerName} — ${connection.name}`,
+        label: connection.name ? `${providerName} — ${connection.name}` : providerName,
       }
     })
   }, [accountConnections, providers])

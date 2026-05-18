@@ -15,7 +15,6 @@ export const getApishipOptionsStep = createStep(
       (connection) => {
         if (
           !connection?.id ||
-          !connection.name ||
           !connection.provider_key ||
           !connection.provider_connect_id ||
           connection.is_enabled === undefined
