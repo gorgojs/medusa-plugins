@@ -25,6 +25,8 @@ function loadScopeToPackage() {
     const packagesDir = path.resolve(dirPath)
     if (!existsSync(packagesDir)) continue
 
+    const stripMedusa = dirPath === 'packages'
+
     for (const dir of readdirSync(packagesDir, { withFileTypes: true })) {
       if (!dir.isDirectory()) continue
       const pkgPath = path.join(packagesDir, dir.name, 'package.json')
@@ -33,7 +35,7 @@ function loadScopeToPackage() {
       const { name } = JSON.parse(readFileSync(pkgPath, 'utf8'))
       if (!name) continue
 
-      const scope = dir.name.replace(/^medusa-/, '')
+      const scope = stripMedusa ? dir.name.replace(/^medusa-/, '') : dir.name
       map[scope] = name
     }
   }
