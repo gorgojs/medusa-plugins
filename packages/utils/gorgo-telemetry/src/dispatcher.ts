@@ -113,7 +113,7 @@ export class TelemetryDispatcher {
   constructor(options: DispatcherOptions = {}) {
     this.endpoint = process.env.GORGO_TELEMETRY_ENDPOINT ?? options.endpoint ?? TELEMETRY_ENDPOINT
     this.flushAt = Math.max(options.flushAt ?? 20, 1)
-    this.flushInterval = options.flushInterval ?? 30_000
+    this.flushInterval = options.flushInterval ?? 10_000
     this.maxQueueSize = Math.max(options.maxQueueSize ?? 1000, 1)
     this.pingInterval = options.pingInterval ?? DEFAULT_PING_INTERVAL_MS
     this.sessionId = crypto.randomUUID()
@@ -348,16 +348,13 @@ export class TelemetryDispatcher {
     if (this.exitHandlersRegistered) return
     this.exitHandlersRegistered = true
 
-    const handler = () => {
+    process.once("beforeExit", () => {
       try {
         void this.flush()
       } catch {
         // never throw from a process exit handler
       }
-    }
-    process.once("beforeExit", handler)
-    process.once("SIGINT", handler)
-    process.once("SIGTERM", handler)
+    })
   }
 
   /** Drop one event from the largest bucket — the noisiest plugin gets pruned first. */
