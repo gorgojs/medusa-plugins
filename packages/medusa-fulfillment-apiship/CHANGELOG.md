@@ -1,5 +1,11 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 0.5.5
+
+### Patch Changes
+
+- [#257](https://github.com/gorgojs/medusa-plugins/pull/257) [`3e9c650`](https://github.com/gorgojs/medusa-plugins/commit/3e9c6503eeaf937835b6ca67e0d40a8c24af8f3d) Thanks [@ttokyose](https://github.com/ttokyose)! - make the connection name optional
+
 ## 0.5.4
 
 ### Patch Changes
