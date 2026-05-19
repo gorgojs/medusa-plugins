@@ -9,7 +9,8 @@
   "scripts": {
     "update": "./scripts/update.sh",
     "postinstall": "husky",
-    "commitlint": "commitlint"
+    "commitlint": "commitlint",
+    "scopes": "node -e \"console.log(require('./commitlint.config.cjs').rules['scope-enum'][2].join('\\n'))\""
   },
   "dependencies": {
     "@changesets/changelog-github": "^0.6.0",

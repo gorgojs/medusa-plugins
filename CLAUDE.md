@@ -18,7 +18,9 @@ This repository is organized as a Yarn v4 monorepo with shared workspaces for pl
 │   ├── medusa-feed-yandex/
 │   ├── medusa-fulfillment-apiship/
 │   ├── medusa-payment-robokassa/
-│   └── medusa-payment-tkassa/
+│   ├── medusa-payment-tkassa/
+│   └── utils/
+│       └── gorgo-telemetry/
 ├── scripts/
 └── www/
     └── docs/
@@ -79,12 +81,14 @@ Commits must follow [Conventional Commits](https://www.conventionalcommits.org/)
 
 **Scope is required** and must be one of:
 
-- Package scope (strip `medusa-` prefix):
+- Package scope from `packages/` (strip `medusa-` prefix):
   - `1c`
   - `feed-yandex`
   - `fulfillment-apiship`
   - `payment-robokassa`
   - `payment-tkassa`
+- Package scope from `packages/utils/` (folder name as-is):
+  - `gorgo-telemetry`
 - Repo-level:
   - `deps`
   - `release`
