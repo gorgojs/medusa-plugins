@@ -2,8 +2,8 @@ import { TKassa } from "t-kassa-api"
 
 jest.setTimeout(60 * 1000)
 
-const TERMINAL_KEY = process.env.TKASSA_SANDBOX_TERMINAL_KEY
-const PASSWORD = process.env.TKASSA_SANDBOX_PASSWORD
+const TERMINAL_KEY = process.env.CI_TKASSA_TERMINAL_KEY
+const PASSWORD = process.env.CI_TKASSA_PASSWORD
 const HAS_CREDS = Boolean(TERMINAL_KEY && PASSWORD)
 
 const describeIfCreds = HAS_CREDS ? describe : describe.skip
@@ -47,6 +47,6 @@ describeIfCreds("T-Kassa sandbox smoke (LIVE network)", () => {
 
 if (!HAS_CREDS) {
   describe.skip("T-Kassa sandbox smoke (LIVE network)", () => {
-    it.skip("skipped: set TKASSA_SANDBOX_TERMINAL_KEY and TKASSA_SANDBOX_PASSWORD", () => {})
+    it.skip("skipped: set CI_TKASSA_TERMINAL_KEY and CI_TKASSA_PASSWORD", () => {})
   })
 }

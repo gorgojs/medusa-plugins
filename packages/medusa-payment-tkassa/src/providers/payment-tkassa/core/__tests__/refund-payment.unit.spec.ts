@@ -37,7 +37,7 @@ afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
 describe("TkassaBase.refundPayment", () => {
-  // #19a Full refund — receipt is omitted, Amount is set
+  // Full refund — receipt is omitted, Amount is set
   it("full refund (refundAmount === data.amount) omits Receipt and sets Amount in kopecks", async () => {
     let captured: any
     server.use(
@@ -65,7 +65,7 @@ describe("TkassaBase.refundPayment", () => {
     expect(typeof captured.body.Token).toBe("string")
   })
 
-  // #19b Partial refund — receipt is sent
+  // Partial refund — receipt is sent
   it("partial refund (refundAmount !== data.amount) includes Receipt and Amount in kopecks", async () => {
     let captured: any
     server.use(
@@ -94,7 +94,6 @@ describe("TkassaBase.refundPayment", () => {
     expect(captured.body.Receipt.Items[0].Quantity).toBe(1)
   })
 
-  // #19c BigNumber-style amount
   it("accepts BigNumberInput-shaped amount and converts its `value` to kopecks", async () => {
     let captured: any
     server.use(
