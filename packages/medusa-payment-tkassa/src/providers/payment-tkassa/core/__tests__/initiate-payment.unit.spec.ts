@@ -32,7 +32,7 @@ afterAll(() => server.close())
 
 describe("TkassaBase.initiatePayment", () => {
   // happy path: contract with /v2/Init
-  it("calls /v2/Init with Amount in RUB kopecks, OrderId and credentials; strips Password from outgoing body", async () => {
+  it("calls /v2/Init with Amount in RUB, OrderId and credentials; strips Password from outgoing body", async () => {
     let captured: any
     server.use(
       http.post(`${TKASSA_BASE_URL}/v2/Init`, async ({ request }) => {
