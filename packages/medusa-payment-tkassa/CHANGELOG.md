@@ -1,5 +1,19 @@
 # @gorgo/medusa-payment-tkassa
 
+## 0.4.3
+
+### Patch Changes
+
+- [#265](https://github.com/gorgojs/medusa-plugins/pull/265) [`2ef7450`](https://github.com/gorgojs/medusa-plugins/commit/2ef74506d5321c30d7b3f44cbd8c7cac442cb9ee) Thanks [@gorgo-app](https://github.com/apps/gorgo-app)! - add integration test script
+
+- [#265](https://github.com/gorgojs/medusa-plugins/pull/265) [`0940641`](https://github.com/gorgojs/medusa-plugins/commit/09406410682d438050c640982c4c46e6d496b6cb) Thanks [@gorgo-app](https://github.com/apps/gorgo-app)! - update docs
+
+- [#265](https://github.com/gorgojs/medusa-plugins/pull/265) [`e47a625`](https://github.com/gorgojs/medusa-plugins/commit/e47a6257c8a5212a4ceee0657c60ab4574ece302) Thanks [@gorgo-app](https://github.com/apps/gorgo-app)! - add unit tests for core provider methods and utils
+
+- [#265](https://github.com/gorgojs/medusa-plugins/pull/265) [`6a43601`](https://github.com/gorgojs/medusa-plugins/commit/6a43601776f04edae98c391d583baa5d53d75b14) Thanks [@gorgo-app](https://github.com/apps/gorgo-app)! - fix dependencies
+
+- [#265](https://github.com/gorgojs/medusa-plugins/pull/265) [`d2cd44a`](https://github.com/gorgojs/medusa-plugins/commit/d2cd44a3fbe4fa1db50b6c63a9bc4683a48de459) Thanks [@gorgo-app](https://github.com/apps/gorgo-app)! - test on Medusa v2.15.3 and update readme
+
 ## 0.4.2
 
 ### Patch Changes
