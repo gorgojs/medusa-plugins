@@ -44,7 +44,8 @@
     "dev": "yarn predev && medusa plugin:develop",
     "predev": "medusa plugin:publish",
     "prepublishOnly": "medusa plugin:build",
-    "test": "jest --config jest.config.js"
+    "test:unit": "jest --config jest.config.js",
+    "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit"
   },
   "dependencies": {
     "@gorgo/telemetry": "^1.0.0",

@@ -1,3 +1,6 @@
+const { loadEnv } = require("@medusajs/utils")
+loadEnv("test", process.cwd())
+
 /**
  * MSW v2 ships several ESM-only dependencies (rettime, @bundled-es-modules/*,
  * until-async, outvariant, strict-event-emitter, etc). Jest does not transform
