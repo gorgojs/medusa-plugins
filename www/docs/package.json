@@ -9,7 +9,8 @@
     "lint": "biome check",
     "format": "biome format --write",
     "generate-edit-dates": "tsx scripts/generate-edit-dates.ts",
-    "prebuild": "tsx scripts/generate-edit-dates.ts && tsx scripts/build-search-index.ts"
+    "generate-changelog": "tsx scripts/generate-changelog.ts",
+    "prebuild": "tsx scripts/generate-changelog.ts && tsx scripts/generate-edit-dates.ts && tsx scripts/build-search-index.ts"
   },
   "dependencies": {
     "@icons-pack/react-simple-icons": "^13.7.0",

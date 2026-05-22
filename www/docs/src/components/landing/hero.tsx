@@ -1,10 +1,10 @@
 'use client';
 
 import { ArrowRight } from "@medusajs/icons";
-import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from 'next-intl';
 
+import { Announcement } from "@/components/landing/announcement";
 import Section from "@/components/layout/section";
 import { Button } from "@/components/ui/button";
 import useGorgoHomeLink from "@/hooks/useGorgoHomeLink";
@@ -31,12 +31,7 @@ export default function Hero() {
           </Button>
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <Image
-            src="/illustration.svg"
-            alt="Hero Image"
-            width={500}
-            height={500}
-          />
+          <Announcement />
         </div>
       </div>
     </Section>
