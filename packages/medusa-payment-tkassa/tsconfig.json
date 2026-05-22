@@ -32,6 +32,7 @@
     ".medusa/admin",
     "src/admin",
     ".cache",
-    "integration-tests"
+    "integration-tests",
+    "medusa-config.ts"
   ]
 }
