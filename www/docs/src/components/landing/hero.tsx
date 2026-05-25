@@ -30,7 +30,7 @@ export default function Hero() {
             </Link>
           </Button>
         </div>
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex-1 flex items-center justify-center mt-4 lg:mt-0">
           <Announcement />
         </div>
       </div>
