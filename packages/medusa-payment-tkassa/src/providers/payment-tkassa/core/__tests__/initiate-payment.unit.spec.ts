@@ -57,6 +57,29 @@ describe("TkassaBase.initiatePayment", () => {
     expect((result.data as any).receipt).toEqual({})
   })
 
+  it("passes SuccessURL and FailURL from input.data through to /v2/Init", async () => {
+    let captured: any
+    server.use(
+      http.post(`${TKASSA_BASE_URL}/v2/Init`, async ({ request }) => {
+        captured = await captureRequest(request)
+        return HttpResponse.json(okInitResponse)
+      })
+    )
+
+    const tkassa = new (TkassaService as any)({ logger: makeLogger() }, baseOptions)
+    await tkassa.initiatePayment({
+      ...baseInput,
+      data: {
+        ...baseInput.data,
+        SuccessURL: "https://shop.example.com/payment/success",
+        FailURL: "https://shop.example.com/payment/fail",
+      },
+    })
+
+    expect(captured.body.SuccessURL).toBe("https://shop.example.com/payment/success")
+    expect(captured.body.FailURL).toBe("https://shop.example.com/payment/fail")
+  })
+
   // PayType is critical for two-step vs auto-capture flow
   describe("PayType selection", () => {
     it.each<[any, string]>([

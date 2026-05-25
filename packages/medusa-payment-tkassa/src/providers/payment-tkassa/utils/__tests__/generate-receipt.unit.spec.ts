@@ -113,6 +113,31 @@ describe("generateReceipt", () => {
       expect(receipt.Customer).toBeUndefined()
     })
   })
+
+  describe("missing shipping_address (defensive)", () => {
+    const cartWithoutShipping = {
+      email: "buyer@example.com",
+      currency_code: "rub",
+      shipping_total: 0,
+      shipping_methods: [],
+      // shipping_address intentionally omitted
+      items: [
+        { product_title: "Item 1", unit_price: 1500, quantity: 1, total: 1500 },
+      ],
+    } as any
+
+    it("throws (unwrapped) for FFD 1.05 when shipping_address is absent", () => {
+      expect(() => generateReceipt("1.05", "osn", "none", "none", cartWithoutShipping)).toThrow(
+        /Cannot read properties of undefined/
+      )
+    })
+
+    it("throws (unwrapped) for FFD 1.2 when shipping_address is absent", () => {
+      expect(() => generateReceipt("1.2", "osn", "none", "none", cartWithoutShipping)).toThrow(
+        /Cannot read properties of undefined/
+      )
+    })
+  })
 })
 
 describe("generateRefundReceipt", () => {

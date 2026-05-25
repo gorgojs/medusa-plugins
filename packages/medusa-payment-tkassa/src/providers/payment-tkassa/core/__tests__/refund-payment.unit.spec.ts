@@ -135,4 +135,19 @@ describe("TkassaBase.refundPayment", () => {
       tkassa.refundPayment({ amount: 1500, data } as any)
     ).rejects.toThrow(/An error occurred in refundPayment/)
   })
+
+  // Documents a defensive gap in tkassa-base.refundPayment: generateRefundReceipt
+  // is called unconditionally BEFORE the try/catch, so a missing data.receipt
+  // crashes with an unwrapped TypeError instead of a friendly provider error.
+  // If/when the source is hardened, this assertion will need updating.
+  it("throws (unwrapped) when data.receipt is missing — no guard around generateRefundReceipt", async () => {
+    const tkassa = new (TkassaService as any)({ logger: makeLogger() }, baseOptions)
+
+    await expect(
+      tkassa.refundPayment({
+        amount: 1500,
+        data: { PaymentId: "987654", OrderId: "cart_01HX", amount: 150000 }, // no receipt
+      } as any)
+    ).rejects.toThrow(/Cannot read properties of undefined/)
+  })
 })

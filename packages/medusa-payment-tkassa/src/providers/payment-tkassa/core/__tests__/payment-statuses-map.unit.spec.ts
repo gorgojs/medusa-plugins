@@ -1,5 +1,5 @@
 import { PaymentSessionStatus } from "@medusajs/framework/utils"
-import { PaymentStatusesMap } from "../../types"
+import { PaymentStatuses, PaymentStatusesMap } from "../../types"
 
 /**
  * Regression guard for the static T-Kassa status -> Medusa status table.
@@ -38,5 +38,14 @@ describe("PaymentStatusesMap", () => {
     // Adding a new key in PaymentStatusesMap without updating this test will
     // fail this assertion — that's the intended regression signal.
     expect(Object.keys(PaymentStatusesMap)).toHaveLength(expectedMapping.length)
+  })
+})
+
+describe("PaymentStatuses (alias table)", () => {
+  // PaymentStatuses is meant to be an identity alias for T-Kassa status strings.
+  it("is an identity map (every key equals its own value)", () => {
+    for (const [key, value] of Object.entries(PaymentStatuses)) {
+      expect(value).toBe(key)
+    }
   })
 })
