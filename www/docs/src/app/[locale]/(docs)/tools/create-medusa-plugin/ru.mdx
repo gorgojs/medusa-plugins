@@ -11,7 +11,7 @@ CLI-инструмент для быстрого создания плагина
 
 `create-medusa-plugin` использует официальный [`create-medusa-app`](https://docs.medusajs.com/resources/create-medusa-app) для создания проектов Medusa, включая папки плагина, backend и storefront. Благодаря этому итоговая структура соответствует официальным рекомендациям и остается полностью совместимой с экосистемой Medusa, так как основана на официальном генераторе приложений Medusa.
 
-```bash
+```bash title="Терминал"
 npx create-medusa-plugin [plugin-name] [options]
 ```
 
@@ -19,67 +19,129 @@ npx create-medusa-plugin [plugin-name] [options]
 
 ### Опции
 
-| Опция                      | Описание                                                                                              | По умолчанию      |
-| -------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------- |
-| `-r, --repo <name>`        | Имя корневого репозитория (монорепозитория)                                                           | _не задано_       |
-| `-e, --example <name>`     | Имя папки с примером, в которой будут созданы примеры `medusa` и `medusa-storefront`                 | _не задано_       |
-| `--directory-path <path>`  | Путь к директории, в которой будет создан корневой репозиторий                                        | Текущая директория |
-| `--plugin-repo-url <url>`  | URL репозитория для создания плагина Medusa (передает `repo-url` в `create-medusa-app`)              | _не задано_       |
-| `--example-repo-url <url>` | URL репозитория для создания примера backend на Medusa (передает `repo-url` в `create-medusa-app`)   | _не задано_       |
-| `--no-storefront`          | Не включать пример storefront (передается как `--with-nextjs-starter=false` в `create-medusa-app`)   | `false`           |
-| `--skip-example-db`        | Пропустить создание базы данных для примера Medusa (передает `--skip-db` в `create-medusa-app`)      | `false`           |
-| `--verbose`                | Показывать все логи внутренних команд (передает `--verbose` в `create-medusa-app`)                   | `false`           |
+<MedusaTypeList
+  sectionTitle="Options"
+  types={[
+    {
+      name: "-r, --repo <name>",
+      type: "string",
+      description: "Имя корневого репозитория (монорепозитория).",
+      optional: true,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "-e, --example <name>",
+      type: "string",
+      description: "Имя папки с примером, в которой будут созданы примеры `medusa` и `medusa-storefront`.",
+      optional: true,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "--directory-path <path>",
+      type: "string",
+      description: "Путь к директории, в которой будет создан корневой репозиторий.",
+      optional: true,
+      defaultValue: "Текущая директория",
+      expandable: false,
+      children: []
+    },
+    {
+      name: "--plugin-repo-url <url>",
+      type: "string",
+      description: "URL репозитория для создания плагина Medusa (передает `repo-url` в `create-medusa-app`).",
+      optional: true,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "--example-repo-url <url>",
+      type: "string",
+      description: "URL репозитория для создания примера backend на Medusa (передает `repo-url` в `create-medusa-app`).",
+      optional: true,
+      expandable: false,
+      children: []
+    },
+    {
+      name: "--no-storefront",
+      type: "boolean",
+      description: "Не включать пример storefront (передается как `--with-nextjs-starter=false` в `create-medusa-app`).",
+      optional: true,
+      defaultValue: "false",
+      expandable: false,
+      children: []
+    },
+    {
+      name: "--skip-example-db",
+      type: "boolean",
+      description: "Пропустить создание базы данных для примера Medusa (передает `--skip-db` в `create-medusa-app`).",
+      optional: true,
+      defaultValue: "false",
+      expandable: false,
+      children: []
+    },
+    {
+      name: "--verbose",
+      type: "boolean",
+      description: "Показывать все логи внутренних команд (передает `--verbose` в `create-medusa-app`).",
+      optional: true,
+      defaultValue: "false",
+      expandable: false,
+      children: []
+    },
+  ]}
+/>
 
 ## Примеры
 
 ### Базовое использование
 
-  ```bash
-  npx create-medusa-plugin
-  ```
+```bash title="Терминал"
+npx create-medusa-plugin
+```
 
-  Эта команда в интерактивном режиме запросит имя плагина и другие параметры конфигурации.
+Эта команда в интерактивном режиме запросит имя плагина и другие параметры конфигурации.
 
 ### С параметрами
 
-  ```bash
-  npx create-medusa-plugin my-plugin -r my-plugin-monorepo -e my-plugin-example --skip-example-db
-  ```
+```bash title="Терминал"
+npx create-medusa-plugin my-plugin -r my-plugin-monorepo -e my-plugin-example --skip-example-db
+```
 
-  Эта команда создаст следующую структуру монорепозитория и установит в нее проекты Medusa:
+Эта команда создаст следующую структуру монорепозитория и установит в нее проекты Medusa:
 
-  ```txt
-  /
-  └── my-plugin-monorepo/
-      ├── examples/
-      │   └── my-plugin-example/
-      │      ├── medusa/
-      │      └── medusa-storefront/
-      ├── packages/
-      │   └── my-plugin/
-      ├── package.json
-      └── README.md
-  ```
+```txt title="Структура монорепозитория"
+|
+└── my-plugin-monorepo/
+    ├── examples/
+    │   └── my-plugin-example/
+    │      ├── medusa/
+    │      └── medusa-storefront/
+    ├── packages/
+    │   └── my-plugin/
+    ├── package.json
+    └── README.md
+```
 
 ### Со scope плагина
 
-  ```bash
-  npx create-medusa-plugin @my-scope/my-plugin -r my-plugin-monorepo -e my-plugin-example --skip-example-db
-  ```
+```bash title="Терминал"
+npx create-medusa-plugin @my-scope/my-plugin -r my-plugin-monorepo -e my-plugin-example --skip-example-db
+```
 
-  Эта команда создаст следующую структуру монорепозитория, поместит scoped-плагин во вложенную папку внутри `packages` и установит в нее проекты Medusa:
+Эта команда создаст следующую структуру монорепозитория, поместит scoped-плагин во вложенную папку внутри `packages` и установит в нее проекты Medusa:
 
-
-  ```txt
-  /
-  └── my-plugin-monorepo/
-      ├── examples/
-      │   └── my-plugin-example/
-      │      ├── medusa/
-      │      └── medusa-storefront/
-      ├── packages/
-      │   └── @my-scope/
-      │      └── my-plugin/
-      ├── package.json
-      └── README.md
-  ```
+```txt title="Структура монорепозитория"
+|
+└── my-plugin-monorepo/
+    ├── examples/
+    │   └── my-plugin-example/
+    │      ├── medusa/
+    │      └── medusa-storefront/
+    ├── packages/
+    │   └── @my-scope/
+    │      └── my-plugin/
+    ├── package.json
+    └── README.md
+```
