@@ -24,29 +24,7 @@ module.exports = defineConfig({
           {
             resolve: "@gorgo/medusa-fulfillment-apiship/providers/fulfillment-apiship",
             id: "apiship",
-            options: {
-              token: process.env.APISHIP_TOKEN,
-              isTest: true,
-              settings: {
-                defaultSenderSettings: {
-                  countryCode: "RU",
-                  addressString: "Москва, улица Лестева, 19к1, офис 306",
-                  contactName: "Иванов Иван Иванович",
-                  phone: "+79999999900"
-                },
-                connectionsMap: {
-                  cdek: "36253"
-                },
-                defaultProductSizes: {
-                  length: 10,
-                  width: 10,
-                  height: 10,
-                  weight: 20
-                },
-                deliveryCostVat: -1,
-                isCod: false
-              }
-            },
+            options: {}
           },
         ],
       },
