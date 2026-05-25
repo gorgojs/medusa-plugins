@@ -3,8 +3,7 @@
   "version": "0.4.3",
   "description": "T-Kassa payment provider for Medusa",
   "files": [
-    ".medusa/server",
-    "integration-tests"
+    ".medusa/server"
   ],
   "repository": {
     "type": "git",
