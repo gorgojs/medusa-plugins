@@ -2,9 +2,15 @@ name: test
 
 on:
   pull_request:
+    branches:
+      - main
+    paths:
+      - 'packages/**'
   push:
     branches:
       - main
+    paths:
+      - 'packages/**'
   workflow_dispatch:
 
 jobs:
@@ -52,15 +58,14 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Run tests
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            # PR: only unit tests for changed plugin packages
-            yarn turbo run test:unit --filter='./packages/medusa-*...[origin/main]' --no-cache --force
-          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            # Manual: full suite
-            yarn turbo run test:unit test:integration:http test:integration:modules --concurrency=1 --no-cache --force
-          else
-            # Push to main: unit + integration for changed packages and their dependents
-            yarn turbo run test:unit test:integration:http test:integration:modules --filter='...[origin/main]' --concurrency=1 --no-cache --force
-          fi
+      - name: Unit tests (changed plugins)
+        if: github.event_name == 'pull_request'
+        run: yarn turbo run test:unit --filter='./packages/medusa-*...[origin/main]' --no-cache --force
+
+      - name: Unit + integration tests (changed and dependents)
+        if: github.event_name == 'push'
+        run: yarn turbo run test:unit test:integration:http test:integration:modules --filter='...[origin/main]' --concurrency=1 --no-cache --force
+
+      - name: Full test suite
+        if: github.event_name == 'workflow_dispatch'
+        run: yarn turbo run test:unit test:integration:http test:integration:modules --concurrency=1 --no-cache --force
