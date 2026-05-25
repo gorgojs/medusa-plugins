@@ -194,16 +194,32 @@ jobs:
           # Strip leading "medusa-" prefix to get the example directory name
           IFS=',' read -ra PACKAGES <<< "$OUTDATED_PACKAGES"
           SCOPES=()
+          FILTERS=()
           for package in "${PACKAGES[@]}"; do
             [ -z "$package" ] && continue
             example="${package#medusa-}"
             echo "Updating example '$example' for package '$package'"
             ./scripts/update.sh "$TARGET_VERSION" "$example" --single --skip-build
             SCOPES+=("$example")
+            FILTERS+=("--filter=@gorgo/it-${example}")
           done
 
           SCOPE=$(IFS=,; echo "${SCOPES[*]}")
           echo "commit_scope=${SCOPE}" >> "$GITHUB_OUTPUT"
+          echo "test_filters=${FILTERS[*]}" >> "$GITHUB_OUTPUT"
+
+      - name: Run unit + integration tests via turbo
+        if: steps.update.outputs.test_filters != ''
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
+          DB_NAME: postgres
+          CI: "true"
+        run: |
+          set -euo pipefail
+          corepack yarn install --no-immutable
+          corepack yarn turbo run test:unit test:integration:http test:integration:modules ${{ steps.update.outputs.test_filters }} --concurrency=1 --no-cache --force
 
       - name: Generate GitHub App token for PR
         id: app-token-pr
@@ -255,26 +271,3 @@ jobs:
         run: |
           echo "PR number: ${{ steps.cpr.outputs.pull-request-number }}"
           echo "PR URL: ${{ steps.cpr.outputs.pull-request-url }}"
-
-      # - name: Notify on failure
-      #   if: failure()
-      #   uses: actions/github-script@v7
-      #   with:
-      #     github-token: ${{ steps.app-token-pr.outputs.token }}
-      #     script: |
-      #       const owner = context.repo.owner
-      #       const repo = context.repo.repo
-      #       const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
-      #       const version = `${{ needs.check_medusa_version.outputs.new_medusa_version }}` || 'unknown'
-      #
-      #       await github.rest.issues.create({
-      #         owner, repo,
-      #         title: `[CI] Medusa auto-update failed (target ${version})`,
-      #         body: [
-      #           'Automatic daily Medusa update workflow failed.',
-      #           `- Run URL: ${runUrl}`,
-      #           `- Target Medusa version: ${version}`,
-      #         ].join('\n'),
-      #         labels: ['ci', 'automation', 'needs-attention']
-      #       })
-

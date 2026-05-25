@@ -1,0 +1,25 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".medusa/**", "dist/**"],
+      "inputs": ["src/**", "package.json", "tsconfig.json"]
+    },
+    "test:unit": {
+      "outputs": [],
+      "inputs": ["src/**", "jest.config.*", "package.json"]
+    },
+    "test:integration:http": {
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "env": ["DB_USERNAME", "DB_PASSWORD", "DB_NAME", "DATABASE_URL", "TEST_TYPE", "NODE_OPTIONS", "CI"]
+    },
+    "test:integration:modules": {
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "env": ["DB_USERNAME", "DB_PASSWORD", "DB_NAME", "DATABASE_URL", "TEST_TYPE", "NODE_OPTIONS", "CI"]
+    }
+  },
+  "globalDependencies": ["turbo.json"]
+}

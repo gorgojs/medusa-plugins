@@ -51,7 +51,7 @@ jobs:
       - name: Version and publish packages
         uses: changesets/action@v1
         with:
-          version: yarn changeset version
+          version: yarn version
           publish: yarn changeset publish
           title: 'chore: release packages'
           commit: 'chore: release packages'
