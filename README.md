@@ -184,6 +184,30 @@ See the plugin example README for details:
 - [examples/payment-robokassa/README.md](examples/payment-robokassa/README.md)
 - [examples/payment-tkassa/README.md](examples/payment-tkassa/README.md)
 
+## Tests
+
+The repository runs two kinds of tests, orchestrated by [Turborepo](https://turborepo.com):
+
+- **Unit tests** live next to source in each plugin (`packages/medusa-<plugin>/src/**/__tests__/*.unit.spec.ts`).
+- **Integration tests** live in dedicated workspace packages (`integration-tests/<plugin>/`) that boot a real Medusa app with the plugin loaded via `workspace:*`. See [integration-tests/README.md](integration-tests/README.md) for setup and running.
+
+From the monorepo root:
+
+```bash
+yarn test:unit                # all unit tests across packages/medusa-*
+yarn test:integration         # all integration tests across integration-tests/*
+yarn test:changed             # unit + integration only for packages changed vs origin/main
+```
+
+From a single plugin package (for active development):
+
+```bash
+cd packages/medusa-<plugin>
+yarn test:unit
+```
+
+CI runs unit tests on every PR (only for changed plugins) and the full suite on push to `main` and `workflow_dispatch`. See [.github/workflows/test.yml](.github/workflows/test.yml).
+
 ## Contribution
 
 Contributions are welcome across packages, examples, and docs! Here is a little instruction about how to do it.
@@ -191,7 +215,7 @@ Contributions are welcome across packages, examples, and docs! Here is a little 
 Before opening a Pull Request:
 
 1. Make changes in the relevant package, example, or documentation enty.
-2. Run the local commands needed for the area you touched, such as `yarn build`, `yarn dev`, or package/example integration tests where available.
+2. Run the local commands needed for the area you touched, such as `yarn build`, `yarn dev`, or `yarn test:changed` to verify tests still pass.
 3. Update documentation when behavior, configuration, or setup changes.
 4. Keep commits [conventional](https://www.conventionalcommits.org/en/v1.0.0/), focused and scoped. The repository uses `commitlint` and automated release tooling.   
   Commit message format:  

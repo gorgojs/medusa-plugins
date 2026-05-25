@@ -3,14 +3,20 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "packages/utils/*"
+    "packages/utils/*",
+    "integration-tests/*"
   ],
   "packageManager": "yarn@4.9.2",
   "scripts": {
     "update": "./scripts/update.sh",
     "postinstall": "husky",
     "commitlint": "commitlint",
-    "scopes": "node -e \"console.log(require('./commitlint.config.cjs').rules['scope-enum'][2].join('\\n'))\""
+    "scopes": "node -e \"console.log(require('./commitlint.config.cjs').rules['scope-enum'][2].join('\\n'))\"",
+    "build": "turbo run build --concurrency=100%",
+    "test:unit": "turbo run test:unit --filter='./packages/medusa-*' --no-cache --force",
+    "test:integration": "turbo run test:integration:http test:integration:modules --filter='./integration-tests/*' --concurrency=1 --no-cache --force",
+    "test:changed": "turbo run test:unit test:integration:http test:integration:modules --filter='...[origin/main]' --concurrency=1 --no-cache --force",
+    "version": "changeset version && yarn install --no-immutable"
   },
   "dependencies": {
     "@changesets/changelog-github": "^0.6.0",
@@ -19,6 +25,7 @@
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "turbo": "^2.9.0"
   }
 }

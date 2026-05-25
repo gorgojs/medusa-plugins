@@ -21,14 +21,13 @@ const esmPackagesToTransform = [
 ]
 
 const baseConfig = {
+  rootDir: __dirname,
   transform: {
     "^.+\\.[jt]s$": [
       "@swc/jest",
       {
         jsc: {
           parser: { syntax: "typescript", decorators: true },
-          // Pin target to match tsconfig — recent @swc/jest defaults to es2023
-          // which the pinned @swc/core (1.5.7) doesn't support.
           target: "es2021",
         },
       },
@@ -52,7 +51,16 @@ const baseConfig = {
   ],
 }
 
-module.exports = {
-  ...baseConfig,
-  testMatch: ["**/src/**/__tests__/**/*.unit.spec.[jt]s"],
+if (process.env.TEST_TYPE === "integration:modules") {
+  module.exports = {
+    ...baseConfig,
+    testMatch: ["**/__tests__/modules/*.spec.[jt]s"],
+    setupFiles: ["./setup.js"],
+  }
+} else {
+  module.exports = {
+    ...baseConfig,
+    testMatch: ["**/__tests__/http/*.spec.[jt]s"],
+    setupFiles: ["./setup.js"],
+  }
 }

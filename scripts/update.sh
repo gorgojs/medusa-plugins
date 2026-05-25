@@ -23,6 +23,14 @@ EXAMPLE_PACKAGE_MAP["./examples/fulfillment-apiship"]=./packages/medusa-fulfillm
 EXAMPLE_PACKAGE_MAP["./examples/payment-robokassa"]=./packages/medusa-payment-robokassa
 EXAMPLE_PACKAGE_MAP["./examples/payment-tkassa"]=./packages/medusa-payment-tkassa
 
+# Mapping of example directories to integration-tests directories
+declare -A EXAMPLE_IT_MAP
+EXAMPLE_IT_MAP["./examples/1c"]=./integration-tests/1c
+EXAMPLE_IT_MAP["./examples/feed-yandex"]=./integration-tests/feed-yandex
+EXAMPLE_IT_MAP["./examples/fulfillment-apiship"]=./integration-tests/fulfillment-apiship
+EXAMPLE_IT_MAP["./examples/payment-robokassa"]=./integration-tests/payment-robokassa
+EXAMPLE_IT_MAP["./examples/payment-tkassa"]=./integration-tests/payment-tkassa
+
 # Function to print script messages
 log() {
     local dir=$1
@@ -124,9 +132,11 @@ handle_error() {
 # Function to process a directory
 process_directory() {
     local dir="$1/medusa"
+    local root_pwd
+    root_pwd=$(pwd)
     log "$dir" "Processing directory"
     echo -e "Processing"
-    
+
     # Change to the directory
     cd "$dir" || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
     
@@ -176,24 +186,28 @@ process_directory() {
             warning "$dir" "Skipping migrations and build"
         fi
         
-        # Run integration tests if scripts exist in package.json.
-        if grep -q '"test:integration:http"' package.json; then
-            log "$dir" "Running integration HTTP tests"
-            echo -e "\n${YELLOW}[$dir] Running: yarn test:integration:http${NC}\n"
-            yarn test:integration:http --passWithNoTests || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
-        else
-            warning "$dir" "No test:integration:http script, skipping..."
+        # Integration tests are now run from the workflow via `yarn turbo` after
+        # all version bumps complete. The bash loop here only updates versions.
+
+        # Mirror the @medusajs version bump in the corresponding integration-tests workspace.
+        local it_dir="${EXAMPLE_IT_MAP[$1]:-}"
+        if [ -n "$it_dir" ] && [ -f "$root_pwd/$it_dir/package.json" ]; then
+            log "$it_dir" "Updating @medusajs packages to version $VERSION"
+            cd "$root_pwd/$it_dir" || handle_error "$it_dir" "$LAST_SUCCESSFUL_DIR"
+            if grep -q "\"@medusajs" package.json; then
+                echo -e "\n${YELLOW}[$it_dir] Running: yarn add ...${NC}\n"
+                yarn add $(grep "\"@medusajs" package.json | grep -v "\"@medusajs/ui\"" | sed 's/.*"@medusajs\/\([^"]*\)".*/@medusajs\/\1@'"$VERSION"'/') || handle_error "$it_dir" "$LAST_SUCCESSFUL_DIR"
+                if sed --version > /dev/null 2>&1; then
+                    sed -i -e '/^[[:space:]]*$/d' package.json || handle_error "$it_dir" "$LAST_SUCCESSFUL_DIR"
+                else
+                    sed -i '' -e '/^[[:space:]]*$/d' package.json || handle_error "$it_dir" "$LAST_SUCCESSFUL_DIR"
+                fi
+                perl -i -pe 'chomp if eof' package.json || handle_error "$it_dir" "$LAST_SUCCESSFUL_DIR"
+            fi
+            cd "$root_pwd/$dir" || handle_error "$it_dir" "$LAST_SUCCESSFUL_DIR"
         fi
 
-        if grep -q '"test:integration:modules"' package.json; then
-            log "$dir" "Running integration modules tests"
-            echo -e "\n${YELLOW}[$dir] Running: yarn test:integration:modules${NC}\n"
-            yarn test:integration:modules --passWithNoTests || handle_error "$dir" "$LAST_SUCCESSFUL_DIR"
-        else
-            warning "$dir" "No test:integration:modules script, skipping..."
-        fi
-        
-        success "$dir" "Successfully updated and built"
+        success "$dir" "Successfully updated"
         cd - > /dev/null
         
         # Update version badge of the package's readme
