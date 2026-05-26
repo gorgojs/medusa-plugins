@@ -1,4 +1,4 @@
-name: test
+name: Test Packages
 
 on:
   pull_request:
@@ -16,14 +16,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    environment: test
 
     services:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: medusa-test
+          POSTGRES_USER: ${{ secrets.DB_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
         ports:
           - 5432:5432
         options: >-
@@ -33,11 +34,7 @@ jobs:
           --health-retries 5
 
     env:
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/medusa-test
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: medusa-test
-      CI: "true"
+      DATABASE_URL: postgres://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }}
 
     steps:
       - name: Checkout
@@ -50,13 +47,19 @@ jobs:
         run: corepack enable
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6.4.0
         with:
           node-version: 20
           cache: yarn
 
       - name: Install dependencies
         run: yarn install --immutable
+
+      - name: Inject environment secrets
+        env:
+          SECRETS_JSON: ${{ toJSON(secrets) }}
+        run: |
+          echo "$SECRETS_JSON" | jq -r 'to_entries[] | "\(.key)=\(.value)"' >> "$GITHUB_ENV"
 
       - name: Unit tests (changed plugins)
         if: github.event_name == 'pull_request'
