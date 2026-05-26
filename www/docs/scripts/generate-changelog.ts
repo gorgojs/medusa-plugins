@@ -1,6 +1,6 @@
 import { exec } from "node:child_process"
 import { existsSync } from "node:fs"
-import { readFile, writeFile } from "node:fs/promises"
+import { readFile, writeFile, mkdir } from "node:fs/promises"
 import path from "node:path"
 import { promisify } from "node:util"
 
@@ -93,6 +93,11 @@ async function main() {
   const merged = [...changelogItems, ...manualItems]
     .sort((a, b) => b.date.localeCompare(a.date))
     .filter(({ id }) => !seen.has(id) && seen.add(id))
+
+  const dir = path.dirname(outputPath);
+  if (!existsSync(dir)) {
+    await mkdir(path.dirname(outputPath), { recursive: true })
+  }
 
   await writeFile(outputPath, JSON.stringify(merged, null, 2))
   console.log(`Done. ${merged.length} entries (${changelogItems.length} changelog + ${manualItems.length} manual)`)
