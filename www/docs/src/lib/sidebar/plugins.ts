@@ -49,6 +49,14 @@ export const pluginsSidebar: SidebarType = {
           slug: "storefront-integration",
           children: [],
         },
+        {
+          title: {
+            en: "Changelog",
+            ru: "Журнал изменений",
+          },
+          slug: "changelog",
+          children: [],
+        },
       ],
     },
     {
@@ -92,6 +100,14 @@ export const pluginsSidebar: SidebarType = {
           slug: "storefront-integration",
           children: [],
         },
+        {
+          title: {
+            en: "Changelog",
+            ru: "Журнал изменений",
+          },
+          slug: "changelog",
+          children: [],
+        },
       ],
     },
     {
@@ -133,6 +149,14 @@ export const pluginsSidebar: SidebarType = {
             ru: "Интеграция в витрину",
           },
           slug: "storefront-integration",
+          children: [],
+        },
+        {
+          title: {
+            en: "Changelog",
+            ru: "Журнал изменений",
+          },
+          slug: "changelog",
           children: [],
         },
       ],
@@ -186,6 +210,14 @@ export const pluginsSidebar: SidebarType = {
           slug: "storefront-integration",
           children: [],
         },
+        {
+          title: {
+            en: "Changelog",
+            ru: "Журнал изменений",
+          },
+          slug: "changelog",
+          children: [],
+        },
       ],
     },
     {
@@ -219,6 +251,14 @@ export const pluginsSidebar: SidebarType = {
             ru: "Начало работы",
           },
           slug: "getting-started",
+          children: [],
+        },
+        {
+          title: {
+            en: "Changelog",
+            ru: "Журнал изменений",
+          },
+          slug: "changelog",
           children: [],
         },
       ],
@@ -270,6 +310,14 @@ export const pluginsSidebar: SidebarType = {
             ru: "Тестирование",
           },
           slug: "testing",
+          children: [],
+        },
+        {
+          title: {
+            en: "Changelog",
+            ru: "Журнал изменений",
+          },
+          slug: "changelog",
           children: [],
         },
       ],

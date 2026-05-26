@@ -8,6 +8,7 @@ import { Note } from "@/components/mdx/note";
 import { UsedByList } from "@/components/mdx/usedby-list";
 import { CodeTabs, CodeTab } from "@/components/mdx/code-tabs";
 import { ZoomImg } from "@/components/mdx/zoom-img";
+import { ChangelogRenderer } from "@/components/mdx/changelog-renderer";
 
 const components: MDXComponents = {
   h1: ({ children, className, ...props }) => {
@@ -83,6 +84,7 @@ const components: MDXComponents = {
   UsedByList,
   CodeTabs,
   CodeTab,
+  ChangelogRenderer,
 };
 
 export function useMDXComponents(): MDXComponents {
