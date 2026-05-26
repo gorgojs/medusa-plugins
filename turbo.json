@@ -1,5 +1,6 @@
 {
   "$schema": "https://turborepo.com/schema.json",
+  "envMode": "loose",
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -12,13 +13,11 @@
     },
     "test:integration:http": {
       "dependsOn": ["^build"],
-      "outputs": [],
-      "env": ["DB_USERNAME", "DB_PASSWORD", "DB_NAME", "DATABASE_URL", "TEST_TYPE", "NODE_OPTIONS", "CI"]
+      "outputs": []
     },
     "test:integration:modules": {
       "dependsOn": ["^build"],
-      "outputs": [],
-      "env": ["DB_USERNAME", "DB_PASSWORD", "DB_NAME", "DATABASE_URL", "TEST_TYPE", "NODE_OPTIONS", "CI"]
+      "outputs": []
     }
   },
   "globalDependencies": ["turbo.json"]
