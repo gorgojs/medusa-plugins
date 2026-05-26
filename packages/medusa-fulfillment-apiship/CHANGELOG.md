@@ -1,5 +1,11 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 0.5.7
+
+### Patch Changes
+
+- [#271](https://github.com/gorgojs/medusa-plugins/pull/271) [`7bb54f7`](https://github.com/gorgojs/medusa-plugins/commit/7bb54f7e4c3ae629e2370fbe725aed7dc7939ee8) Thanks [@ttokyose](https://github.com/ttokyose)! - remove apiship model and options
+
 ## 0.5.6
 
 ### Patch Changes
