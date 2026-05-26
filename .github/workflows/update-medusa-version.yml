@@ -139,6 +139,7 @@ jobs:
     needs: check_medusa_version
     if: needs.check_medusa_version.outputs.should_update == 'true'
     runs-on: ubuntu-latest
+    environment: test
     permissions:
       contents: write
       pull-requests: write
@@ -148,13 +149,13 @@ jobs:
       postgres:
         image: public.ecr.aws/docker/library/postgres:16
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
+          POSTGRES_USER: ${{ secrets.DB_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U postgres -d postgres"
+          --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 20
@@ -163,6 +164,7 @@ jobs:
       NODE_ENV: test
       YARN_ENABLE_GLOBAL_CACHE: "false"
       YARN_CACHE_FOLDER: .yarn/cache
+      DATABASE_URL: postgres://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }}
 
     steps:
       - name: Checkout repository
@@ -180,6 +182,12 @@ jobs:
 
       - name: Install root dependencies
         run: corepack yarn install --immutable
+
+      - name: Inject environment secrets
+        env:
+          SECRETS_JSON: ${{ toJSON(secrets) }}
+        run: |
+          echo "$SECRETS_JSON" | jq -r 'to_entries[] | "\(.key)=\(.value)"' >> "$GITHUB_ENV"
 
       - name: Run update script only for outdated packages
         id: update
@@ -210,12 +218,6 @@ jobs:
 
       - name: Run unit + integration tests via turbo
         if: steps.update.outputs.test_filters != ''
-        env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
-          DB_USERNAME: postgres
-          DB_PASSWORD: postgres
-          DB_NAME: postgres
-          CI: "true"
         run: |
           set -euo pipefail
           corepack yarn install --no-immutable
