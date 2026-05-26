@@ -52,7 +52,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Changelog",
-            ru: "Журнал изменений",
+            ru: "История изменений",
           },
           slug: "changelog",
           children: [],
@@ -103,7 +103,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Changelog",
-            ru: "Журнал изменений",
+            ru: "История изменений",
           },
           slug: "changelog",
           children: [],
@@ -154,7 +154,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Changelog",
-            ru: "Журнал изменений",
+            ru: "История изменений",
           },
           slug: "changelog",
           children: [],
@@ -213,7 +213,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Changelog",
-            ru: "Журнал изменений",
+            ru: "История изменений",
           },
           slug: "changelog",
           children: [],
@@ -256,7 +256,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Changelog",
-            ru: "Журнал изменений",
+            ru: "История изменений",
           },
           slug: "changelog",
           children: [],
@@ -315,7 +315,7 @@ export const pluginsSidebar: SidebarType = {
         {
           title: {
             en: "Changelog",
-            ru: "Журнал изменений",
+            ru: "История изменений",
           },
           slug: "changelog",
           children: [],
