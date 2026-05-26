@@ -4,10 +4,8 @@ import { Modules, PaymentActions, PaymentSessionStatus } from "@medusajs/framewo
 
 jest.setTimeout(120 * 1000)
 
-const TERMINAL_KEY = "test-terminal"
-const PASSWORD = "test-password"
-process.env.TKASSA_TERMINAL_KEY = TERMINAL_KEY
-process.env.TKASSA_PASSWORD = PASSWORD
+const TERMINAL_KEY = process.env.TKASSA_TERMINAL_KEY
+const PASSWORD = process.env.TKASSA_PASSWORD
 
 const PROVIDER_ROUTE_KEY = "tkassa_tkassa"
 const PROVIDER_DB_ID = "pp_tkassa_tkassa"
