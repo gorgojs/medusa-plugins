@@ -30,13 +30,8 @@ import { Modules } from "@medusajs/framework/utils"
 
 jest.setTimeout(120 * 1000)
 
-const TERMINAL_KEY = "test-terminal"
-const PASSWORD = "test-password"
-// Pin credentials before medusa-config.ts evaluates so the registered provider
-// instance sees the same Password we expect.
-process.env.TKASSA_TERMINAL_KEY = TERMINAL_KEY
-process.env.TKASSA_PASSWORD = PASSWORD
-
+const TERMINAL_KEY = process.env.TKASSA_TERMINAL_KEY
+const PASSWORD = process.env.TKASSA_PASSWORD
 const PROVIDER_DB_ID = "pp_tkassa_tkassa"
 
 medusaIntegrationTestRunner({
