@@ -81,6 +81,18 @@ async function parsePackageChangelog(packageName: string): Promise<ActivityItem[
 async function main() {
   console.log("Generating activity...")
 
+  if (!existsSync(path.join(repoRoot, "packages"))) {
+    if (existsSync(outputPath)) {
+      console.log("Skipping: no packages/ available, keeping existing activity.json")
+      return
+    }
+    console.log("Skipping: no packages/ available, writing empty activity.json")
+    const dir = path.dirname(outputPath)
+    if (!existsSync(dir)) await mkdir(dir, { recursive: true })
+    await writeFile(outputPath, "[]")
+    return
+  }
+
   const results = await Promise.all(Object.keys(packageMeta).map(parsePackageChangelog))
   const changelogItems = results.flat()
 
