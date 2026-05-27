@@ -21,7 +21,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
   const cartCacheTag = await getCacheTag("carts")
   revalidateTag(cartCacheTag)
   const { cart } = await sdk.store.cart.retrieve(cartId, {
-    fields: "id, order_link.order_id"
+    fields: "id, order_link.order_id, items.total"
   },
     headers
   )
