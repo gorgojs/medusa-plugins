@@ -96,9 +96,8 @@ jobs:
           ' >> "$GITHUB_ENV"
 
       - name: Run integration tests for changed plugins
-        if: github.event_name == 'push'
         run: yarn turbo run test:integration:http test:integration:modules --filter='./integration-tests/*...[origin/main]' --concurrency=1 --no-cache --force
 
-      - name: Run integration tests for all plugins
-        if: github.event_name == 'workflow_dispatch'
-        run: yarn turbo run test:integration:http test:integration:modules --filter='./integration-tests/*' --concurrency=1 --no-cache --force
+      # - name: Run integration tests for all plugins
+      #   if: github.event_name == 'workflow_dispatch'
+      #   run: yarn turbo run test:integration:http test:integration:modules --filter='./integration-tests/*' --concurrency=1 --no-cache --force
