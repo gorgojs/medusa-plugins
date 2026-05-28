@@ -41,6 +41,8 @@ Robokassa Payments for Medusa
 
 ## Plugin Features
 
+- **Production-Ready**  
+  Proven in live stores and ready for real-world deployment.
 - **Full Integration with Robokassa**  
   Connect your store to Robokassa for secure and reliable payments.
 - **Receipt Generation**  
@@ -55,6 +57,8 @@ Robokassa Payments for Medusa
   Simulate payments without real charges.
 - **Detailed Logging**  
   Request and response logs for debugging and support in development mode.
+- **Full Test Coverage**  
+  Comprehensive unit and integration tests covering core flows and edge cases.
 - **Storefront Example**  
   A complete <a href="https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-robokassa/medusa-storefront" target="_blank">Next.js storefront</a> ready to use as a reference.
 
