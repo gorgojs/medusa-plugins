@@ -19,8 +19,8 @@ jest.setTimeout(60 * 1000)
 
 const MERCHANT_LOGIN = process.env.CI_ROBOKASSA_MERCHANT_LOGIN
 const HASH_ALGORITHM = (process.env.CI_ROBOKASSA_HASH_ALGORITHM || "md5") as string
-const PASSWORD_1 = process.env.CI_ROBOKASSA_PASSWORD_1
-const PASSWORD_2 = process.env.CI_ROBOKASSA_PASSWORD_2
+const PASSWORD_1 = process.env.CI_ROBOKASSA_TEST_PASSWORD_1
+const PASSWORD_2 = process.env.CI_ROBOKASSA_TEST_PASSWORD_2
 
 const HAS_CREDS = Boolean(MERCHANT_LOGIN && PASSWORD_1 && PASSWORD_2)
 
