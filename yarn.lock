@@ -2052,6 +2052,8 @@ __metadata:
     "@types/jest": "npm:^29.5.13"
     "@types/node": "npm:^22.13.11"
     awilix: "npm:^8.0.1"
+    axios: "npm:*"
+    fast-xml-parser: "npm:^5.2.5"
     jest: "npm:^29.7.0"
     pg: "npm:^8.14.1"
     typescript: "npm:^5.8.2"
@@ -2239,13 +2241,17 @@ __metadata:
     "@mikro-orm/migrations": "npm:6.4.3"
     "@mikro-orm/postgresql": "npm:6.4.3"
     "@swc/core": "npm:1.5.7"
+    "@swc/jest": "npm:^0.2.36"
+    "@types/jest": "npm:^29.5.13"
     "@types/node": "npm:^22.13.11"
     "@types/react": "npm:^19.0.12"
     "@types/react-dom": "npm:^19.0.4"
     awilix: "npm:^8.0.1"
     base64url: "npm:^3.0.1"
     fast-xml-parser: "npm:^5.2.5"
+    jest: "npm:^29.7.0"
     md5: "npm:^2.3.0"
+    msw: "npm:^2.7.0"
     pg: "npm:^8.14.1"
     prop-types: "npm:^15.8.1"
     react: "npm:^18.3.1"
@@ -8471,7 +8477,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:>=0.18.0, axios@npm:^1.12.0, axios@npm:^1.13.1, axios@npm:^1.13.2, axios@npm:^1.16.1":
+"axios@npm:*, axios@npm:>=0.18.0, axios@npm:^1.12.0, axios@npm:^1.13.1, axios@npm:^1.13.2, axios@npm:^1.16.1":
   version: 1.16.1
   resolution: "axios@npm:1.16.1"
   dependencies:
