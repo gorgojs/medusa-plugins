@@ -11,7 +11,7 @@
 <p align="center">
   <a href="https://docs.gorgojs.ru/medusa-plugins/t-kassa">Документация</a>
   <br/>
-  Плагин Medusa для приёма платежей через Т-Касса от Т-Банка. Готов к продакшен.
+  Плагин Medusa для приёма платежей через Т-Касса от Т-Банка. Готов к продакшену.
   <br/>
   <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-payment-tkassa/README.md">Read README in English ↗</a>
 </p>
