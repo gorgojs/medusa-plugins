@@ -131,7 +131,7 @@ describeIfCreds("Robokassa contract (LIVE network)", () => {
 
     // Endpoint must be reachable — a 404/5xx means the URL has changed or is down
     expect(response.status).toBeGreaterThanOrEqual(200)
-    expect(response.status).toBeLessThan(500)
+    expect(response.status).toBeLessThan(400)
     // Response must be JSON (Payment/Confirm returns JSON, unlike OpStateExt which returns XML)
     expect(response.headers["content-type"]).toMatch(/json/)
     // Payment/Confirm returns a plain-text string despite content-type: application/json.
@@ -166,7 +166,7 @@ describeIfCreds("Robokassa contract (LIVE network)", () => {
 
     // Endpoint must be reachable — a 404/5xx means the payment page URL has changed
     expect(response.status).toBeGreaterThanOrEqual(200)
-    expect(response.status).toBeLessThan(500)
+    expect(response.status).toBeLessThan(400)
     // Payment page returns HTML — a non-HTML response indicates a schema change
     expect(response.headers["content-type"]).toMatch(/html/)
   })

@@ -1,0 +1,26 @@
+# SearchAttributeValuesResponseValue
+
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**id** | **number** | Идентификатор значения характеристики. | [optional] [default to undefined]
+**info** | **string** | Дополнительная информация. | [optional] [default to undefined]
+**picture** | **string** | Ссылка на изображение. | [optional] [default to undefined]
+**value** | **string** | Значение характеристики товара. | [optional] [default to undefined]
+
+## Example
+
+```typescript
+import { SearchAttributeValuesResponseValue } from './api';
+
+const instance: SearchAttributeValuesResponseValue = {
+    id,
+    info,
+    picture,
+    value,
+};
+```
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
