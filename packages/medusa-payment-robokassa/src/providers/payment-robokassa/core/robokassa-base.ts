@@ -25,6 +25,19 @@ import {
   taxations,
   taxes
 } from "../types"
+
+// Maps Robokassa numeric state codes to Medusa PaymentSessionStatus.
+// Documented at: https://docs.robokassa.ru/en/pay-interface/checking-operation-state/
+const PaymentStateCodesMap: Record<number, PaymentSessionStatus> = {
+  3: PaymentSessionStatus.PENDING,
+  5: PaymentSessionStatus.PENDING,
+  10: PaymentSessionStatus.CANCELED,
+  20: PaymentSessionStatus.AUTHORIZED,
+  50: PaymentSessionStatus.PENDING,
+  60: PaymentSessionStatus.CANCELED,
+  80: PaymentSessionStatus.REQUIRES_MORE,
+  100: PaymentSessionStatus.CAPTURED,
+}
 import axios, { AxiosError } from "axios"
 import { XMLParser } from 'fast-xml-parser'
 import {
@@ -366,17 +379,7 @@ abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
       }
       const paymentState = parseInt(state.Code, 10)
 
-      const map: Record<number, PaymentSessionStatus> = {
-        10: PaymentSessionStatus.CANCELED,
-        60: PaymentSessionStatus.CANCELED,
-        20: PaymentSessionStatus.AUTHORIZED,
-        5: PaymentSessionStatus.PENDING,
-        50: PaymentSessionStatus.PENDING,
-        3: PaymentSessionStatus.PENDING,
-        80: PaymentSessionStatus.REQUIRES_MORE,
-        100: PaymentSessionStatus.CAPTURED,
-      }
-      const status = map[paymentState] ?? PaymentSessionStatus.ERROR
+      const status = PaymentStateCodesMap[paymentState] ?? PaymentSessionStatus.ERROR
 
       const output = { status, data: { ...input.data, response } }
       this.logger_.debug("RobokassaBase.getPaymentStatus output:\n" + JSON.stringify(output, null, 2))
