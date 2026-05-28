@@ -59,7 +59,11 @@ jobs:
         env:
           SECRETS_JSON: ${{ toJSON(secrets) }}
         run: |
-          echo "$SECRETS_JSON" | jq -r 'to_entries[] | "\(.key)=\(.value)"' >> "$GITHUB_ENV"
+          echo "$SECRETS_JSON" | jq -r '
+            to_entries[]
+            | select(.value | type == "string")
+            | "\(.key)<<__EOF_SECRET_\(.key)__\n\(.value)\n__EOF_SECRET_\(.key)__"
+          ' >> "$GITHUB_ENV"
 
       - name: Unit tests (changed plugins)
         if: github.event_name == 'pull_request'
