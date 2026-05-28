@@ -7,6 +7,7 @@ import { MedusaTypeList } from "@/components/medusa-type-list";
 import { Note } from "@/components/mdx/note";
 import { UsedByList } from "@/components/mdx/usedby-list";
 import { CodeTabs, CodeTab } from "@/components/mdx/code-tabs";
+import { ZoomImg } from "@/components/mdx/zoom-img";
 
 const components: MDXComponents = {
   h1: ({ children, className, ...props }) => {
@@ -68,6 +69,9 @@ const components: MDXComponents = {
   ul: ({ children }) => <ul className="list-disc pl-6 my-4 space-y-1">{children}</ul>,
   ol: ({ children }) => <ol className="list-decimal pl-6 my-4 space-y-1">{children}</ol>,
   li: ({ children }) => <li className="text-ui-fg-base">{children}</li>,
+
+  // images — zoom on click
+  img: ({ key: _key, ...props }) => <ZoomImg {...props} />,
 
   //code
   code: CodeMdx,

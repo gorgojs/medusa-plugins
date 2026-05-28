@@ -13,6 +13,8 @@ In this document, you'll learn how to install and configure the Robokassa paymen
 - Node.js v20 or later
 - A Robokassa account – [sign in or create one](https://login.robokassa.ru/reg?promoCode=gorgo)
 
+---
+
 ## Installation
 
 <CodeTabs>
@@ -27,6 +29,8 @@ In this document, you'll learn how to install and configure the Robokassa paymen
     ```
   </CodeTab>
 </CodeTabs>
+
+---
 
 ## Configuration
 
@@ -74,6 +78,8 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
 ```
 
 <Note type="warning">`ROBOKASSA_HASH_ALGORITHM` must be one of the following values corresponding to the value in the Robokassa account: `md5`, `sha1`, `sha256`, `sha384`, `sha512` or `ripemd160` (note, an error occurs for `ripemd160` on the provider's side)</Note>
+
+---
 
 ## Provider Options
 
@@ -181,6 +187,8 @@ ROBOKASSA_TEST_PASSWORD_2=supersecret
     }
   ]}
 />
+
+---
 
 ## Webhook Setup
 

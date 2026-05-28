@@ -43,6 +43,8 @@ You extend the `paymentInfoMap` object to include a `pp_yookassa_yookassa` entry
 
 The helper function `isYookassa` checks whether a given `providerId` belongs to YooKassa. This is useful when rendering provider-specific UI-components.
 
+---
+
 ## Step 2: Update Cookie Settings
 
 When integrating YooKassa, you need to adjust your cookie policy to allow cross-domain payment redirects. Some payment providers require more permissive cookie settings so the payment session can be preserved when the customer is redirected back to the storefront.
@@ -63,6 +65,8 @@ export const setCartId = async (cartId: string) => {
 This helper function stores the cart ID in a cookie named `_medusa_cart_id`.
 
 The `sameSite` option is set to `lax` instead of `strict`. This change ensures the cookie is sent with cross-site requests during the YooKassa redirect flow, preventing the payment session from being lost.
+
+---
 
 ## Step 3: Initialize Payment Session
 
@@ -106,6 +110,8 @@ When initiating a payment for YooKassa, pass a `confirmation` object with `type:
 The `return_url` points back to your storefront's capture endpoint and is used for both successful and failed payment attempts.
 
 The `cart` object is included to build a compliant receipt in accordance with Federal Law No. 54.
+
+---
 
 ## Step 4: Create Payment Button
 
@@ -195,6 +201,8 @@ If the `confirmation_url` is missing, the component displays an error message in
 
 The parent `PaymentButton` uses `isYookassa` to determine whether to render the `YookassaPaymentButton` for the current session; otherwise, it shows a disabled Select a payment method button.
 
+---
+
 ## Step 5: Create Payment Capture API Route
 
 After the customer completes payment on the YooKassa page, he is redirected back to the storefront. You need an API route to handle this callback, verify the payment status, and complete the cart.
@@ -258,6 +266,8 @@ This API route handles the redirect from YooKassa after a payment attempt. It re
 If the cart does not contain an associated order ID, the route tries to place an order. If successful, the customer is redirected to the order confirmation page. If any error happens during cart completion, the customer is redirected back to the checkout page indicating an error, and he can proceed the checkout once again.
 
 When the payment is successful, the route revalidates the cached cart and order data, removes the cart cookie, and redirects the customer to the order confirmation page. This ensures a consistent post-payment experience while keeping storefront data up to date.
+
+---
 
 ## Full Storefront Integration Code Example
 

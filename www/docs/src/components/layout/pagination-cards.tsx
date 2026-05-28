@@ -68,26 +68,29 @@ export default function PaginationCards({
       : null;
 
   return (
-    <div className="flex gap-2 mt-8">
-      {prevPage ? (
-        <PaginationCard
-          href={`/${prevPage.path.join("/")}`}
-          title={prevPage.title}
-          type="prev"
-        />
-      ) : (
-        <div className="flex-1" />
-      )}
+    <>
+      <div className="separator-dotted my-8" />
+      <div className="flex gap-2">
+        {prevPage ? (
+          <PaginationCard
+            href={`/${prevPage.path.join("/")}`}
+            title={prevPage.title}
+            type="prev"
+          />
+        ) : (
+          <div className="flex-1" />
+        )}
 
-      {nextPage ? (
-        <PaginationCard
-          href={`/${nextPage.path.join("/")}`}
-          title={nextPage.title}
-          type="next"
-        />
-      ) : (
-        <div className="flex-1" />
-      )}
-    </div>
+        {nextPage ? (
+          <PaginationCard
+            href={`/${nextPage.path.join("/")}`}
+            title={nextPage.title}
+            type="next"
+          />
+        ) : (
+          <div className="flex-1" />
+        )}
+      </div>
+    </>
   );
 }

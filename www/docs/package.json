@@ -42,6 +42,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-markdown": "^10.1.0",
+    "react-medium-image-zoom": "^5.4.5",
     "react-simple-icons": "^1.0.0-beta.5",
     "react-tooltip": "^5.28.0",
     "react-transition-group": "^4.4.5",
