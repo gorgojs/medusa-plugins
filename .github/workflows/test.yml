@@ -14,7 +14,39 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: 20
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Run unit tests for changed plugins
+        if: github.event_name != 'workflow_dispatch'
+        run: yarn turbo run test:unit --filter='./packages/medusa-*...[origin/main]' --no-cache --force
+
+      - name: Run unit tests for all plugins
+        if: github.event_name == 'workflow_dispatch'
+        run: yarn turbo run test:unit --filter='./packages/medusa-*' --no-cache --force
+
+  integration:
+    name: Integration tests
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment: test
 
@@ -40,7 +72,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # turbo --filter='...[origin/main]' needs full git history to diff
           fetch-depth: 0
 
       - name: Enable Corepack
@@ -65,14 +96,10 @@ jobs:
             | "\(.key)<<__EOF_SECRET_\(.key)__\n\(.value)\n__EOF_SECRET_\(.key)__"
           ' >> "$GITHUB_ENV"
 
-      - name: Unit tests (changed plugins)
-        if: github.event_name == 'pull_request'
-        run: yarn turbo run test:unit --filter='./packages/medusa-*...[origin/main]' --no-cache --force
-
-      - name: Unit + integration tests (changed and dependents)
+      - name: Run integration tests for changed plugins
         if: github.event_name == 'push'
-        run: yarn turbo run test:unit test:integration:http test:integration:modules --filter='...[origin/main]' --concurrency=1 --no-cache --force
+        run: yarn turbo run test:integration:http test:integration:modules --filter='./integration-tests/*...[origin/main]' --concurrency=1 --no-cache --force
 
-      - name: Full test suite
+      - name: Run integration tests for all plugins
         if: github.event_name == 'workflow_dispatch'
-        run: yarn turbo run test:unit test:integration:http test:integration:modules --concurrency=1 --no-cache --force
+        run: yarn turbo run test:integration:http test:integration:modules --filter='./integration-tests/*' --concurrency=1 --no-cache --force
