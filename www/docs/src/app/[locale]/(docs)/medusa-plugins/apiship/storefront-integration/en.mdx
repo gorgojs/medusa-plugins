@@ -22,6 +22,8 @@ Add the following to your storefront’s `.env` file:
 NEXT_PUBLIC_YANDEX_MAPS_API_KEY=supersecret
 ```
 
+---
+
 ## Step 2: Require Recipient Phone Number
 
 ApiShip requires the recipient’s phone number for shipping calculations and for creating an order in the ApiShip. For this reason, the storefront must enforce a phone number in the shipping address form.
@@ -43,6 +45,8 @@ Open [`src/modules/checkout/components/shipping-address/index.tsx`](https://gith
 ```
 
 By marking the phone input as `required`, the checkout always collects the recipient phone number early in the flow, ensuring the ApiShip shipping calculation and shipment creation requests have the necessary data available.
+
+---
 
 ## Step 3: Handle Cart Data
 
@@ -117,6 +121,8 @@ These changes enable three core behaviors:
 - The storefront can attach ApiShip-specific selection data when applying a shipping method.
 - It can read the saved data back from the cart when the page is reloaded.
 - It can fully clear the selection by removing the shipping method from the cart when the customer decides to reset their choice.
+
+---
 
 ## Step 4: Fetch ApiShip Data
 
@@ -320,6 +326,8 @@ The `retrieveCalculation` request returns available delivery tariffs together wi
 
 In addition, the storefront fetches the list of ApiShip providers to display human-friendly carrier names in the UI.
 
+---
+
 ## Step 5: Define Types
 
 The storefront integration relies on a small set of shared types that describe the data returned by the ApiShip calculation endpoint and the data persisted in the cart as the user’s delivery selection. These types are used across the map UI, courier and pickup points modal windows, and the chosen component to keep the flow consistent and type-safe.
@@ -368,6 +376,8 @@ export type Chosen = {
 ```
 
 `ApishipCalculation` represents the calculated delivery options returned by the store API, separated into `to door` and `to point` groups by provider. `Chosen` is the normalized payload that the storefront saves in the cart once the user picks a tariff and a pickup point.
+
+---
 
 ## Step 6: Create Utilities
 
@@ -466,6 +476,8 @@ export function extractPointIds(map: Record<string, ApishipTariff[]>) {
 ```
 
 These utilities are referenced by the modal windows and the map for formatting delivery times, keeping selection keys stable between renders, safely running async effects without state updates after unmount, and correctly preparing the pickup point data model used to render tariffs per point.
+
+---
 
 ## Step 7: Create Pickup Point Map
 
@@ -906,6 +918,8 @@ export const ApishipMap: React.FC<ApishipMapProps> = ({
 
 This component initializes Yandex Maps once, re-centers the map when the pickup point list changes, and renders clickable markers for each available point. When the user selects a point, it shows a side panel where tariffs are displayed and can be chosen. The map UI also respects the previously saved selection. If the user opens the modal again, the component highlights the already chosen pickup point and tariff and prevents re-selecting the same option.
 
+---
+
 ## Step 8: Create ApiShip Delivery Summary
 
 This component renders a compact summary of the shipping option the customer has already selected. It is shown after the user selects a pickup point or courier tariff, so the checkout can clearly display what is currently saved in the cart.
@@ -1009,6 +1023,8 @@ export const ApishipChosen: React.FC<ApishipChosenProps> = ({
 ```
 
 With this in place, the storefront can show the previously saved selection directly in the delivery step, including pickup point and tariff details. It also allows the user to either remove it or reopen the modal window to change it.
+
+---
 
 ## Step 9: Create Pickup Point Modal
 
@@ -1232,6 +1248,8 @@ export const ApishipPickupPointModal: React.FC<ApishipPickupPointModalProps> = (
 ```
 
 This modal window keeps the body scroll locked while it is open, fetches pickup points using the shipping calculation results, and passes the previously saved selection into the map so the UI can reflect what the customer already picked. When the user confirms a point and tariff, the selection is saved into the cart shipping method data and the updated price is recalculated.
+
+---
 
 ## Step 10: Create Courier Tariff Selection Modal
 
@@ -1519,6 +1537,8 @@ export const ApishipCourierModal: React.FC<ApishipCourierModalProps> = ({
 
 Once the customer confirms their choice by clicking `Choose`, the selected tariff is saved to the cart, the shipping price is recalculated, and the modal closes.
 
+---
+
 ## Step 11: Create Barrel File
 
 All ApiShip storefront components and helpers are exported through a barrel file that acts as a single entry point for the integration. It re-exports the main UI building blocks, along with shared types and utility helpers, so other parts of the storefront can import everything from one place instead of referencing internal file paths.
@@ -1537,6 +1557,8 @@ export * from "./utils"
 ```
 
 This keeps imports clean and consistent, and makes the integration easier to maintain or refactor later without changing import paths across the storefront.
+
+---
 
 ## Step 12: Integrate Delivery Step
 
@@ -1860,6 +1882,8 @@ This change adds two dedicated modal windows for ApiShip (pickup point selection
 
 - The customer can’t continue to payment for an ApiShip shipping option until a valid ApiShip selection has been saved in the cart.
 - The ApiShip calculated prices are displayed as `from X` to reflect that the final amount depends on the selected tariff.
+
+---
 
 ## Full Storefront Integration Code Example
 

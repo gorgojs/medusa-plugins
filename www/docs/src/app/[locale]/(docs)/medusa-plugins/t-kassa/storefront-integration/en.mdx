@@ -43,6 +43,8 @@ You extend the `paymentInfoMap` object to include a `pp_tkassa_tkassa` entry. Th
 
 The helper function `isTkassa` checks whether a given `providerId` belongs to T-Kassa. This is useful when rendering provider-specific UI-components.
 
+---
+
 ## Step 2: Update Cookie Settings
 
 When integrating T-Kassa, you need to adjust your cookie policy to allow cross-domain payment redirects. Some payment providers require more permissive cookie settings so the payment session can be preserved when the customer is redirected back to the storefront.
@@ -63,6 +65,8 @@ export const setCartId = async (cartId: string) => {
 This helper function stores the cart ID in a cookie named `_medusa_cart_id`.
 
 The `sameSite` option is set to `lax` instead of `strict`. This change ensures the cookie is sent with cross-site requests during the T-Kassa redirect flow, preventing the payment session from being lost.
+
+---
 
 ## Step 3: Initialize Payment Session
 
@@ -102,6 +106,8 @@ const Payment = ({
 When initiating the payment session for T-Kassa, the `SuccessURL` and `FailURL` parameters define where the customer will be redirected after attempting payment. Both URLs are dynamically constructed using the storefront's base URL, the cart ID, and the selected country code.
 
 The `cart` object is included in the initialization data to build a receipt in accordance with Federal Law No. 54.
+
+---
 
 ## Step 4: Create Payment Button
 
@@ -198,6 +204,8 @@ The `PaymentButton` component determines whether the current payment session bel
 
 Integrating this component ensures that T-Kassa's payment process is seamlessly triggered from the checkout flow.
 
+---
+
 ## Step 5: Create Payment Capture API Route
 
 After the customer completes payment on the T-Kassa page, he is redirected back to the storefront. You need an API route to handle this callback, verify the payment status, and complete the cart.
@@ -261,6 +269,8 @@ This API route handles the redirect from T-Kassa after a payment attempt. It ret
 If the cart does not contain an associated order ID, the route tries to place an order. If successful, the customer is redirected to the order confirmation page. If any error happens during cart completion, the customer is redirected back to the checkout page indicating an error, and he can proceed the checkout once again.
 
 When the payment is successful, the route revalidates the cached cart and order data, removes the cart cookie, and redirects the customer to the order confirmation page. This ensures a consistent post-payment experience while keeping storefront data up to date.
+
+---
 
 ## Full Storefront Integration Code Example
 

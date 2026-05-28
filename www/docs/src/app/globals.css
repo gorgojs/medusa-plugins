@@ -217,11 +217,11 @@
 }
 
 .prose h3 {
-  @apply text-lg font-medium tracking-tight mt-5 mb-3 text-ui-fg-base;
+  @apply text-base font-medium tracking-tight mt-5 mb-3 text-ui-fg-base;
 }
 
 .prose h4 {
-  @apply text-lg font-medium tracking-tight mt-5 mb-3 text-ui-fg-base;
+  @apply text-sm font-medium tracking-tight mt-5 mb-3 text-ui-fg-base;
 }
 
 .prose strong:not(:where([class~="not-prose"],[class~="not-prose"] *)) {
@@ -238,6 +238,32 @@
 
 .prose li:not(:where([class~="not-prose"],[class~="not-prose"] *)) {
   @apply text-ui-fg-base;
+}
+
+.prose ol li::marker,
+.prose ul li::marker {
+  color: var(--ui-fg-base);
+}
+
+.prose hr {
+  @apply my-8 h-px w-full border-0 bg-ui-border-base;
+}
+
+/* Dark semi-transparent overlay for image zoom */
+[data-rmiz-modal-overlay="hidden"] {
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+[data-rmiz-modal-overlay="visible"] {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+/* Dotted separator — matches Medusa's DottedSeparator component */
+.separator-dotted {
+  height: 1px;
+  width: 100%;
+  background-image: linear-gradient(90deg, var(--docs-border-strong) 1px, transparent 1px);
+  background-size: 4px 1px;
+  background-repeat: repeat-x;
 }
 
 .prose strong:not(:where([class~="not-prose"],[class~="not-prose"] *)) {
