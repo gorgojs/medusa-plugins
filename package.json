@@ -16,7 +16,7 @@
     "test:unit": "turbo run test:unit --filter='./packages/medusa-*' --no-cache --force",
     "test:integration": "turbo run test:integration:http test:integration:modules --filter='./integration-tests/*' --concurrency=1 --no-cache --force",
     "test:changed": "turbo run test:unit test:integration:http test:integration:modules --filter='...[origin/main]' --concurrency=1 --no-cache --force",
-    "version": "changeset version && yarn install --no-immutable"
+    "release:version": "changeset version && yarn install --no-immutable"
   },
   "dependencies": {
     "@changesets/changelog-github": "^0.6.0",
