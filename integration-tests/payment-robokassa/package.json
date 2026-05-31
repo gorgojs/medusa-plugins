@@ -8,9 +8,9 @@
   },
   "dependencies": {
     "@gorgo/medusa-payment-robokassa": "workspace:*",
-    "@medusajs/framework": "^2.7.0",
-    "@medusajs/medusa": "^2.7.0",
-    "@medusajs/test-utils": "^2.7.0",
+    "@medusajs/framework": "2.15.5",
+    "@medusajs/medusa": "2.15.5",
+    "@medusajs/test-utils": "2.15.5",
     "awilix": "^8.0.1",
     "axios": "*",
     "fast-xml-parser": "^5.2.5",
