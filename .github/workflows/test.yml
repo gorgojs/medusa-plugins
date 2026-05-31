@@ -6,11 +6,15 @@ on:
       - main
     paths:
       - 'packages/**'
+      - '!packages/**/README.md'
+      - '!packages/**/README.ru.md'
   push:
     branches:
       - main
     paths:
       - 'packages/**'
+      - '!packages/**/README.md'
+      - '!packages/**/README.ru.md'
   workflow_dispatch:
 
 jobs:
