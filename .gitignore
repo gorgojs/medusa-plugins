@@ -12,6 +12,8 @@ node_modules
 
 packages/**/.yarn/*
 packages/**/.medusa/*
+integration-tests/**/.yarn/*
+integration-tests/**/.medusa/*
 examples/**/.yarn/*
 examples/**/static
 examples/**/.next

@@ -212,8 +212,8 @@ process_directory() {
         
         # Update version badge of the package's readme
         local package_dir="${EXAMPLE_PACKAGE_MAP[$1]}"
-        if [ -d $package_dir ]; then
-            cd "$package_dir" || handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
+        if [ -d "$root_pwd/$package_dir" ]; then
+            cd "$root_pwd/$package_dir" || handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
 
             if [ -f "README.md" ]; then
                 echo -e "\n${YELLOW}[$package_dir] Updating version badge in $package_dir/README.md${NC}\n"

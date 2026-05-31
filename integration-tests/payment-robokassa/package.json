@@ -17,8 +17,7 @@
     "pg": "^8.14.1"
   },
   "devDependencies": {
-    "@mikro-orm/core": "6.4.3",
-    "@swc/core": "1.5.7",
+    "@swc/core": "^1.7.28",
     "@swc/jest": "^0.2.36",
     "@types/jest": "^29.5.13",
     "@types/node": "^22.13.11",
