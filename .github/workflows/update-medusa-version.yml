@@ -225,6 +225,7 @@ jobs:
         run: |
           set -euo pipefail
           corepack yarn install --no-immutable
+          corepack yarn dedupe "@medusajs/*"
           corepack yarn turbo run test:unit test:integration:http test:integration:modules ${{ steps.update.outputs.test_filters }} --concurrency=1 --no-cache --force
 
       - name: Generate GitHub App token for PR
