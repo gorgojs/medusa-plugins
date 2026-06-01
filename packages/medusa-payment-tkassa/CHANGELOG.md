@@ -1,5 +1,15 @@
 # @gorgo/medusa-payment-tkassa
 
+## 0.4.4
+
+### Patch Changes
+
+- [#282](https://github.com/gorgojs/medusa-plugins/pull/282) [`87aefca`](https://github.com/gorgojs/medusa-plugins/commit/87aefca1a88d9560144551af5c52a276ba7a1595) Thanks [@gorgohead](https://github.com/gorgohead)! - improve readme
+
+- [#282](https://github.com/gorgojs/medusa-plugins/pull/282) [`b62d747`](https://github.com/gorgojs/medusa-plugins/commit/b62d7476db4f66d4d532e20b0f2a74fc6992f41a) Thanks [@gorgohead](https://github.com/gorgohead)! - replace smoke spec with contract and lifecycle integration tests, extend unit tests
+
+- [#282](https://github.com/gorgojs/medusa-plugins/pull/282) [`1f64987`](https://github.com/gorgojs/medusa-plugins/commit/1f64987da815c734027a6ba3119cdf8f531842c2) Thanks [@gorgohead](https://github.com/gorgohead)! - correct 3DS_CHECKING typo and remove integration-tests from package files
+
 ## 0.4.3
 
 ### Patch Changes

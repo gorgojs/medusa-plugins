@@ -1,5 +1,17 @@
 # @gorgo/medusa-payment-robokassa
 
+## 0.3.4
+
+### Patch Changes
+
+- [#282](https://github.com/gorgojs/medusa-plugins/pull/282) [`5543593`](https://github.com/gorgojs/medusa-plugins/commit/5543593f7581f01aee37ac71265105e4035a96e3) Thanks [@gorgohead](https://github.com/gorgohead)! - improve contract test
+
+- [#282](https://github.com/gorgojs/medusa-plugins/pull/282) [`87aefca`](https://github.com/gorgojs/medusa-plugins/commit/87aefca1a88d9560144551af5c52a276ba7a1595) Thanks [@gorgohead](https://github.com/gorgohead)! - improve readme
+
+- [#282](https://github.com/gorgojs/medusa-plugins/pull/282) [`cda3e91`](https://github.com/gorgojs/medusa-plugins/commit/cda3e91d8aaf0e45faf9a13f797c622ec5d66e0c) Thanks [@gorgohead](https://github.com/gorgohead)! - minor improve tests
+
+- [#282](https://github.com/gorgojs/medusa-plugins/pull/282) [`c617707`](https://github.com/gorgojs/medusa-plugins/commit/c617707ba7efb4da48b891c6e0a58405937e92b2) Thanks [@gorgohead](https://github.com/gorgohead)! - add unit and integration tests
+
 ## 0.3.3
 
 ### Patch Changes
