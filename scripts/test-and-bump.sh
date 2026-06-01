@@ -49,14 +49,6 @@ if [ ${#FAILED[@]} -gt 0 ]; then
   corepack yarn install --no-immutable
 fi
 
-for example in "${PASSED[@]}"; do
-  pkg="packages/medusa-${example}"
-  [ -f "$pkg/README.md" ] && \
-    sed -i -E "s/(Tested_with_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\1${TARGET_VERSION}/" "$pkg/README.md"
-  [ -f "$pkg/README.ru.md" ] && \
-    sed -i -E "s/(Протестировано_с_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\1${TARGET_VERSION}/" "$pkg/README.ru.md"
-done
-
 echo "commit_scope=$(IFS=,; echo "${PASSED[*]}")" >> "$GITHUB_OUTPUT"
 if [ ${#PASSED[@]} -gt 0 ]; then
   echo "has_passed=true" >> "$GITHUB_OUTPUT"
