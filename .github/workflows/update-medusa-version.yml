@@ -32,64 +32,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
           TARGET_VERSION="$(npm view @medusajs/medusa version)"
           export TARGET_VERSION
-
-          node - <<'NODE'
-          const fs = require('fs')
-          const path = require('path')
-
-          const BADGE_REGEX = /Tested_with_Medusa-v([\d.]+)/
-
-          const target = process.env.TARGET_VERSION
-          const packagesDir = path.join(process.cwd(), 'packages')
-          const versions = new Set()
-          const outdated = []
-
-          for (const entry of fs.readdirSync(packagesDir, { withFileTypes: true })) {
-            if (!entry.isDirectory()) continue
-
-            const readmePath = path.join(packagesDir, entry.name, 'README.md')
-            if (!fs.existsSync(readmePath)) continue
-
-            const content = fs.readFileSync(readmePath, 'utf8')
-            const match = content.match(BADGE_REGEX)
-            const testedVersion = match ? match[1] : null
-
-            if (!testedVersion) {
-              console.log(`Skipping ${entry.name}: no Tested_with_Medusa badge found in README`)
-              continue
-            }
-
-            versions.add(testedVersion)
-
-            if (testedVersion !== target) {
-              outdated.push(entry.name)
-            }
-          }
-
-          const sorted = [...versions].sort((a, b) => {
-            const pa = a.split('.').map(Number)
-            const pb = b.split('.').map(Number)
-            for (let i = 0; i < 3; i++) {
-              if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0)
-            }
-            return 0
-          })
-
-          const currentVersions = sorted.join(',')
-          const outdatedPackages = outdated.join(',')
-
-          const outPath = process.env.GITHUB_OUTPUT
-          fs.appendFileSync(outPath, `new_medusa_version=${target}\n`)
-          fs.appendFileSync(outPath, `current_versions=${currentVersions}\n`)
-          fs.appendFileSync(outPath, `outdated_packages=${outdatedPackages}\n`)
-
-          console.log(`Current versions: ${currentVersions}`)
-          console.log(`Target version: ${target}`)
-          console.log(`Outdated packages: ${outdatedPackages}`)
-          NODE
+          node scripts/resolve-version-delta.js
 
       - name: Check for existing pull request
         id: pr_check
@@ -193,40 +138,13 @@ jobs:
             | "\(.key)<<__EOF_SECRET_\(.key)__\n\(.value)\n__EOF_SECRET_\(.key)__"
           ' >> "$GITHUB_ENV"
 
-      - name: Run update script only for outdated packages
+      - name: Update, test per plugin, and prepare results
         id: update
         shell: bash
-        run: |
-          set -euo pipefail
-          chmod +x ./scripts/update.sh
-
-          TARGET_VERSION="${{ needs.check_medusa_version.outputs.new_medusa_version }}"
-          OUTDATED_PACKAGES="${{ needs.check_medusa_version.outputs.outdated_packages }}"
-
-          # Strip leading "medusa-" prefix to get the example directory name
-          IFS=',' read -ra PACKAGES <<< "$OUTDATED_PACKAGES"
-          SCOPES=()
-          FILTERS=()
-          for package in "${PACKAGES[@]}"; do
-            [ -z "$package" ] && continue
-            example="${package#medusa-}"
-            echo "Updating example '$example' for package '$package'"
-            ./scripts/update.sh "$TARGET_VERSION" "$example" --single --skip-build
-            SCOPES+=("$example")
-            FILTERS+=("--filter=@gorgo/it-${example}")
-          done
-
-          SCOPE=$(IFS=,; echo "${SCOPES[*]}")
-          echo "commit_scope=${SCOPE}" >> "$GITHUB_OUTPUT"
-          echo "test_filters=${FILTERS[*]}" >> "$GITHUB_OUTPUT"
-
-      - name: Run unit + integration tests via turbo
-        if: steps.update.outputs.test_filters != ''
-        run: |
-          set -euo pipefail
-          rm -f yarn.lock
-          corepack yarn install --no-immutable
-          corepack yarn turbo run test:unit test:integration:http test:integration:modules ${{ steps.update.outputs.test_filters }} --concurrency=1 --no-cache --force
+        env:
+          TARGET_VERSION: ${{ needs.check_medusa_version.outputs.new_medusa_version }}
+          OUTDATED_PACKAGES: ${{ needs.check_medusa_version.outputs.outdated_packages }}
+        run: bash scripts/test-and-bump.sh
 
       - name: Generate GitHub App token for PR
         id: app-token-pr
@@ -250,6 +168,7 @@ jobs:
 
       - name: Create pull request
         id: cpr
+        if: steps.update.outputs.has_passed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ steps.app-token-pr.outputs.token }}
@@ -258,16 +177,7 @@ jobs:
           committer: "${{ steps.app-user.outputs.name }} <${{ steps.app-user.outputs.email }}>"
           author: "${{ steps.app-user.outputs.name }} <${{ steps.app-user.outputs.email }}>"
           title: "docs(${{ steps.update.outputs.commit_scope }}): test on Medusa v${{ needs.check_medusa_version.outputs.new_medusa_version }} and update readme"
-          body: |
-            Automated daily Medusa update.
-
-            - Previous Medusa versions in repo: ${{ needs.check_medusa_version.outputs.current_versions }}
-            - Updated to: ${{ needs.check_medusa_version.outputs.new_medusa_version }}
-            - Updated packages: ${{ needs.check_medusa_version.outputs.outdated_packages }}
-            - Steps executed:
-              - Postgres DB preparation for examples
-              - `./scripts/update.sh <version> <package> --single --skip-build` for outdated packages only
-              - integration tests only for outdated packages
+          body: ${{ steps.update.outputs.pr_body }}
           branch: chore/medusa-update-v${{ needs.check_medusa_version.outputs.new_medusa_version }}
           delete-branch: true
           labels: |
