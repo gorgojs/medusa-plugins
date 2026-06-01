@@ -46,7 +46,7 @@
     "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {
-    "@gorgo/medusa-integration": "*",
+    "@gorgo/medusa-integration": "workspace:*",
     "@medusajs/admin-sdk": "^2.15.2",
     "@medusajs/cli": "^2.15.2",
     "@medusajs/framework": "^2.15.2",
@@ -70,7 +70,7 @@
     "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
-    "@gorgo/medusa-integration": "*",
+    "@gorgo/medusa-integration": "workspace:*",
     "@medusajs/admin-sdk": "^2.15.2",
     "@medusajs/cli": "^2.15.2",
     "@medusajs/framework": "^2.15.2",
