@@ -15,14 +15,6 @@ SKIP_DIRS=(
 SKIP_MIGRATIONS_DIRS=(
 )
 
-# Mapping of example directories to package directories
-declare -A EXAMPLE_PACKAGE_MAP
-EXAMPLE_PACKAGE_MAP["./examples/1c"]=./packages/medusa-1c
-EXAMPLE_PACKAGE_MAP["./examples/feed-yandex"]=./packages/medusa-feed-yandex
-EXAMPLE_PACKAGE_MAP["./examples/fulfillment-apiship"]=./packages/medusa-fulfillment-apiship
-EXAMPLE_PACKAGE_MAP["./examples/payment-robokassa"]=./packages/medusa-payment-robokassa
-EXAMPLE_PACKAGE_MAP["./examples/payment-tkassa"]=./packages/medusa-payment-tkassa
-
 # Mapping of example directories to integration-tests directories
 declare -A EXAMPLE_IT_MAP
 EXAMPLE_IT_MAP["./examples/1c"]=./integration-tests/1c
@@ -209,33 +201,14 @@ process_directory() {
 
         success "$dir" "Successfully updated"
         cd - > /dev/null
-        
-        # Update version badge of the package's readme
-        local package_dir="${EXAMPLE_PACKAGE_MAP[$1]}"
-        if [ -d "$root_pwd/$package_dir" ]; then
-            cd "$root_pwd/$package_dir" || handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
-
-            if [ -f "README.md" ]; then
-                echo -e "\n${YELLOW}[$package_dir] Updating version badge in $package_dir/README.md${NC}\n"
-                sed -i -E "s/(Tested_with_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\\1$VERSION/" README.md || \
-                    handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
-            fi
-
-            if [ -f "README.ru.md" ]; then
-                echo -e "\n${YELLOW}[$package_dir] Updating version badge in $package_dir/README.ru.md${NC}\n"
-                sed -i -E "s/(Протестировано_с_Medusa-v)[0-9]+\.[0-9]+\.[0-9]+/\\1$VERSION/" README.ru.md || \
-                    handle_error "$package_dir" "$LAST_SUCCESSFUL_PACKAGE_DIR"
-            fi
-        fi
 
     else
         warning "$dir" "No @medusajs packages found, skipping..."
     fi
-    
+
     # Store the last successful directory
     LAST_SUCCESSFUL_DIR="$dir"
-    LAST_SUCCESSFUL_PACKAGE_DIR="$package_dir"
-    
+
     # Return to the original directory
     cd - > /dev/null
 }
