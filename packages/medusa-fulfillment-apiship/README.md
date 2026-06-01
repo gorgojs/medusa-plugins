@@ -23,7 +23,7 @@ ApiShip Integration for Medusa
     <img src="https://img.shields.io/badge/Medusa-^2.13.0-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://github.com/gorgojs/medusa-plugins/actions/workflows/update-medusa-version.yml">
-    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.15.3-green?logo=checkmarx" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.15.5-green?logo=checkmarx" alt="Medusa" />
   </a>
 </p>
 
