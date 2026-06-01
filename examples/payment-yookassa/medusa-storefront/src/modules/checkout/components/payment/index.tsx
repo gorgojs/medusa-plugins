@@ -3,6 +3,7 @@
 import { RadioGroup } from "@headlessui/react"
 import { isStripeLike, paymentInfoMap } from "@lib/constants"
 import { initiatePaymentSession } from "@lib/data/cart"
+import { getBaseURL } from "@lib/util/env"
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
 import { Button, Container, Heading, Text, clx } from "@medusajs/ui"
 import ErrorMessage from "@modules/checkout/components/error-message"
@@ -79,9 +80,17 @@ const Payment = ({
       const checkActiveSession =
         activeSession?.provider_id === selectedPaymentMethod
 
+      const countryCode = cart?.shipping_address?.country_code
       if (!checkActiveSession) {
         await initiatePaymentSession(cart, {
           provider_id: selectedPaymentMethod,
+          data: {
+            confirmation: {
+              type: "redirect",
+              return_url: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`
+            },
+            cart: cart
+          }
         })
       }
 

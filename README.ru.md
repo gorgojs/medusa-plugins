@@ -40,6 +40,19 @@
 ## Плагины Medusa
 
 <p>
+  <a href="./packages/medusa-payment-yookassa">
+    <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/yookassa-logo.svg" width="100" align="left" alt="ЮKassa logo">
+  </a>
+  <strong><a href="./packages/medusa-payment-yookassa">ЮKassa</a></strong><br/>
+  Провайдер платежей: создание платеже, обработка вебхуков, возвраты и фискальные чеки по 54-ФЗ. В комплекте пример витрины.<br/>
+  <a href="https://docs.gorgojs.ru/medusa-plugins/yookassa">документация</a> |
+  <a href="https://www.npmjs.com/package/@gorgo/medusa-payment-yookassa">npm</a> |
+  <a href="./examples/payment-yookassa">пример</a>
+</p>
+
+##
+
+<p>
   <a href="./packages/medusa-payment-tkassa">
     <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/tkassa-logo.svg" width="100" align="left" alt="T-Kassa logo">
   </a>

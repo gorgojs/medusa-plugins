@@ -40,10 +40,26 @@
 ## Medusa Plugins
 
 <p>
+  <a href="./packages/medusa-payment-yookassa">
+    <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/yookassa-logo.svg" width="80" align="left" alt="Yookassa logo">
+  </a>
+  <strong><a href="./packages/medusa-payment-yookassa">Yookassa</a></strong><br/>
+  Payment provider with hosted checkout, webhook handling, refunds, fiscal receipts, and a storefront example.
+  <br/>
+  <a href="https://docs.gorgojs.com/medusa-plugins/yookassa">docs</a> |
+  <a href="https://www.npmjs.com/package/@gorgo/medusa-payment-yookassa">npm</a> |
+  <a href="./examples/payment-yookassa">example</a>
+</p>
+
+##
+
+<br clear="left"/>
+
+<p>
   <a href="./packages/medusa-payment-tkassa">
     <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/tkassa-logo.svg" width="80" align="left" alt="T-Kassa logo">
   </a>
-  <strong><a href="./packages/medusa-payment-tkassa">T-Kassa Payments by T-Bank</a></strong><br/>
+  <strong><a href="./packages/medusa-payment-tkassa">T-Kassa by T-Bank</a></strong><br/>
   Payment provider with payment initialization, webhook handling, refunds, receipt support, and a storefront example.<br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/t-kassa">docs</a> |
   <a href="https://www.npmjs.com/package/@gorgo/medusa-payment-tkassa">npm</a> |
@@ -58,7 +74,7 @@
   <a href="./packages/medusa-payment-robokassa">
     <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/robokassa-logo.svg" width="80" align="left" alt="Robokassa logo">
   </a>
-  <strong><a href="./packages/medusa-payment-robokassa">Robokassa Payments</a></strong><br/>
+  <strong><a href="./packages/medusa-payment-robokassa">Robokassa</a></strong><br/>
   Payment provider with hosted checkout flows, notifications, refunds, receipt generation, and example storefront integration.<br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/robokassa">docs</a> |
   <a href="https://www.npmjs.com/package/@gorgo/medusa-payment-robokassa">npm</a> |
@@ -73,7 +89,7 @@
   <a href="./packages/medusa-fulfillment-apiship">
     <img src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/apiship-logo.svg" width="80" align="left" alt="ApiShip logo">
   </a>
-  <strong><a href="./packages/medusa-fulfillment-apiship">ApiShip Fulfillment</a></strong><br/>
+  <strong><a href="./packages/medusa-fulfillment-apiship">ApiShip</a></strong><br/>
   Fulfillment provider with delivery rate calculation, shipment creation, pickup-point delivery, document retrieval, and Admin tooling.<br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/apiship">docs</a> |
   <a href="https://www.npmjs.com/package/@gorgo/medusa-fulfillment-apiship">npm</a> |

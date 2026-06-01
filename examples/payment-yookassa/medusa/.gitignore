@@ -1,5 +1,6 @@
 /dist
 .env
+.env.test
 .DS_Store
 /uploads
 /node_modules
@@ -24,7 +25,3 @@ build
 !.yarn/versions
 
 .medusa
-
-yarn.lock
-.yalc
-yalc.lock
