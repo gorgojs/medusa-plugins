@@ -8,6 +8,8 @@ on:
       - 'packages/**'
       - '!packages/**/README.md'
       - '!packages/**/README.ru.md'
+      - '!packages/**/CHANGELOG.md'
+      - '!packages/**/package.json'
   push:
     branches:
       - main
@@ -15,6 +17,8 @@ on:
       - 'packages/**'
       - '!packages/**/README.md'
       - '!packages/**/README.ru.md'
+      - '!packages/**/CHANGELOG.md'
+      - '!packages/**/package.json'
   workflow_dispatch:
 
 jobs:

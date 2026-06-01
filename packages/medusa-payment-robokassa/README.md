@@ -23,7 +23,7 @@ Robokassa Payments for Medusa
     <img src="https://img.shields.io/badge/Medusa-^2.7.0-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://github.com/gorgojs/medusa-plugins/actions/workflows/update-medusa-version.yml">
-    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.15.3-green?logo=checkmarx" alt="Medusa" />
+    <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gorgojs/medusa-plugins/badges/medusa-payment-robokassa.json&logo=checkmarx" alt="Medusa" />
   </a>
 </p>
 
