@@ -1,23 +1,21 @@
 name: Test Packages
 
 on:
+  schedule:
+    - cron: "0 4 * * *"
   pull_request:
     branches:
       - main
     paths:
       - 'packages/**'
-      - '!packages/**/README.md'
-      - '!packages/**/README.ru.md'
-      - '!packages/**/CHANGELOG.md'
+      - '!packages/**/*.md'
       - '!packages/**/package.json'
   push:
     branches:
       - main
     paths:
       - 'packages/**'
-      - '!packages/**/README.md'
-      - '!packages/**/README.ru.md'
-      - '!packages/**/CHANGELOG.md'
+      - '!packages/**/*.md'
       - '!packages/**/package.json'
   workflow_dispatch:
 

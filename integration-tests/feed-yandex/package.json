@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.js --silent=false --runInBand --forceExit --passWithNoTests",
-    "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.js --silent --runInBand --forceExit --passWithNoTests"
+    "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.js --silent --runInBand --forceExit --passWithNoTests",
+    "test": "yarn run -T turbo run test:integration:http test:integration:modules"
   },
   "dependencies": {
     "@gorgo/medusa-feed-yandex": "workspace:*",
