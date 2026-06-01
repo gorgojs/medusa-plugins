@@ -41,6 +41,7 @@ import {
   RetrievePaymentInput,
   Logger
 } from "@medusajs/framework/types"
+import { createTelemetryClient } from "@gorgo/telemetry"
 import {
   buildReceiptTemplate,
   buildRefundReceiptSimple,
@@ -63,8 +64,10 @@ abstract class YookassaBase extends AbstractPaymentProvider<YookassaOptions> {
   protected readonly options_: YookassaOptions
   protected yooCheckout_: YooCheckout
   protected logger_: Logger
+  private static telemetry_ = createTelemetryClient({ packageDir: __dirname })
 
   static validateOptions(options: YookassaOptions): void {
+    YookassaBase.telemetry_.track("plugin.started")
     if (!isDefined(options.shopId)) {
       throw new Error("Required option `shopId` is missing in YooKassa plugin")
     }

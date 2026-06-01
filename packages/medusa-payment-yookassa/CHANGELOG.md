@@ -1,16 +1,13 @@
-# medusa-payment-yookassa
+# @gorgo/medusa-payment-yookassa
 
-## [1.0.0]
-
-## Major Changes
-
-- Stable release
-- Production-proven in real-world usage
+## 1.0.1
 
 ### Patch Changes
 
-- [#11](https://github.com/sergkoudi/medusa-payment-yookassa/pull/11) Thanks [artginzburg](https://github.com/artginzburg)! - fix: various edge cases in receipt generation. 
+- Package moved to [@gorgo/medusa-payment-yookassa](https://www.npmjs.com/package/@gorgo/medusa-payment-yookassa) under the [gorgojs/medusa-plugins](https://github.com/gorgojs/medusa-plugins) monorepo
+- Updated all releated documentation
 
-## [0.x.x]
 
-> Versions prior to 1.0.0 were not tracked in this changelog.
+## 0.0.0 – 1.0.0
+
+Versions 0.0.0 – 1.0.0 were developed and published as [medusa-payment-yookassa](https://www.npmjs.com/package/medusa-payment-yookassa). The changelog for those versions was maintained [here](https://github.com/sergkoudi/medusa-payment-yookassa/blob/main/packages/medusa-payment-yookassa/CHANGELOG.md).

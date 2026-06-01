@@ -67,3 +67,4 @@ configs:
       CREATE DATABASE medusa_fulfillment_apiship;
       CREATE DATABASE medusa_payment_tkassa;
       CREATE DATABASE medusa_payment_robokassa;
+      CREATE DATABASE medusa_payment_yookassa;

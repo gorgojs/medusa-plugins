@@ -9,7 +9,7 @@ description: "Узнайте, как установить и настроить 
 
 ## Требования
 
-- Medusa v2.7.0 или новее
+- Medusa v2.12.4 или новее
 - Node.js v20 или новее
 - Аккаунт ЮKassa – [зарегистрируйтесь или войдите](https://yookassa.ru/joinups/?source=ks)
 
@@ -20,12 +20,12 @@ description: "Узнайте, как установить и настроить 
 <CodeTabs>
   <CodeTab label="yarn" value="yarn">
     ```bash
-    yarn add medusa-payment-yookassa
+    yarn add @gorgo/medusa-payment-yookassa
     ```
   </CodeTab>
   <CodeTab label="npm" value="npm">
     ```bash
-    npm install medusa-payment-yookassa
+    npm install @gorgo/medusa-payment-yookassa
     ```
   </CodeTab>
 </CodeTabs>
@@ -46,7 +46,7 @@ module.exports = defineConfig({
       options: {
         providers: [
           {
-            resolve: "medusa-payment-yookassa/providers/payment-yookassa",
+            resolve: "@gorgo/medusa-payment-yookassa/providers/payment-yookassa",
             id: "yookassa",
             options: {
               shopId: process.env.YOOKASSA_SHOP_ID,

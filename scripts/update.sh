@@ -22,6 +22,7 @@ EXAMPLE_IT_MAP["./examples/feed-yandex"]=./integration-tests/feed-yandex
 EXAMPLE_IT_MAP["./examples/fulfillment-apiship"]=./integration-tests/fulfillment-apiship
 EXAMPLE_IT_MAP["./examples/payment-robokassa"]=./integration-tests/payment-robokassa
 EXAMPLE_IT_MAP["./examples/payment-tkassa"]=./integration-tests/payment-tkassa
+EXAMPLE_IT_MAP["./examples/payment-yookassa"]=./integration-tests/payment-yookassa
 
 # Function to print script messages
 log() {

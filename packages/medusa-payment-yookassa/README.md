@@ -1,12 +1,7 @@
 <p align="center">
-  <a href="https://www.medusajs.com">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/9a99f9e8-f80e-4411-9bed-6e2032b1ab1c">
-      <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/9a99f9e8-f80e-4411-9bed-6e2032b1ab1c">
-      <img alt="Medusa logo" src="https://github.com/user-attachments/assets/9a99f9e8-f80e-4411-9bed-6e2032b1ab1c" height="120">
-    </picture>
+  <a href="https://docs.gorgojs.com/medusa-plugins/yookassa">
+    <img alt="Medusa-YooKassa logo" src="https://raw.githubusercontent.com/gorgojs/medusa-plugins/refs/heads/main/assets/yookassa-medusa-logo.svg" width="270">
   </a>
-  
 </p>
 
 <h1 align="center">
@@ -14,11 +9,11 @@ YooKassa Payments for Medusa
 </h1>
 
 <p align="center">
-  A Medusa plugin that provides YooKassa payments.
+  <a href="https://docs.gorgojs.com/medusa-plugins/yookassa">Documentation</a>
   <br/>
-  <a href="https://docs.gorgojs.com/medusa-plugins/yookassa">Documentation ↗</a>
+  A Medusa plugin that provides YooKassa payments. Production-ready.
   <br/>
-  <a href="https://github.com/sergkoudi/medusa-payment-yookassa/blob/HEAD/packages/medusa-payment-yookassa/README.ru.md">Читать README на русском ↗</a>
+  <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-payment-yookassa/README.ru.md">Читать README на русском ↗️</a>
 </p>
 
 <br/>
@@ -27,14 +22,14 @@ YooKassa Payments for Medusa
   <a href="https://medusajs.com">
     <img src="https://img.shields.io/badge/Medusa-^2.12.4-blue?logo=medusa" alt="Medusa" />
   </a>
-  <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Tested_with_Medusa-v2.13.4-green?logo=checkmarx" alt="Medusa" />
+  <a href="https://github.com/gorgojs/medusa-plugins/actions/workflows/update-medusa-version.yml">
+    <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gorgojs/medusa-plugins/main/.badges/medusa-payment-yookassa.json&logo=checkmarx" alt="Tested with latest Medusa" />
   </a>
 </p>
 
 <p align="center">
-  <a href="https://t.me/medusajs_yookassa">
-    <img src="https://img.shields.io/badge/Telegram-Medusa.js⊷YooKassa_Support_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js⊷YooKassa on Telegram" />
+  <a href="https://t.me/gorgojs_chat">
+    <img src="https://img.shields.io/badge/Telegram-Support_Chat-0088cc?logo=telegram&style=social" alt="Telegram Support Chat" />
   </a>
 </p>
 
@@ -44,24 +39,27 @@ YooKassa Payments for Medusa
   </a>
 </p>
 
-## Features
+## Plugin Features
 
-- 🔗  **Seamless integration** with the YooKassa payment system
-- 🧾  **Receipt generation** compliant with Federal Law No. 54, supporting FFD 1.05 and 1.2 formats
-- 1️⃣  **One-step** (autocapture) and  **2️⃣  two-step** (authorization/hold) payment flows
-- 🔄  **Full refund** and **order cancellation** support
-- 🔔  **Webhook support** for real-time payment status updates
-- 🛡  **Webhook verification** for enhanced security
-- 🔍  **Detailed logging** for debugging
+- **Production-Ready:** Proven in live stores and ready for real-world deployment.
+- **Full Integration with YooKassa:** Connect your store to YooKassa for secure and reliable payments.
+- **Receipt Generation:** Online receipts compliant with Federal Law No. 54 (FFD 1.05 and 1.2).
+- **One-Step & Two-Step Payments:** Autocapture or authorization/hold payment flows.
+- **Refunds & Cancellations:** Full refund and order cancellation support.
+- **Webhook Notifications:** Real-time payment status updates with signature verification.
+- **Detailed Logging:** Request and response logs for debugging and support in development mode.
+- **Storefront Example:** A complete <a href="https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-yookassa/medusa-storefront" target="_blank">Next.js storefront</a> ready to use as a reference.
 
-## 💬  YooKassa Plugin Support Chat
 
-Got questions or ideas for new plugin features?  
-Join the Telegram chat – [@medusajs_yookassa](https://t.me/medusajs_yookassa)
+## What is YooKassa
 
-## 👥  Medusa.js Community Chat
+YooKassa is an internet acquiring service by Yandex. It lets online stores accept card payments, SBP (Faster Payments System), SberPay, Mir Pay, YooMoney, and more. Learn more at the <a href="https://yookassa.ru/en/" target="_blank">YooKassa website</a>.
 
-Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.me/medusajs_chat)
+## 💬  Support & Community
+
+Got questions or ideas about the plugin? Join the Telegram support chat — [@gorgojs_chat](https://t.me/gorgojs_chat)
+
+Connect with other Medusa developers on Telegram — [@medusajs_chat](https://t.me/medusajs_chat)
 
 ## Requirements
 
@@ -72,12 +70,12 @@ Connect with other Medusa developers on Telegram – [@medusajs_chat](https://t.
 ## Installation
 
 ```bash
-yarn add medusa-payment-yookassa
+yarn add @gorgo/medusa-payment-yookassa
 # or
-npm install medusa-payment-yookassa
+npm install @gorgo/medusa-payment-yookassa
 ```
 
-## 📘  Documentation
+## Documentation
 
 The complete installation, configuration, and usage guide for this plugin is available on the [Gorgo documentation website](https://docs.gorgojs.com/medusa-plugins/yookassa).
 
