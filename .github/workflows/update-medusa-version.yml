@@ -172,7 +172,6 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ steps.app-token-pr.outputs.token }}
-          base: main
           commit-message: "docs(${{ steps.update.outputs.commit_scope }}): test on Medusa v${{ needs.check_medusa_version.outputs.new_medusa_version }} and update readme"
           committer: "${{ steps.app-user.outputs.name }} <${{ steps.app-user.outputs.email }}>"
           author: "${{ steps.app-user.outputs.name }} <${{ steps.app-user.outputs.email }}>"
