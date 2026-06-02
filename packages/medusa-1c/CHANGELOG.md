@@ -1,5 +1,11 @@
 # @gorgo/medusa-1c
 
+## 0.1.8
+
+### Patch Changes
+
+- [#308](https://github.com/gorgojs/medusa-plugins/pull/308) [`356bca7`](https://github.com/gorgojs/medusa-plugins/commit/356bca788e7ca8a59f65c0bef0c31ac68ca4f3c3) Thanks [@Ghost1863](https://github.com/Ghost1863)! - add badjes to main, fix readmes, change scripts
+
 ## 0.1.7
 
 ### Patch Changes
