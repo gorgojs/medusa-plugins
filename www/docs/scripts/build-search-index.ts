@@ -157,6 +157,9 @@ async function mdxToPlainText(
       UsedByList: () => createElement("div", null),
       CodeTabs: ({ children }: { children?: ReactNode }) => createElement("div", null, children),
       CodeTab: ({ children }: { children?: ReactNode }) => createElement("div", null, children),
+      ChangelogRenderer: () => createElement("div", null),
+      ChangelogTitle: ({ children }: { children?: ReactNode }) =>
+        createElement("h1", null, children),
     },
     options: {
       parseFrontmatter: true,
