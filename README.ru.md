@@ -26,6 +26,12 @@
 </p>
 
 <p align="center">
+  <a href="https://t.me/gorgojs_chat">
+    <img src="https://img.shields.io/badge/Telegram-Чат_поддержки-0088cc?logo=telegram&style=social" alt="Чат поддержки в Telegram" />
+  </a>
+</p>
+
+<p align="center">
   <a href="https://t.me/medusajs_chat">
     <img src="https://img.shields.io/badge/Telegram-Medusa.js_Dev_Community_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js Dev Community Chat on Telegram" />
   </a>
@@ -41,8 +47,7 @@
   Провайдер платежей: создание платежей, обработка вебхуков, возвраты и фискальные чеки по 54-ФЗ. В комплекте пример витрины.<br/>
   <a href="https://docs.gorgojs.ru/medusa-plugins/t-kassa">документация</a> |
   <a href="https://www.npmjs.com/package/@gorgo/medusa-payment-tkassa">npm</a> |
-  <a href="./examples/payment-tkassa">пример</a> |
-  <a href="https://t.me/medusajs_tkassa">поддержка в Telegram</a>
+  <a href="./examples/payment-tkassa">пример</a>
 </p>
 
 ##
@@ -57,8 +62,7 @@
   Провайдер платежей: создание платежей, обработка уведомлений, возвраты и фискальные чеки по 54-ФЗ. В комплекте пример интеграции с витриной.<br/>
   <a href="https://docs.gorgojs.ru/medusa-plugins/robokassa">документация</a> |
   <a href="https://www.npmjs.com/package/@gorgo/medusa-payment-robokassa">npm</a> |
-  <a href="./examples/payment-robokassa">пример</a> |
-  <a href="https://t.me/medusajs_robokassa">поддержка в Telegram</a>
+  <a href="./examples/payment-robokassa">пример</a>
 </p>
 
 ##
@@ -73,8 +77,7 @@
   Провайдер доставки: расчёт тарифов, создание отправлений, доставка в пункты выдачи, получение сопроводительных документов и управление из Medusa Admin.<br/>
   <a href="https://docs.gorgojs.ru/medusa-plugins/apiship">документация</a> |
   <a href="https://www.npmjs.com/package/@gorgo/medusa-fulfillment-apiship">npm</a> |
-  <a href="./examples/fulfillment-apiship">пример</a> |
-  <a href="https://t.me/medusajs_apiship">поддержка в Telegram</a>
+  <a href="./examples/fulfillment-apiship">пример</a>
 </p>
 
 ##
@@ -89,8 +92,7 @@
   Синхронизация каталога и заказов между Medusa и 1С:Предприятием. В комплекте пример backend-приложения.<br/>
   <a href="https://docs.gorgojs.ru/medusa-plugins/1c-enterprise">документация</a> |
   <a href="https://www.npmjs.com/package/@gorgo/medusa-1c">npm</a> |
-  <a href="./examples/1c">пример</a> |
-  <a href="https://t.me/medusajs_1c">поддержка в Telegram</a>
+  <a href="./examples/1c">пример</a>
 </p>
 
 ##
@@ -105,8 +107,7 @@
   Экспорт каталога в формате YML (Yandex Market Language) с управлением фидами из Medusa Admin.<br/>
   <a href="https://docs.gorgojs.ru/medusa-plugins/yandex-yml-feed">документация</a> |
   <a href="https://www.npmjs.com/package/@gorgo/medusa-feed-yandex">npm</a> |
-  <a href="./examples/feed-yandex">пример</a> |
-  <a href="https://t.me/medusajs_yandex">поддержка в Telegram</a>
+  <a href="./examples/feed-yandex">пример</a>
 </p>
 
 ##

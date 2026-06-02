@@ -30,7 +30,7 @@ function getServiceName(type: PluginLinkService) {
     case "npm":
       return "NPM";
     case "telegram":
-      return "Plugin Support Chat";
+      return "Support Chat";
     case "discord":
       return "Discord Support";
     case "other":
@@ -45,6 +45,7 @@ function PluginLink({
   service: PluginLinkService;
   url: string;
 }) {
+  const href = service === "telegram" ? "https://t.me/gorgojs_chat" : url;
   return (
     <Button
       variant="secondary"
@@ -52,7 +53,7 @@ function PluginLink({
       className="w-full truncate txt-small"
       asChild
     >
-      <a key={url} href={url} target="_blank" rel="noopener noreferrer">
+      <a key={href} href={href} target="_blank" rel="noopener noreferrer">
         {getIcon(service)}
         {getServiceName(service)}
       </a>

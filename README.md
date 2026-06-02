@@ -26,6 +26,12 @@
 </p>
 
 <p align="center">
+  <a href="https://t.me/gorgojs_chat">
+    <img src="https://img.shields.io/badge/Telegram-Support_Chat-0088cc?logo=telegram&style=social" alt="Telegram Support Chat" />
+  </a>
+</p>
+
+<p align="center">
   <a href="https://t.me/medusajs_chat">
     <img src="https://img.shields.io/badge/Telegram-Medusa.js_Dev_Community_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js Dev Community Chat on Telegram" />
   </a>
@@ -41,8 +47,7 @@
   Payment provider with payment initialization, webhook handling, refunds, receipt support, and a storefront example.<br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/t-kassa">docs</a> |
   <a href="https://www.npmjs.com/package/@gorgo/medusa-payment-tkassa">npm</a> |
-  <a href="./examples/payment-tkassa">example</a> |
-  <a href="https://t.me/medusajs_tkassa">support on Telegram</a>
+  <a href="./examples/payment-tkassa">example</a>
 </p>
 
 ##
@@ -57,8 +62,7 @@
   Payment provider with hosted checkout flows, notifications, refunds, receipt generation, and example storefront integration.<br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/robokassa">docs</a> |
   <a href="https://www.npmjs.com/package/@gorgo/medusa-payment-robokassa">npm</a> |
-  <a href="./examples/payment-robokassa">example</a> |
-  <a href="https://t.me/medusajs_robokassa">support on Telegram</a>
+  <a href="./examples/payment-robokassa">example</a>
 </p>
 
 ##
@@ -73,8 +77,7 @@
   Fulfillment provider with delivery rate calculation, shipment creation, pickup-point delivery, document retrieval, and Admin tooling.<br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/apiship">docs</a> |
   <a href="https://www.npmjs.com/package/@gorgo/medusa-fulfillment-apiship">npm</a> |
-  <a href="./examples/fulfillment-apiship">example</a> |
-  <a href="https://t.me/medusajs_apiship">support on Telegram</a>
+  <a href="./examples/fulfillment-apiship">example</a>
 </p>
 
 ##
@@ -89,8 +92,7 @@
   Integration for synchronizing catalog and order data between Medusa and 1C:Enterprise, with an example backend.<br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/1c-enterprise">docs</a> |
   <a href="https://www.npmjs.com/package/@gorgo/medusa-1c">npm</a> |
-  <a href="./examples/1c">example</a> |
-  <a href="https://t.me/medusajs_1c">support on Telegram</a>
+  <a href="./examples/1c">example</a>
 </p>
 
 ##
@@ -105,8 +107,7 @@
   Feed generator that exports catalog data in YML format and exposes feed management through Medusa Admin.<br/>
   <a href="https://docs.gorgojs.com/medusa-plugins/yandex-yml-feed">docs</a> |
   <a href="https://www.npmjs.com/package/@gorgo/medusa-feed-yandex">npm</a> |
-  <a href="./examples/feed-yandex">example</a> |
-  <a href="https://t.me/medusajs_yandex">support on Telegram</a>
+  <a href="./examples/feed-yandex">example</a>
 </p>
 
 ##
