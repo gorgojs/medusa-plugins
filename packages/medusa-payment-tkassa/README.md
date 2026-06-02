@@ -23,7 +23,7 @@ T-Kassa Payments by T-Bank for Medusa
     <img src="https://img.shields.io/badge/Medusa-^2.7.0-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://github.com/gorgojs/medusa-plugins/actions/workflows/update-medusa-version.yml">
-    <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gorgojs/medusa-plugins/badges/medusa-payment-tkassa.json&logo=checkmarx" alt="Medusa" />
+    <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gorgojs/medusa-plugins/main/badges/medusa-payment-tkassa.json&logo=checkmarx" alt="Medusa" />
   </a>
 </p>
 

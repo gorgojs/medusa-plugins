@@ -49,6 +49,18 @@ if [ ${#FAILED[@]} -gt 0 ]; then
   corepack yarn install --no-immutable
 fi
 
+mkdir -p badges
+for example in "${PASSED[@]}"; do
+  cat > "badges/medusa-${example}.json" <<JSON
+{
+  "schemaVersion": 1,
+  "label": "Tested with Medusa",
+  "message": "v${TARGET_VERSION}",
+  "color": "green"
+}
+JSON
+done
+
 echo "commit_scope=$(IFS=,; echo "${PASSED[*]}")" >> "$GITHUB_OUTPUT"
 if [ ${#PASSED[@]} -gt 0 ]; then
   echo "has_passed=true" >> "$GITHUB_OUTPUT"

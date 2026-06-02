@@ -166,26 +166,16 @@ jobs:
           echo "name=${USER_LOGIN}" >> "$GITHUB_OUTPUT"
           echo "email=${USER_ID}+${USER_LOGIN}@users.noreply.github.com" >> "$GITHUB_OUTPUT"
 
-      - name: Publish tested-version badges
-        if: steps.update.outputs.has_passed == 'true'
-        env:
-          TARGET_VERSION: ${{ needs.check_medusa_version.outputs.new_medusa_version }}
-          PASSED: ${{ steps.update.outputs.commit_scope }}
-          GH_TOKEN: ${{ steps.app-token-pr.outputs.token }}
-          COMMITTER_NAME: ${{ steps.app-user.outputs.name }}
-          COMMITTER_EMAIL: ${{ steps.app-user.outputs.email }}
-        run: bash scripts/publish-badges.sh
-
       - name: Create pull request
         id: cpr
         if: steps.update.outputs.has_passed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ steps.app-token-pr.outputs.token }}
-          commit-message: "docs(${{ steps.update.outputs.commit_scope }}): test on Medusa v${{ needs.check_medusa_version.outputs.new_medusa_version }} and update readme"
+          commit-message: "docs: test on Medusa v${{ needs.check_medusa_version.outputs.new_medusa_version }}"
           committer: "${{ steps.app-user.outputs.name }} <${{ steps.app-user.outputs.email }}>"
           author: "${{ steps.app-user.outputs.name }} <${{ steps.app-user.outputs.email }}>"
-          title: "docs(${{ steps.update.outputs.commit_scope }}): test on Medusa v${{ needs.check_medusa_version.outputs.new_medusa_version }} and update readme"
+          title: "docs: test on Medusa v${{ needs.check_medusa_version.outputs.new_medusa_version }}"
           body: ${{ steps.update.outputs.pr_body }}
           branch: chore/medusa-update-v${{ needs.check_medusa_version.outputs.new_medusa_version }}
           delete-branch: true
