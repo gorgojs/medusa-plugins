@@ -7,6 +7,7 @@ import TbankIcon from "@/svg/icons/tbank-icon.svg";
 import YandexIcon from "@/svg/icons/yandex-ru-icon.svg";
 import YookassaIcon from "@/svg/icons/yookassa-icon.svg";
 import { useLocale } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import allActivity from "@/generated/activity.json";
 
 type I18nString = { en: string; ru: string };
@@ -18,6 +19,7 @@ type ActivityItem = {
   date: string;
   packageSlug?: string;
   url?: string;
+  path?: string;
   isActive?: boolean;
 };
 
@@ -50,7 +52,7 @@ function AnnouncementCard({
   const Icon = showIcon && item.packageSlug ? iconMap[item.packageSlug] : undefined;
 
   const card = (
-    <div className="flex flex-row items-center gap-4 py-2 px-3 rounded-docs_DEFAULT bg-ui-bg-component shadow-elevation-card-rest hover:shadow-elevation-card-hover">
+    <div className="flex flex-row items-center gap-4 py-2 px-3 rounded-docs_DEFAULT bg-ui-bg-component shadow-elevation-card-rest hover:shadow-elevation-card-hover cursor-pointer">
       {Icon && (
         <div className="shrink-0 w-8.5 h-8.5">
           <Icon className="h-full w-full rounded-md object-cover" />
@@ -83,7 +85,11 @@ function AnnouncementCard({
         <div className="flex-1 w-px bg-ui-border-base mt-1" />
       </div>
       <div className="flex-1 min-w-0 pb-3">
-        {item.url ? (
+        {item.path ? (
+          <Link href={item.path} className="block">
+            {card}
+          </Link>
+        ) : item.url ? (
           <a href={item.url} target="_blank" rel="noopener noreferrer" className="block">
             {card}
           </a>

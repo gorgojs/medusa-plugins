@@ -19,15 +19,16 @@ type ActivityItem = {
   date: string
   packageSlug?: string
   url?: string
+  path?: string
   isActive?: boolean
 }
 
-const packageMeta: Record<string, { slug: string; name: I18nString }> = {
-  "@gorgo/medusa-payment-tkassa": { slug: "tkassa", name: { en: "T-Kassa", ru: "Т-Касса" } },
-  "@gorgo/medusa-payment-robokassa": { slug: "robokassa", name: { en: "Robokassa", ru: "Robokassa" } },
-  "@gorgo/medusa-fulfillment-apiship": { slug: "apiship", name: { en: "Apiship", ru: "Apiship" } },
-  "@gorgo/medusa-feed-yandex": { slug: "yandex", name: { en: "Yandex YML Feed", ru: "Яндекс YML-фид" } },
-  "@gorgo/medusa-1c": { slug: "1c", name: { en: "1C", ru: "1С" } },
+const packageMeta: Record<string, { slug: string; urlSlug: string; name: I18nString }> = {
+  "@gorgo/medusa-payment-tkassa": { slug: "tkassa", urlSlug: "t-kassa", name: { en: "T-Kassa", ru: "Т-Касса" } },
+  "@gorgo/medusa-payment-robokassa": { slug: "robokassa", urlSlug: "robokassa", name: { en: "Robokassa", ru: "Robokassa" } },
+  "@gorgo/medusa-fulfillment-apiship": { slug: "apiship", urlSlug: "apiship", name: { en: "Apiship", ru: "Apiship" } },
+  "@gorgo/medusa-feed-yandex": { slug: "yandex", urlSlug: "yandex-yml-feed", name: { en: "Yandex YML Feed", ru: "Яндекс YML-фид" } },
+  "@gorgo/medusa-1c": { slug: "1c", urlSlug: "1c-enterprise", name: { en: "1C", ru: "1С" } },
 };
 
 async function getTagDates(packageName: string): Promise<Record<string, string>> {
@@ -68,12 +69,14 @@ async function parsePackageChangelog(packageName: string): Promise<ActivityItem[
       const version = block.match(/^## (\d+\.\d+\.\d+)/m)?.[1]
       const date = version ? tagDates[version] : undefined
       if (!version || !date) return []
+      const anchor = version.replace(/\./g, "-")
       return [{
         id: `${packageName}@${version}`,
         title: meta.name,
         subtitle: { en: `New release · v${version}`, ru: `Новый релиз · v${version}` },
         date,
         packageSlug: meta.slug,
+        path: `/medusa-plugins/${meta.urlSlug}/changelog#${anchor}`,
       }]
     })
 }
