@@ -1,9 +1,0 @@
-{
-  "version": "v1",
-  "packages": {
-    "@gorgo/medusa-vite-plugin": {
-      "signature": "7ac5ad0285a72fe3dde808d607fb4fb6",
-      "file": true
-    }
-  }
-}

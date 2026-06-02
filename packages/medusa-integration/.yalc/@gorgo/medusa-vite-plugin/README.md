@@ -1,1 +1,0 @@
-# @gorgo/medusa-vite-plugin
