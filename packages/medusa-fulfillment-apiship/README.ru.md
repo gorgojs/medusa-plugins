@@ -28,8 +28,8 @@
 </p>
 
 <p align="center">
-  <a href="https://t.me/medusajs_apiship">
-    <img src="https://img.shields.io/badge/Telegram-Чат_поддержки_Medusa.js⊷ApiShip-0088cc?logo=telegram&style=social" alt="Чат Medusa.js⊷ApiShip в Telegram" />
+  <a href="https://t.me/gorgojs_chat">
+    <img src="https://img.shields.io/badge/Telegram-Чат_поддержки-0088cc?logo=telegram&style=social" alt="Чат поддержки в Telegram" />
   </a>
 </p>
 

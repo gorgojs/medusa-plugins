@@ -28,8 +28,8 @@ Robokassa Payments for Medusa
 </p>
 
 <p align="center">
-  <a href="https://t.me/medusajs_robokassa">
-    <img src="https://img.shields.io/badge/Telegram-Medusa.js⊷Robokassa_Support_Chat-0088cc?logo=telegram&style=social" alt="Medusa.js⊷Robokassa on Telegram" />
+  <a href="https://t.me/gorgojs_chat">
+    <img src="https://img.shields.io/badge/Telegram-Support_Chat-0088cc?logo=telegram&style=social" alt="Telegram Support Chat" />
   </a>
 </p>
 
