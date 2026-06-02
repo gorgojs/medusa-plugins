@@ -8,7 +8,7 @@ medusaIntegrationTestRunner({
     describe("Ping", () => {
       it("ping the server health endpoint", async () => {
         const response = await api.get('/health')
-        expect(response.status).toEqual(200)
+        expect(response.status).toEqual(500)
       })
     })
   },

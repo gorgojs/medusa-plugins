@@ -73,8 +73,9 @@ fi
   echo "Automated daily Medusa update to **v${TARGET_VERSION}**."
   echo ""
   if [ ${#PASSED[@]} -gt 0 ]; then
-    echo "### Updated and tested on Medusa v${TARGET_VERSION}"
-    for example in "${PASSED[@]}"; do echo "- \`${example}\`"; done
+    echo "> [!TIP]"
+    echo "> Updated and tested on Medusa v${TARGET_VERSION}:"
+    for example in "${PASSED[@]}"; do echo "> - \`${example}\`"; done
     echo ""
   fi
   if [ ${#FAILED[@]} -gt 0 ]; then
