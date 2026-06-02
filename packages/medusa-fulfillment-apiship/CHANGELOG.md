@@ -1,5 +1,11 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 0.5.9
+
+### Patch Changes
+
+- [`7908c47`](https://github.com/gorgojs/medusa-plugins/commit/7908c470f04d7e9b388ed134e4b6df90f42f6cae) Thanks [@gorgohead](https://github.com/gorgohead)! - change chat link
+
 ## 0.5.8
 
 ### Patch Changes
