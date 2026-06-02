@@ -49,6 +49,18 @@ if [ ${#FAILED[@]} -gt 0 ]; then
   corepack yarn install --no-immutable
 fi
 
+mkdir -p .badges
+for example in "${PASSED[@]}"; do
+  cat > ".badges/medusa-${example}.json" <<JSON
+{
+  "schemaVersion": 1,
+  "label": "Tested with Medusa",
+  "message": "v${TARGET_VERSION}",
+  "color": "green"
+}
+JSON
+done
+
 echo "commit_scope=$(IFS=,; echo "${PASSED[*]}")" >> "$GITHUB_OUTPUT"
 if [ ${#PASSED[@]} -gt 0 ]; then
   echo "has_passed=true" >> "$GITHUB_OUTPUT"
@@ -56,18 +68,28 @@ else
   echo "has_passed=false" >> "$GITHUB_OUTPUT"
 fi
 
+RUN_URL=""
+if [ -n "${GITHUB_RUN_ID:-}" ]; then
+  RUN_URL="${GITHUB_SERVER_URL:-https://github.com}/${GITHUB_REPOSITORY:-}/actions/runs/${GITHUB_RUN_ID}"
+fi
+
 {
   echo "pr_body<<__PR_BODY_EOF__"
   echo "Automated daily Medusa update to **v${TARGET_VERSION}**."
   echo ""
   if [ ${#PASSED[@]} -gt 0 ]; then
-    echo "### Updated and tested on Medusa v${TARGET_VERSION}"
-    for example in "${PASSED[@]}"; do echo "- \`${example}\`"; done
+    echo "> [!TIP]"
+    echo "> Updated and tested on Medusa v${TARGET_VERSION}:"
+    for example in "${PASSED[@]}"; do echo "> - \`${example}\`"; done
     echo ""
   fi
   if [ ${#FAILED[@]} -gt 0 ]; then
     echo "> [!CAUTION]"
-    echo "> Could not update on Medusa v${TARGET_VERSION} (tests failed) — excluded from this PR:"
+    if [ -n "$RUN_URL" ]; then
+      echo "> Tests failed on Medusa v${TARGET_VERSION} — excluded from this PR. See the [run log](${RUN_URL})."
+    else
+      echo "> Tests failed on Medusa v${TARGET_VERSION} — excluded from this PR."
+    fi
     for example in "${FAILED[@]}"; do echo "> - **${example}**"; done
     echo ""
   fi
