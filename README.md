@@ -150,8 +150,9 @@ This repository is organized as a Yarn monorepo with shared workspaces for plugi
 │   ├── medusa-payment-tkassa/
 │   └── medusa-payment-yookassa/
 ├── scripts/
-└── www/
-    └── docs/
+└── docs/
+    ├── medusa-plugins/
+    └── tools/
 ```
 
 ### `packages/`
@@ -169,12 +170,14 @@ Examples are grouped by plugin and usually include:
 
 Repository automation scripts.
 
-### `www/docs/`
+### `docs/`
 
-The documentation site, published at:
+Documentation content (MDX + announcements), published at:
 
 - [docs.gorgojs.com](https://docs.gorgojs.com)
 - [docs.gorgojs.ru](https://docs.gorgojs.ru)
+
+The documentation site builder lives in the private `gorgojs/gorgo` repo (`packages/docs`) and syncs this content in at build time.
 
 ## Installation & Development
 

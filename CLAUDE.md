@@ -24,9 +24,12 @@ This repository is organized as a Yarn v4 monorepo with shared workspaces for pl
 │   └── utils/
 │       └── gorgo-telemetry/
 ├── scripts/
-└── www/
-    └── docs/
+└── docs/                            # documentation content (built by gorgo/packages/docs)
+    ├── medusa-plugins/
+    └── tools/
 ```
+
+> The documentation **site builder** lives in the private `gorgojs/gorgo` repo at `packages/docs`. This repo holds only the docs **content** (MDX); the builder syncs it in at build time.
 
 ## Essential Commands
 
@@ -165,7 +168,7 @@ Use the **medusa** MCP (`docs.medusajs.com`) for Medusa v2 APIs and patterns, an
 |---|---|---|
 | `publish.yml` | Push to main (packages/**) | Auto-generate changesets → version → publish to npm |
 | `update-medusa-version.yml` | Daily 6 AM + manual | Check latest Medusa, run integration tests, open update PR |
-| `notify-deploy.yml` | Push to main (www/docs/**) | Notify automation repo to deploy docs |
+| `notify-deploy.yml` | Push to main (docs/**) | Notify automation repo (`gorgo-docs-updated`) to rebuild & deploy docs |
 
 ## Workflow: Research → Plan → Implement
 
