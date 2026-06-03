@@ -147,8 +147,9 @@
 │   ├── medusa-payment-tkassa/
 │   └── medusa-payment-yookassa/
 ├── scripts/
-└── www/
-    └── docs/
+└── docs/
+    ├── medusa-plugins/
+    └── tools/
 ```
 
 ### `packages/`
@@ -166,12 +167,14 @@
 
 Скрипты автоматизации репозитория.
 
-### `www/docs/`
+### `docs/`
 
-Сайт документации, доступные по адресам:
+Контент документации (MDX + анонсы), доступный по адресам:
 
 - [docs.gorgojs.com](https://docs.gorgojs.com)
 - [docs.gorgojs.ru](https://docs.gorgojs.ru)
+
+Билдер сайта документации находится в приватном репозитории `gorgojs/gorgo` (`packages/docs`) и подкладывает этот контент на этапе сборки.
 
 ## Установка и разработка
 

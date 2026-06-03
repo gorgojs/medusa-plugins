@@ -1,10 +1,10 @@
-name: Notify Deploy
+name: Notify Deploy Docs
 
 on:
   push:
     branches: [ main ]
     paths:
-      - 'www/docs/**'
+      - 'docs/**'
       - 'packages/*/CHANGELOG.md'
       - 'packages/*/*/CHANGELOG.md'
   workflow_dispatch:
@@ -35,7 +35,7 @@ jobs:
           await github.rest.repos.createDispatchEvent({
             owner: 'gorgojs',
             repo: 'automation',
-            event_type: 'medusa-plugins-updated',
+            event_type: 'gorgo-docs-updated',
             client_payload: {
               commit: context.sha,
               ref: context.ref,
