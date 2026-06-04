@@ -68,7 +68,7 @@ Robokassa Payments for Medusa
 
 ## 💬  Support & Community
 
-Got questions or ideas about the plugin? Join the Telegram support chat — [@medusajs_robokassa](https://t.me/medusajs_robokassa)
+Got questions or ideas about the plugin? Join the Telegram support chat — [@gorgojs_chat](https://t.me/gorgojs_chat)
 
 Connect with other Medusa developers on Telegram — [@medusajs_chat](https://t.me/medusajs_chat)
 

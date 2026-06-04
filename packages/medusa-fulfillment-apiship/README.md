@@ -72,7 +72,7 @@ Popular delivery services available through ApiShip include CDEK, Yandex Deliver
 
 ## 💬  Support & Community
 
-Got questions or ideas about the plugin? Join the Telegram support chat — [@medusajs_apiship](https://t.me/medusajs_apiship)
+Got questions or ideas about the plugin? Join the Telegram support chat — [@gorgojs_chat](https://t.me/gorgojs_chat)
 
 Connect with other Medusa developers on Telegram — [@medusajs_chat](https://t.me/medusajs_chat)
 

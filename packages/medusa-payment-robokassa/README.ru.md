@@ -68,7 +68,7 @@
 
 ## 💬  Поддержка и сообщество
 
-Есть вопросы по плагину или идеи? Пишите в чат поддержки в Telegram — [@medusajs_robokassa](https://t.me/medusajs_robokassa)
+Есть вопросы по плагину или идеи? Пишите в чат поддержки в Telegram — [@gorgojs_chat](https://t.me/gorgojs_chat)
 
 Общайтесь с другими разработчиками Medusa в Telegram — [@medusajs_chat](https://t.me/medusajs_chat)
 
