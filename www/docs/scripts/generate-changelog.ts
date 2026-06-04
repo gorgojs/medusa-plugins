@@ -24,6 +24,7 @@ type ActivityItem = {
 }
 
 const packageMeta: Record<string, { slug: string; urlSlug: string; name: I18nString }> = {
+  "@gorgo/medusa-payment-yookassa": { slug: "yookassa", urlSlug: "yookassa", name: { en: "YooKassa", ru: "ЮKassa" } },
   "@gorgo/medusa-payment-tkassa": { slug: "tkassa", urlSlug: "t-kassa", name: { en: "T-Kassa", ru: "Т-Касса" } },
   "@gorgo/medusa-payment-robokassa": { slug: "robokassa", urlSlug: "robokassa", name: { en: "Robokassa", ru: "Robokassa" } },
   "@gorgo/medusa-fulfillment-apiship": { slug: "apiship", urlSlug: "apiship", name: { en: "Apiship", ru: "Apiship" } },
@@ -105,7 +106,7 @@ async function main() {
   }
 
   const seen = new Set<string>()
-  const merged = [...changelogItems, ...manualItems]
+  const merged = [ ...manualItems, ...changelogItems]
     .sort((a, b) => b.date.localeCompare(a.date))
     .filter(({ id }) => !seen.has(id) && seen.add(id))
 

@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": "@gorgo/medusa-payment-yookassa",
+    "title": {
+      "en": "Breaking change",
+      "ru": "Breaking change"
+    },
+    "subtitle": {
+      "en": "YooKassa moved to @gorgo/medusa-payment-yookassa",
+      "ru": "ЮKassa переехала в @gorgo/medusa-payment-yookassa"
+    },
+    "date": "2026-06-04",
+    "url": "https://www.npmjs.com/package/@gorgo/medusa-payment-yookassa",
+    "isActive": true
+  }
+]
