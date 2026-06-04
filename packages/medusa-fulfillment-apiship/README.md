@@ -11,7 +11,7 @@ ApiShip Integration for Medusa
 <p align="center">
   <a href="https://docs.gorgojs.com/medusa-plugins/apiship">Documentation</a>
   <br/>
-  A Medusa plugin that integrates the ApiShip delivery aggregator platform, giving your store access to dozens of delivery carriers with minimal configuration. Production-ready.
+  A Medusa plugin that integrates the ApiShip delivery aggregator platform, giving your store access to 40+ delivery carriers with minimal configuration. Production-ready.
   <br/>
   <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-fulfillment-apiship/README.ru.md">Читать README на русском ↗</a>
 </p>

@@ -11,7 +11,7 @@
 <p align="center">
   <a href="https://docs.gorgojs.com/medusa-plugins/apiship">Документация</a>
   <br/>
-  Плагин Medusa для интеграции с агрегатором служб доставки ApiShip, предоставляющий вашему магазину доступ к множеству перевозчиков с минимальной настройкой. Готов к продакшену.
+  Плагин Medusa для интеграции с агрегатором служб доставки ApiShip, предоставляющий вашему магазину доступ к 40+ перевозчикам при минимальной настройке. Готов к продакшену.
   <br/>
   <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-fulfillment-apiship/README.md">Read README in English ↗</a>
 </p>
