@@ -62,7 +62,7 @@ Yandex Market YML Feed Generator for Medusa
 
 ## 💬  Support & Community
 
-Got questions or ideas about the plugin? Join the Telegram support chat — [@medusajs_yandex](https://t.me/medusajs_yandex)
+Got questions or ideas about the plugin? Join the Telegram support chat — [@gorgojs_chat](https://t.me/gorgojs_chat)
 
 Connect with other Medusa developers on Telegram — [@medusajs_chat](https://t.me/medusajs_chat)
 
