@@ -168,7 +168,7 @@ Use the **medusa** MCP (`docs.medusajs.com`) for Medusa v2 APIs and patterns, an
 |---|---|---|
 | `publish.yml` | Push to main (packages/**) | Auto-generate changesets → version → publish to npm |
 | `update-medusa-version.yml` | Daily 6 AM + manual | Check latest Medusa, run integration tests, open update PR |
-| `notify-deploy.yml` | Push to main (docs/**) | Notify automation repo (`gorgo-docs-updated`) to rebuild & deploy docs |
+| `notify-deploy-docs.yml` | Push to main (docs/**) | Notify automation repo (`gorgo-docs-updated`) to rebuild & deploy docs |
 
 ## Workflow: Research → Plan → Implement
 
