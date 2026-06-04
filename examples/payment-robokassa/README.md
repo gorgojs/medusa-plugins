@@ -5,7 +5,7 @@ Examples for the [@gorgo/medusa-payment-robokassa](https://www.npmjs.com/package
 ## Prerequisites
 
 - All the [common prerequisites](../README.md#prerequisites).
-- A [Robokassa](https://robokassa.com/) account, a shop identifier `MerchantLogin`, secret passwords `password1`, `password2` and for testing `testPassword1` and `testPassword2`.
+- A Robokassa account - [sign in or create one](https://login.robokassa.ru/reg?promoCode=gorgo), a shop identifier `MerchantLogin`, secret passwords `password1`, `password2` and for testing `testPassword1` and `testPassword2`.
 
 ## Configuration
 

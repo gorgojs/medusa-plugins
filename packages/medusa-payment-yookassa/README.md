@@ -13,7 +13,7 @@ YooKassa Payments for Medusa
   <br/>
   A Medusa plugin that provides YooKassa payments. Production-ready.
   <br/>
-  <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-payment-yookassa/README.ru.md">Читать README на русском ↗️</a>
+  <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-payment-yookassa/README.ru.md">Читать README на русском ↗</a>
 </p>
 
 <br/>

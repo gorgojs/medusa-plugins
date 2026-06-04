@@ -13,7 +13,7 @@
   <br/>
   Плагин Medusa для приёма платежей через ЮKassa. Готов к продакшену.
   <br/>
-  <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-payment-yookassa/README.md">Read README in English ↗️</a>
+  <a href="https://github.com/gorgojs/medusa-plugins/blob/HEAD/packages/medusa-payment-yookassa/README.md">Read README in English ↗</a>
 </p>
 
 <br>
