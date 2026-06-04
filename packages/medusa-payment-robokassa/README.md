@@ -41,28 +41,18 @@ Robokassa Payments for Medusa
 
 ## Plugin Features
 
-- **Production-Ready**  
-  Proven in live stores and ready for real-world deployment.
-- **Full Integration with Robokassa**  
-  Connect your store to Robokassa for secure and reliable payments.
-- **Receipt Generation**  
-  Online receipts compliant with Federal Law No. 54.
-- **One-Step & Two-Step Payments**  
-  Autocapture or authorization/hold payment flows.
-- **Refunds & Cancellations**  
-  Refund and order cancellation support.
-- **Webhook Notifications**  
-  Real-time payment status updates with signature verification.
-- **Test Mode**  
-  Simulate payments without real charges.
-- **Detailed Logging**  
-  Request and response logs for debugging and support in development mode.
-- **Full Test Coverage**  
-  Comprehensive unit and integration tests covering core flows and edge cases.
-- **Storefront Example**  
-  A complete <a href="https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-robokassa/medusa-storefront" target="_blank">Next.js storefront</a> ready to use as a reference.
+- **Production-Ready:** Proven in live stores and ready for real-world deployment.
+- **Full Integration with Robokassa:** Connect your store to Robokassa for secure and reliable payments.
+- **Receipt Generation:** Online receipts compliant with Federal Law No. 54.
+- **One-Step & Two-Step Payments:** Autocapture or authorization/hold payment flows.
+- **Refunds & Cancellations:** Refund and order cancellation support.
+- **Webhook Notifications:** Real-time payment status updates with signature verification.
+- **Test Mode:** Simulate payments without real charges.
+- **Detailed Logging:** Request and response logs for debugging and support in development mode.
+- **Full Test Coverage:** Comprehensive unit and integration tests covering core flows and edge cases.
+- **Storefront Example:** A complete <a href="https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-robokassa/medusa-storefront" target="_blank">Next.js storefront</a> ready to use as a reference.
 
-## What is Robokassa?
+## What is Robokassa
 
 <a href="https://robokassa.com" target="_blank">Robokassa</a> is a Russian payment aggregator that supports bank cards, e-wallets, mobile payments, SBP, and other methods. It's widely used by small and mid-size online stores in Russia for its simple integration and broad payment method coverage.
 

@@ -140,13 +140,15 @@ This repository is organized as a Yarn monorepo with shared workspaces for plugi
 │   ├── feed-yandex/
 │   ├── fulfillment-apiship/
 │   ├── payment-robokassa/
-│   └── payment-tkassa/
+│   ├── payment-tkassa/
+│   └── payment-yookassa/
 ├── packages/
 │   ├── medusa-1c/
 │   ├── medusa-feed-yandex/
 │   ├── medusa-fulfillment-apiship/
 │   ├── medusa-payment-robokassa/
-│   └── medusa-payment-tkassa/
+│   ├── medusa-payment-tkassa/
+│   └── medusa-payment-yookassa/
 ├── scripts/
 └── www/
     └── docs/
@@ -200,6 +202,7 @@ See the plugin example README for details:
 - [examples/fulfillment-apiship/README.md](examples/fulfillment-apiship/README.md)
 - [examples/payment-robokassa/README.md](examples/payment-robokassa/README.md)
 - [examples/payment-tkassa/README.md](examples/payment-tkassa/README.md)
+- [examples/payment-yookassa/README.md](examples/payment-yookassa/README.md)
 
 ## Tests
 
@@ -244,7 +247,8 @@ Before opening a Pull Request:
    - `feed-yandex`
    - `fulfillment-apiship`
    - `payment-robokassa`
-   - `payment-tkassa`  
+   - `payment-tkassa`
+   - `payment-yookassa`  
 
 ## License
 

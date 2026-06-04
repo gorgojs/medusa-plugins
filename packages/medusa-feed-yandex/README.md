@@ -41,22 +41,15 @@ Yandex Market YML Feed Generator for Medusa
 
 ## Plugin Features
 
-- **YML Feed Export**  
-  Generate product feeds in Yandex Market YML format.
-- **Feed URL Access**  
-  Easily retrieve feed URLs for integration with Yandex Market.
-- **Admin UI**  
-  Manage feeds directly from the Medusa Admin panel.
-- **Scheduled Generation**  
-  Automatic feed exports at configurable intervals.
-- **Category Filtering**  
-  Select specific product categories for export.
-- **Manual Generation**  
-  Trigger feed generation on demand.
-- **File Module Integration**  
-  Uses Medusa File Module with built-in provider support.
+- **YML Feed Export:** Generate product feeds in Yandex Market YML format.
+- **Feed URL Access:** Easily retrieve feed URLs for integration with Yandex Market.
+- **Admin UI:** Manage feeds directly from the Medusa Admin panel.
+- **Scheduled Generation:** Automatic feed exports at configurable intervals.
+- **Category Filtering:** Select specific product categories for export.
+- **Manual Generation:** Trigger feed generation on demand.
+- **File Module Integration:** Uses Medusa File Module with built-in provider support.
 
-## What is YML?
+## What is YML
 
 <a href="https://yandex.com/support/direct/feeds/requirements-yml.html" target="_blank">YML (Yandex Market Language)</a> is an XML-based format used by Yandex Market and Yandex Direct for product data feeds. It's the standard way to list your products on Yandex Market, one of the largest e-commerce marketplaces in Eastern Europe and Central Asia.
 

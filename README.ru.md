@@ -137,13 +137,15 @@
 │   ├── feed-yandex/
 │   ├── fulfillment-apiship/
 │   ├── payment-robokassa/
-│   └── payment-tkassa/
+│   ├── payment-tkassa/
+│   └── payment-yookassa/
 ├── packages/
 │   ├── medusa-1c/
 │   ├── medusa-feed-yandex/
 │   ├── medusa-fulfillment-apiship/
 │   ├── medusa-payment-robokassa/
-│   └── medusa-payment-tkassa/
+│   ├── medusa-payment-tkassa/
+│   └── medusa-payment-yookassa/
 ├── scripts/
 └── www/
     └── docs/
@@ -197,6 +199,31 @@ yarn dev
 - [examples/fulfillment-apiship/README.md](examples/fulfillment-apiship/README.md)
 - [examples/payment-robokassa/README.md](examples/payment-robokassa/README.md)
 - [examples/payment-tkassa/README.md](examples/payment-tkassa/README.md)
+- [examples/payment-yookassa/README.md](examples/payment-yookassa/README.md)
+
+## Тесты
+
+В репозитории есть два вида тестов, оркестрируемых [Turborepo](https://turborepo.com):
+
+- **Юнит-тесты** расположены рядом с исходниками каждого плагина (`packages/medusa-<plugin>/src/**/__tests__/*.unit.spec.ts`).
+- **Интеграционные тесты** находятся в отдельных пакетах (`integration-tests/<plugin>/`) — они поднимают реальное Medusa-приложение с подключённым плагином через `workspace:*`. Подробнее — в [integration-tests/README.md](integration-tests/README.md).
+
+Из корня монорепозитория:
+
+```bash
+yarn test:unit                # юнит-тесты всех пакетов в packages/medusa-*
+yarn test:integration         # интеграционные тесты всех пакетов в integration-tests/*
+yarn test:changed             # юнит + интеграция только для пакетов, изменённых относительно origin/main
+```
+
+Из директории конкретного плагина (при активной разработке):
+
+```bash
+cd packages/medusa-<plugin>
+yarn test:unit
+```
+
+CI запускает юнит-тесты на каждый PR (только для изменённых плагинов) и полный набор при пуше в `main` и через `workflow_dispatch`. См. [.github/workflows/test.yml](.github/workflows/test.yml).
 
 ## Как внести вклад
 
@@ -218,6 +245,7 @@ yarn dev
    - `fulfillment-apiship`
    - `payment-robokassa`
    - `payment-tkassa`
+   - `payment-yookassa`
 
 ## Лицензия
 
