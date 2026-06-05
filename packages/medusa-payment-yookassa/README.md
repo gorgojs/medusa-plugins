@@ -48,6 +48,7 @@ YooKassa Payments for Medusa
 - **Refunds & Cancellations:** Full refund and order cancellation support.
 - **Webhook Notifications:** Real-time payment status updates with signature verification.
 - **Detailed Logging:** Request and response logs for debugging and support in development mode.
+- **Full Test Coverage:** Comprehensive unit and integration tests covering core flows and edge cases.
 - **Storefront Example:** A complete <a href="https://github.com/gorgojs/medusa-plugins/tree/main/examples/payment-yookassa/medusa-storefront" target="_blank">Next.js storefront</a> ready to use as a reference.
 
 
