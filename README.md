@@ -142,13 +142,21 @@ This repository is organized as a Yarn monorepo with shared workspaces for plugi
 │   ├── payment-robokassa/
 │   ├── payment-tkassa/
 │   └── payment-yookassa/
+├── integration-tests/
+│   ├── 1c/
+│   ├── feed-yandex/
+│   ├── fulfillment-apiship/
+│   ├── payment-robokassa/
+│   └── payment-tkassa/
 ├── packages/
 │   ├── medusa-1c/
 │   ├── medusa-feed-yandex/
 │   ├── medusa-fulfillment-apiship/
 │   ├── medusa-payment-robokassa/
 │   ├── medusa-payment-tkassa/
-│   └── medusa-payment-yookassa/
+│   ├── medusa-payment-yookassa/
+│   └── utils/
+│       └── gorgo-telemetry/
 ├── scripts/
 └── docs/
     ├── medusa-plugins/
@@ -157,7 +165,7 @@ This repository is organized as a Yarn monorepo with shared workspaces for plugi
 
 ### `packages/`
 
-Published Medusa plugins live here. Each package contains its own source code, package manifest, changelog, and package-level README.
+Published Medusa plugins live here. Each package contains its own source code, package manifest, changelog, and package-level README. Shared internal utilities live under `packages/utils/` (e.g. `@gorgo/telemetry`).
 
 ### `examples/`
 
@@ -166,9 +174,15 @@ Examples are grouped by plugin and usually include:
 - `medusa/` for a backend project configured with the plugin.
 - `medusa-storefront/` for a storefront integration example when the plugin needs frontend work.
 
+A root [examples/docker-compose.yml](examples/docker-compose.yml) spins up PostgreSQL and pgAdmin for the example apps. See [examples/README.md](examples/README.md).
+
+### `integration-tests/`
+
+Per-plugin workspace packages that boot a real Medusa app with the plugin loaded via `workspace:*`. See [Tests](#tests) below.
+
 ### `scripts/`
 
-Repository automation scripts.
+Repository automation scripts (Medusa version updates, changeset generation, release helpers).
 
 ### `docs/`
 
@@ -177,7 +191,7 @@ Documentation content (MDX + announcements), published at:
 - [docs.gorgojs.com](https://docs.gorgojs.com)
 - [docs.gorgojs.ru](https://docs.gorgojs.ru)
 
-The documentation site builder lives in the private `gorgojs/gorgo` repo (`packages/docs`) and syncs this content in at build time.
+`medusa-plugins/` holds per-plugin docs; `tools/` holds docs for related CLIs such as [`create-medusa-plugin`](https://docs.gorgojs.com/tools/create-medusa-plugin). The documentation site builder lives in the private `gorgojs/gorgo` repo (`packages/docs`) and syncs this content in at build time.
 
 ## Installation & Development
 
@@ -212,7 +226,7 @@ See the plugin example README for details:
 The repository runs two kinds of tests, orchestrated by [Turborepo](https://turborepo.com):
 
 - **Unit tests** live next to source in each plugin (`packages/medusa-<plugin>/src/**/__tests__/*.unit.spec.ts`).
-- **Integration tests** live in dedicated workspace packages (`integration-tests/<plugin>/`) that boot a real Medusa app with the plugin loaded via `workspace:*`. See [integration-tests/README.md](integration-tests/README.md) for setup and running.
+- **Integration tests** live in dedicated workspace packages (`integration-tests/<plugin>/`) that boot a real Medusa app with the plugin loaded via `workspace:*`. See [integration-tests/README.md](integration-tests/README.md) for prerequisites and running.
 
 From the monorepo root:
 
@@ -237,7 +251,7 @@ Contributions are welcome across packages, examples, and docs! Here is a little 
 
 Before opening a Pull Request:
 
-1. Make changes in the relevant package, example, or documentation enty.
+1. Make changes in the relevant package, example, or documentation entry.
 2. Run the local commands needed for the area you touched, such as `yarn build`, `yarn dev`, or `yarn test:changed` to verify tests still pass.
 3. Update documentation when behavior, configuration, or setup changes.
 4. Keep commits [conventional](https://www.conventionalcommits.org/en/v1.0.0/), focused and scoped. The repository uses `commitlint` and automated release tooling.   
@@ -245,13 +259,16 @@ Before opening a Pull Request:
     ```
     feat(scope): commit message
     ```  
-    The list of available scopes:
+    Package scopes:
    - `1c`
    - `feed-yandex`
    - `fulfillment-apiship`
    - `payment-robokassa`
    - `payment-tkassa`
-   - `payment-yookassa`  
+   - `payment-yookassa`
+   - `gorgo-telemetry`
+
+    Plus repo-level scopes: `deps`, `release`, `docs`, `root`. Run `yarn scopes` to print the current list.  
 
 ## License
 
