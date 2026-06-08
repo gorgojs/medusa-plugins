@@ -1,5 +1,5 @@
 {
-  "name": "@gorgo/medusa-integration",
+  "name": "@gorgo/medusa-integration-marketplace",
   "version": "0.1.0",
   "description": "Integration core-plugin for Medusa",
   "files": [
