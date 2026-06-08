@@ -1,5 +1,13 @@
 # @gorgo/medusa-payment-yookassa
 
+## 1.0.4
+
+### Patch Changes
+
+- [#331](https://github.com/gorgojs/medusa-plugins/pull/331) [`a7e9428`](https://github.com/gorgojs/medusa-plugins/commit/a7e942888f935e19cec4b3557da3a0c027e87cd3) Thanks [@gorgohead](https://github.com/gorgohead)! - update readmes
+
+- [#331](https://github.com/gorgojs/medusa-plugins/pull/331) [`09c86da`](https://github.com/gorgojs/medusa-plugins/commit/09c86da76187d354f5c460bc0d86d89f9be667ef) Thanks [@gorgohead](https://github.com/gorgohead)! - add unit and integration tests
+
 ## 1.0.3
 
 ### Patch Changes
