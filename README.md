@@ -191,7 +191,7 @@ Documentation content (MDX + announcements), published at:
 - [docs.gorgojs.com](https://docs.gorgojs.com)
 - [docs.gorgojs.ru](https://docs.gorgojs.ru)
 
-`medusa-plugins/` holds per-plugin docs; `tools/` holds docs for related CLIs such as [`create-medusa-plugin`](https://docs.gorgojs.com/tools/create-medusa-plugin). The documentation site builder lives in the private `gorgojs/gorgo` repo (`packages/docs`) and syncs this content in at build time.
+`medusa-plugins/` holds per-plugin docs; `tools/` holds docs for related CLIs such as [`create-medusa-plugin`](https://docs.gorgojs.com/tools/create-medusa-plugin).
 
 ## Installation & Development
 

@@ -188,7 +188,7 @@
 - [docs.gorgojs.com](https://docs.gorgojs.com)
 - [docs.gorgojs.ru](https://docs.gorgojs.ru)
 
-В `medusa-plugins/` лежит документация по плагинам; в `tools/` — документация по сопутствующим CLI, например [`create-medusa-plugin`](https://docs.gorgojs.ru/tools/create-medusa-plugin). Билдер сайта документации находится в приватном репозитории `gorgojs/gorgo` (`packages/docs`) и подкладывает этот контент на этапе сборки.
+В `medusa-plugins/` лежит документация по плагинам; в `tools/` — документация по сопутствующим CLI, например [`create-medusa-plugin`](https://docs.gorgojs.ru/tools/create-medusa-plugin).
 
 ## Установка и разработка
 
