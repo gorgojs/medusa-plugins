@@ -105,14 +105,19 @@ describeIfCreds("YooKassa contract (LIVE network)", () => {
     expect(payment.amount.currency).toBe("RUB")
     expect(payment.confirmation).toBeDefined()
     expect((payment.confirmation as any).confirmation_url).toMatch(/^https:\/\//)
+    // TODO: expect metadata
 
     const fetched = await sdkCall(() => client.getPayment(payment.id))
     expect(fetched.id).toBe(payment.id)
     expect(fetched.amount.value).toBe("10.00")
     expect(KNOWN_STATUSES).toContain(fetched.status as any)
+    // TODO: expect metadata
 
     await tryCancel(payment.id)
   })
+
+  // TODO: createPayment without receipt
+
 
   it("createPayment with receipt is accepted (receipt schema contract)", async () => {
     // High-risk surface: FNS-driven receipt schema changes break production
