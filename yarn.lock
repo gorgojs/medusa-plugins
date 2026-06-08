@@ -2080,6 +2080,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@gorgo/it-payment-yookassa@workspace:integration-tests/payment-yookassa":
+  version: 0.0.0-use.local
+  resolution: "@gorgo/it-payment-yookassa@workspace:integration-tests/payment-yookassa"
+  dependencies:
+    "@a2seven/yoo-checkout": "npm:^1.1.4"
+    "@gorgo/medusa-payment-yookassa": "workspace:*"
+    "@medusajs/framework": "npm:2.15.5"
+    "@medusajs/medusa": "npm:2.15.5"
+    "@medusajs/test-utils": "npm:2.15.5"
+    "@types/jest": "npm:^29.5.13"
+    "@types/node": "npm:^22.13.11"
+    jest: "npm:^29.7.0"
+    typescript: "npm:^5.8.2"
+  languageName: unknown
+  linkType: soft
+
 "@gorgo/medusa-1c@workspace:*, @gorgo/medusa-1c@workspace:packages/medusa-1c":
   version: 0.0.0-use.local
   resolution: "@gorgo/medusa-1c@workspace:packages/medusa-1c"
@@ -2291,7 +2307,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@gorgo/medusa-payment-yookassa@workspace:packages/medusa-payment-yookassa":
+"@gorgo/medusa-payment-yookassa@workspace:*, @gorgo/medusa-payment-yookassa@workspace:packages/medusa-payment-yookassa":
   version: 0.0.0-use.local
   resolution: "@gorgo/medusa-payment-yookassa@workspace:packages/medusa-payment-yookassa"
   dependencies:
@@ -2305,10 +2321,14 @@ __metadata:
     "@medusajs/test-utils": "npm:^2.12.4"
     "@medusajs/ui": "npm:^4.0.25"
     "@swc/core": "npm:^1.7.28"
+    "@swc/jest": "npm:^0.2.36"
+    "@types/jest": "npm:^29.5.13"
     "@types/node": "npm:^20.0.0"
     "@types/react": "npm:^18.3.2"
     "@types/react-dom": "npm:^18.2.25"
     axios: "npm:^1.9.0"
+    jest: "npm:^29.7.0"
+    msw: "npm:^2.7.0"
     prop-types: "npm:^15.8.1"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
