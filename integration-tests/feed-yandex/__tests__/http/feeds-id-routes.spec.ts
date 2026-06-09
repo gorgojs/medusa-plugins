@@ -1,7 +1,6 @@
 import { medusaIntegrationTestRunner } from "@medusajs/test-utils"
 import jwt from "jsonwebtoken"
-import { FEED_MODULE } from "../../src/modules/feed"
-import FeedModuleService from "../../src/modules/feed/service"
+import { FEED_MODULE } from "@gorgo/medusa-feed-yandex/modules/feed"
 
 medusaIntegrationTestRunner({
   testSuite: ({ api, getContainer }) => {
@@ -46,7 +45,7 @@ medusaIntegrationTestRunner({
         )
 
         headers["authorization"] = `Bearer ${token}`
-        const service = container.resolve<FeedModuleService>(FEED_MODULE)
+        const service: any = container.resolve(FEED_MODULE)
         const created = await service.createFeeds({
           title: "Original Feed",
           file_name: "original.xml",
@@ -69,7 +68,7 @@ medusaIntegrationTestRunner({
       })
 
       it("PATCH /admin/feeds/:id — update feed", async () => {
-        const service = container.resolve<FeedModuleService>(FEED_MODULE)
+        const service: any = container.resolve(FEED_MODULE)
         const created = await service.createFeeds({
           title: "To Be Updated",
           file_name: "update-me.xml",
@@ -108,7 +107,7 @@ medusaIntegrationTestRunner({
           deleted: true,
         })
 
-        const service = container.resolve<FeedModuleService>(FEED_MODULE)
+        const service: any = container.resolve(FEED_MODULE)
         const found = await service.listFeeds({ id: [createdFeedId] })
         expect(found).toHaveLength(0)
       })

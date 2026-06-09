@@ -43,11 +43,11 @@ jobs:
         run: yarn install --immutable
 
       - name: Run unit tests for changed plugins
-        if: github.event_name != 'workflow_dispatch'
+        if: github.event_name != 'workflow_dispatch' && github.event_name != 'schedule'
         run: yarn turbo run test:unit --filter='./packages/medusa-*...[origin/main]' --no-cache --force
 
       - name: Run unit tests for all plugins
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         run: yarn turbo run test:unit --filter='./packages/medusa-*' --no-cache --force
 
   integration:
@@ -102,9 +102,9 @@ jobs:
           ' >> "$GITHUB_ENV"
 
       - name: Run integration tests for changed plugins
-      # if: github.event_name == 'push'
+        if: github.event_name != 'workflow_dispatch' && github.event_name != 'schedule'
         run: yarn turbo run test:integration:http test:integration:modules --filter='[origin/main]...' --concurrency=1 --no-cache --force
 
-      # - name: Run integration tests for all plugins
-      #   if: github.event_name == 'workflow_dispatch'
-      #   run: yarn turbo run test:integration:http test:integration:modules --filter='./integration-tests/*' --concurrency=1 --no-cache --force
+      - name: Run integration tests for all plugins
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        run: yarn turbo run test:integration:http test:integration:modules --filter='./integration-tests/*' --concurrency=1 --no-cache --force

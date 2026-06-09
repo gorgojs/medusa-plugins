@@ -1,9 +1,8 @@
 import { medusaIntegrationTestRunner } from "@medusajs/test-utils"
-import { createFeedsWorkflow } from "../../src/workflows/create-feeds"
-import { deleteFeedsWorkflow } from "../../src/workflows/delete-feeds"
-import { updateFeedsWorkflow } from "../../src/workflows/update-feeds"
-import { FEED_MODULE } from "../../src/modules/feed"
-import FeedModuleService from "../../src/modules/feed/service"
+import { createFeedsWorkflow } from "@gorgo/medusa-feed-yandex/workflows/create-feeds"
+import { deleteFeedsWorkflow } from "@gorgo/medusa-feed-yandex/workflows/delete-feeds"
+import { updateFeedsWorkflow } from "@gorgo/medusa-feed-yandex/workflows/update-feeds"
+import { FEED_MODULE } from "@gorgo/medusa-feed-yandex/modules/feed"
 
 
 medusaIntegrationTestRunner({
@@ -31,7 +30,7 @@ medusaIntegrationTestRunner({
         expect(result[0]).toHaveProperty("file_name", "feed1.xml")
         expect(result[1]).toHaveProperty("file_name", "feed2.xml")
 
-        const service = container.resolve<FeedModuleService>(FEED_MODULE)
+        const service: any = container.resolve(FEED_MODULE)
         const feeds = await service.listFeeds({
           file_name: ["feed1.xml", "feed2.xml"],
         })
@@ -43,7 +42,7 @@ medusaIntegrationTestRunner({
     describe("deleteFeedsWorkflow", () => {
       it("delete feeds", async () => {
         const container = getContainer()
-        const service = container.resolve<FeedModuleService>(FEED_MODULE)
+        const service: any = container.resolve(FEED_MODULE)
 
         const created = await service.createFeeds({
           file_name: "todelete.xml",
@@ -63,7 +62,7 @@ medusaIntegrationTestRunner({
     describe("updateFeedsWorkflow", () => {
       it("update feeds", async () => {
         const container = getContainer()
-        const service = container.resolve<FeedModuleService>(FEED_MODULE)
+        const service: any = container.resolve(FEED_MODULE)
 
         const created = await service.createFeeds({
           file_name: "original.xml",

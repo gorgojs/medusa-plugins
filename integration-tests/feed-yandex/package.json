@@ -12,9 +12,7 @@
     "@medusajs/framework": "2.15.5",
     "@medusajs/medusa": "2.15.5",
     "@medusajs/test-utils": "2.15.5",
-    "awilix": "^8.0.1",
-    "jsonwebtoken": "^9.0.2",
-    "pg": "^8.14.1"
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "@swc/core": "^1.7.28",

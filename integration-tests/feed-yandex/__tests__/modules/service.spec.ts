@@ -1,13 +1,14 @@
 import { moduleIntegrationTestRunner } from "@medusajs/test-utils"
-import { FEED_MODULE } from ".."
-import FeedModuleService from "../service"
-import Feed from "../models/feed"
+import { FEED_MODULE } from "@gorgo/medusa-feed-yandex/modules/feed"
 import path from "path"
 
-moduleIntegrationTestRunner<FeedModuleService>({
+const resolve = path.dirname(
+  require.resolve("@gorgo/medusa-feed-yandex/modules/feed")
+)
+
+moduleIntegrationTestRunner({
   moduleName: FEED_MODULE,
-  moduleModels: [Feed],
-  resolve: path.join(__dirname, "../"),
+  resolve,
   testSuite: ({ service }) => {
     describe("FeedModuleService", () => {
       it("Create feed", async () => {
@@ -32,7 +33,7 @@ moduleIntegrationTestRunner<FeedModuleService>({
         expect(feeds).toHaveLength(1)
         expect(feeds[0].id).toBe(createdFeed.id)
       })
-        
+
       it("Delete feed", async () => {
         const input = {
           title: "Feed to delete",
@@ -53,7 +54,7 @@ moduleIntegrationTestRunner<FeedModuleService>({
         expect(feeds).toHaveLength(0)
       })
 
-      it("Upadate feed", async () => {
+      it("Update feed", async () => {
         const input = {
           title: "Feed to update",
           file_name: "testName.xml",
@@ -80,7 +81,7 @@ moduleIntegrationTestRunner<FeedModuleService>({
             platform: "Updated Medusa",
           },
         }
-        const updateFeed = await service.updateFeeds(inputUpdated)
+        const updateFeed = await service.updateFeeds([inputUpdated])
 
         expect(updateFeed[0]).toMatchObject(inputUpdated)
       })

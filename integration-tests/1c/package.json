@@ -11,9 +11,7 @@
     "@gorgo/medusa-1c": "workspace:*",
     "@medusajs/framework": "2.15.5",
     "@medusajs/medusa": "2.15.5",
-    "@medusajs/test-utils": "2.15.5",
-    "awilix": "^8.0.1",
-    "pg": "^8.14.1"
+    "@medusajs/test-utils": "2.15.5"
   },
   "devDependencies": {
     "@swc/core": "^1.7.28",

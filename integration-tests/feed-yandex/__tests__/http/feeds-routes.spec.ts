@@ -1,7 +1,6 @@
 import { medusaIntegrationTestRunner } from "@medusajs/test-utils"
 import jwt from "jsonwebtoken"
-import { FEED_MODULE } from "../../src/modules/feed"
-import FeedModuleService from "../../src/modules/feed/service"
+import { FEED_MODULE } from "@gorgo/medusa-feed-yandex/modules/feed"
 
 medusaIntegrationTestRunner({
   testSuite: ({ api, getContainer }) => {
@@ -89,7 +88,7 @@ medusaIntegrationTestRunner({
             updated_at: expect.any(String),
           })
 
-          const service = container.resolve<FeedModuleService>(FEED_MODULE)
+          const service: any = container.resolve(FEED_MODULE)
           const found = await service.listFeeds({ id: [feed.id] })
           expect(found).toHaveLength(1)
         })
