@@ -12,10 +12,8 @@
     "@medusajs/framework": "2.15.5",
     "@medusajs/medusa": "2.15.5",
     "@medusajs/test-utils": "2.15.5",
-    "awilix": "^8.0.1",
-    "axios": "*",
-    "fast-xml-parser": "^5.2.5",
-    "pg": "^8.14.1"
+    "axios": "^1.9.0",
+    "fast-xml-parser": "^5.2.5"
   },
   "devDependencies": {
     "@swc/core": "^1.7.28",

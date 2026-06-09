@@ -46,17 +46,17 @@
     "test:unit": "jest --config jest.config.js"
   },
   "dependencies": {
-    "@gorgo/telemetry": "^1.0.0",
+    "@gorgo/telemetry": "^1.0.1",
     "t-kassa-api": "^1.0.6"
   },
   "devDependencies": {
-    "@medusajs/admin-sdk": "^2.7.0",
-    "@medusajs/cli": "^2.7.0",
-    "@medusajs/framework": "^2.7.0",
-    "@medusajs/icons": "^2.7.0",
-    "@medusajs/medusa": "^2.7.0",
-    "@medusajs/test-utils": "^2.7.0",
-    "@medusajs/ui": "^4.0.8",
+    "@medusajs/admin-sdk": "^2.14.0",
+    "@medusajs/cli": "^2.14.0",
+    "@medusajs/framework": "^2.14.0",
+    "@medusajs/icons": "^2.14.0",
+    "@medusajs/medusa": "^2.14.0",
+    "@medusajs/test-utils": "^2.14.0",
+    "@medusajs/ui": "^4.0.25",
     "@swc/core": "^1.7.28",
     "@swc/jest": "^0.2.36",
     "@types/jest": "^29.5.13",
@@ -74,13 +74,13 @@
     "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
-    "@medusajs/admin-sdk": "^2.7.0",
-    "@medusajs/cli": "^2.7.0",
-    "@medusajs/framework": "^2.7.0",
-    "@medusajs/icons": "^2.7.0",
-    "@medusajs/medusa": "^2.7.0",
-    "@medusajs/test-utils": "^2.7.0",
-    "@medusajs/ui": "^4.0.8"
+    "@medusajs/admin-sdk": "^2.14.0",
+    "@medusajs/cli": "^2.14.0",
+    "@medusajs/framework": "^2.14.0",
+    "@medusajs/icons": "^2.14.0",
+    "@medusajs/medusa": "^2.14.0",
+    "@medusajs/test-utils": "^2.14.0",
+    "@medusajs/ui": "^4.0.25"
   },
   "engines": {
     "node": ">=20"

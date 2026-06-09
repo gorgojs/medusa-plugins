@@ -27,7 +27,7 @@ const baseConfig = {
       },
     ],
     "^.+\\.mjs$": [
-      "@swc/jest",
+      "@swc/jest",  
       {
         jsc: {
           parser: { syntax: "ecmascript" },

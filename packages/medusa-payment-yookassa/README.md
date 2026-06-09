@@ -20,7 +20,7 @@ YooKassa Payments for Medusa
 
 <p align="center">
   <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Medusa-^2.12.4-blue?logo=medusa" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Medusa-^2.14.0-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://github.com/gorgojs/medusa-plugins/actions/workflows/update-medusa-version.yml">
     <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gorgojs/medusa-plugins/main/.badges/medusa-payment-yookassa.json&logo=checkmarx" alt="Tested with latest Medusa" />
@@ -64,7 +64,7 @@ Connect with other Medusa developers on Telegram — [@medusajs_chat](https://t.
 
 ## Requirements
 
-- Medusa v2.12.4 or later
+- Medusa v2.14.0 or later
 - Node.js v20 or later
 - A YooKassa account – [sign in or create one](https://yookassa.ru/joinups/?source=ks)
 

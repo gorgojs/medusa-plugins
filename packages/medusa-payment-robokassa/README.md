@@ -20,7 +20,7 @@ Robokassa Payments for Medusa
 
 <p align="center">
   <a href="https://medusajs.com">
-    <img src="https://img.shields.io/badge/Medusa-^2.7.0-blue?logo=medusa" alt="Medusa" />
+    <img src="https://img.shields.io/badge/Medusa-^2.14.0-blue?logo=medusa" alt="Medusa" />
   </a>
   <a href="https://github.com/gorgojs/medusa-plugins/actions/workflows/update-medusa-version.yml">
     <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gorgojs/medusa-plugins/main/.badges/medusa-payment-robokassa.json&logo=checkmarx" alt="Medusa" />
@@ -64,7 +64,7 @@ Connect with other Medusa developers on Telegram — [@medusajs_chat](https://t.
 
 ## Requirements
 
-- Medusa v2.7.0 or later
+- Medusa v2.14.0 or later
 - Node.js v20 or later
 - A Robokassa account – [sign in or create one](https://login.robokassa.ru/reg?promoCode=gorgo) 
 
