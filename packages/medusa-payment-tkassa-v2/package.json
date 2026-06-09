@@ -8,6 +8,7 @@
   "exports": {
     "./package.json": "./package.json",
     "./providers/*": "./.medusa/server/src/providers/*/index.js",
+    "./integration-descriptor": "./.medusa/server/src/integration-descriptor.js",
     "./admin": {
       "import": "./.medusa/server/src/admin/index.mjs",
       "require": "./.medusa/server/src/admin/index.js",
@@ -45,6 +46,7 @@
     "t-kassa-api": "^1.0.6"
   },
   "devDependencies": {
+    "@gorgo/medusa-integration": "workspace:*",
     "@medusajs/admin-sdk": "^2.7.0",
     "@medusajs/cli": "^2.7.0",
     "@medusajs/framework": "^2.7.0",
@@ -69,6 +71,7 @@
     "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
+    "@gorgo/medusa-integration": "*",
     "@medusajs/admin-sdk": "^2.7.0",
     "@medusajs/cli": "^2.7.0",
     "@medusajs/framework": "^2.7.0",
