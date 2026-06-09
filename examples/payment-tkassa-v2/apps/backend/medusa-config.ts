@@ -17,12 +17,33 @@ module.exports = defineConfig({
     {
       resolve: "@gorgo/medusa-integration",
       options: {
-        encryptionKey: process.env.GORGO_INTEGRATION_KEY,
-        allowPlaintextInDev: true,
-        descriptors: ["@gorgo/medusa-payment-tkassa-v2/integration-descriptor"],
+        optionSecret: process.env.GORGO_OPTION_SECRET || "supersecret",
+        providers: [
+          {
+            resolve: "@gorgo/medusa-payment-tkassa-v2/providers/integration-tkassa",
+            // id: "tkassa-2",  // ??
+            options: {
+            },
+          },
+          // {
+          //   resolve: "@gorgo/medusa-integration-marketplace-ozon/providers/integration-ozon",
+          //   id: "ozon-1",
+          //   options: {
+          //   },
+          // },
+        ],
       },
     },
-    { resolve: "@gorgo/medusa-payment-tkassa-v2", options: {} },
+    // {
+    //   resolve: "@gorgo/medusa-integration-marketplace",
+    //   options: {
+    //   }
+    // },
+    // {
+    //   resolve: "@gorgo/medusa-integration-marketplace-ozon",
+    //   options: {
+    //   }
+    // },
   ],
   modules: [
     {
@@ -34,9 +55,6 @@ module.exports = defineConfig({
             resolve: "@gorgo/medusa-payment-tkassa-v2/providers/payment-tkassa",
             id: "tkassa",
             options: {
-              terminalKey: process.env.TKASSA_TERMINAL_KEY,
-              password: process.env.TKASSA_PASSWORD,
-              capture: true,
             },
           },
         ],
