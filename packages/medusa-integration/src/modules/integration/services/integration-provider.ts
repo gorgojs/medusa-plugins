@@ -8,7 +8,9 @@ type InjectedDependencies = {
 
 /**
  * Thin registry over the integration-providers registered into the module container
- * by `loadProviders`. Each provider lives under `int_<identifier>[_<instanceId>]`.
+ * by `loadProviders`. One provider per plugin declares the contract (schema + test);
+ * settings *instances* are DB rows keyed by (plugin_id, instance_id), not separate
+ * provider registrations. So providers are resolved by `identifier` only.
  *
  * Intentionally minimal: it locates providers; callers invoke provider methods
  * directly (e.g. `registry.retrieveProvider(id).testConnection?.(ctx)`), so new
@@ -21,10 +23,6 @@ export default class IntegrationProviderService {
     this.dependencies_ = container
   }
 
-  protected registrationKey(identifier: string, instanceId?: string | null): string {
-    return `${IntegrationProviderRegistrationPrefix}${identifier}${instanceId ? `_${instanceId}` : ""}`
-  }
-
   /** All registered provider instances. */
   listProviders(): AbstractIntegrationProvider[] {
     return Object.keys(this.dependencies_)
@@ -32,14 +30,12 @@ export default class IntegrationProviderService {
       .map((k) => this.dependencies_[k as keyof InjectedDependencies])
   }
 
-  retrieveProvider(identifier: string, instanceId?: string | null): AbstractIntegrationProvider {
-    const key = this.registrationKey(identifier, instanceId)
-    const provider = this.dependencies_[key as keyof InjectedDependencies] as
-      | AbstractIntegrationProvider
-      | undefined
+  /** Resolve the provider for a plugin by its identifier (one provider per plugin). */
+  retrieveProvider(identifier: string): AbstractIntegrationProvider {
+    const provider = this.listProviders().find((p) => p.getIdentifier() === identifier)
     if (!provider) {
       throw new Error(
-        `Unable to retrieve integration provider "${key}". Make sure it is registered in medusa-config under the integration plugin's \`options.providers\`.`
+        `Unable to retrieve integration provider "${identifier}". Make sure it is registered in medusa-config under the integration plugin's \`options.providers\`.`
       )
     }
     return provider

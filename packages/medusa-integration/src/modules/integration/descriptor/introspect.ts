@@ -57,7 +57,10 @@ export function secretFieldNames(descriptor: IntegrationDescriptor): string[] {
   return Object.entries(shape).filter(([, f]) => readMeta(f).secret === true).map(([name]) => name)
 }
 
-export function introspectDescriptor(descriptor: IntegrationDescriptor): UiDescriptor {
+export function introspectDescriptor(
+  descriptor: IntegrationDescriptor,
+  hasTestConnection = false
+): UiDescriptor {
   const shape = descriptor.schema.shape as Record<string, any>
   const sections: UiSection[] = descriptor.sections.map((s) => ({ id: s.id, title: s.title, fields: [] }))
   const firstSectionId = sections[0]?.id
@@ -86,7 +89,7 @@ export function introspectDescriptor(descriptor: IntegrationDescriptor): UiDescr
     icon: descriptor.icon,
     docsUrl: descriptor.docsUrl,
     supportsMultipleInstances: descriptor.supportsMultipleInstances ?? false,
-    hasTestConnection: typeof descriptor.testConnection === "function",
+    hasTestConnection,
     sections,
   }
 }

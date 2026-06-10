@@ -29,7 +29,6 @@ export type IntegrationDescriptor = {
   supportsMultipleInstances?: boolean
   schema: z.ZodObject<any>
   sections: { id: string; title: Bilingual }[]
-  testConnection?: (ctx: TestConnectionContext) => Promise<TestConnectionResult>
 }
 
 /**

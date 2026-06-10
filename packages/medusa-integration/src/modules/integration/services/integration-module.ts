@@ -3,7 +3,7 @@ import { Logger } from "@medusajs/framework/types"
 import Integration from "../models/integration"
 import { decryptSecrets, encryptSecrets, isValidKey } from "./crypto"
 import type IntegrationProviderService from "./integration-provider"
-import type { IntegrationDescriptor } from "../descriptor/define"
+import type { IntegrationDescriptor, TestConnectionResult } from "../descriptor/define"
 import { introspectDescriptor, type UiDescriptor } from "../descriptor/introspect"
 import { INTEGRATION_OPTIONS_KEY, type IntegrationModuleOptions } from "../types"
 
@@ -42,12 +42,52 @@ export default class IntegrationModuleService extends MedusaService({
   }
 
   listUiDescriptors(): UiDescriptor[] {
-    return this.providerService_.listDescriptors().map((d) => introspectDescriptor(d))
+    return this.providerService_.listProviders().map((p) =>
+      introspectDescriptor(
+        { ...p.getDescriptor(), pluginId: p.getIdentifier() },
+        typeof p.testConnection === "function"
+      )
+    )
   }
 
   getUiDescriptor(pluginId: string): UiDescriptor | undefined {
-    const d = this.getDescriptor(pluginId)
-    return d ? introspectDescriptor(d) : undefined
+    const p = this.providerService_.listProviders().find((p) => p.getIdentifier() === pluginId)
+    if (!p) return undefined
+    return introspectDescriptor(
+      { ...p.getDescriptor(), pluginId: p.getIdentifier() },
+      typeof p.testConnection === "function"
+    )
+  }
+
+  /**
+   * Run the provider's connection test against the currently-resolved settings.
+   * Delegates to the integration-provider's `testConnection` (if it has one).
+   */
+  async runProviderTest(
+    pluginId: string,
+    instanceId?: string | null
+  ): Promise<TestConnectionResult> {
+    let provider
+    try {
+      provider = this.providerService_.retrieveProvider(pluginId)
+    } catch {
+      return { status: "fail", message: `Unknown integration provider "${pluginId}"` }
+    }
+    if (!provider.testConnection) {
+      return { status: "skipped", message: "No test configured" }
+    }
+    const resolved = await this.getResolvedSettings(pluginId, instanceId)
+    if (!resolved) {
+      return { status: "fail", message: "Not configured" }
+    }
+    try {
+      return await provider.testConnection({
+        credentials: resolved.credentials,
+        settings: resolved.settings,
+      })
+    } catch (e: any) {
+      return { status: "fail", message: e?.message ?? "Test failed" }
+    }
   }
 
   // ── encryption ───────────────────────────────────────────────────────────────
