@@ -2,17 +2,14 @@ import { MedusaService } from "@medusajs/framework/utils"
 import { Logger } from "@medusajs/framework/types"
 import Integration from "../models/integration"
 import { decryptSecrets, encryptSecrets, isValidKey } from "./crypto"
+import type IntegrationProviderService from "./integration-provider"
 import type { IntegrationDescriptor } from "../descriptor/define"
 import { introspectDescriptor, type UiDescriptor } from "../descriptor/introspect"
-import {
-  INTEGRATION_DESCRIPTORS_KEY,
-  INTEGRATION_OPTIONS_KEY,
-  type IntegrationModuleOptions,
-} from "../loaders/load-descriptors"
+import { INTEGRATION_OPTIONS_KEY, type IntegrationModuleOptions } from "../types"
 
 type InjectedDependencies = {
   logger?: Logger
-  [INTEGRATION_DESCRIPTORS_KEY]?: IntegrationDescriptor[]
+  integrationProviderService: IntegrationProviderService
   [INTEGRATION_OPTIONS_KEY]?: IntegrationModuleOptions
 }
 
@@ -28,23 +25,24 @@ export default class IntegrationModuleService extends MedusaService({
   Integration,
 }) {
   protected logger_?: Logger
-  protected descriptors_: IntegrationDescriptor[]
+  protected providerService_: IntegrationProviderService
   protected options_: IntegrationModuleOptions
   protected cache_ = new Map<string, { value: ResolvedSettings | null; expiresAt: number }>()
 
   constructor(deps: InjectedDependencies) {
     super(...arguments)
     this.logger_ = deps.logger
-    this.descriptors_ = deps[INTEGRATION_DESCRIPTORS_KEY] ?? []
+    this.providerService_ = deps.integrationProviderService
     this.options_ = deps[INTEGRATION_OPTIONS_KEY] ?? {}
   }
 
+  // ── descriptors (sourced from registered integration-providers) ──────────────
   getDescriptor(pluginId: string): IntegrationDescriptor | undefined {
-    return this.descriptors_.find((d) => d.pluginId === pluginId)
+    return this.providerService_.listDescriptors().find((d) => d.pluginId === pluginId)
   }
 
   listUiDescriptors(): UiDescriptor[] {
-    return this.descriptors_.map((d) => introspectDescriptor(d))
+    return this.providerService_.listDescriptors().map((d) => introspectDescriptor(d))
   }
 
   getUiDescriptor(pluginId: string): UiDescriptor | undefined {
@@ -52,13 +50,14 @@ export default class IntegrationModuleService extends MedusaService({
     return d ? introspectDescriptor(d) : undefined
   }
 
+  // ── encryption ───────────────────────────────────────────────────────────────
   protected resolveKey(): string | null {
     const key = this.options_.encryptionKey
     if (isValidKey(key)) return key!
     const isProd = process.env.NODE_ENV === "production"
     if (isProd) {
       throw new Error(
-        "[integration] encryptionKey is required in production (32-byte base64). Set GORGO_INTEGRATION_KEY."
+        "[integration] encryptionKey is required in production (32-byte base64). Set GORGO_INTEGRATION_ENCRYPTION_KEY."
       )
     }
     if (this.options_.allowPlaintextInDev) {
@@ -68,7 +67,7 @@ export default class IntegrationModuleService extends MedusaService({
       return null
     }
     throw new Error(
-      "[integration] missing/invalid encryptionKey. Set GORGO_INTEGRATION_KEY or allowPlaintextInDev=true in dev."
+      "[integration] missing/invalid encryptionKey. Set GORGO_INTEGRATION_ENCRYPTION_KEY or allowPlaintextInDev=true in dev."
     )
   }
 
@@ -100,6 +99,7 @@ export default class IntegrationModuleService extends MedusaService({
     return decryptSecrets(ciphertext, iv, key)
   }
 
+  // ── resolver (runtime read, cached) ──────────────────────────────────────────
   protected cacheKey(pluginId: string, instanceId?: string | null): string {
     return `${pluginId}::${instanceId ?? ""}`
   }

@@ -19,6 +19,7 @@ export type TestConnectionResult = {
 
 export type IntegrationDescriptor = {
   pluginKind: PluginKind
+  /** Stamped by the registry from the provider's `static identifier` — not declared by the author. */
   pluginId: string
   schemaVersion?: number
   displayName: Bilingual
@@ -31,6 +32,14 @@ export type IntegrationDescriptor = {
   testConnection?: (ctx: TestConnectionContext) => Promise<TestConnectionResult>
 }
 
-export function defineIntegration(descriptor: IntegrationDescriptor): IntegrationDescriptor {
+/**
+ * What a provider author declares in `getDescriptor()`. `pluginId` is omitted here
+ * because it's derived from the provider's `static identifier`.
+ */
+export type IntegrationDescriptorInput = Omit<IntegrationDescriptor, "pluginId">
+
+export function defineIntegration(
+  descriptor: IntegrationDescriptorInput
+): IntegrationDescriptorInput {
   return descriptor
 }

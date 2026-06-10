@@ -1,4 +1,5 @@
-import { defineIntegration, z } from "@gorgo/medusa-integration"
+import { AbstractIntegrationProvider, defineIntegration, z } from "@gorgo/medusa-integration"
+import type { IntegrationDescriptorInput } from "@gorgo/medusa-integration"
 
 const schema = z.object({
   terminalKey: z.string().min(1).meta({
@@ -35,9 +36,8 @@ const schema = z.object({
   }),
 })
 
-export default defineIntegration({
+const descriptor = defineIntegration({
   pluginKind: "payment",
-  pluginId: "tkassa",
   schemaVersion: 1,
   displayName: { en: "T-Kassa", ru: "Т-Касса" },
   description: { en: "Tinkoff/T-Bank payment gateway", ru: "Платёжный шлюз Т-Банк" },
@@ -49,3 +49,21 @@ export default defineIntegration({
     { id: "receipt", title: { en: "Receipt", ru: "Чеки" } },
   ],
 })
+
+/**
+ * Integration-provider for T-Kassa: declares the plugin's settings contract to the
+ * `integration` module. `static identifier` becomes the descriptor's `pluginId`, so
+ * settings are stored/resolved under `plugin_id = "tkassa"`.
+ *
+ * Payment behaviour lives in the separate `payment-tkassa` provider (payment module),
+ * which reads the resolved settings via `getResolvedSettings("tkassa")`.
+ */
+export class TkassaIntegrationProvider extends AbstractIntegrationProvider {
+  static identifier = "tkassa"
+
+  getDescriptor(): IntegrationDescriptorInput {
+    return descriptor
+  }
+}
+
+export default TkassaIntegrationProvider

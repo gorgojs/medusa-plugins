@@ -17,11 +17,15 @@ module.exports = defineConfig({
     {
       resolve: "@gorgo/medusa-integration",
       options: {
-        optionSecret: process.env.GORGO_OPTION_SECRET || "supersecret",
+        // 32-byte base64 key (openssl rand -base64 32). "supersecret" is NOT a valid key
+        // and would throw at first write; allowPlaintextInDev lets dev run without a key.
+        encryptionKey: process.env.GORGO_INTEGRATION_ENCRYPTION_KEY,
+        allowPlaintextInDev: true,
         providers: [
           {
+            // `id` only needed to register the SAME provider class more than once
+            // (multi-instance, e.g. two Ozon accounts). Omit for single-instance.
             resolve: "@gorgo/medusa-payment-tkassa-v2/providers/integration-tkassa",
-            // id: "tkassa-2",  // ??
             options: {
             },
           },
