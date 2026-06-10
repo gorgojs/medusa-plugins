@@ -42,10 +42,19 @@ function loadScopeToPackage() {
   return map
 }
 
+function isReleaseHead() {
+  try {
+    const subject = execSync('git log -1 --format=%s', { encoding: 'utf8' }).trim()
+    return /^chore: release packages( \(#\d+\))?$/.test(subject)
+  } catch {
+    return false
+  }
+}
+
 function getBaseRef() {
   try {
     const hash = execSync(
-      'git log --format=%H --grep="^chore: release packages$" -1',
+      'git log -E --format=%H --grep="^chore: release packages( \\(#[0-9]+\\))?$" -1',
       { encoding: 'utf8' }
     ).trim()
     if (hash) return hash
@@ -98,6 +107,11 @@ function getProcessedCount() {
 }
 
 function main() {
+  if (isReleaseHead()) {
+    console.log('HEAD is a release commit — skipping changeset generation.')
+    return
+  }
+
   if (!existsSync(CHANGESET_DIR)) mkdirSync(CHANGESET_DIR, { recursive: true })
 
   const scopeToPackage = loadScopeToPackage()
