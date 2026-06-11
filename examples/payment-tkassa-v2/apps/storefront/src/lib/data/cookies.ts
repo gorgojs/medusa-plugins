@@ -76,7 +76,7 @@ export const setCartId = async (cartId: string) => {
   cookies.set("_medusa_cart_id", cartId, {
     maxAge: 60 * 60 * 24 * 7,
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "lax", // "lax" (not "strict") so the cart cookie survives the T-Kassa payment redirect
     secure: process.env.NODE_ENV === "production",
   })
 }

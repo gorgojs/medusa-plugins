@@ -1,7 +1,8 @@
 "use client"
 import { RadioGroup } from "@headlessui/react"
-import { isStripeLike, paymentInfoMap } from "@lib/constants"
+import { isStripeLike, isTkassa, paymentInfoMap } from "@lib/constants"
 import { initiatePaymentSession } from "@lib/data/cart"
+import { getBaseURL } from "@lib/util/env"
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import PaymentContainer, {
@@ -86,9 +87,21 @@ const Payment = ({
       const checkActiveSession =
         activeSession?.provider_id === selectedPaymentMethod
 
+      const countryCode = cart?.shipping_address?.country_code
+
       if (!checkActiveSession) {
         await initiatePaymentSession(cart, {
           provider_id: selectedPaymentMethod,
+          // T-Kassa needs the return URLs (success/fail) and the cart (for the FZ-54 receipt)
+          ...(isTkassa(selectedPaymentMethod)
+            ? {
+                data: {
+                  SuccessURL: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`,
+                  FailURL: `${getBaseURL()}/api/capture-payment/${cart?.id}?country_code=${countryCode}`,
+                  cart: cart,
+                },
+              }
+            : {}),
         })
       }
 
