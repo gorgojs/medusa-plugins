@@ -28,21 +28,6 @@ export function maybeShowFirstRunNotice(): void {
 }
 
 function printNotice(): void {
-  const lines = [
-    "Gorgo collects anonymous telemetry to improve Medusa plugins.",
-    "",
-    "To opt out, set `GORGO_DISABLE_TELEMETRY=true`.",
-  ]
-  const width = Math.max(...lines.map((l) => l.length))
-  const horizontal = "─".repeat(width + 2)
-
-  console.log()
-  console.log(`┌${horizontal}┐`)
-  console.log(`│ ${" ".repeat(width)} │`)
-  for (const line of lines) {
-    console.log(`│ ${line.padEnd(width)} │`)
-  }
-  console.log(`│ ${" ".repeat(width)} │`)
-  console.log(`└${horizontal}┘`)
-  console.log()
+  console.info()
+  console.info("Gorgo collects anonymous telemetry to help improve Medusa plugins. To opt out, set `GORGO_DISABLE_TELEMETRY=true`.")
 }

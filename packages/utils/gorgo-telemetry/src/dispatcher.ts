@@ -33,11 +33,11 @@ export interface DispatcherOptions {
   flushInterval?: number
   /** Hard cap on total queued events across all plugins. Oldest are dropped on overflow. */
   maxQueueSize?: number
-  /** Heartbeat interval for `plugin.ping` events (default 24h). Set to 0 to disable. */
+  /** Heartbeat interval for `plugin.ping` events (default 6h). Set to 0 to disable. */
   pingInterval?: number
 }
 
-const DEFAULT_PING_INTERVAL_MS = 24 * 60 * 60 * 1000
+const DEFAULT_PING_INTERVAL_MS = 6 * 60 * 60 * 1000
 // const DEFAULT_PING_INTERVAL_MS = 3000  // 3s for testing
 
 interface QueuedEvent {
