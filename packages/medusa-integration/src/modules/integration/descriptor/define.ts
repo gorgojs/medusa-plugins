@@ -8,7 +8,6 @@ export type PluginKind =
   | "notification" | "feed" | "tax" | "other"
 
 export type TestConnectionContext = {
-  credentials: Record<string, unknown>
   settings: Record<string, unknown>
 }
 

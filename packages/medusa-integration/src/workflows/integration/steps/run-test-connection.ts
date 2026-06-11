@@ -11,7 +11,7 @@ export const runTestConnectionStep = createStep(
   "run-test-connection",
   async (input: RunTestConnectionStepInput, { container }) => {
     const service: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
-    const result = await service.runProviderTest(input.plugin_id, input.instance_id)
+    const result = await service.runTestConnection(input.plugin_id, input.instance_id)
 
     const [existing] = await service.listIntegrations(
       { plugin_id: input.plugin_id, instance_id: input.instance_id },

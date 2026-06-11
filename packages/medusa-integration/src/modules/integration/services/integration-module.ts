@@ -62,7 +62,7 @@ export default class IntegrationModuleService extends MedusaService({
    * Run the provider's connection test against the currently-resolved settings.
    * Delegates to the integration-provider's `testConnection` (if it has one).
    */
-  async runProviderTest(
+  async runTestConnection(
     pluginId: string,
     instanceId?: string | null
   ): Promise<TestConnectionResult> {
@@ -81,7 +81,6 @@ export default class IntegrationModuleService extends MedusaService({
     }
     try {
       return await provider.testConnection({
-        credentials: resolved.credentials,
         settings: resolved.settings,
       })
     } catch (e: any) {
