@@ -14,9 +14,8 @@ type InjectedDependencies = {
 }
 
 export type ResolvedSettings = {
-  credentials: Record<string, unknown>
   settings: Record<string, unknown>
-  meta: { plugin_id: string; instance_id: string | null; is_enabled: boolean }
+  meta: { plugin_id: string; instance_id: string | null; is_enabled: boolean, plugin_kind: string | null }
 }
 
 const CACHE_TTL_MS = 60_000
@@ -160,6 +159,8 @@ export default class IntegrationModuleService extends MedusaService({
     const hit = this.cache_.get(ck)
     if (hit && hit.expiresAt > Date.now()) return hit.value
 
+    // TODO:instanceId is required when supportsMultipleInstances is true
+
     const filters: Record<string, unknown> = { plugin_id: pluginId }
     filters.instance_id = instanceId ?? null
     const [record] = await this.listIntegrations(filters, { take: 1 })
@@ -167,12 +168,15 @@ export default class IntegrationModuleService extends MedusaService({
     let value: ResolvedSettings | null = null
     if (record && record.is_enabled) {
       value = {
-        credentials: this.decryptCredentials(record.credentials_ciphertext, record.credentials_iv),
-        settings: (record.settings as Record<string, unknown>) ?? {},
+        settings: {
+          ...(record.settings as Record<string, unknown>) ?? {},
+          ...(this.decryptCredentials(record.credentials_ciphertext, record.credentials_iv) as Record<string, unknown>) ?? {},
+        },
         meta: {
           plugin_id: record.plugin_id,
           instance_id: record.instance_id ?? null,
           is_enabled: record.is_enabled,
+          plugin_kind: record.plugin_kind ?? null
         },
       }
     }

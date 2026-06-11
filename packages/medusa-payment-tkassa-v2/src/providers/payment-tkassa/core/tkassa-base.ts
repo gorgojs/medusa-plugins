@@ -92,18 +92,13 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
    * static `medusa-config` options. Reached via `dependencies: ["integration"]` on the
    * payment module registration. Never throws on a missing/failing integration module.
    */
+  // TODO: simplify this
   protected async resolveSettings(): Promise<TKassaOptions> {
     const integration = this.container_?.integration
     if (integration?.getResolvedSettings) {
       try {
-        const resolved = await integration.getResolvedSettings("tkassa")
-        if (resolved) {
-          return {
-            ...this.options_,
-            ...(resolved.settings as object),
-            ...(resolved.credentials as object),
-          } as TKassaOptions
-        }
+        const { settings } = await integration.getResolvedSettings(TkassaBase.identifier)
+        return settings as TKassaOptions // TODO: to remove assertion, to properly type integration settings through schema definition in the integration descriptor
       } catch (e) {
         this.logger_?.warn(
           `[tkassa] integration settings unavailable, falling back to config: ${(e as Error).message}`
@@ -156,7 +151,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
 
     const settings = await this.resolveSettings()
     const client = this.getClient(settings)
-    const additionalParameters = this.normalizePaymentParameters(data, settings.capture)
+    const additionalParameters = this.normalizePaymentParameters(data, settings.capture) // TODO: pass all settings to normalizePaymentParameters
     const cart = data?.cart as Record<string, any>
 
     let receipt = {} as components["schemas"]["Receipt_FFD_105"] | components["schemas"]["Receipt_FFD_12"]
