@@ -1,4 +1,5 @@
 import { setupServer } from "msw/node"
+import TkassaService from "../../services/tkassa"
 
 export const TKASSA_BASE_URL = "https://securepay.tinkoff.ru"
 
@@ -9,6 +10,33 @@ export function makeLogger() {
   return new Proxy({} as any, {
     get: () => noop,
   })
+}
+
+/**
+ * Mock of the `integration` module service as seen from the payment provider's
+ * container — `resolveSettings()` reads settings via `getResolvedSettings()`.
+ */
+export function makeIntegration(settings: Record<string, any>) {
+  return {
+    getResolvedSettings: async () => ({
+      settings,
+      meta: {
+        plugin_id: "tkassa",
+        instance_id: null,
+        is_enabled: true,
+        plugin_kind: "payment",
+      },
+    }),
+  }
+}
+
+/**
+ * Build a T-Kassa payment provider whose settings resolve from a mock `integration`
+ * module (the single source of truth after the config-options fallback was removed).
+ */
+export function makeProvider(settings: Record<string, any> = {}): any {
+  const container = { logger: makeLogger(), integration: makeIntegration(settings) }
+  return new (TkassaService as any)(container, settings)
 }
 
 export type CapturedRequest = {

@@ -2,7 +2,6 @@ import {
   AbstractPaymentProvider,
   PaymentSessionStatus,
   PaymentActions,
-  isDefined
 } from "@medusajs/framework/utils"
 import {
   InitiatePaymentInput, InitiatePaymentOutput,
@@ -20,13 +19,9 @@ import crypto from "crypto"
 import { TKassa } from "t-kassa-api"
 import { components } from "t-kassa-api/openapi"
 import {
-  FfdVersions,
   Payment,
   PaymentStatuses,
   PaymentStatusesMap,
-  Taxations,
-  TaxItem,
-  TaxShipping,
   TKassaOptions,
   TkassaEvent,
 } from "../types"
@@ -43,69 +38,40 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
   private static telemetry_ = createTelemetryClient({ packageDir: __dirname })
 
   protected serverUrl_ = "https://securepay.tinkoff.ru"
-  protected options_: TKassaOptions
   protected logger_: Logger
   protected container_: Record<string, any>
 
-  static validateOptions(options: TKassaOptions): void {
+  static validateOptions(_options: TKassaOptions): void {
+    // Settings (credentials/behaviour) now live in the `integration` module and are
+    // validated on write by the integration descriptor's zod schema — not here. This
+    // hook is kept solely to emit the start event: the payment provider is instantiated
+    // lazily, so its constructor doesn't run at boot, but Medusa calls validateOptions
+    // at load time.
     TkassaBase.telemetry_.track("plugin.started")
-
-    if (!isDefined(options.terminalKey)) {
-      throw new Error("Required option `terminalKey` is missing in T-Kassa provider")
-    }
-    if (!isDefined(options.password)) {
-      throw new Error("Required option `password` is missing in T-Kassa provider")
-    }
-    if (isDefined(options.useReceipt)) {
-      if (!isDefined(options.taxation)) {
-        throw new Error("Required option `taxation` is missing in T-Kassa provider")
-      } else if (!Taxations.includes(options.taxation)) {
-        throw new Error(`Invalid option \`taxation\` provided in T-Kassa provider. Valid values are: ${Taxations.join(", ")}`)
-      }
-      if (!isDefined(options.taxItemDefault)) {
-        throw new Error("Required option `taxItemDefault` is missing in T-Kassa provider")
-      } else if (!TaxItem.includes(options.taxItemDefault)) {
-        throw new Error(`Invalid option \`taxItemDefault\` provided in T-Kassa provider. Valid values are: ${TaxItem.join(", ")}`)
-      }
-      if (!isDefined(options.taxShippingDefault)) {
-        throw new Error("Required option `taxShippingDefault` is missing in T-Kassa provider")
-      } else if (!TaxShipping.includes(options.taxShippingDefault)) {
-        throw new Error(`Invalid option \`taxShippingDefault\` provided in T-Kassa provider. Valid values are: ${TaxShipping.join(", ")}`)
-      }
-      if (!isDefined(options.ffdVersion)) {
-        throw new Error("Required option `ffdVersion` is missing in T-Kassa provider")
-      } else if (!FfdVersions.includes(options.ffdVersion)) {
-        throw new Error(`Invalid option \`ffdVersion\` provided in T-Kassa provider. Valid values are: ${FfdVersions.join(", ")}`)
-      }
-    }
   }
 
   constructor(container: { logger: Logger } & Record<string, any>, options: TKassaOptions) {
     super(container, options)
-    this.options_ = options
     this.logger_ = container.logger
     this.container_ = container
   }
 
   /**
-   * Resolve settings from the `integration` module when available, falling back to the
-   * static `medusa-config` options. Reached via `dependencies: ["integration"]` on the
-   * payment module registration. Never throws on a missing/failing integration module.
+   * Resolve settings from the `integration` module — the single source of truth.
+   * Reached via `dependencies: ["integration"]` on the payment module registration.
+   * Throws if T-Kassa hasn't been configured yet (no enabled integration record), so
+   * the failure is explicit instead of silently using stale/empty config.
    */
-  // TODO: simplify this
   protected async resolveSettings(): Promise<TKassaOptions> {
     const integration = this.container_?.integration
-    if (integration?.getResolvedSettings) {
-      try {
-        const { settings } = await integration.getResolvedSettings(TkassaBase.identifier)
-        return settings as TKassaOptions // TODO: to remove assertion, to properly type integration settings through schema definition in the integration descriptor
-      } catch (e) {
-        this.logger_?.warn(
-          `[tkassa] integration settings unavailable, falling back to config: ${(e as Error).message}`
-        )
-      }
+    const resolved = await integration?.getResolvedSettings?.(TkassaBase.identifier)
+    if (!resolved) {
+      throw new Error(
+        "T-Kassa is not configured. Set it up in Admin → Integrations."
+      )
     }
-    return this.options_
+    // TODO: type integration settings via the descriptor schema to drop this assertion
+    return resolved.settings as TKassaOptions
   }
 
   /** Build a TKassa client from resolved settings (per-call, since creds may be DB-sourced). */

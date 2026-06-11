@@ -40,6 +40,20 @@ const schema = z.object({
     section: "receipt", control: "select",
     label: { en: "Default shipping tax", ru: "Налог доставки" },
   }),
+}).superRefine((val, ctx) => {
+  // Receipts require the full FFD configuration. Mirrors the rule that used to live in
+  // the payment provider's `validateOptions`, now that settings are validated here on
+  // write. Only enforced when receipts are actually enabled (`useReceipt` truthy).
+  if (!val.useReceipt) return
+  for (const field of ["ffdVersion", "taxation", "taxItemDefault", "taxShippingDefault"] as const) {
+    if (val[field] == null) {
+      ctx.addIssue({
+        code: "custom",
+        path: [field],
+        message: `\`${field}\` is required when receipts are enabled`,
+      })
+    }
+  }
 })
 
 const descriptor = defineIntegration({

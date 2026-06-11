@@ -20,7 +20,7 @@ module.exports = defineConfig({
         // 32-byte base64 key (openssl rand -base64 32). "supersecret" is NOT a valid key
         // and would throw at first write; allowPlaintextInDev lets dev run without a key.
         encryptionKey: process.env.GORGO_INTEGRATION_ENCRYPTION_KEY,
-        allowPlaintextInDev: true,
+        allowPlaintextInDev: false,
         providers: [
           {
             // `id` only needed to register the SAME provider class more than once
@@ -56,10 +56,11 @@ module.exports = defineConfig({
       options: {
         providers: [
           {
+            // No options here on purpose: T-Kassa's credentials/behaviour are stored in
+            // the `integration` module (Admin → Integrations) and read at runtime via
+            // `dependencies: ["integration"]`. medusa-config is no longer a config source.
             resolve: "@gorgo/medusa-payment-tkassa-v2/providers/payment-tkassa",
             id: "tkassa",
-            options: {
-            },
           },
         ],
       },
