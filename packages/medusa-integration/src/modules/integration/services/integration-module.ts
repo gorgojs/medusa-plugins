@@ -158,7 +158,10 @@ export default class IntegrationModuleService extends MedusaService({
     const hit = this.cache_.get(ck)
     if (hit && hit.expiresAt > Date.now()) return hit.value
 
-    // TODO:instanceId is required when supportsMultipleInstances is true
+    const descriptor = this.getDescriptor(pluginId)
+    if (descriptor?.supportsMultipleInstances && instanceId == null) {
+      throw new Error(`Instance ID is required for multi-instance plugin "${pluginId}"`)
+    }
 
     const filters: Record<string, unknown> = { plugin_id: pluginId }
     filters.instance_id = instanceId ?? null

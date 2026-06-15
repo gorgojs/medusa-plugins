@@ -14,9 +14,23 @@ export const validateAndEncryptStep = createStep(
   async (input: ValidateAndEncryptStepInput, { container }) => {
     const service: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
     const descriptor = service.getDescriptor(input.plugin_id)
+
     if (!descriptor) {
       throw new MedusaError(MedusaError.Types.NOT_FOUND, `Unknown plugin_id "${input.plugin_id}"`)
     }
+    if (descriptor.supportsMultipleInstances === true && input.payload.instance_id == null) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        `Instance ID is required for multi-instance plugin "${input.plugin_id}"`
+      )
+    }
+    if (descriptor.supportsMultipleInstances === false && input.payload.instance_id != null) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        `Instance ID must be null for single-instance plugin "${input.plugin_id}"`
+      )
+    }
+
     const { settings, secrets } = validateAndSplit(descriptor, input.payload)
     const credentials = service.encryptCredentials(secrets)
     return new StepResponse({
