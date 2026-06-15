@@ -56,6 +56,8 @@ const schema = z.object({
   }
 })
 
+export type TKassaSettings = z.infer<typeof schema>
+
 const descriptor = defineIntegration({
   pluginKind: "payment",
   schemaVersion: 1,

@@ -22,7 +22,6 @@ import {
   Payment,
   PaymentStatuses,
   PaymentStatusesMap,
-  TKassaOptions,
   TkassaEvent,
 } from "../types"
 import {
@@ -32,8 +31,10 @@ import {
   getSmallestUnit,
 } from "../utils"
 import { createTelemetryClient } from "@gorgo/telemetry"
+import { getIntegrationSettingsWorkflow } from "../../../workflows/integration/workflows"
+import { TKassaSettings } from "../../integration-tkassa/services/tkassa-integration"
 
-abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
+abstract class TkassaBase extends AbstractPaymentProvider {
   static identifier = "tkassa"
   private static telemetry_ = createTelemetryClient({ packageDir: __dirname })
 
@@ -41,7 +42,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
   protected logger_: Logger
   protected container_: Record<string, any>
 
-  static validateOptions(_options: TKassaOptions): void {
+  static validateOptions(_options: Record<string, unknown>): void {
     // Settings (credentials/behaviour) now live in the `integration` module and are
     // validated on write by the integration descriptor's zod schema — not here. This
     // hook is kept solely to emit the start event: the payment provider is instantiated
@@ -50,7 +51,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
     TkassaBase.telemetry_.track("plugin.started")
   }
 
-  constructor(container: { logger: Logger } & Record<string, any>, options: TKassaOptions) {
+  constructor(container: { logger: Logger } & Record<string, any>, options?: Record<string, unknown>) {
     super(container, options)
     this.logger_ = container.logger
     this.container_ = container
@@ -59,10 +60,8 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
   /**
    * Resolve settings from the `integration` module — the single source of truth.
    * Reached via `dependencies: ["integration"]` on the payment module registration.
-   * Throws if T-Kassa hasn't been configured yet (no enabled integration record), so
-   * the failure is explicit instead of silently using stale/empty config.
    */
-  protected async resolveSettings(): Promise<TKassaOptions> {
+  protected async resolveSettings(): Promise<TKassaSettings> {
     const integration = this.container_?.integration
     const resolved = await integration?.getResolvedSettings?.(TkassaBase.identifier)
     if (!resolved) {
@@ -70,12 +69,21 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
         "T-Kassa is not configured. Set it up in Admin → Integrations."
       )
     }
-    // TODO: type integration settings via the descriptor schema to drop this assertion
-    return resolved.settings as TKassaOptions
+    return resolved.settings
+  }
+
+  protected async resolveSettingsWorkflow(): Promise<TKassaSettings> {
+    const { result } = await getIntegrationSettingsWorkflow().run({
+      input: {
+        plugin_id: TkassaBase.identifier,
+        instance_id: null,
+      },
+    })
+    return result?.settings as TKassaSettings
   }
 
   /** Build a TKassa client from resolved settings (per-call, since creds may be DB-sourced). */
-  protected getClient(settings: TKassaOptions): TKassa {
+  protected getClient(settings: TKassaSettings): TKassa {
     return new TKassa(settings.terminalKey, settings.password, { server: this.serverUrl_ })
   }
 
@@ -115,7 +123,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
   }: InitiatePaymentInput): Promise<InitiatePaymentOutput> {
     this.logger_.debug("TkassaBase.initiatePayment input:\n" + JSON.stringify({ currency_code, amount, data, context }, null, 2))
 
-    const settings = await this.resolveSettings()
+    const settings = await this.resolveSettingsWorkflow()
     const client = this.getClient(settings)
     const additionalParameters = this.normalizePaymentParameters(data, settings.capture) // TODO: pass all settings to normalizePaymentParameters
     const cart = data?.cart as Record<string, any>
@@ -162,7 +170,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
   async capturePayment(input: CapturePaymentInput): Promise<CapturePaymentOutput> {
     this.logger_.debug(`TkassaBase.capturePayment input:\n${JSON.stringify(input, null, 2)}`)
 
-    const settings = await this.resolveSettings()
+    const settings = await this.resolveSettingsWorkflow()
     const client = this.getClient(settings)
     const paymentId = input.data?.PaymentId as string
 
@@ -226,7 +234,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
   }: RefundPaymentInput): Promise<RefundPaymentOutput> {
     this.logger_.debug(`TkassaBase.refundPayment input:\n${JSON.stringify({ amount, data }, null, 2)}`)
 
-    const settings = await this.resolveSettings()
+    const settings = await this.resolveSettingsWorkflow()
     const client = this.getClient(settings)
     const paymentId = data?.PaymentId as string
     const amountValue = typeof amount === 'object' && 'value' in amount
@@ -264,7 +272,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
   async cancelPayment(input: CancelPaymentInput): Promise<CancelPaymentOutput> {
     this.logger_.debug(`TkassaBase.cancelPayment input:\n${JSON.stringify(input, null, 2)}`)
 
-    const settings = await this.resolveSettings()
+    const settings = await this.resolveSettingsWorkflow()
     const client = this.getClient(settings)
     const paymentId = input.data?.PaymentId as string
 
@@ -289,7 +297,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
   async retrievePayment(input: RetrievePaymentInput): Promise<RetrievePaymentOutput> {
     this.logger_.debug(`TkassaBase.retrievePayment input:\n${JSON.stringify(input, null, 2)}`)
 
-    const settings = await this.resolveSettings()
+    const settings = await this.resolveSettingsWorkflow()
     const client = this.getClient(settings)
     const paymentId = input.data?.PaymentId as string
 
@@ -326,7 +334,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
       )
     }
 
-    const settings = await this.resolveSettings()
+    const settings = await this.resolveSettingsWorkflow()
     const client = this.getClient(settings)
 
     try {
@@ -381,7 +389,7 @@ abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
       return false
     }
 
-    const settings = await this.resolveSettings()
+    const settings = await this.resolveSettingsWorkflow()
     const incomingToken = data.Token
     const requiredKeys = [
       "TerminalKey", "OrderId", "Success", "Status", "PaymentId",
