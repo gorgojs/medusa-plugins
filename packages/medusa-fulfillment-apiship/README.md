@@ -53,6 +53,7 @@ ApiShip Integration for Medusa
 - **Pickup Point Delivery:** Select a pickup point from a list or on an interactive map.
 - **One-Click Order Creation:** Create shipments in ApiShip directly from Medusa Admin, no manual data entry needed.
 - **Shipment Documents Printing:** Labels, waybills, and other documents available in Medusa Admin.
+- **Full Test Coverage:** Comprehensive unit and integration tests covering core flows and edge cases.
 - **Storefront Example:** A ready-to-use [Next.js storefront example](https://github.com/gorgojs/medusa-plugins/tree/main/examples/fulfillment-apiship/medusa-storefront) you can use as a reference.
 - **Test Mode:** Simulate calculations and orders without affecting real data.
 - **Detailed Logging:** Request and response logs for debugging and support in development mode.
