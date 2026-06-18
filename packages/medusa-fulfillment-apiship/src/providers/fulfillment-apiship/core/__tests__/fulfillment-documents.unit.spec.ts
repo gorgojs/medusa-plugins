@@ -73,25 +73,23 @@ describe("ApishipBase.getFulfillmentDocuments", () => {
     )
   })
 
-  it("throws when waybillItems is null", async () => {
+  it("returns undefined when waybillItems is null (optional chaining short-circuits)", async () => {
     setupClientMock(apishipClient)
     apishipClient.orderDocsApi.getWaybills.mockResolvedValue({
       data: { waybillItems: null },
     })
 
-    await expect(service.getFulfillmentDocuments({ orderId: 9999 })).rejects.toThrow(
-      /An error occurred in getFulfillmentDocuments/
-    )
+    const result = await service.getFulfillmentDocuments({ orderId: 9999 })
+    expect(result).toBeUndefined()
   })
 
-  it("throws when waybillItems is missing from response", async () => {
+  it("returns undefined when waybillItems is missing from response", async () => {
     setupClientMock(apishipClient)
     apishipClient.orderDocsApi.getWaybills.mockResolvedValue({
       data: {},
     })
 
-    await expect(service.getFulfillmentDocuments({ orderId: 9999 })).rejects.toThrow(
-      /An error occurred in getFulfillmentDocuments/
-    )
+    const result = await service.getFulfillmentDocuments({ orderId: 9999 })
+    expect(result).toBeUndefined()
   })
 })
