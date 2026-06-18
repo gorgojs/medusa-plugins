@@ -4,7 +4,7 @@ export { AbstractIntegrationProvider } from "./modules/integration/utils/abstrac
 export type {
   IntegrationDescriptor,
   IntegrationDescriptorInput,
-  PluginKind,
+  ModuleKind,
   TestConnectionContext,
   TestConnectionResult,
 } from "./modules/integration/descriptor/define"

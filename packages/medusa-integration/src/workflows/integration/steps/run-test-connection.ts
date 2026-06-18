@@ -3,18 +3,17 @@ import { INTEGRATION_MODULE } from "../../../modules/integration"
 import type IntegrationModuleService from "../../../modules/integration/services/integration-module"
 
 export type RunTestConnectionStepInput = {
-  plugin_id: string
-  instance_id: string | null
+  provider_id: string
 }
 
 export const runTestConnectionStep = createStep(
   "run-test-connection",
   async (input: RunTestConnectionStepInput, { container }) => {
     const service: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
-    const result = await service.runTestConnection(input.plugin_id, input.instance_id)
+    const result = await service.runTestConnection(input.provider_id)
 
     const [existing] = await service.listIntegrations(
-      { plugin_id: input.plugin_id, instance_id: input.instance_id },
+      { provider_id: input.provider_id },
       { take: 1 }
     )
     if (existing) {

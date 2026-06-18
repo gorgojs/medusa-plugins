@@ -9,23 +9,18 @@ export function service(req: MedusaRequest): IntegrationModuleService {
 }
 
 /**
- * Resolve a `:provider_id` URL param (the registration key `int_<id>[_<instance>]`) to
- * its `(plugin_id, instance_id)`. 404 if it isn't a declared registration.
+ * Assert that a `:provider_id` URL param (the registration key `int_<id>[_<instance>]`,
+ * which is also the stored `provider_id`) is a declared registration. 404 otherwise.
  */
-export function resolveRegistration(
-  svc: IntegrationModuleService,
-  providerId: string
-): { plugin_id: string; instance_id: string | null } {
-  const reg = svc.getRegistration(providerId)
-  if (!reg) {
+export function requireProvider(svc: IntegrationModuleService, providerId: string): void {
+  if (!svc.hasProviderId(providerId)) {
     throw new MedusaError(MedusaError.Types.NOT_FOUND, `Unknown integration "${providerId}"`)
   }
-  return { plugin_id: reg.pluginId, instance_id: reg.instanceId }
 }
 
 /** Build the masked, merged view (settings + masked secret placeholders) for a record. */
 export function maskedView(svc: IntegrationModuleService, record: any) {
-  const descriptor = svc.getDescriptor(record.plugin_id)
+  const descriptor = svc.getProviderDescriptor(record.provider_id)
   const secrets = descriptor ? secretFieldNames(descriptor) : []
   const masked: Record<string, unknown> = { ...(record.settings ?? {}) }
   const hasSecrets = !!record.credentials_ciphertext
@@ -34,9 +29,8 @@ export function maskedView(svc: IntegrationModuleService, record: any) {
   }
   return {
     id: record.id,
-    plugin_kind: record.plugin_kind,
-    plugin_id: record.plugin_id,
-    instance_id: record.instance_id ?? null,
+    provider_id: record.provider_id,
+    module: record.module,
     title: record.title ?? null,
     is_enabled: record.is_enabled,
     last_test_at: record.last_test_at ?? null,

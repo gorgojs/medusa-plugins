@@ -2,8 +2,7 @@ import { createWorkflow, WorkflowResponse, transform } from "@medusajs/framework
 import { deleteIntegrationRecordStep, emitIntegrationEventStep } from "../steps"
 
 export type DeleteIntegrationWorkflowInput = {
-  plugin_id: string
-  instance_id?: string | null
+  provider_id: string
   hard?: boolean
 }
 
@@ -14,8 +13,7 @@ export const deleteIntegrationWorkflow = createWorkflow(
   function (input: DeleteIntegrationWorkflowInput) {
     const result = deleteIntegrationRecordStep(
       transform({ input }, (d) => ({
-        plugin_id: d.input.plugin_id,
-        instance_id: d.input.instance_id ?? null,
+        provider_id: d.input.provider_id,
         hard: d.input.hard ?? false,
       }))
     )
@@ -23,8 +21,7 @@ export const deleteIntegrationWorkflow = createWorkflow(
       transform({ input }, (d) => ({
         name: "integration.updated",
         data: {
-          plugin_id: d.input.plugin_id,
-          instance_id: d.input.instance_id ?? null,
+          provider_id: d.input.provider_id,
           change: d.input.hard ? "delete" : "disable",
         },
       }))

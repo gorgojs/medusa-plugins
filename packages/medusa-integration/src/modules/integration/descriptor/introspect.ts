@@ -14,7 +14,7 @@ export type UiField = {
 }
 export type UiSection = { id: string; title: { en: string; ru: string }; fields: UiField[] }
 export type UiDescriptor = {
-  pluginKind: string
+  module: string
   pluginId: string
   instanceId: string | null
   schemaVersion: number
@@ -82,7 +82,7 @@ export function introspectDescriptor(
     })
   }
   return {
-    pluginKind: descriptor.pluginKind,
+    module: descriptor.module,
     pluginId: descriptor.pluginId,
     instanceId: descriptor.instanceId ?? null,
     schemaVersion: descriptor.schemaVersion ?? 1,

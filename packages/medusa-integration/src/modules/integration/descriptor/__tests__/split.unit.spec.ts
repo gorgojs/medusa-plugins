@@ -4,7 +4,7 @@ import { defineIntegration } from "../define"
 import { validateAndSplit } from "../split"
 
 const descriptor = defineIntegration({
-  pluginKind: "payment",
+  module: "payment",
   pluginId: "demo",
   displayName: { en: "Demo", ru: "Демо" },
   sections: [{ id: "general", title: { en: "General", ru: "Общее" } }],

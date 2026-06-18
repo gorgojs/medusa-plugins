@@ -5,9 +5,9 @@ import type IntegrationModuleService from "../modules/integration/services/integ
 export default async function invalidateSettingsCache({
   event,
   container,
-}: SubscriberArgs<{ plugin_id: string; instance_id?: string | null }>) {
+}: SubscriberArgs<{ provider_id: string }>) {
   const service: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
-  service.clearSettingsCache(event.data.plugin_id, event.data.instance_id ?? null)
+  service.clearSettingsCache(event.data.provider_id)
 }
 
 export const config: SubscriberConfig = {

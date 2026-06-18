@@ -22,8 +22,8 @@
           "enumItems": [],
           "mappedType": "text"
         },
-        "plugin_kind": {
-          "name": "plugin_kind",
+        "module": {
+          "name": "module",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -49,29 +49,13 @@
           ],
           "mappedType": "enum"
         },
-        "plugin_id": {
-          "name": "plugin_id",
+        "provider_id": {
+          "name": "provider_id",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "instance_id": {
-          "name": "instance_id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
           "unique": false,
           "length": null,
           "precision": null,
@@ -291,22 +275,22 @@
           "expression": "CREATE INDEX IF NOT EXISTS \"IDX_integration_deleted_at\" ON \"integration\" (\"deleted_at\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "IDX_integration_plugin_id_instance_id_unique",
+          "keyName": "IDX_integration_provider_id_unique",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_integration_plugin_id_instance_id_unique\" ON \"integration\" (\"plugin_id\", \"instance_id\") WHERE deleted_at IS NULL"
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_integration_provider_id_unique\" ON \"integration\" (\"provider_id\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "IDX_integration_plugin_kind",
+          "keyName": "IDX_integration_module",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_integration_plugin_kind\" ON \"integration\" (\"plugin_kind\") WHERE deleted_at IS NULL"
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_integration_module\" ON \"integration\" (\"module\") WHERE deleted_at IS NULL"
         },
         {
           "keyName": "integration_pkey",

@@ -4,7 +4,7 @@ import { introspectDescriptor, secretFieldNames } from "../introspect"
 import { defineIntegration } from "../define"
 
 const descriptor = defineIntegration({
-  pluginKind: "payment",
+  module: "payment",
   pluginId: "demo",
   displayName: { en: "Demo", ru: "Демо" },
   sections: [

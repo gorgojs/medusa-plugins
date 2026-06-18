@@ -1,12 +1,11 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { INTEGRATION_MODULE } from "../../../modules/integration"
 import type IntegrationModuleService from "../../../modules/integration/services/integration-module"
-import type { PluginKind } from "../../../modules/integration/descriptor/define"
+import type { ModuleKind } from "../../../modules/integration/descriptor/define"
 
 export type UpsertIntegrationRecordStepInput = {
-  plugin_id: string
-  instance_id: string | null
-  plugin_kind: PluginKind
+  provider_id: string
+  module: ModuleKind
   schema_version: number
   settings: Record<string, unknown>
   credentials_ciphertext: string | null
@@ -19,7 +18,7 @@ export const upsertIntegrationRecordStep = createStep(
   async (input: UpsertIntegrationRecordStepInput, { container }) => {
     const service: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
     const [existing] = await service.listIntegrations(
-      { plugin_id: input.plugin_id, instance_id: input.instance_id },
+      { provider_id: input.provider_id },
       { take: 1 }
     )
     let record

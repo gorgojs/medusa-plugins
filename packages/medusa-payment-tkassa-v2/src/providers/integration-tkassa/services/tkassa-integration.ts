@@ -59,11 +59,11 @@ const schema = z.object({
 export type TKassaSettings = z.infer<typeof schema>
 
 const descriptor = defineIntegration({
-  pluginKind: "payment",
+  module: "payment",
   schemaVersion: 1,
   displayName: { en: "T-Kassa", ru: "Т-Касса" },
   description: { en: "Tinkoff/T-Bank payment gateway", ru: "Платёжный шлюз Т-Банк" },
-  supportsMultipleInstances: false,
+  supportsMultipleInstances: true,
   schema,
   sections: [
     { id: "credentials", title: { en: "Credentials", ru: "Доступы" } },

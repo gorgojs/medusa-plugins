@@ -4,12 +4,11 @@ const Integration = model.define("integration", {
   id: model.id({ prefix: "int" }).primaryKey(),
 
   // Plugin identity
-  plugin_kind: model.enum([
+  module: model.enum([
     "payment", "fulfillment", "marketplace", "crm", "erp", "pim",
     "notification", "feed", "tax", "other",
   ]),
-  plugin_id: model.text(),
-  instance_id: model.text().nullable(),
+  provider_id: model.text(),
   title: model.text().nullable(),
 
   // Integration settings
@@ -25,8 +24,8 @@ const Integration = model.define("integration", {
   last_test_message: model.text().nullable(),
 })
 .indexes([
-  { on: ["plugin_id", "instance_id"], unique: true },
-  { on: ["plugin_kind"] },
+  { on: ["provider_id"], unique: true },
+  { on: ["module"] },
 ])
 
 export default Integration

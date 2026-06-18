@@ -15,7 +15,7 @@ type InjectedDependencies = {
 
 export type ResolvedSettings = {
   settings: Record<string, unknown>
-  meta: { plugin_id: string; instance_id: string | null; is_enabled: boolean, plugin_kind: string | null }
+  meta: { provider_id: string; module: string | null; is_enabled: boolean }
 }
 
 const CACHE_TTL_MS = 60_000
@@ -36,10 +36,7 @@ export default class IntegrationModuleService extends MedusaService({
   }
 
   // ── descriptors (sourced from registered integration-providers) ──────────────
-  getDescriptor(pluginId: string): IntegrationDescriptor | undefined {
-    return this.providerService_.listDescriptors().find((d) => d.pluginId === pluginId)
-  }
-
+  /** UI descriptors for every registration (one per instance). */
   listUiDescriptors(): UiDescriptor[] {
     return this.providerService_.listRegistrations().map((r) =>
       introspectDescriptor(
@@ -49,10 +46,16 @@ export default class IntegrationModuleService extends MedusaService({
     )
   }
 
-  getUiDescriptor(pluginId: string, instanceId?: string | null): UiDescriptor | undefined {
-    const r = this.providerService_
-      .listRegistrations()
-      .find((r) => r.pluginId === pluginId && r.instanceId === (instanceId ?? null))
+  /** Stamped descriptor (schema + pluginId/instanceId) for one `provider_id`. */
+  getProviderDescriptor(providerId: string): IntegrationDescriptor | undefined {
+    const r = this.providerService_.getRegistration(providerId)
+    if (!r) return undefined
+    return { ...r.provider.getDescriptor(), pluginId: r.pluginId, instanceId: r.instanceId }
+  }
+
+  /** UI descriptor for one `provider_id` (container key). */
+  getProviderUiDescriptor(providerId: string): UiDescriptor | undefined {
+    const r = this.providerService_.getRegistration(providerId)
     if (!r) return undefined
     return introspectDescriptor(
       { ...r.provider.getDescriptor(), pluginId: r.pluginId, instanceId: r.instanceId },
@@ -60,15 +63,9 @@ export default class IntegrationModuleService extends MedusaService({
     )
   }
 
-  /** Map a registration key (`int_<id>[_<instance>]`) to its `(pluginId, instanceId)`. */
-  getRegistration(key: string): { pluginId: string; instanceId: string | null } | undefined {
-    const r = this.providerService_.getRegistration(key)
-    return r ? { pluginId: r.pluginId, instanceId: r.instanceId } : undefined
-  }
-
-  /** Whether a provider instance is declared for this `(pluginId, instanceId)`. */
-  hasRegistration(pluginId: string, instanceId?: string | null): boolean {
-    return this.providerService_.hasProvider(pluginId, instanceId)
+  /** Whether a provider is registered under this `provider_id` (container key). */
+  hasProviderId(providerId: string): boolean {
+    return !!this.providerService_.getRegistration(providerId)
   }
 
   /**
@@ -80,7 +77,7 @@ export default class IntegrationModuleService extends MedusaService({
       provider_id: string
       plugin_id: string
       instance_id: string | null
-      plugin_kind: string
+      module: string
       display_name: { en: string; ru: string }
       supports_multiple_instances: boolean
       has_test_connection: boolean
@@ -92,16 +89,15 @@ export default class IntegrationModuleService extends MedusaService({
   > {
     const regs = this.providerService_.listRegistrations()
     const rows = await this.listIntegrations({}, { take: 1000 })
-    const rk = (p: string, i: string | null) => `${p}::${i ?? ""}`
-    const byKey = new Map(rows.map((r: any) => [rk(r.plugin_id, r.instance_id ?? null), r]))
+    const byId = new Map(rows.map((r: any) => [r.provider_id, r]))
     return regs.map((r) => {
       const d = r.provider.getDescriptor()
-      const row: any = byKey.get(rk(r.pluginId, r.instanceId))
+      const row: any = byId.get(r.key)
       return {
         provider_id: r.key,
         plugin_id: r.pluginId,
         instance_id: r.instanceId,
-        plugin_kind: d.pluginKind,
+        module: d.module,
         display_name: d.displayName,
         supports_multiple_instances: d.supportsMultipleInstances ?? false,
         has_test_connection: typeof r.provider.testConnection === "function",
@@ -117,23 +113,17 @@ export default class IntegrationModuleService extends MedusaService({
    * Run the provider's connection test against the currently-resolved settings.
    * Delegates to the integration-provider's `testConnection` (if it has one).
    */
-  async runTestConnection(
-    pluginId: string,
-    instanceId?: string | null
-  ): Promise<TestConnectionResult> {
+  async runTestConnection(providerId: string): Promise<TestConnectionResult> {
     let provider
     try {
-      provider = this.providerService_.retrieveProvider(pluginId, instanceId)
+      provider = this.providerService_.retrieveByKey(providerId)
     } catch {
-      return {
-        status: "fail",
-        message: `Unknown integration provider "${IntegrationProviderService.key(pluginId, instanceId)}"`,
-      }
+      return { status: "fail", message: `Unknown integration provider "${providerId}"` }
     }
     if (!provider.testConnection) {
       return { status: "skipped", message: "No test configured" }
     }
-    const resolved = await this.getResolvedSettings(pluginId, instanceId)
+    const resolved = await this.getResolvedSettings(provider.getIdentifier(), provider.getInstanceId())
     if (!resolved) {
       return { status: "fail", message: "Not configured" }
     }
@@ -196,39 +186,38 @@ export default class IntegrationModuleService extends MedusaService({
   }
 
   // ── resolver (runtime read, cached) ──────────────────────────────────────────
-  protected cacheKey(pluginId: string, instanceId?: string | null): string {
-    return `${pluginId}::${instanceId ?? ""}`
-  }
-
-  clearSettingsCache(pluginId?: string, instanceId?: string | null): void {
-    if (!pluginId) {
+  /** Clear the settings cache for one `provider_id`, or all when omitted. */
+  clearSettingsCache(providerId?: string): void {
+    if (!providerId) {
       this.cache_.clear()
       return
     }
-    this.cache_.delete(this.cacheKey(pluginId, instanceId))
+    this.cache_.delete(providerId)
   }
 
+  /**
+   * Resolve decrypted settings for a `(pluginId, instanceId)` pair (the consumer-facing
+   * shape) — mapped internally to the `provider_id` key `int_<pluginId>[_<instanceId>]`.
+   */
   async getResolvedSettings(
     pluginId: string,
     instanceId?: string | null
   ): Promise<ResolvedSettings | null> {
-    const ck = this.cacheKey(pluginId, instanceId)
-    const hit = this.cache_.get(ck)
+    const providerId = IntegrationProviderService.key(pluginId, instanceId)
+    const hit = this.cache_.get(providerId)
     if (hit && hit.expiresAt > Date.now()) return hit.value
 
-    // The (pluginId, instanceId) must correspond to a declared registration. A miss here
-    // is a misconfiguration (forgot to register / wrong id), distinct from "registered but
+    // The provider_id must correspond to a declared registration. A miss here is a
+    // misconfiguration (forgot to register / wrong id), distinct from "registered but
     // not configured yet" (handled below by returning null).
-    if (!this.providerService_.hasProvider(pluginId, instanceId)) {
+    if (!this.hasProviderId(providerId)) {
       throw new Error(
-        `No integration provider registered for "${IntegrationProviderService.key(pluginId, instanceId)}". ` +
+        `No integration provider registered for "${providerId}". ` +
           `Declare it in medusa-config under the integration plugin's options.providers.`
       )
     }
 
-    const filters: Record<string, unknown> = { plugin_id: pluginId }
-    filters.instance_id = instanceId ?? null
-    const [record] = await this.listIntegrations(filters, { take: 1 })
+    const [record] = await this.listIntegrations({ provider_id: providerId }, { take: 1 })
 
     let value: ResolvedSettings | null = null
     if (record && record.is_enabled) {
@@ -238,14 +227,13 @@ export default class IntegrationModuleService extends MedusaService({
           ...(this.decryptCredentials(record.credentials_ciphertext, record.credentials_iv) as Record<string, unknown>) ?? {},
         },
         meta: {
-          plugin_id: record.plugin_id,
-          instance_id: record.instance_id ?? null,
+          provider_id: record.provider_id,
+          module: record.module ?? null,
           is_enabled: record.is_enabled,
-          plugin_kind: record.plugin_kind ?? null
         },
       }
     }
-    this.cache_.set(ck, { value, expiresAt: Date.now() + CACHE_TTL_MS })
+    this.cache_.set(providerId, { value, expiresAt: Date.now() + CACHE_TTL_MS })
     return value
   }
 }

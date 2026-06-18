@@ -18,9 +18,9 @@ export type ProviderRegistration = {
 /**
  * Thin registry over the integration-providers registered into the module container by
  * `loadProviders`. Each registration in `options.providers` is one instance, identified
- * by its container key `int_<identifier>[_<id>]`. The DB stores settings per
- * `(plugin_id, instance_id)` = `(getIdentifier(), getInstanceId())`, derived from the
- * registration — instances are declared in medusa-config, not created at runtime.
+ * by its container key `int_<identifier>[_<id>]` — which is also the DB `provider_id`.
+ * Instances are declared in medusa-config, not created at runtime. `pluginId`/`instanceId`
+ * (= `getIdentifier()`/`getInstanceId()`) are derived for descriptors/UI.
  *
  * Intentionally minimal: it locates providers; callers invoke provider methods directly,
  * so new provider methods never require changes here.

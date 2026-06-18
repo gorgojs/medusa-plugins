@@ -6,8 +6,7 @@ import {
 } from "../steps"
 
 export type UpsertIntegrationWorkflowInput = {
-  plugin_id: string
-  instance_id?: string | null
+  provider_id: string
   title?: string | null
   payload: Record<string, unknown>
 }
@@ -18,16 +17,14 @@ export const upsertIntegrationWorkflow = createWorkflow(
   upsertIntegrationWorkflowId,
   function (input: UpsertIntegrationWorkflowInput) {
     const prepared = validateAndEncryptStep({
-      plugin_id: input.plugin_id,
-      instance_id: input.instance_id,
+      provider_id: input.provider_id,
       payload: input.payload,
     })
 
     const recordInput = transform({ input, prepared }, (data) => ({
-      plugin_id: data.input.plugin_id,
-      instance_id: data.input.instance_id ?? null,
+      provider_id: data.input.provider_id,
       title: data.input.title ?? null,
-      plugin_kind: data.prepared.plugin_kind,
+      module: data.prepared.module,
       schema_version: data.prepared.schema_version,
       settings: data.prepared.settings,
       credentials_ciphertext: data.prepared.credentials_ciphertext,
@@ -40,8 +37,7 @@ export const upsertIntegrationWorkflow = createWorkflow(
       transform({ input }, (d) => ({
         name: "integration.updated",
         data: {
-          plugin_id: d.input.plugin_id,
-          instance_id: d.input.instance_id ?? null,
+          provider_id: d.input.provider_id,
           change: "update",
         },
       }))

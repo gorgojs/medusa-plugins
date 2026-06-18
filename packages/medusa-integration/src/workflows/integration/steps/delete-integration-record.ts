@@ -3,8 +3,7 @@ import { INTEGRATION_MODULE } from "../../../modules/integration"
 import type IntegrationModuleService from "../../../modules/integration/services/integration-module"
 
 export type DeleteIntegrationRecordStepInput = {
-  plugin_id: string
-  instance_id: string | null
+  provider_id: string
   hard?: boolean
 }
 
@@ -13,7 +12,7 @@ export const deleteIntegrationRecordStep = createStep(
   async (input: DeleteIntegrationRecordStepInput, { container }) => {
     const service: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
     const [existing] = await service.listIntegrations(
-      { plugin_id: input.plugin_id, instance_id: input.instance_id },
+      { provider_id: input.provider_id },
       { take: 1 }
     )
     if (!existing) return new StepResponse({ deleted: false })

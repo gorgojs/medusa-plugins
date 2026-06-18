@@ -3,7 +3,7 @@ import type { Bilingual } from "./meta"
 
 export { z }
 
-export type PluginKind =
+export type ModuleKind =
   | "payment" | "fulfillment" | "marketplace" | "crm" | "erp" | "pim"
   | "notification" | "feed" | "tax" | "other"
 
@@ -17,7 +17,8 @@ export type TestConnectionResult = {
 }
 
 export type IntegrationDescriptor = {
-  pluginKind: PluginKind
+  /** Which Medusa module this integration configures (payment, fulfillment, …). */
+  module: ModuleKind
   /** Stamped by the registry from the provider's `static identifier` — not declared by the author. */
   pluginId: string
   /** Stamped by the registry from the registration `id` (null = single/default instance). */

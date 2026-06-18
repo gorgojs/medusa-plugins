@@ -2,8 +2,7 @@ import { createWorkflow, WorkflowResponse, transform } from "@medusajs/framework
 import { runTestConnectionStep, emitIntegrationEventStep } from "../steps"
 
 export type TestIntegrationConnectionWorkflowInput = {
-  plugin_id: string
-  instance_id?: string | null
+  provider_id: string
 }
 
 export const testIntegrationConnectionWorkflowId = "test-integration-connection"
@@ -13,16 +12,14 @@ export const testIntegrationConnectionWorkflow = createWorkflow(
   function (input: TestIntegrationConnectionWorkflowInput) {
     const result = runTestConnectionStep(
       transform({ input }, (d) => ({
-        plugin_id: d.input.plugin_id,
-        instance_id: d.input.instance_id ?? null,
+        provider_id: d.input.provider_id,
       }))
     )
     emitIntegrationEventStep(
       transform({ input, result }, (d) => ({
         name: "integration.tested",
         data: {
-          plugin_id: d.input.plugin_id,
-          instance_id: d.input.instance_id ?? null,
+          provider_id: d.input.provider_id,
           status: d.result.status,
           message: d.result.message,
         },

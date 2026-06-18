@@ -5,8 +5,7 @@ import type IntegrationModuleService from "../../../modules/integration/services
 import { validateAndSplit } from "../../../modules/integration/descriptor/split"
 
 export type ValidateAndEncryptStepInput = {
-  plugin_id: string
-  instance_id?: string | null
+  provider_id: string
   payload: Record<string, unknown>
 }
 
@@ -14,29 +13,22 @@ export const validateAndEncryptStep = createStep(
   "validate-and-encrypt",
   async (input: ValidateAndEncryptStepInput, { container }) => {
     const service: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
-    const instanceId = input.instance_id ?? null
 
-    // Write-time invariant: the (plugin_id, instance_id) must be a declared registration
-    // (instances live in medusa-config, not created at runtime). This also covers the
-    // single- vs multi-instance distinction, since single = registered without an id.
-    if (!service.hasRegistration(input.plugin_id, instanceId)) {
+    // Write-time invariant: provider_id must be a declared registration (instances live
+    // in medusa-config, not created at runtime). getProviderDescriptor returns undefined
+    // for unknown keys.
+    const descriptor = service.getProviderDescriptor(input.provider_id)
+    if (!descriptor) {
       throw new MedusaError(
         MedusaError.Types.NOT_FOUND,
-        `No integration provider registered for "${input.plugin_id}"${
-          instanceId ? ` instance "${instanceId}"` : ""
-        }`
+        `No integration provider registered for "${input.provider_id}"`
       )
-    }
-
-    const descriptor = service.getDescriptor(input.plugin_id)
-    if (!descriptor) {
-      throw new MedusaError(MedusaError.Types.NOT_FOUND, `Unknown plugin_id "${input.plugin_id}"`)
     }
 
     const { settings, secrets } = validateAndSplit(descriptor, input.payload)
     const credentials = service.encryptCredentials(secrets)
     return new StepResponse({
-      plugin_kind: descriptor.pluginKind,
+      module: descriptor.module,
       schema_version: descriptor.schemaVersion ?? 1,
       settings,
       ...credentials,
