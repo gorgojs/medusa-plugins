@@ -103,6 +103,7 @@ export class TelemetryDispatcher {
   private readonly startedAt = Date.now()
   private pingIndex = 0
   private pingTimer?: ReturnType<typeof setInterval>
+  private firstFlush = true
 
   private nextTimeUnixNano(): string {
     const candidate = BigInt(Date.now()) * 1_000_000n
@@ -205,7 +206,7 @@ export class TelemetryDispatcher {
 
   enqueue(plugin: PluginInfo, eventName: string, properties: Record<string, unknown> = {}): void {
     try {
-      if (!this.isEnabledCached()) return
+      if (!this.firstFlush && !this.isEnabledCached()) return
 
       const key = `${plugin.name}@${plugin.version}`
       let bucket = this.buckets.get(key)
@@ -251,13 +252,14 @@ export class TelemetryDispatcher {
     if (this.flushing) return
     if (this.totalCount === 0) return
 
-    if (!this.isEnabledCached()) {
+    if (!this.firstFlush && !this.isEnabledCached()) {
       this.buckets.clear()
       this.totalCount = 0
       return
     }
 
     this.flushing = true
+    this.firstFlush = false
 
     // snapshot + reset state so concurrent enqueues don't clobber the in-flight batch
     const inflight = this.buckets
@@ -414,6 +416,7 @@ export class TelemetryDispatcher {
       "env.locale": env.locale,
       "env.timezone": env.timezone,
       "env.package_manager": env.package_manager,
+      "enabled": this.isEnabledCached(),
     })
   }
 
