@@ -2,7 +2,7 @@ import { MedusaService } from "@medusajs/framework/utils"
 import { Logger } from "@medusajs/framework/types"
 import Integration from "../models/integration"
 import { decryptSecrets, encryptSecrets, isValidKey } from "./crypto"
-import type IntegrationProviderService from "./integration-provider"
+import IntegrationProviderService from "./integration-provider"
 import type { IntegrationDescriptor, TestConnectionResult } from "../descriptor/define"
 import { introspectDescriptor, type UiDescriptor } from "../descriptor/introspect"
 import { INTEGRATION_OPTIONS_KEY, type IntegrationModuleOptions } from "../types"
@@ -41,21 +41,76 @@ export default class IntegrationModuleService extends MedusaService({
   }
 
   listUiDescriptors(): UiDescriptor[] {
-    return this.providerService_.listProviders().map((p) =>
+    return this.providerService_.listRegistrations().map((r) =>
       introspectDescriptor(
-        { ...p.getDescriptor(), pluginId: p.getIdentifier() },
-        typeof p.testConnection === "function"
+        { ...r.provider.getDescriptor(), pluginId: r.pluginId, instanceId: r.instanceId },
+        typeof r.provider.testConnection === "function"
       )
     )
   }
 
-  getUiDescriptor(pluginId: string): UiDescriptor | undefined {
-    const p = this.providerService_.listProviders().find((p) => p.getIdentifier() === pluginId)
-    if (!p) return undefined
+  getUiDescriptor(pluginId: string, instanceId?: string | null): UiDescriptor | undefined {
+    const r = this.providerService_
+      .listRegistrations()
+      .find((r) => r.pluginId === pluginId && r.instanceId === (instanceId ?? null))
+    if (!r) return undefined
     return introspectDescriptor(
-      { ...p.getDescriptor(), pluginId: p.getIdentifier() },
-      typeof p.testConnection === "function"
+      { ...r.provider.getDescriptor(), pluginId: r.pluginId, instanceId: r.instanceId },
+      typeof r.provider.testConnection === "function"
     )
+  }
+
+  /** Map a registration key (`int_<id>[_<instance>]`) to its `(pluginId, instanceId)`. */
+  getRegistration(key: string): { pluginId: string; instanceId: string | null } | undefined {
+    const r = this.providerService_.getRegistration(key)
+    return r ? { pluginId: r.pluginId, instanceId: r.instanceId } : undefined
+  }
+
+  /** Whether a provider instance is declared for this `(pluginId, instanceId)`. */
+  hasRegistration(pluginId: string, instanceId?: string | null): boolean {
+    return this.providerService_.hasProvider(pluginId, instanceId)
+  }
+
+  /**
+   * Admin overview: every declared instance (registration) merged with its current row
+   * state. Lets the UI list configurable integrations before any row exists. No secrets.
+   */
+  async listIntegrationsOverview(): Promise<
+    Array<{
+      provider_id: string
+      plugin_id: string
+      instance_id: string | null
+      plugin_kind: string
+      display_name: { en: string; ru: string }
+      supports_multiple_instances: boolean
+      has_test_connection: boolean
+      is_configured: boolean
+      is_enabled: boolean
+      last_test_status: string | null
+      last_test_at: Date | null
+    }>
+  > {
+    const regs = this.providerService_.listRegistrations()
+    const rows = await this.listIntegrations({}, { take: 1000 })
+    const rk = (p: string, i: string | null) => `${p}::${i ?? ""}`
+    const byKey = new Map(rows.map((r: any) => [rk(r.plugin_id, r.instance_id ?? null), r]))
+    return regs.map((r) => {
+      const d = r.provider.getDescriptor()
+      const row: any = byKey.get(rk(r.pluginId, r.instanceId))
+      return {
+        provider_id: r.key,
+        plugin_id: r.pluginId,
+        instance_id: r.instanceId,
+        plugin_kind: d.pluginKind,
+        display_name: d.displayName,
+        supports_multiple_instances: d.supportsMultipleInstances ?? false,
+        has_test_connection: typeof r.provider.testConnection === "function",
+        is_configured: !!row,
+        is_enabled: row?.is_enabled ?? false,
+        last_test_status: row?.last_test_status ?? null,
+        last_test_at: row?.last_test_at ?? null,
+      }
+    })
   }
 
   /**
@@ -68,9 +123,12 @@ export default class IntegrationModuleService extends MedusaService({
   ): Promise<TestConnectionResult> {
     let provider
     try {
-      provider = this.providerService_.retrieveProvider(pluginId)
+      provider = this.providerService_.retrieveProvider(pluginId, instanceId)
     } catch {
-      return { status: "fail", message: `Unknown integration provider "${pluginId}"` }
+      return {
+        status: "fail",
+        message: `Unknown integration provider "${IntegrationProviderService.key(pluginId, instanceId)}"`,
+      }
     }
     if (!provider.testConnection) {
       return { status: "skipped", message: "No test configured" }
@@ -158,9 +216,14 @@ export default class IntegrationModuleService extends MedusaService({
     const hit = this.cache_.get(ck)
     if (hit && hit.expiresAt > Date.now()) return hit.value
 
-    const descriptor = this.getDescriptor(pluginId)
-    if (descriptor?.supportsMultipleInstances && instanceId == null) {
-      throw new Error(`Instance ID is required for multi-instance plugin "${pluginId}"`)
+    // The (pluginId, instanceId) must correspond to a declared registration. A miss here
+    // is a misconfiguration (forgot to register / wrong id), distinct from "registered but
+    // not configured yet" (handled below by returning null).
+    if (!this.providerService_.hasProvider(pluginId, instanceId)) {
+      throw new Error(
+        `No integration provider registered for "${IntegrationProviderService.key(pluginId, instanceId)}". ` +
+          `Declare it in medusa-config under the integration plugin's options.providers.`
+      )
     }
 
     const filters: Record<string, unknown> = { plugin_id: pluginId }

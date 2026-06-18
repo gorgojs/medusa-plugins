@@ -23,12 +23,15 @@ const registrationFn = async (
   container: any,
   pluginOptions: { id?: string; options?: Record<string, unknown> }
 ) => {
+  const instanceId = pluginOptions.id ?? null
   const key = `${IntegrationProviderRegistrationPrefix}${klass.identifier}${
-    pluginOptions.id ? `_${pluginOptions.id}` : ""
+    instanceId ? `_${instanceId}` : ""
   }`
 
   container.register({
-    [key]: asFunction((cradle: any) => new klass(cradle, pluginOptions.options), {
+    // Pass `instanceId` as the 3rd ctor arg so the provider knows which instance it is
+    // (see AbstractIntegrationProvider.getInstanceId). The container key encodes the same.
+    [key]: asFunction((cradle: any) => new klass(cradle, pluginOptions.options, instanceId), {
       lifetime: klass.LIFE_TIME || Lifetime.SINGLETON,
     }),
   })

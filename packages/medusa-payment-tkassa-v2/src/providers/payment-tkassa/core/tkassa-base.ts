@@ -41,6 +41,12 @@ abstract class TkassaBase extends AbstractPaymentProvider {
   protected serverUrl_ = "https://securepay.tinkoff.ru"
   protected logger_: Logger
   protected container_: Record<string, any>
+  /**
+   * Which integration instance this provider binds to. Comes from this provider's own
+   * `options.id` in medusa-config and must match the `id` the integration-provider is
+   * registered with (`int_tkassa[_<id>]`). null = the single/default instance.
+   */
+  protected instanceId_: string | null
 
   static validateOptions(_options: Record<string, unknown>): void {
     // Settings (credentials/behaviour) now live in the `integration` module and are
@@ -55,6 +61,7 @@ abstract class TkassaBase extends AbstractPaymentProvider {
     super(container, options)
     this.logger_ = container.logger
     this.container_ = container
+    this.instanceId_ = (options?.id as string | undefined) ?? null
   }
 
   /**
@@ -63,7 +70,7 @@ abstract class TkassaBase extends AbstractPaymentProvider {
    */
   protected async resolveSettings(): Promise<TKassaSettings> {
     const integration = this.container_?.integration
-    const resolved = await integration?.getResolvedSettings?.(TkassaBase.identifier)
+    const resolved = await integration?.getResolvedSettings?.(TkassaBase.identifier, this.instanceId_)
     if (!resolved) {
       throw new Error(
         "T-Kassa is not configured. Set it up in Admin → Integrations."
@@ -76,7 +83,7 @@ abstract class TkassaBase extends AbstractPaymentProvider {
     const { result } = await getIntegrationSettingsWorkflow().run({
       input: {
         plugin_id: TkassaBase.identifier,
-        instance_id: null,
+        instance_id: this.instanceId_,
       },
     })
     return result?.settings as TKassaSettings

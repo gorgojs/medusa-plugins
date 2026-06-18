@@ -16,6 +16,7 @@ export type UiSection = { id: string; title: { en: string; ru: string }; fields:
 export type UiDescriptor = {
   pluginKind: string
   pluginId: string
+  instanceId: string | null
   schemaVersion: number
   displayName: { en: string; ru: string }
   description?: { en: string; ru: string }
@@ -83,6 +84,7 @@ export function introspectDescriptor(
   return {
     pluginKind: descriptor.pluginKind,
     pluginId: descriptor.pluginId,
+    instanceId: descriptor.instanceId ?? null,
     schemaVersion: descriptor.schemaVersion ?? 1,
     displayName: descriptor.displayName,
     description: descriptor.description,

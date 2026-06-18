@@ -6,6 +6,7 @@ import { validateAndSplit } from "../../../modules/integration/descriptor/split"
 
 export type ValidateAndEncryptStepInput = {
   plugin_id: string
+  instance_id?: string | null
   payload: Record<string, unknown>
 }
 
@@ -13,22 +14,23 @@ export const validateAndEncryptStep = createStep(
   "validate-and-encrypt",
   async (input: ValidateAndEncryptStepInput, { container }) => {
     const service: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
-    const descriptor = service.getDescriptor(input.plugin_id)
+    const instanceId = input.instance_id ?? null
 
+    // Write-time invariant: the (plugin_id, instance_id) must be a declared registration
+    // (instances live in medusa-config, not created at runtime). This also covers the
+    // single- vs multi-instance distinction, since single = registered without an id.
+    if (!service.hasRegistration(input.plugin_id, instanceId)) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_FOUND,
+        `No integration provider registered for "${input.plugin_id}"${
+          instanceId ? ` instance "${instanceId}"` : ""
+        }`
+      )
+    }
+
+    const descriptor = service.getDescriptor(input.plugin_id)
     if (!descriptor) {
       throw new MedusaError(MedusaError.Types.NOT_FOUND, `Unknown plugin_id "${input.plugin_id}"`)
-    }
-    if (descriptor.supportsMultipleInstances === true && input.payload.instance_id == null) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `Instance ID is required for multi-instance plugin "${input.plugin_id}"`
-      )
-    }
-    if (descriptor.supportsMultipleInstances === false && input.payload.instance_id != null) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        `Instance ID must be null for single-instance plugin "${input.plugin_id}"`
-      )
     }
 
     const { settings, secrets } = validateAndSplit(descriptor, input.payload)

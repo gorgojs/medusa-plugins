@@ -17,7 +17,11 @@ export const upsertIntegrationWorkflowId = "upsert-integration"
 export const upsertIntegrationWorkflow = createWorkflow(
   upsertIntegrationWorkflowId,
   function (input: UpsertIntegrationWorkflowInput) {
-    const prepared = validateAndEncryptStep({ plugin_id: input.plugin_id, payload: input.payload })
+    const prepared = validateAndEncryptStep({
+      plugin_id: input.plugin_id,
+      instance_id: input.instance_id,
+      payload: input.payload,
+    })
 
     const recordInput = transform({ input, prepared }, (data) => ({
       plugin_id: data.input.plugin_id,

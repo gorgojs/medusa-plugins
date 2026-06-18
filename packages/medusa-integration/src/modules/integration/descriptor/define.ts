@@ -20,6 +20,8 @@ export type IntegrationDescriptor = {
   pluginKind: PluginKind
   /** Stamped by the registry from the provider's `static identifier` — not declared by the author. */
   pluginId: string
+  /** Stamped by the registry from the registration `id` (null = single/default instance). */
+  instanceId?: string | null
   schemaVersion?: number
   displayName: Bilingual
   description?: Bilingual
@@ -31,10 +33,11 @@ export type IntegrationDescriptor = {
 }
 
 /**
- * What a provider author declares in `getDescriptor()`. `pluginId` is omitted here
- * because it's derived from the provider's `static identifier`.
+ * What a provider author declares in `getDescriptor()`. `pluginId`/`instanceId` are
+ * omitted because they're derived from the provider's `static identifier` and the
+ * registration `id` respectively.
  */
-export type IntegrationDescriptorInput = Omit<IntegrationDescriptor, "pluginId">
+export type IntegrationDescriptorInput = Omit<IntegrationDescriptor, "pluginId" | "instanceId">
 
 export function defineIntegration(
   descriptor: IntegrationDescriptorInput
