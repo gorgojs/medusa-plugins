@@ -4,7 +4,7 @@ import { FEED_MODULE } from "@gorgo/medusa-feed-yandex/modules/feed"
 
 medusaIntegrationTestRunner({
   testSuite: ({ api, getContainer }) => {
-    describe("Feed by ID API Routes", () => {
+    describe("GET|PATCH|DELETE /admin/feeds/:id", () => {
       const headers: Record<string, string> = {}
       let container: ReturnType<typeof getContainer>
       let createdFeedId: string
@@ -45,6 +45,7 @@ medusaIntegrationTestRunner({
         )
 
         headers["authorization"] = `Bearer ${token}`
+
         const service: any = container.resolve(FEED_MODULE)
         const created = await service.createFeeds({
           title: "Original Feed",
@@ -65,6 +66,15 @@ medusaIntegrationTestRunner({
           title: "Original Feed",
           file_name: "original.xml",
         })
+      })
+
+      it("GET /admin/feeds/:id — 404 for non-existent feed", async () => {
+        const res = await api.get("/admin/feeds/non-existent-id", {
+          headers,
+          validateStatus: () => true,
+        })
+
+        expect(res.status).toBe(404)
       })
 
       it("PATCH /admin/feeds/:id — update feed", async () => {
@@ -94,7 +104,6 @@ medusaIntegrationTestRunner({
         })
       })
 
-
       it("DELETE /admin/feeds/:id — delete feed", async () => {
         const res = await api.delete(`/admin/feeds/${createdFeedId}`, {
           headers,
@@ -110,6 +119,65 @@ medusaIntegrationTestRunner({
         const service: any = container.resolve(FEED_MODULE)
         const found = await service.listFeeds({ id: [createdFeedId] })
         expect(found).toHaveLength(0)
+      })
+
+      it("POST /admin/feeds/:id/launch — launch feed generation", async () => {
+        const service: any = container.resolve(FEED_MODULE)
+        const created = await service.createFeeds({
+          title: "Feed to launch",
+          file_name: "launch-test",
+          is_active: true,
+          schedule: 30,
+          settings: {
+            name: "Test Shop",
+            company: "Test Company",
+            url: "https://example.com",
+          },
+        })
+
+        const res = await api.post(
+          `/admin/feeds/${created.id}/launch`,
+          {},
+          { headers }
+        )
+
+        expect(res.status).toBe(200)
+        expect(Array.isArray(res.data.feed)).toBe(true)
+        expect(res.data.feed[0]).toMatchObject({ id: created.id })
+        expect(res.data.feed[0].file_path).toBeTruthy()
+        expect(res.data.feed[0].last_export_at).toBeTruthy()
+      })
+
+      it("DELETE /admin/feeds/:id/delete-file — delete feed file", async () => {
+        const service: any = container.resolve(FEED_MODULE)
+        const created = await service.createFeeds({
+          title: "Feed for file deletion",
+          file_name: "delete-file-test",
+          is_active: true,
+          schedule: 30,
+          settings: {
+            name: "Test Shop",
+            company: "Test Company",
+            url: "https://example.com",
+          },
+        })
+
+        await api.post(`/admin/feeds/${created.id}/launch`, {}, { headers })
+
+        const res = await api.delete(
+          `/admin/feeds/${created.id}/delete-file`,
+          { headers }
+        )
+
+        expect(res.status).toBe(200)
+        expect(res.data).toEqual({
+          id: created.id,
+          object: "feed-file",
+          deleted: true,
+        })
+
+        const updated = await service.retrieveFeed(created.id)
+        expect(updated.file_path).toBeFalsy()
       })
     })
   },

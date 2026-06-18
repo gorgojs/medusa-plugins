@@ -54,7 +54,7 @@ if (process.env.TEST_TYPE === "integration:modules") {
 } else {
   module.exports = {
     ...baseConfig,
-    testMatch: ["**/__tests__/http/*.spec.[jt]s"],
+    testMatch: ["**/__tests__/http/**/*.spec.[jt]s"],
     setupFiles: ["./setup.js"],
   }
 }

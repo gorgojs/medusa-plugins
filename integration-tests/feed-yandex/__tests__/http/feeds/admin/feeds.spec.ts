@@ -4,7 +4,7 @@ import { FEED_MODULE } from "@gorgo/medusa-feed-yandex/modules/feed"
 
 medusaIntegrationTestRunner({
   testSuite: ({ api, getContainer }) => {
-    describe("Feeds API Routes", () => {
+    describe("GET /admin/feeds", () => {
       const headers: Record<string, string> = {}
       let container: ReturnType<typeof getContainer>
 
@@ -47,7 +47,7 @@ medusaIntegrationTestRunner({
       })
 
       describe("GET /admin/feeds", () => {
-        it("get feeds", async () => {
+        it("returns feeds list", async () => {
           const res = await api.get("/admin/feeds", { headers })
 
           expect(res.status).toBe(200)
@@ -56,7 +56,7 @@ medusaIntegrationTestRunner({
       })
 
       describe("POST /admin/feeds", () => {
-        it("create feed", async () => {
+        it("creates a feed", async () => {
           const payload = {
             feeds: [
               {

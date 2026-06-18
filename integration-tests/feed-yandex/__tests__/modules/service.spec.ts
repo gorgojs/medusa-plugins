@@ -54,6 +54,20 @@ moduleIntegrationTestRunner({
         expect(feeds).toHaveLength(0)
       })
 
+      it("Retrieve feed", async () => {
+        const input = {
+          title: "Feed to retrieve",
+          file_name: "retrieve-test.xml",
+          is_active: true,
+          schedule: 30,
+        }
+        const createdFeed = await service.createFeeds(input)
+        const retrieved = await service.retrieveFeed(createdFeed.id)
+
+        expect(retrieved.id).toBe(createdFeed.id)
+        expect(retrieved).toMatchObject(input)
+      })
+
       it("Update feed", async () => {
         const input = {
           title: "Feed to update",
