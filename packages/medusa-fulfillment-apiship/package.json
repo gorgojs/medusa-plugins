@@ -46,12 +46,12 @@
   "scripts": {
     "build": "yarn openapi:gen && medusa plugin:build",
     "dev": "yarn predev && medusa plugin:develop",
-    "test:unit": "jest --config jest.config.js",
     "openapi:gen": "OAC_PATH=src/lib/apiship-client && docker run --rm -v $(pwd):/local alpine rm -rf /local/$OAC_PATH && openapi-generator-cli generate -i /local/openapi/upstream.yaml -g typescript-axios -o /local/$OAC_PATH --skip-validate-spec --additional-properties=useSingleRequestParameter=true && docker run --rm -v $(pwd):/local alpine chown -R $(id -u):$(id -g) /local/$OAC_PATH",
     "openapi:pull": "rm -rf openapi && mkdir -p openapi && curl -L https://api.apiship.ru/doc/openapi.yaml -o openapi/upstream.yaml && yarn openapi:version",
     "openapi:version": "shasum -a 256 openapi/upstream.yaml | awk '{print $1}' > openapi/SPEC_VERSION.txt && echo 'Apiship spec updated:' && cat openapi/SPEC_VERSION.txt",
     "predev": "medusa plugin:publish",
-    "prepublishOnly": "yarn openapi:gen && medusa plugin:build"
+    "prepublishOnly": "yarn openapi:gen && medusa plugin:build",
+    "test:unit": "jest --config jest.config.js"
   },
   "dependencies": {
     "@gorgo/telemetry": "^1.0.1",
