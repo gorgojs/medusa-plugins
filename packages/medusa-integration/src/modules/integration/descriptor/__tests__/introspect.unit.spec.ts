@@ -1,11 +1,12 @@
 import { z } from "zod"
 import { describe, expect, it } from "@jest/globals"
 import { introspectDescriptor, secretFieldNames } from "../introspect"
-import { defineIntegration } from "../define"
+import type { IntegrationDescriptor } from "../define"
 
-const descriptor = defineIntegration({
+const descriptor: IntegrationDescriptor = {
   module: "payment",
   pluginId: "demo",
+  instanceId: null,
   displayName: { en: "Demo", ru: "Демо" },
   sections: [
     { id: "general", title: { en: "General", ru: "Общее" } },
@@ -16,7 +17,7 @@ const descriptor = defineIntegration({
     password: z.string().meta({ section: "general", control: "secret", secret: true, label: { en: "Password", ru: "Пароль" } }),
     test_mode: z.boolean().default(false).meta({ section: "behavior", control: "switch", label: { en: "Test", ru: "Тест" } }),
   }),
-})
+}
 
 describe("introspect", () => {
   it("groups fields by section in declared order", () => {
