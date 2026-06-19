@@ -1,5 +1,11 @@
 # @gorgo/telemetry
 
+## 1.1.0
+
+### Minor Changes
+
+- [#341](https://github.com/gorgojs/medusa-plugins/pull/341) [`801dec7`](https://github.com/gorgojs/medusa-plugins/commit/801dec77bf4d80850c93b2c8fe680b6135eafc5d) Thanks [@gorgohead](https://github.com/gorgohead)! - add enabled field
+
 ## 1.0.2
 
 ### Patch Changes
