@@ -1,5 +1,11 @@
 # @gorgo/medusa-payment-tkassa
 
+## 1.0.0
+
+### Major Changes
+
+- [#339](https://github.com/gorgojs/medusa-plugins/pull/339) [`8f28e41`](https://github.com/gorgojs/medusa-plugins/commit/8f28e414fe7a992e4189f8be4bebd92c33d3dd57) Thanks [@gorgohead](https://github.com/gorgohead)! - Stable release. The T-Kassa (T-Bank) payment provider is production-proven - running on multiple live stores for over 9 months. No breaking changes vs v0.4.9.
+
 ## 0.4.9
 
 ### Patch Changes
