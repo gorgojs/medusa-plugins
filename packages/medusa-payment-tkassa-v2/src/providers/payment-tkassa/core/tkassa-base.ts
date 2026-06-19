@@ -64,22 +64,7 @@ abstract class TkassaBase extends AbstractPaymentProvider {
     this.instanceId_ = (options?.id as string | undefined) ?? null
   }
 
-  /**
-   * Resolve settings from the `integration` module — the single source of truth.
-   * Reached via `dependencies: ["integration"]` on the payment module registration.
-   */
   protected async resolveSettings(): Promise<TKassaSettings> {
-    const integration = this.container_?.integration
-    const resolved = await integration?.getResolvedSettings?.(TkassaBase.identifier, this.instanceId_)
-    if (!resolved) {
-      throw new Error(
-        "T-Kassa is not configured. Set it up in Admin → Integrations."
-      )
-    }
-    return resolved.settings
-  }
-
-  protected async resolveSettingsWorkflow(): Promise<TKassaSettings> {
     const { result } = await getIntegrationSettingsWorkflow().run({
       input: {
         plugin_id: TkassaBase.identifier,
@@ -130,7 +115,7 @@ abstract class TkassaBase extends AbstractPaymentProvider {
   }: InitiatePaymentInput): Promise<InitiatePaymentOutput> {
     this.logger_.debug("TkassaBase.initiatePayment input:\n" + JSON.stringify({ currency_code, amount, data, context }, null, 2))
 
-    const settings = await this.resolveSettingsWorkflow()
+    const settings = await this.resolveSettings()
     const client = this.getClient(settings)
     const additionalParameters = this.normalizePaymentParameters(data, settings.capture) // TODO: pass all settings to normalizePaymentParameters
     const cart = data?.cart as Record<string, any>
@@ -177,7 +162,7 @@ abstract class TkassaBase extends AbstractPaymentProvider {
   async capturePayment(input: CapturePaymentInput): Promise<CapturePaymentOutput> {
     this.logger_.debug(`TkassaBase.capturePayment input:\n${JSON.stringify(input, null, 2)}`)
 
-    const settings = await this.resolveSettingsWorkflow()
+    const settings = await this.resolveSettings()
     const client = this.getClient(settings)
     const paymentId = input.data?.PaymentId as string
 
@@ -241,7 +226,7 @@ abstract class TkassaBase extends AbstractPaymentProvider {
   }: RefundPaymentInput): Promise<RefundPaymentOutput> {
     this.logger_.debug(`TkassaBase.refundPayment input:\n${JSON.stringify({ amount, data }, null, 2)}`)
 
-    const settings = await this.resolveSettingsWorkflow()
+    const settings = await this.resolveSettings()
     const client = this.getClient(settings)
     const paymentId = data?.PaymentId as string
     const amountValue = typeof amount === 'object' && 'value' in amount
@@ -279,7 +264,7 @@ abstract class TkassaBase extends AbstractPaymentProvider {
   async cancelPayment(input: CancelPaymentInput): Promise<CancelPaymentOutput> {
     this.logger_.debug(`TkassaBase.cancelPayment input:\n${JSON.stringify(input, null, 2)}`)
 
-    const settings = await this.resolveSettingsWorkflow()
+    const settings = await this.resolveSettings()
     const client = this.getClient(settings)
     const paymentId = input.data?.PaymentId as string
 
@@ -304,7 +289,7 @@ abstract class TkassaBase extends AbstractPaymentProvider {
   async retrievePayment(input: RetrievePaymentInput): Promise<RetrievePaymentOutput> {
     this.logger_.debug(`TkassaBase.retrievePayment input:\n${JSON.stringify(input, null, 2)}`)
 
-    const settings = await this.resolveSettingsWorkflow()
+    const settings = await this.resolveSettings()
     const client = this.getClient(settings)
     const paymentId = input.data?.PaymentId as string
 
@@ -341,7 +326,7 @@ abstract class TkassaBase extends AbstractPaymentProvider {
       )
     }
 
-    const settings = await this.resolveSettingsWorkflow()
+    const settings = await this.resolveSettings()
     const client = this.getClient(settings)
 
     try {
@@ -396,7 +381,7 @@ abstract class TkassaBase extends AbstractPaymentProvider {
       return false
     }
 
-    const settings = await this.resolveSettingsWorkflow()
+    const settings = await this.resolveSettings()
     const incomingToken = data.Token
     const requiredKeys = [
       "TerminalKey", "OrderId", "Success", "Status", "PaymentId",
