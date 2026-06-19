@@ -39,7 +39,6 @@ import {
 import { createTelemetryClient } from "@gorgo/telemetry"
 
 abstract class TkassaBase extends AbstractPaymentProvider<TKassaOptions> {
-  static identifier = "tkassa"
   private static telemetry_ = createTelemetryClient({ packageDir: __dirname })
 
   protected serverUrl_ = "https://securepay.tinkoff.ru"

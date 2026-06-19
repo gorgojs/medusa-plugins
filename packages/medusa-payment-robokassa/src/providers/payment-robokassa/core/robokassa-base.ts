@@ -49,7 +49,6 @@ import { createHash } from "crypto"
 import { createTelemetryClient } from "@gorgo/telemetry"
 
 abstract class RobokassaBase extends AbstractPaymentProvider<RobokassaOptions> {
-  static identifier = "robokassa"
   private static telemetry_ = createTelemetryClient({ packageDir: __dirname })
 
   protected options_: RobokassaOptions
