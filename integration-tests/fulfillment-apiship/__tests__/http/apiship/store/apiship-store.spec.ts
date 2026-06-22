@@ -1,18 +1,10 @@
 /**
  * Integration tests for store API: /store/apiship/* and /store/shipping-methods/*
  *
- * Test coverage split:
+ * External ApiShip HTTP calls are intercepted by nock so all tests are always-on
+ * and deterministic — no CI_APISHIP_TOKEN required.
  *
- *   Always-on (no ApiShip token needed):
- *     - DELETE /store/shipping-methods/:sm_id  — 404 for non-existent id
- *       (workflow is Medusa core, no ApiShip dependency)
- *
- *   Opt-in (CI_APISHIP_TOKEN required):
- *     - GET /store/apiship/providers
- *     - GET /store/apiship/points
- *
- *   Not covered here (requires full cart + shipping option setup):
- *     - POST /store/apiship/:shipping_option_id/calculate
+ * The full stack is exercised: route → workflow → createApishipClient → nock.
  *
  * State management:
  *   medusaIntegrationTestRunner wipes the DB after every it() block.
@@ -20,15 +12,66 @@
  */
 
 import { medusaIntegrationTestRunner } from "@medusajs/test-utils"
+import nock from "nock"
 import jwt from "jsonwebtoken"
 
 jest.setTimeout(120 * 1000)
 
-const APISHIP_TOKEN = process.env.CI_APISHIP_TOKEN
-const HAS_TOKEN = Boolean(APISHIP_TOKEN)
+// ---------------------------------------------------------------------------
+// Mock data
+// ---------------------------------------------------------------------------
+const MOCK_PROVIDERS = [
+  { key: "cdek", name: "CDEK" },
+  { key: "boxberry", name: "Boxberry" },
+]
 
-const LIVE_OPTIONS = {
-  token: APISHIP_TOKEN ?? "",
+const MOCK_POINTS = [
+  { id: 1, providerKey: "cdek", address: "Москва, ул. Ленина 1" },
+  { id: 2, providerKey: "cdek", address: "Москва, ул. Мира 5" },
+  { id: 3, providerKey: "boxberry", address: "СПб, Невский 10" },
+]
+
+// ---------------------------------------------------------------------------
+// nock — intercepts external ApiShip HTTP calls
+// Base URL for test mode: http://api.dev.apiship.ru/v1
+// All other requests (DB, Redis, localhost test server) pass through.
+// ---------------------------------------------------------------------------
+const APISHIP_HOST = "http://api.dev.apiship.ru"
+
+beforeAll(() => {
+  nock(APISHIP_HOST)
+    .persist()
+    .get("/v1/lists/providers")
+    .reply(200, { rows: MOCK_PROVIDERS })
+
+  nock(APISHIP_HOST)
+    .persist()
+    .get("/v1/lists/points")
+    .query(true)
+    .reply(200, function (this: any) {
+      const params = this.req.path.split("?")[1] ?? ""
+      const searchParams = new URLSearchParams(params)
+      const filter = searchParams.get("filter") ?? ""
+      const limit = parseInt(searchParams.get("limit") ?? "10")
+
+      const rows = filter.includes("providerKey=cdek")
+        ? MOCK_POINTS.filter((p) => p.providerKey === "cdek")
+        : MOCK_POINTS
+
+      return { rows: rows.slice(0, limit) }
+    })
+})
+
+afterAll(() => {
+  nock.cleanAll()
+  nock.restore()
+})
+
+// ---------------------------------------------------------------------------
+// Test suite
+// ---------------------------------------------------------------------------
+const BASE_OPTIONS = {
+  token: "nock-fake-token",
   is_test: true as const,
   settings: {
     is_cod: false as const,
@@ -40,9 +83,7 @@ medusaIntegrationTestRunner({
   inApp: true,
   env: {},
   testSuite: ({ api, getContainer }) => {
-    // Admin headers for admin API calls
     const adminHeaders: Record<string, string> = {}
-    // Store headers: publishable API key required by Medusa for all /store/* routes
     const storeHeaders: Record<string, string> = {}
 
     beforeEach(async () => {
@@ -73,14 +114,14 @@ medusaIntegrationTestRunner({
       )
       adminHeaders["authorization"] = `Bearer ${jwtToken}`
 
-      // Medusa store API requires x-publishable-api-key on every request.
-      // Create one via admin and store its token for store requests.
       const keyRes = await api.post(
         "/admin/api-keys",
         { title: "test-store-key", type: "publishable" },
         { headers: adminHeaders }
       )
       storeHeaders["x-publishable-api-key"] = keyRes.data.api_key.token
+
+      await api.post("/admin/apiship/options", BASE_OPTIONS, { headers: adminHeaders })
     })
 
     // -------------------------------------------------------------------------
@@ -94,8 +135,6 @@ medusaIntegrationTestRunner({
           { headers: storeHeaders }
         )
 
-        // removeShippingMethodFromCartStep is idempotent — silently ignores
-        // unknown IDs and returns the standard delete response
         expect(res.status).toBe(200)
         expect(res.data.id).toBe(id)
         expect(res.data.object).toBe("shipping_method")
@@ -121,16 +160,9 @@ medusaIntegrationTestRunner({
     })
 
     // -------------------------------------------------------------------------
-    // GET /store/apiship/providers  — opt-in: requires CI_APISHIP_TOKEN
+    // GET /store/apiship/providers
     // -------------------------------------------------------------------------
-    const describeIfToken = HAS_TOKEN ? describe : describe.skip
-
-    describeIfToken("GET /store/apiship/providers (live API)", () => {
-      beforeEach(async () => {
-        // Seed real token so the providers workflow can authenticate
-        await api.post("/admin/apiship/options", LIVE_OPTIONS, { headers: adminHeaders })
-      })
-
+    describe("GET /store/apiship/providers", () => {
       it("returns a non-empty providers array", async () => {
         const res = await api.get("/store/apiship/providers", { headers: storeHeaders })
 
@@ -158,13 +190,9 @@ medusaIntegrationTestRunner({
     })
 
     // -------------------------------------------------------------------------
-    // GET /store/apiship/points  — opt-in: requires CI_APISHIP_TOKEN
+    // GET /store/apiship/points
     // -------------------------------------------------------------------------
-    describeIfToken("GET /store/apiship/points (live API)", () => {
-      beforeEach(async () => {
-        await api.post("/admin/apiship/options", LIVE_OPTIONS, { headers: adminHeaders })
-      })
-
+    describe("GET /store/apiship/points", () => {
       it("returns a non-empty points array with default limit", async () => {
         const res = await api.get("/store/apiship/points?limit=5", { headers: storeHeaders })
 
@@ -190,6 +218,7 @@ medusaIntegrationTestRunner({
         )
 
         expect(res.status).toBe(200)
+        expect(res.data.points.length).toBeGreaterThan(0)
         for (const point of res.data.points) {
           expect(point.providerKey).toBe("cdek")
         }

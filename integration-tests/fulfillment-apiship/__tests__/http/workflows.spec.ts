@@ -13,6 +13,7 @@
  */
 
 import { medusaIntegrationTestRunner } from "@medusajs/test-utils"
+import nock from "nock"
 import {
   getApishipOptionsWorkflow,
   getApishipClientConfigWorkflow,
@@ -37,6 +38,72 @@ const { deleteApishipConnectionsWorkflow } = require(
 const { updateApishipConnectionWorkflow } = require(
   "@gorgo/medusa-fulfillment-apiship/workflows/update-apiship-connection"
 )
+const { getApishipProvidersWorkflow } = require(
+  "@gorgo/medusa-fulfillment-apiship/workflows/get-apiship-providers"
+)
+const { getApishipAccountConnectionsWorkflow } = require(
+  "@gorgo/medusa-fulfillment-apiship/workflows/get-apiship-account-connections"
+)
+const { getApishipPointsWorkflow } = require(
+  "@gorgo/medusa-fulfillment-apiship/workflows/get-apiship-points"
+)
+
+// ---------------------------------------------------------------------------
+// nock — intercepts external ApiShip HTTP calls for workflow tests
+// Base URL for test mode: http://api.dev.apiship.ru/v1
+// ---------------------------------------------------------------------------
+const APISHIP_HOST = "http://api.dev.apiship.ru"
+
+const MOCK_PROVIDERS = [
+  { key: "cdek", name: "CDEK" },
+  { key: "boxberry", name: "Boxberry" },
+  { key: "dhl", name: "DHL" },
+]
+
+const MOCK_CONNECTIONS = [
+  { id: 1, providerKey: "cdek", name: "CDEK договор" },
+  { id: 2, providerKey: "boxberry", name: "Boxberry договор" },
+]
+
+const MOCK_POINTS = [
+  { id: 1, providerKey: "cdek" },
+  { id: 2, providerKey: "cdek" },
+  { id: 3, providerKey: "boxberry" },
+]
+
+beforeAll(() => {
+  nock(APISHIP_HOST)
+    .persist()
+    .get("/v1/lists/providers")
+    .reply(200, { rows: MOCK_PROVIDERS })
+
+  nock(APISHIP_HOST)
+    .persist()
+    .get("/v1/connections")
+    .reply(200, { rows: MOCK_CONNECTIONS })
+
+  nock(APISHIP_HOST)
+    .persist()
+    .get("/v1/lists/points")
+    .query(true)
+    .reply(200, function (this: any) {
+      const params = this.req.path.split("?")[1] ?? ""
+      const searchParams = new URLSearchParams(params)
+      const filter = searchParams.get("filter") ?? ""
+      const limit = parseInt(searchParams.get("limit") ?? "10")
+
+      const rows = filter.includes("providerKey=cdek")
+        ? MOCK_POINTS.filter((p) => p.providerKey === "cdek")
+        : MOCK_POINTS
+
+      return { rows: rows.slice(0, limit) }
+    })
+})
+
+afterAll(() => {
+  nock.cleanAll()
+  nock.restore()
+})
 
 jest.setTimeout(120 * 1000)
 
@@ -417,6 +484,148 @@ medusaIntegrationTestRunner({
 
         expect(result.token).toBe("test-token-123")
         expect(result.isTest).toBe(true)
+      })
+    })
+
+    // -------------------------------------------------------------------------
+    // getApishipProvidersWorkflow
+    //
+    // Cache behaviour: the workflow stores results under "apiship:providers" in
+    // the in-memory Medusa cache, which persists across it() blocks within a
+    // single runner process. The cache-round-trip test exercises both branches
+    // (miss → fetch → save, hit → return cached) in one isolated test body.
+    // -------------------------------------------------------------------------
+    describe("getApishipProvidersWorkflow", () => {
+      it("returns a non-empty providers list with key and name", async () => {
+        const container = getContainer()
+        await updateApishipOptionsWorkflow(container).run({ input: BASE_OPTIONS })
+
+        const { result } = await getApishipProvidersWorkflow(container).run()
+
+        expect(Array.isArray(result)).toBe(true)
+        expect(result.length).toBeGreaterThan(0)
+        for (const provider of result) {
+          expect(typeof provider.key).toBe("string")
+          expect(typeof provider.name).toBe("string")
+        }
+      })
+
+      it("well-known providers are present (cdek, boxberry)", async () => {
+        const container = getContainer()
+        await updateApishipOptionsWorkflow(container).run({ input: BASE_OPTIONS })
+
+        const { result } = await getApishipProvidersWorkflow(container).run()
+        const keys = result.map((p: any) => p.key)
+
+        expect(keys).toContain("cdek")
+        expect(keys).toContain("boxberry")
+      })
+
+      it("cache round-trip: second call returns cached result", async () => {
+        const container = getContainer()
+        await updateApishipOptionsWorkflow(container).run({ input: BASE_OPTIONS })
+
+        const { result: first } = await getApishipProvidersWorkflow(container).run()
+        const { result: second } = await getApishipProvidersWorkflow(container).run()
+
+        expect(second).toEqual(first)
+        expect(second.length).toBeGreaterThan(0)
+      })
+    })
+
+    // -------------------------------------------------------------------------
+    // getApishipAccountConnectionsWorkflow
+    // Maps API rows: { id, providerKey, name } → { id, provider_key, name }
+    // -------------------------------------------------------------------------
+    describe("getApishipAccountConnectionsWorkflow", () => {
+      it("returns an array of account connections", async () => {
+        const container = getContainer()
+        await updateApishipOptionsWorkflow(container).run({ input: BASE_OPTIONS })
+
+        const { result } = await getApishipAccountConnectionsWorkflow(container).run()
+
+        expect(Array.isArray(result)).toBe(true)
+      })
+
+      it("each connection has id and provider_key fields (DTO mapping check)", async () => {
+        const container = getContainer()
+        await updateApishipOptionsWorkflow(container).run({ input: BASE_OPTIONS })
+
+        const { result } = await getApishipAccountConnectionsWorkflow(container).run()
+
+        for (const connection of result) {
+          expect(connection.id).toBeDefined()
+          // provider_key is mapped from API's providerKey (camelCase → snake_case)
+          expect(typeof connection.provider_key).toBe("string")
+        }
+      })
+    })
+
+    // -------------------------------------------------------------------------
+    // getApishipPointsWorkflow
+    //
+    // Two branches: no key → direct fetch, key set → cache-aware fetch.
+    // Date.now() in the cache key prevents cross-test cache hits.
+    // -------------------------------------------------------------------------
+    describe("getApishipPointsWorkflow", () => {
+      it("direct fetch (no key): returns a non-empty array of pickup points", async () => {
+        const container = getContainer()
+        await updateApishipOptionsWorkflow(container).run({ input: BASE_OPTIONS })
+
+        const { result } = await getApishipPointsWorkflow(container).run({
+          input: { limit: 5 },
+        })
+
+        expect(Array.isArray(result)).toBe(true)
+        expect(result.length).toBeGreaterThan(0)
+      })
+
+      it("each point has id and providerKey fields (shape contract)", async () => {
+        const container = getContainer()
+        await updateApishipOptionsWorkflow(container).run({ input: BASE_OPTIONS })
+
+        const { result } = await getApishipPointsWorkflow(container).run({
+          input: { limit: 3 },
+        })
+
+        for (const point of result) {
+          expect(point.id).toBeDefined()
+          expect(typeof point.providerKey).toBe("string")
+        }
+      })
+
+      it("filter by providerKey returns only that provider's points", async () => {
+        const container = getContainer()
+        await updateApishipOptionsWorkflow(container).run({ input: BASE_OPTIONS })
+
+        const { result } = await getApishipPointsWorkflow(container).run({
+          input: { filter: "providerKey=cdek", limit: 10 },
+        })
+
+        expect(result.length).toBeGreaterThan(0)
+        for (const point of result) {
+          expect(point.providerKey).toBe("cdek")
+        }
+      })
+
+      it("cache path: second call with same key returns cached result", async () => {
+        const container = getContainer()
+        await updateApishipOptionsWorkflow(container).run({ input: BASE_OPTIONS })
+
+        // Unique key per run — avoids stale cache from other tests
+        const cacheKey = `it_points_${Date.now()}`
+
+        const { result: first } = await getApishipPointsWorkflow(container).run({
+          input: { key: cacheKey, limit: 5 },
+        })
+
+        expect(first.length).toBeGreaterThan(0)
+
+        const { result: second } = await getApishipPointsWorkflow(container).run({
+          input: { key: cacheKey, limit: 5 },
+        })
+
+        expect(second).toEqual(first)
       })
     })
   },

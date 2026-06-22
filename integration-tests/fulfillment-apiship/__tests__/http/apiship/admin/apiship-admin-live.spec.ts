@@ -1,28 +1,89 @@
 /**
- * Opt-in integration tests for admin API endpoints that proxy live ApiShip calls.
+ * Integration tests for admin API endpoints that proxy ApiShip calls.
  *
- * Skipped unless CI_APISHIP_TOKEN is set — they require a valid ApiShip token
- * and make real network requests to api-test.apiship.ru.
+ * External ApiShip HTTP calls are intercepted by nock so tests are always-on
+ * and deterministic — no CI_APISHIP_TOKEN required.
+ *
+ * The full stack is exercised: route → workflow → createApishipClient → nock.
  *
  * Endpoints covered:
- *   GET /admin/apiship/providers        — via getApishipProvidersWorkflow
- *   GET /admin/apiship/points           — via getApishipPointsWorkflow
- *   GET /admin/apiship/account-connections — via getApishipAccountConnectionsWorkflow
- *
- * These tests are OPT-IN. They are skipped unless CI_APISHIP_TOKEN is set:
- *   CI_APISHIP_TOKEN=<your token>  # real or test-mode token
+ *   GET /admin/apiship/providers           → getApishipProvidersWorkflow
+ *   GET /admin/apiship/points              → getApishipPointsWorkflow
+ *   GET /admin/apiship/account-connections → getApishipAccountConnectionsWorkflow
  */
 
 import { medusaIntegrationTestRunner } from "@medusajs/test-utils"
+import nock from "nock"
 import jwt from "jsonwebtoken"
 
 jest.setTimeout(120 * 1000)
 
-const APISHIP_TOKEN = process.env.CI_APISHIP_TOKEN
-const HAS_TOKEN = Boolean(APISHIP_TOKEN)
+// ---------------------------------------------------------------------------
+// Mock data
+// ---------------------------------------------------------------------------
+const MOCK_PROVIDERS = [
+  { key: "cdek", name: "CDEK" },
+  { key: "boxberry", name: "Boxberry" },
+  { key: "dhl", name: "DHL" },
+]
 
-const LIVE_OPTIONS = {
-  token: APISHIP_TOKEN ?? "",
+const MOCK_POINTS = [
+  { id: 1, providerKey: "cdek", address: "Москва, ул. Ленина 1" },
+  { id: 2, providerKey: "cdek", address: "Москва, ул. Мира 5" },
+  { id: 3, providerKey: "boxberry", address: "СПб, Невский 10" },
+]
+
+const MOCK_CONNECTIONS = [
+  { id: 1, providerKey: "cdek", name: "CDEK договор" },
+  { id: 2, providerKey: "boxberry", name: "Boxberry договор" },
+]
+
+// ---------------------------------------------------------------------------
+// nock — intercepts external ApiShip HTTP calls
+// Base URL for test mode: http://api.dev.apiship.ru/v1
+// All other requests (DB, Redis, localhost test server) pass through.
+// ---------------------------------------------------------------------------
+const APISHIP_HOST = "http://api.dev.apiship.ru"
+
+beforeAll(() => {
+  nock(APISHIP_HOST)
+    .persist()
+    .get("/v1/lists/providers")
+    .reply(200, { rows: MOCK_PROVIDERS })
+
+  nock(APISHIP_HOST)
+    .persist()
+    .get("/v1/lists/points")
+    .query(true)
+    .reply(200, function (this: any) {
+      const params = this.req.path.split("?")[1] ?? ""
+      const searchParams = new URLSearchParams(params)
+      const filter = searchParams.get("filter") ?? ""
+      const limit = parseInt(searchParams.get("limit") ?? "10")
+
+      const rows = filter.includes("providerKey=cdek")
+        ? MOCK_POINTS.filter((p) => p.providerKey === "cdek")
+        : MOCK_POINTS
+
+      return { rows: rows.slice(0, limit) }
+    })
+
+  nock(APISHIP_HOST)
+    .persist()
+    .get("/v1/connections")
+    .reply(200, { rows: MOCK_CONNECTIONS })
+})
+
+afterAll(() => {
+  nock.cleanAll()
+  nock.restore()
+})
+
+// ---------------------------------------------------------------------------
+// Test suite
+// ---------------------------------------------------------------------------
+const BASE_OPTIONS = {
+  token: "nock-fake-token",
   is_test: true as const,
   settings: {
     is_cod: false as const,
@@ -63,22 +124,14 @@ medusaIntegrationTestRunner({
         { expiresIn: "1d" }
       )
       adminHeaders["authorization"] = `Bearer ${jwtToken}`
+
+      await api.post("/admin/apiship/options", BASE_OPTIONS, { headers: adminHeaders })
     })
-
-    const describeIfToken = HAS_TOKEN ? describe : describe.skip
-
-    if (!HAS_TOKEN) {
-      it.skip("skipped: set CI_APISHIP_TOKEN to run live admin HTTP tests", () => {})
-    }
 
     // -------------------------------------------------------------------------
     // GET /admin/apiship/providers
     // -------------------------------------------------------------------------
-    describeIfToken("GET /admin/apiship/providers (live API)", () => {
-      beforeEach(async () => {
-        await api.post("/admin/apiship/options", LIVE_OPTIONS, { headers: adminHeaders })
-      })
-
+    describe("GET /admin/apiship/providers", () => {
       it("returns 200 with a non-empty providers array", async () => {
         const res = await api.get("/admin/apiship/providers", { headers: adminHeaders })
 
@@ -103,17 +156,21 @@ medusaIntegrationTestRunner({
         expect(keys).toContain("cdek")
         expect(keys).toContain("boxberry")
       })
+
+      it("returns 401 without authorization header", async () => {
+        const res = await api
+          .get("/admin/apiship/providers")
+          .catch((err: any) => err.response)
+
+        expect(res.status).toBe(401)
+      })
     })
 
     // -------------------------------------------------------------------------
     // GET /admin/apiship/points
     // -------------------------------------------------------------------------
-    describeIfToken("GET /admin/apiship/points (live API)", () => {
-      beforeEach(async () => {
-        await api.post("/admin/apiship/options", LIVE_OPTIONS, { headers: adminHeaders })
-      })
-
-      it("returns 200 with a non-empty points array", async () => {
+    describe("GET /admin/apiship/points", () => {
+      it("returns 200 with a points array", async () => {
         const res = await api.get("/admin/apiship/points?limit=5", { headers: adminHeaders })
 
         expect(res.status).toBe(200)
@@ -138,21 +195,26 @@ medusaIntegrationTestRunner({
         )
 
         expect(res.status).toBe(200)
+        expect(res.data.points.length).toBeGreaterThan(0)
         for (const point of res.data.points) {
           expect(point.providerKey).toBe("cdek")
         }
+      })
+
+      it("returns 401 without authorization header", async () => {
+        const res = await api
+          .get("/admin/apiship/points")
+          .catch((err: any) => err.response)
+
+        expect(res.status).toBe(401)
       })
     })
 
     // -------------------------------------------------------------------------
     // GET /admin/apiship/account-connections
     // -------------------------------------------------------------------------
-    describeIfToken("GET /admin/apiship/account-connections (live API)", () => {
-      beforeEach(async () => {
-        await api.post("/admin/apiship/options", LIVE_OPTIONS, { headers: adminHeaders })
-      })
-
-      it("returns 200 with an array (may be empty for tokens with no connections)", async () => {
+    describe("GET /admin/apiship/account-connections", () => {
+      it("returns 200 with an account_connections array", async () => {
         const res = await api.get("/admin/apiship/account-connections", { headers: adminHeaders })
 
         expect(res.status).toBe(200)
@@ -164,9 +226,16 @@ medusaIntegrationTestRunner({
 
         for (const connection of res.data.account_connections) {
           expect(connection.id).toBeDefined()
-          // provider_key is mapped from API's providerKey (camelCase → snake_case)
           expect(typeof connection.provider_key).toBe("string")
         }
+      })
+
+      it("returns 401 without authorization header", async () => {
+        const res = await api
+          .get("/admin/apiship/account-connections")
+          .catch((err: any) => err.response)
+
+        expect(res.status).toBe(401)
       })
     })
   },
