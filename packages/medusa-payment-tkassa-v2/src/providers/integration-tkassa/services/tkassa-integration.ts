@@ -1,5 +1,10 @@
 import { AbstractIntegrationProvider, defineIntegration, z } from "@gorgo/medusa-integration"
-import type { IntegrationDescriptorInput } from "@gorgo/medusa-integration"
+import type {
+  IntegrationDescriptorInput,
+  TestConnectionContext,
+  TestConnectionResult,
+} from "@gorgo/medusa-integration"
+import { TKassa } from "t-kassa-api"
 
 const schema = z.object({
   terminalKey: z.string().min(1).meta({
@@ -85,6 +90,35 @@ export class TkassaIntegrationProvider extends AbstractIntegrationProvider {
 
   getDescriptor(): IntegrationDescriptorInput {
     return descriptor
+  }
+
+  /**
+   * Verify the terminal credentials against T-Kassa. The SDK only throws on network/HTTP
+   * failures and returns `{ Success, Message }` for app-level errors, so a structured
+   * response to this signed (read-only) GetState means terminal + signature were accepted;
+   * a token/terminal error means the credentials are wrong. Never throws (returns a result).
+   */
+  async testConnection({ settings }: TestConnectionContext): Promise<TestConnectionResult> {
+    const s = settings as Partial<TKassaSettings>
+    if (!s.terminalKey || !s.password) {
+      return { status: "fail", message: "Terminal key or password is missing" }
+    }
+    try {
+      const client = new TKassa(s.terminalKey, s.password, { server: "https://securepay.tinkoff.ru" })
+      const res = (await client.getState({ PaymentId: "0" } as any)) as Record<string, any>
+      if (res?.Success === true) {
+        return { status: "ok" }
+      }
+      const message = `${res?.Message ?? ""} ${res?.Details ?? ""}`.trim()
+      // Token/terminal errors mean bad credentials; anything else (e.g. "payment not
+      // found" for the sentinel id) means we authenticated successfully.
+      if (/token|подпис|terminal|термина/i.test(message)) {
+        return { status: "fail", message: res?.Message || "Invalid credentials" }
+      }
+      return { status: "ok", message: message || "Reachable" }
+    } catch (e: any) {
+      return { status: "fail", message: e?.message ?? "Connection failed" }
+    }
   }
 }
 
