@@ -5,8 +5,11 @@ on:
     branches: [ main ]
     paths:
       - 'docs/**'
-      - 'packages/*/CHANGELOG.md'
-      - 'packages/*/*/CHANGELOG.md'
+  workflow_call:
+    inputs:
+      from_publish:
+        type: boolean
+        default: false
   workflow_dispatch:
 
 jobs:
@@ -16,7 +19,21 @@ jobs:
     if: github.repository == 'gorgojs/medusa-plugins'
 
     steps:
+    - name: Skip if publish owns this push
+      id: guard
+      if: ${{ !inputs.from_publish && github.event_name == 'push' }}
+      uses: actions/github-script@v9
+      with:
+        script: |
+          const files = (context.payload.commits || []).flatMap(c =>
+            [...(c.added || []), ...(c.modified || []), ...(c.removed || [])]
+          )
+          if (files.some(f => f.startsWith('packages/'))) {
+            core.setOutput('skip', 'true')
+          }
+
     - name: Generate GitHub App token
+      if: steps.guard.outputs.skip != 'true'
       id: app-token
       uses: actions/create-github-app-token@v3
       with:
@@ -26,6 +43,7 @@ jobs:
         repositories: automation
 
     - name: Notify automation about docs changes
+      if: steps.guard.outputs.skip != 'true'
       uses: actions/github-script@v9
       with:
         github-token: ${{ steps.app-token.outputs.token }}
