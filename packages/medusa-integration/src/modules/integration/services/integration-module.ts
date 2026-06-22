@@ -4,7 +4,7 @@ import Integration from "../models/integration"
 import { decryptSecrets, encryptSecrets, isValidKey } from "./crypto"
 import IntegrationProviderService from "./integration-provider"
 import type { IntegrationDescriptor, TestConnectionResult } from "../descriptor/define"
-import { introspectDescriptor, type UiDescriptor } from "../descriptor/introspect"
+import { introspectDescriptor, secretFieldNames, type UiDescriptor } from "../descriptor/introspect"
 import { INTEGRATION_OPTIONS_KEY, type IntegrationModuleOptions } from "../types"
 
 type InjectedDependencies = {
@@ -66,6 +66,35 @@ export default class IntegrationModuleService extends MedusaService({
   /** Whether a provider is registered under this `provider_id` (container key). */
   hasProviderId(providerId: string): boolean {
     return !!this.providerService_.getRegistration(providerId)
+  }
+
+  /**
+   * Keep stored secrets that the form left blank: secrets are never sent to the client, so
+   * an empty/absent secret field on save means "keep the existing value". Blank secrets
+   * with no stored value are dropped so validation flags them as required (new config).
+   */
+  async mergeSecrets(
+    providerId: string,
+    payload: Record<string, unknown>
+  ): Promise<Record<string, unknown>> {
+    const descriptor = this.getProviderDescriptor(providerId)
+    if (!descriptor) return payload
+    const blank = secretFieldNames(descriptor).filter(
+      (k) => payload[k] == null || payload[k] === ""
+    )
+    if (blank.length === 0) return payload
+
+    const [record] = await this.listIntegrations({ provider_id: providerId }, { take: 1 })
+    const existing = record
+      ? this.decryptCredentials(record.credentials_ciphertext, record.credentials_iv)
+      : {}
+
+    const merged: Record<string, unknown> = { ...payload }
+    for (const k of blank) {
+      if (k in existing) merged[k] = existing[k]
+      else delete merged[k]
+    }
+    return merged
   }
 
   /**

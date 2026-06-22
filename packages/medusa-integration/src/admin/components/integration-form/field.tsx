@@ -12,7 +12,21 @@ export type UiField = {
   options?: string[]
 }
 
-export const IntegrationField = ({ field, control }: { field: UiField; control: Control<any> }) => {
+export const IntegrationField = ({
+  field,
+  control,
+  secretConfigured = false,
+}: {
+  field: UiField
+  control: Control<any>
+  /** A secret is already stored — the field stays empty and blank means "keep current". */
+  secretConfigured?: boolean
+}) => {
+  // A configured secret is optional (blank = keep existing); only enforce required client-
+  // side for non-secret fields or for secrets that have never been set.
+  const enforceRequired =
+    field.required && field.control !== "switch" && !(field.control === "secret" && secretConfigured)
+
   return (
     <div className="flex flex-col gap-1">
       <Label size="small" weight="plus">
@@ -22,9 +36,12 @@ export const IntegrationField = ({ field, control }: { field: UiField; control: 
       <Controller
         name={field.name}
         control={control}
+        // Inline required-field validation. Deeper rules (min length, enums, cross-field)
+        // are validated server-side and surfaced as a message.
+        rules={{ required: enforceRequired ? `${field.label.en} is required` : false }}
         render={({ field: f, fieldState }) => (
           <>
-            {renderControl(field, f)}
+            {renderControl(field, f, secretConfigured)}
             {fieldState.error?.message && (
               <Text size="xsmall" className="text-ui-fg-error">
                 {fieldState.error.message}
@@ -43,7 +60,7 @@ export const IntegrationField = ({ field, control }: { field: UiField; control: 
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function renderControl(field: UiField, f: any) {
+function renderControl(field: UiField, f: any, secretConfigured = false) {
   switch (field.control) {
     case "switch":
       return <Switch checked={!!f.value} onCheckedChange={f.onChange} />
@@ -75,7 +92,9 @@ function renderControl(field: UiField, f: any) {
       return (
         <Input
           type="password"
-          placeholder={field.placeholder ?? "••••••"}
+          placeholder={
+            secretConfigured ? "•••••• — leave blank to keep" : field.placeholder ?? ""
+          }
           value={f.value ?? ""}
           onChange={f.onChange}
         />
