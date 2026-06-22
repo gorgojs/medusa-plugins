@@ -1,5 +1,17 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 1.0.0
+
+### Major Changes
+
+- [#349](https://github.com/gorgojs/medusa-plugins/pull/349) [`ad61509`](https://github.com/gorgojs/medusa-plugins/commit/ad61509c65c9cbb87f83a23e83dd86fc49c81e2b) Thanks [@gorgohead](https://github.com/gorgohead)! - Stable release. The ApiShip integration is production-proven - running on multiple live stores for over 5 months. No breaking changes vs v0.5.13.
+
+### Patch Changes
+
+- [#346](https://github.com/gorgojs/medusa-plugins/pull/346) [`3747b1a`](https://github.com/gorgojs/medusa-plugins/commit/3747b1a7a3f3ea399a88732c5def5e6ec6fbdcdc) Thanks [@ca11ba](https://github.com/ca11ba)! - improve readmes
+
+- [#346](https://github.com/gorgojs/medusa-plugins/pull/346) [`2f56da4`](https://github.com/gorgojs/medusa-plugins/commit/2f56da4517c341c9da091d1dd558e3d1767bee5f) Thanks [@ca11ba](https://github.com/ca11ba)! - add tests for apiship
+
 ## 0.5.13
 
 ### Patch Changes
