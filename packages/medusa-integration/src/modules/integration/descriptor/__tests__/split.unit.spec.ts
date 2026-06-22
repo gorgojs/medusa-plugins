@@ -16,9 +16,9 @@ const descriptor: IntegrationDescriptor = {
 }
 
 describe("validateAndSplit", () => {
-  it("splits secrets from settings", () => {
-    const { settings, secrets } = validateAndSplit(descriptor, { login: "u", password: "p" })
-    expect(settings).toEqual({ login: "u" })
+  it("splits secrets from options", () => {
+    const { options, secrets } = validateAndSplit(descriptor, { login: "u", password: "p" })
+    expect(options).toEqual({ login: "u" })
     expect(secrets).toEqual({ password: "p" })
   })
   it("throws on invalid payload", () => {

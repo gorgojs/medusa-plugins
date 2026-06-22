@@ -83,7 +83,7 @@ const descriptor = defineIntegration({
  * settings are stored/resolved under `plugin_id = "tkassa"`.
  *
  * Payment behaviour lives in the separate `payment-tkassa` provider (payment module),
- * which reads the resolved settings via `getResolvedSettings("tkassa")`.
+ * which reads the resolved options via `getResolvedOptions("tkassa")`.
  */
 export class TkassaIntegrationProvider extends AbstractIntegrationProvider {
   static identifier = "tkassa"
@@ -98,8 +98,8 @@ export class TkassaIntegrationProvider extends AbstractIntegrationProvider {
    * response to this signed (read-only) GetState means terminal + signature were accepted;
    * a token/terminal error means the credentials are wrong. Never throws (returns a result).
    */
-  async testConnection({ settings }: TestConnectionContext): Promise<TestConnectionResult> {
-    const s = settings as Partial<TKassaSettings>
+  async testConnection({ options }: TestConnectionContext): Promise<TestConnectionResult> {
+    const s = options as Partial<TKassaSettings>
     if (!s.terminalKey || !s.password) {
       return { status: "fail", message: "Terminal key or password is missing" }
     }

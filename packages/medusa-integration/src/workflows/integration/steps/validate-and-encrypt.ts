@@ -25,12 +25,12 @@ export const validateAndEncryptStep = createStep(
       )
     }
 
-    const { settings, secrets } = validateAndSplit(descriptor, input.payload)
+    const { options, secrets } = validateAndSplit(descriptor, input.payload)
     const credentials = service.encryptCredentials(secrets)
     return new StepResponse({
       module: descriptor.module,
       schema_version: descriptor.schemaVersion ?? 1,
-      settings,
+      options,
       ...credentials,
     })
   }

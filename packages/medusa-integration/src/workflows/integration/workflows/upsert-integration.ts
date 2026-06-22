@@ -26,7 +26,7 @@ export const upsertIntegrationWorkflow = createWorkflow(
       title: data.input.title ?? null,
       module: data.prepared.module,
       schema_version: data.prepared.schema_version,
-      settings: data.prepared.settings,
+      options: data.prepared.options,
       credentials_ciphertext: data.prepared.credentials_ciphertext,
       credentials_iv: data.prepared.credentials_iv,
     }))

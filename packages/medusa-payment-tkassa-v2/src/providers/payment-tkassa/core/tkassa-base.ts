@@ -71,7 +71,7 @@ abstract class TkassaBase extends AbstractPaymentProvider {
         instance_id: this.instanceId_,
       },
     })
-    return result?.settings as TKassaSettings
+    return result?.options as TKassaSettings
   }
 
   /** Build a TKassa client from resolved settings (per-call, since creds may be DB-sourced). */

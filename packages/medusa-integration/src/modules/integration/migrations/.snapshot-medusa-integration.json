@@ -113,8 +113,8 @@
           "enumItems": [],
           "mappedType": "text"
         },
-        "settings": {
-          "name": "settings",
+        "options": {
+          "name": "options",
           "type": "jsonb",
           "unsigned": false,
           "autoincrement": false,

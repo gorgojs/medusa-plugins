@@ -8,7 +8,7 @@ export type ModuleKind =
   | "notification" | "feed" | "tax" | "other"
 
 export type TestConnectionContext = {
-  settings: Record<string, unknown>
+  options: Record<string, unknown>
 }
 
 export type TestConnectionResult = {

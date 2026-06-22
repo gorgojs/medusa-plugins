@@ -13,5 +13,5 @@ export type { FieldMeta, FieldControl, Bilingual } from "./modules/integration/d
 // ── For consumers of the integration module ──────────────────────────────────
 export { INTEGRATION_MODULE } from "./modules/integration"
 export { default as IntegrationModuleService } from "./modules/integration/services/integration-module"
-export type { ResolvedSettings } from "./modules/integration/services/integration-module"
+export type { ResolvedOptions } from "./modules/integration/services/integration-module"
 export type { IntegrationModuleOptions } from "./modules/integration/types"

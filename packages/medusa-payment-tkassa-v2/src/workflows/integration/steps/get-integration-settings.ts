@@ -10,7 +10,7 @@ export const getIntegrationSettingsStep = createStep(
   "get-integration-settings",
   async (input: GetIntegrationSettingsStepInput, { container }) => {
     const service: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
-    const settings = await service.getResolvedSettings(input.plugin_id, input.instance_id)
-    return new StepResponse(settings)
+    const resolved = await service.getResolvedOptions(input.plugin_id, input.instance_id)
+    return new StepResponse(resolved)
   }
 )

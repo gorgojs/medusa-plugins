@@ -7,7 +7,7 @@ export type UpsertIntegrationRecordStepInput = {
   provider_id: string
   module: ModuleKind
   schema_version: number
-  settings: Record<string, unknown>
+  options: Record<string, unknown>
   credentials_ciphertext: string | null
   credentials_iv: string | null
   title?: string | null

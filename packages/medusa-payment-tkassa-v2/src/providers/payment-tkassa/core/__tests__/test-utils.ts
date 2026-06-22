@@ -14,17 +14,16 @@ export function makeLogger() {
 
 /**
  * Mock of the `integration` module service as seen from the payment provider's
- * container — `resolveSettings()` reads settings via `getResolvedSettings()`.
+ * container — `resolveSettings()` reads options via `getResolvedOptions()`.
  */
-export function makeIntegration(settings: Record<string, any>) {
+export function makeIntegration(options: Record<string, any>) {
   return {
-    getResolvedSettings: async () => ({
-      settings,
+    getResolvedOptions: async () => ({
+      options,
       meta: {
-        plugin_id: "tkassa",
-        instance_id: null,
+        provider_id: "int_tkassa",
+        module: "payment",
         is_enabled: true,
-        plugin_kind: "payment",
       },
     }),
   }

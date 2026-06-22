@@ -33,6 +33,6 @@ export function maskedView(record: any) {
     last_test_at: record.last_test_at ?? null,
     last_test_status: record.last_test_status ?? null,
     last_test_message: record.last_test_message ?? null,
-    values: { ...(record.settings ?? {}) },
+    values: { ...(record.options ?? {}) },
   }
 }

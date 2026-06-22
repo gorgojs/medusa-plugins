@@ -11,10 +11,10 @@ const Integration = model.define("integration", {
   provider_id: model.text(),
   title: model.text().nullable(),
 
-  // Integration settings
+  // Integration options (non-secret settings)
   credentials_ciphertext: model.text().nullable(),
   credentials_iv: model.text().nullable(),
-  settings: model.json().default({}),
+  options: model.json().default({}),
 
   // Metadata
   schema_version: model.number().default(1),

@@ -13,8 +13,8 @@ type InjectedDependencies = {
   [INTEGRATION_OPTIONS_KEY]?: IntegrationModuleOptions
 }
 
-export type ResolvedSettings = {
-  settings: Record<string, unknown>
+export type ResolvedOptions = {
+  options: Record<string, unknown>
   meta: { provider_id: string; module: string | null; is_enabled: boolean }
 }
 
@@ -26,7 +26,7 @@ export default class IntegrationModuleService extends MedusaService({
   protected logger_?: Logger
   protected providerService_: IntegrationProviderService
   protected options_: IntegrationModuleOptions
-  protected cache_ = new Map<string, { value: ResolvedSettings | null; expiresAt: number }>()
+  protected cache_ = new Map<string, { value: ResolvedOptions | null; expiresAt: number }>()
 
   constructor(deps: InjectedDependencies) {
     super(...arguments)
@@ -152,13 +152,13 @@ export default class IntegrationModuleService extends MedusaService({
     if (!provider.testConnection) {
       return { status: "skipped", message: "No test configured" }
     }
-    const resolved = await this.getResolvedSettings(provider.getIdentifier(), provider.getInstanceId())
+    const resolved = await this.getResolvedOptions(provider.getIdentifier(), provider.getInstanceId())
     if (!resolved) {
       return { status: "fail", message: "Not configured" }
     }
     try {
       return await provider.testConnection({
-        settings: resolved.settings,
+        options: resolved.options,
       })
     } catch (e: any) {
       return { status: "fail", message: e?.message ?? "Test failed" }
@@ -215,8 +215,8 @@ export default class IntegrationModuleService extends MedusaService({
   }
 
   // ── resolver (runtime read, cached) ──────────────────────────────────────────
-  /** Clear the settings cache for one `provider_id`, or all when omitted. */
-  clearSettingsCache(providerId?: string): void {
+  /** Clear the resolved-options cache for one `provider_id`, or all when omitted. */
+  clearOptionsCache(providerId?: string): void {
     if (!providerId) {
       this.cache_.clear()
       return
@@ -225,13 +225,13 @@ export default class IntegrationModuleService extends MedusaService({
   }
 
   /**
-   * Resolve decrypted settings for a `(pluginId, instanceId)` pair (the consumer-facing
+   * Resolve decrypted options for a `(pluginId, instanceId)` pair (the consumer-facing
    * shape) — mapped internally to the `provider_id` key `int_<pluginId>[_<instanceId>]`.
    */
-  async getResolvedSettings(
+  async getResolvedOptions(
     pluginId: string,
     instanceId?: string | null
-  ): Promise<ResolvedSettings | null> {
+  ): Promise<ResolvedOptions | null> {
     const providerId = IntegrationProviderService.key(pluginId, instanceId)
     const hit = this.cache_.get(providerId)
     if (hit && hit.expiresAt > Date.now()) return hit.value
@@ -248,11 +248,11 @@ export default class IntegrationModuleService extends MedusaService({
 
     const [record] = await this.listIntegrations({ provider_id: providerId }, { take: 1 })
 
-    let value: ResolvedSettings | null = null
+    let value: ResolvedOptions | null = null
     if (record && record.is_enabled) {
       value = {
-        settings: {
-          ...(record.settings as Record<string, unknown>) ?? {},
+        options: {
+          ...(record.options as Record<string, unknown>) ?? {},
           ...(this.decryptCredentials(record.credentials_ciphertext, record.credentials_iv) as Record<string, unknown>) ?? {},
         },
         meta: {
