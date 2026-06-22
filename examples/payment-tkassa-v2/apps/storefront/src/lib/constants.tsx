@@ -37,6 +37,10 @@ export const paymentInfoMap: Record<
     title: "T-Kassa",
     icon: <CreditCard />,
   },
+  pp_tkassa_acct2: {
+    title: "T-Kassa Account 2",
+    icon: <CreditCard />,
+  },
   // Add more payment providers here
 }
 

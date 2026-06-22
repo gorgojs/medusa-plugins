@@ -1,4 +1,5 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import { optional } from 'zod'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -23,18 +24,21 @@ module.exports = defineConfig({
         allowPlaintextInDev: false,
         providers: [
           {
-            // `id` only needed to register the SAME provider class more than once
-            // (multi-instance, e.g. two Ozon accounts). Omit for single-instance.
+            // Each registration = one integration instance, keyed by `int_<identifier>[_<id>]`.
+            // Omit `id` for the single/default instance → key `int_tkassa`, stored as
+            // (plugin_id="tkassa", instance_id=null).
             resolve: "@gorgo/medusa-payment-tkassa-v2/providers/integration-tkassa",
-            options: {
-            },
+            id: "tkassa",
+            options: {},
           },
-          // {
-          //   resolve: "@gorgo/medusa-integration-marketplace-ozon/providers/integration-ozon",
-          //   id: "ozon-1",
-          //   options: {
-          //   },
-          // },
+          // Multi-instance: register the SAME class once per account, each with a distinct
+          // `id`. The consuming provider must be registered with a matching `options.id`
+          // so it resolves the right instance (see the payment module below).
+          {
+            resolve: "@gorgo/medusa-payment-tkassa-v2/providers/integration-tkassa",
+            id: "acct2", // → key int_tkassa_acct2, stored as instance_id="acct2"
+            options: {},
+          },
         ],
       },
     },
@@ -56,11 +60,20 @@ module.exports = defineConfig({
       options: {
         providers: [
           {
-            // No options here on purpose: T-Kassa's credentials/behaviour are stored in
+            // No settings here on purpose: T-Kassa's credentials/behaviour are stored in
             // the `integration` module (Admin → Integrations) and read at runtime via
-            // `dependencies: ["integration"]`. medusa-config is no longer a config source.
+            // `dependencies: ["integration"]`. medusa-config is no longer a settings source.
+            // Single instance → no `options.id`, so it resolves `int_tkassa` (instance null).
             resolve: "@gorgo/medusa-payment-tkassa-v2/providers/payment-tkassa",
             id: "tkassa",
+            options: { id: "tkassa"}
+          },
+          // Multi-instance: one payment registration per account, each binding to its
+          // integration instance via `options.id` (must match the integration `id` above).
+          {
+            resolve: "@gorgo/medusa-payment-tkassa-v2/providers/payment-tkassa",
+            id: "acct2",
+            options: { id: "acct2" }, // → reads integration instance int_tkassa_acct2
           },
         ],
       },
