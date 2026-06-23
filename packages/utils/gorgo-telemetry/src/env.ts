@@ -3,18 +3,17 @@ import { readFile } from "node:fs/promises"
 import path from "node:path"
 import type { EnvInfo } from "./types.js"
 
-/** Detect whether the process is running inside a Docker container. */
-async function isDocker(): Promise<boolean> {
-  try {
-    if (existsSync("/.dockerenv")) return true
-  } catch {
-    // ignore
-  }
-  try {
-    const cgroup = await readFile("/proc/self/cgroup", "utf-8")
-    if (cgroup.includes("docker") || cgroup.includes("containerd")) return true
-  } catch {
-    // ignore — non-Linux or unreadable
+/** Detect whether the process is running inside a container runtime (Docker / containerd / kubepods / overlay). */
+async function isContainer(): Promise<boolean> {
+  if (existsSync("/.dockerenv") || existsSync("/run/.containerenv")) return true
+
+  for (const file of ["/proc/self/cgroup", "/proc/self/mountinfo"]) {
+    try {
+      const content = await readFile(file, "utf-8")
+      if (/docker|containerd|kubepods|overlay/.test(content)) return true
+    } catch {
+      // non-Linux or unreadable
+    }
   }
   return false
 }
@@ -85,14 +84,14 @@ async function detectMedusaVersion(): Promise<string> {
 
 /** Build the full EnvInfo block once per process — expensive lookups are cached by the caller. */
 export async function collectEnvInfo(): Promise<EnvInfo> {
-  const [medusa_version, docker] = await Promise.all([detectMedusaVersion(), isDocker()])
+  const [medusa_version, container] = await Promise.all([detectMedusaVersion(), isContainer()])
   return {
     medusa_version,
     node_version: process.version,
     os: process.platform,
     arch: process.arch,
     ci: isCI(),
-    docker,
+    container,
     node_env: process.env.NODE_ENV ?? "development",
     locale: detectLocale(),
     timezone: detectTimezone(),
