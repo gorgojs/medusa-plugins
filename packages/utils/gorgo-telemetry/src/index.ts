@@ -10,6 +10,8 @@ export {
 } from "./config-store.js"
 export { maybeShowFirstRunNotice } from "./notice.js"
 export { collectEnvInfo, findPackageJson } from "./env.js"
+export { collectProjectInfo } from "./project.js"
+export type { ProjectInfo } from "./project.js"
 export type {
   PackageInfo,
   EnvInfo,

@@ -2,6 +2,7 @@ import crypto from "node:crypto"
 import { getMachineId, isTelemetryEnabled, setTelemetryEnabled } from "./config-store.js"
 import { collectEnvInfo, findPackageJson } from "./env.js"
 import { maybeShowFirstRunNotice } from "./notice.js"
+import { collectProjectInfo, type ProjectInfo } from "./project.js"
 import {
   severityForEvent,
   toOtlpAttributes,
@@ -90,6 +91,7 @@ export class TelemetryDispatcher {
   private envCache?: EnvInfo
   private machineIdCache?: string
   private telemetryEnabledCache?: boolean
+  private projectCache?: ProjectInfo | null
 
   private flushing = false
   private exitHandlersRegistered = false
@@ -159,6 +161,19 @@ export class TelemetryDispatcher {
       }
     }
     return this.telemetryEnabledCache
+  }
+
+  private async getProjectInfoCached(): Promise<ProjectInfo | null> {
+    if (this.projectCache === undefined) {
+      try {
+        const info = await collectProjectInfo()
+        this.projectCache = info ?? null
+      } catch (err) {
+        if (VERBOSE) console.warn("[gorgo/telemetry] project info collection failed:", err)
+        this.projectCache = null
+      }
+    }
+    return this.projectCache
   }
 
   // ------------------------------------------------------------------
@@ -268,12 +283,16 @@ export class TelemetryDispatcher {
     this.totalCount = 0
 
     try {
-      const [env, scope] = await Promise.all([this.getEnvInfo(), getScope()])
+      const [env, scope, project] = await Promise.all([
+        this.getEnvInfo(),
+        getScope(),
+        this.getProjectInfoCached(),
+      ])
       const machineId = this.getMachineIdCached()
 
       const resourceLogs = Array.from(inflight.values()).map((bucket) => ({
         resource: {
-          attributes: this.buildResourceAttributes(bucket.pkg, env, machineId),
+          attributes: this.buildResourceAttributes(bucket.pkg, env, machineId, project),
         },
         scopeLogs: [
           {
@@ -337,6 +356,7 @@ export class TelemetryDispatcher {
     this.envCache = undefined
     this.machineIdCache = undefined
     this.telemetryEnabledCache = undefined
+    this.projectCache = undefined
     this.flushing = false
     this.registeredPackages.clear()
     this.pingIndex = 0
@@ -398,7 +418,8 @@ export class TelemetryDispatcher {
   private buildResourceAttributes(
     pkg: PackageInfo,
     env: EnvInfo,
-    machineId: string
+    machineId: string,
+    project: ProjectInfo | null
   ): OtlpAttribute[] {
     return toOtlpAttributes({
       "service.name": process.env.WORKER_MODE ?? "medusa",
@@ -406,6 +427,7 @@ export class TelemetryDispatcher {
       "package.version": pkg.version,
       machine_id: machineId,
       session_id: this.sessionId,
+      ...(project && { "project.id": project.id, "project.hash": project.hash }),
       "env.medusa_version": env.medusa_version,
       "env.node_version": env.node_version,
       "env.os": env.os,
