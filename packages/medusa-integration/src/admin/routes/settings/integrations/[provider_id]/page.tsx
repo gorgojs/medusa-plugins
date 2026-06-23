@@ -4,30 +4,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import { Link, useParams } from "react-router-dom"
 import { sdk } from "../../../../lib/sdk"
-import { IntegrationField, UiField } from "../../../../components/integration-form/field"
-
-type UiDescriptor = {
-  module: string
-  pluginId: string
-  instanceId: string | null
-  displayName: { en: string; ru: string }
-  description?: { en: string; ru: string }
-  hasTestConnection: boolean
-  sections: { id: string; title: { en: string; ru: string }; fields: UiField[] }[]
-}
-
-type IntegrationRecord = {
-  values: Record<string, unknown>
-  has_secrets: boolean
-  last_test_status: "ok" | "fail" | "skipped" | null
-  last_test_at: string | null
-  last_test_message: string | null
-}
-
-type ResourceResponse = {
-  descriptor?: UiDescriptor
-  integration: IntegrationRecord | null
-}
+import { IntegrationField } from "../../../../components/integration-form/field"
+import type { AdminIntegrationResponse } from "../../../../../types"
 
 const testColor = (s: string | null) =>
   s === "ok" ? "green" : s === "fail" ? "red" : "grey"
@@ -39,7 +17,7 @@ const EditPage = () => {
   // Single query: the resource endpoint returns descriptor (UI schema) + current values.
   const { data, isLoading } = useQuery({
     queryKey: ["integration", provider_id],
-    queryFn: () => sdk.client.fetch<ResourceResponse>(`/admin/integrations/${provider_id}`),
+    queryFn: () => sdk.client.fetch<AdminIntegrationResponse>(`/admin/integrations/${provider_id}`),
   })
 
   const descriptor = data?.descriptor

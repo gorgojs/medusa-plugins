@@ -1,31 +1,10 @@
 import { z } from "zod"
 import type { FieldControl, FieldMeta } from "./meta"
 import type { IntegrationDescriptor } from "./define"
+import type { UiField, UiSection, UiDescriptor } from "../../../types"
 
-export type UiField = {
-  name: string
-  control: FieldControl
-  secret: boolean
-  required: boolean
-  label: FieldMeta["label"]
-  hint?: FieldMeta["hint"]
-  placeholder?: string
-  options?: string[]
-}
-export type UiSection = { id: string; title: { en: string; ru: string }; fields: UiField[] }
-export type UiDescriptor = {
-  module: string
-  pluginId: string
-  instanceId: string | null
-  schemaVersion: number
-  displayName: { en: string; ru: string }
-  description?: { en: string; ru: string }
-  icon?: string
-  docsUrl?: string
-  supportsMultipleInstances: boolean
-  hasTestConnection: boolean
-  sections: UiSection[]
-}
+// Canonical definitions live in the zod-free `src/types`; re-exported here for consumers.
+export type { UiField, UiSection, UiDescriptor }
 
 function unwrap(schema: any): any {
   let s = schema

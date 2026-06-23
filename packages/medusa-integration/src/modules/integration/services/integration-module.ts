@@ -6,6 +6,7 @@ import IntegrationProviderService from "./integration-provider"
 import type { IntegrationDescriptor, TestConnectionResult } from "../descriptor/define"
 import { introspectDescriptor, secretFieldNames, type UiDescriptor } from "../descriptor/introspect"
 import { INTEGRATION_OPTIONS_KEY, type IntegrationModuleOptions } from "../types"
+import type { IntegrationOverviewItem } from "../../../types"
 
 type InjectedDependencies = {
   logger?: Logger
@@ -101,21 +102,7 @@ export default class IntegrationModuleService extends MedusaService({
    * Admin overview: every declared instance (registration) merged with its current row
    * state. Lets the UI list configurable integrations before any row exists. No secrets.
    */
-  async listIntegrationsOverview(): Promise<
-    Array<{
-      provider_id: string
-      plugin_id: string
-      instance_id: string | null
-      module: string
-      display_name: { en: string; ru: string }
-      supports_multiple_instances: boolean
-      has_test_connection: boolean
-      is_configured: boolean
-      is_enabled: boolean
-      last_test_status: string | null
-      last_test_at: Date | null
-    }>
-  > {
+  async listIntegrationsOverview(): Promise<IntegrationOverviewItem[]> {
     const regs = this.providerService_.listRegistrations()
     const rows = await this.listIntegrations({}, { take: 1000 })
     const byId = new Map(rows.map((r: any) => [r.provider_id, r]))

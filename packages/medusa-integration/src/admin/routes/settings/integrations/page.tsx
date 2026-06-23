@@ -4,29 +4,16 @@ import { Container, Heading, Text, StatusBadge, Badge } from "@medusajs/ui"
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "react-router-dom"
 import { sdk } from "../../../lib/sdk"
-
-// One entry per declared registration (instances are declared in medusa-config).
-type IntegrationOverview = {
-  provider_id: string
-  plugin_id: string
-  instance_id: string | null
-  module: string
-  display_name: { en: string; ru: string }
-  supports_multiple_instances: boolean
-  has_test_connection: boolean
-  is_configured: boolean
-  is_enabled: boolean
-  last_test_status: "ok" | "fail" | "skipped" | null
-}
+import type { AdminIntegrationListResponse, IntegrationOverviewItem } from "../../../../types"
 
 const IntegrationsPage = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["integration-overview"],
-    queryFn: () => sdk.client.fetch<{ integrations: IntegrationOverview[] }>("/admin/integrations"),
+    queryFn: () => sdk.client.fetch<AdminIntegrationListResponse>("/admin/integrations"),
   })
 
   const items = data?.integrations ?? []
-  const byModule = items.reduce<Record<string, IntegrationOverview[]>>((acc, i) => {
+  const byModule = items.reduce<Record<string, IntegrationOverviewItem[]>>((acc, i) => {
     ;(acc[i.module] ??= []).push(i)
     return acc
   }, {})

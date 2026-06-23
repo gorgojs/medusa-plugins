@@ -1,20 +1,11 @@
 import { z } from "zod"
 import type { Bilingual } from "./meta"
+import type { ModuleKind, TestConnectionContext, TestConnectionResult } from "../../../types"
 
 export { z }
 
-export type ModuleKind =
-  | "payment" | "fulfillment" | "marketplace" | "crm" | "erp" | "pim"
-  | "notification" | "feed" | "tax" | "other"
-
-export type TestConnectionContext = {
-  options: Record<string, unknown>
-}
-
-export type TestConnectionResult = {
-  status: "ok" | "fail" | "skipped"
-  message?: string
-}
+// Canonical definitions live in the zod-free `src/types`; re-exported here for authors.
+export type { ModuleKind, TestConnectionContext, TestConnectionResult }
 
 export type IntegrationDescriptor = {
   /** Which Medusa module this integration configures (payment, fulfillment, …). */

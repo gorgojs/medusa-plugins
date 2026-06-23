@@ -2,6 +2,7 @@ import { MedusaRequest } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 import { INTEGRATION_MODULE } from "../../../modules/integration"
 import type IntegrationModuleService from "../../../modules/integration/services/integration-module"
+import type { MaskedIntegration } from "../../../types"
 
 export function service(req: MedusaRequest): IntegrationModuleService {
   return req.scope.resolve(INTEGRATION_MODULE)
@@ -22,7 +23,7 @@ export function requireProvider(svc: IntegrationModuleService, providerId: strin
  * in `credentials_ciphertext`); `has_secrets` tells the UI a secret is stored so it can
  * render a "leave blank to keep" hint. `values` therefore contains non-secret settings.
  */
-export function maskedView(record: any) {
+export function maskedView(record: any): MaskedIntegration {
   return {
     id: record.id,
     provider_id: record.provider_id,

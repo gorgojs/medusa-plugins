@@ -1,16 +1,9 @@
 import { Input, Switch, Select, Label, Text } from "@medusajs/ui"
 import { Controller, Control } from "react-hook-form"
+import type { UiField } from "../../../types"
 
-export type UiField = {
-  name: string
-  control: "text" | "secret" | "switch" | "number" | "url" | "select" | "multiselect" | "json"
-  secret: boolean
-  required: boolean
-  label: { en: string; ru: string }
-  hint?: { en: string; ru: string }
-  placeholder?: string
-  options?: string[]
-}
+// Re-export so the form keeps importing the field shape from one place.
+export type { UiField }
 
 export const IntegrationField = ({
   field,
