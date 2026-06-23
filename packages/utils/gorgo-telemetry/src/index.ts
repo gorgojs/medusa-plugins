@@ -11,7 +11,7 @@ export {
 export { maybeShowFirstRunNotice } from "./notice.js"
 export { collectEnvInfo, findPackageJson } from "./env.js"
 export type {
-  PluginInfo,
+  PackageInfo,
   EnvInfo,
   TelemetryEvent,
   TelemetryClientOptions,

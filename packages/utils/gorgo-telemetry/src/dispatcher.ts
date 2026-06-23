@@ -9,7 +9,7 @@ import {
   type OtlpLogRecord,
   type OtlpLogsPayload,
 } from "./otlp.js"
-import type { EnvInfo, PluginInfo } from "./types.js"
+import type { EnvInfo, PackageInfo } from "./types.js"
 
 const TELEMETRY_ENDPOINT = "https://telemetry.gorgojs.com"
 const VERBOSE =
@@ -31,7 +31,7 @@ export interface DispatcherOptions {
   endpoint?: string
   flushAt?: number
   flushInterval?: number
-  /** Hard cap on total queued events across all plugins. Oldest are dropped on overflow. */
+  /** Hard cap on total queued events across all packages. Oldest are dropped on overflow. */
   maxQueueSize?: number
   /** Heartbeat interval for `plugin.ping` events (default 6h). Set to 0 to disable. */
   pingInterval?: number
@@ -47,8 +47,8 @@ interface QueuedEvent {
   properties: Record<string, unknown>
 }
 
-interface PluginBucket {
-  plugin: PluginInfo
+interface PackageBucket {
+  pkg: PackageInfo
   events: QueuedEvent[]
 }
 
@@ -59,7 +59,7 @@ function fallbackEnv(): EnvInfo {
     os: process.platform,
     arch: process.arch,
     ci: false,
-    docker: false,
+    container: false,
     node_env: process.env.NODE_ENV ?? "development",
     locale: "C",
     timezone: "UTC",
@@ -69,21 +69,21 @@ function fallbackEnv(): EnvInfo {
 
 /**
  * Process-wide singleton that owns the entire telemetry pipeline:
- * one queue per plugin (`Map<key, bucket>`), one timer, one HTTP request.
+ * one queue per package (`Map<key, bucket>`), one timer, one HTTP request.
  *
- * `TelemetryClient` instances created by individual plugins delegate
- * `enqueue`/`flush` here, so N plugins produce a single OTLP batch with
- * `resourceLogs[]` containing one entry per plugin.
+ * `TelemetryClient` instances created by individual packages delegate
+ * `enqueue`/`flush` here, so N packages produce a single OTLP batch with
+ * `resourceLogs[]` containing one entry per package.
  */
 export class TelemetryDispatcher {
   private readonly endpoint: string
   private readonly flushAt: number
   private readonly flushInterval: number
   private readonly maxQueueSize: number
-  /** Single per-process session id shared by all plugins on this dispatcher. */
+  /** Single per-process session id shared by all packages on this dispatcher. */
   private readonly sessionId: string
 
-  private buckets = new Map<string, PluginBucket>()
+  private buckets = new Map<string, PackageBucket>()
   private totalCount = 0
   private timer?: ReturnType<typeof setTimeout>
 
@@ -97,8 +97,8 @@ export class TelemetryDispatcher {
   /** Monotonic wall-clock nanosecond cursor — bumped by 1 ns when collisions would occur. */
   private lastNano = 0n
 
-  /** Plugins that have created a TelemetryClient on this dispatcher. Used as the ping roster. */
-  private registeredPlugins = new Map<string, PluginInfo>()
+  /** Packages that have created a TelemetryClient on this dispatcher. Used as the ping roster. */
+  private registeredPackages = new Map<string, PackageInfo>()
   private readonly pingInterval: number
   private readonly startedAt = Date.now()
   private pingIndex = 0
@@ -166,19 +166,19 @@ export class TelemetryDispatcher {
   // ------------------------------------------------------------------
 
   /**
-   * Register a plugin so it receives `plugin.ping` heartbeats. Idempotent.
-   * Called from the {@link TelemetryClient} constructor — even silent plugins
+   * Register a package so it receives `plugin.ping` heartbeats. Idempotent.
+   * Called from the {@link TelemetryClient} constructor — even silent packages
    * (which never call `track`) must show up in the ping roster so that
    * "active install" metrics see them.
    */
-  registerPlugin(plugin: PluginInfo): void {
+  registerPackage(pkg: PackageInfo): void {
     try {
-      const key = `${plugin.name}@${plugin.version}`
-      if (this.registeredPlugins.has(key)) return
-      this.registeredPlugins.set(key, plugin)
+      const key = `${pkg.name}@${pkg.version}`
+      if (this.registeredPackages.has(key)) return
+      this.registeredPackages.set(key, pkg)
       this.armPingTimer()
     } catch (err) {
-      if (VERBOSE) console.warn("[gorgo/telemetry] registerPlugin failed:", err)
+      if (VERBOSE) console.warn("[gorgo/telemetry] registerPackage failed:", err)
     }
   }
 
@@ -193,8 +193,8 @@ export class TelemetryDispatcher {
     try {
       this.pingIndex++
       const uptimeSeconds = Math.floor((Date.now() - this.startedAt) / 1000)
-      for (const plugin of this.registeredPlugins.values()) {
-        this.enqueue(plugin, "plugin.ping", {
+      for (const pkg of this.registeredPackages.values()) {
+        this.enqueue(pkg, "plugin.ping", {
           uptime_seconds: uptimeSeconds,
           ping_index: this.pingIndex,
         })
@@ -204,14 +204,14 @@ export class TelemetryDispatcher {
     }
   }
 
-  enqueue(plugin: PluginInfo, eventName: string, properties: Record<string, unknown> = {}): void {
+  enqueue(pkg: PackageInfo, eventName: string, properties: Record<string, unknown> = {}): void {
     try {
       if (!this.firstFlush && !this.isEnabledCached()) return
 
-      const key = `${plugin.name}@${plugin.version}`
+      const key = `${pkg.name}@${pkg.version}`
       let bucket = this.buckets.get(key)
       if (!bucket) {
-        bucket = { plugin, events: [] }
+        bucket = { pkg, events: [] }
         this.buckets.set(key, bucket)
       }
 
@@ -228,7 +228,7 @@ export class TelemetryDispatcher {
 
       if (VERBOSE) {
         console.log(
-          `[gorgo/telemetry] queued: ${eventName} for ${plugin.name} (total: ${this.totalCount})`
+          `[gorgo/telemetry] queued: ${eventName} for ${pkg.name} (total: ${this.totalCount})`
         )
       }
 
@@ -273,7 +273,7 @@ export class TelemetryDispatcher {
 
       const resourceLogs = Array.from(inflight.values()).map((bucket) => ({
         resource: {
-          attributes: this.buildResourceAttributes(bucket.plugin, env, machineId),
+          attributes: this.buildResourceAttributes(bucket.pkg, env, machineId),
         },
         scopeLogs: [
           {
@@ -288,7 +288,7 @@ export class TelemetryDispatcher {
 
       if (VERBOSE) {
         console.log(
-          `[gorgo/telemetry] flushing ${inflightCount} event(s) across ${resourceLogs.length} plugin(s) to ${url}`
+          `[gorgo/telemetry] flushing ${inflightCount} event(s) across ${resourceLogs.length} package(s) to ${url}`
         )
       }
 
@@ -338,7 +338,7 @@ export class TelemetryDispatcher {
     this.machineIdCache = undefined
     this.telemetryEnabledCache = undefined
     this.flushing = false
-    this.registeredPlugins.clear()
+    this.registeredPackages.clear()
     this.pingIndex = 0
   }
 
@@ -359,9 +359,9 @@ export class TelemetryDispatcher {
     })
   }
 
-  /** Drop one event from the largest bucket — the noisiest plugin gets pruned first. */
+  /** Drop one event from the largest bucket — the noisiest package gets pruned first. */
   private dropOldest(): void {
-    let victim: PluginBucket | undefined
+    let victim: PackageBucket | undefined
     let maxLen = 0
     for (const bucket of this.buckets.values()) {
       if (bucket.events.length > maxLen) {
@@ -374,13 +374,13 @@ export class TelemetryDispatcher {
       this.totalCount--
       if (VERBOSE) {
         console.warn(
-          `[gorgo/telemetry] queue full (cap=${this.maxQueueSize}); dropped oldest event from ${victim.plugin.name}`
+          `[gorgo/telemetry] queue full (cap=${this.maxQueueSize}); dropped oldest event from ${victim.pkg.name}`
         )
       }
     }
   }
 
-  private requeue(inflight: Map<string, PluginBucket>): void {
+  private requeue(inflight: Map<string, PackageBucket>): void {
     for (const [key, bucket] of inflight) {
       const existing = this.buckets.get(key)
       if (existing) {
@@ -396,14 +396,14 @@ export class TelemetryDispatcher {
   }
 
   private buildResourceAttributes(
-    plugin: PluginInfo,
+    pkg: PackageInfo,
     env: EnvInfo,
     machineId: string
   ): OtlpAttribute[] {
     return toOtlpAttributes({
       "service.name": process.env.WORKER_MODE ?? "medusa",
-      "plugin.name": plugin.name,
-      "plugin.version": plugin.version,
+      "package.name": pkg.name,
+      "package.version": pkg.version,
       machine_id: machineId,
       session_id: this.sessionId,
       "env.medusa_version": env.medusa_version,
@@ -411,7 +411,7 @@ export class TelemetryDispatcher {
       "env.os": env.os,
       "env.arch": env.arch,
       "env.ci": env.ci,
-      "env.docker": env.docker,
+      "env.container": env.container,
       "env.node_env": env.node_env,
       "env.locale": env.locale,
       "env.timezone": env.timezone,
