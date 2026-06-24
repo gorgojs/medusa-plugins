@@ -1945,6 +1945,7 @@ __metadata:
     "@types/jest": "npm:^29.5.13"
     "@types/node": "npm:^22.13.11"
     jest: "npm:^29.7.0"
+    pg-god: "npm:^1.0.12"
     typescript: "npm:^5.8.2"
   languageName: unknown
   linkType: soft
@@ -1964,6 +1965,7 @@ __metadata:
     "@types/node": "npm:^22.13.11"
     jest: "npm:^29.7.0"
     jsonwebtoken: "npm:^9.0.2"
+    pg-god: "npm:^1.0.12"
     typescript: "npm:^5.8.2"
   languageName: unknown
   linkType: soft
@@ -1983,6 +1985,7 @@ __metadata:
     "@types/node": "npm:^22.13.11"
     jest: "npm:^29.7.0"
     nock: "npm:^14.0.15"
+    pg-god: "npm:^1.0.12"
     typescript: "npm:^5.8.2"
   languageName: unknown
   linkType: soft
@@ -2002,6 +2005,7 @@ __metadata:
     axios: "npm:^1.9.0"
     fast-xml-parser: "npm:^5.2.5"
     jest: "npm:^29.7.0"
+    pg-god: "npm:^1.0.12"
     typescript: "npm:^5.8.2"
   languageName: unknown
   linkType: soft
@@ -2017,6 +2021,7 @@ __metadata:
     "@types/jest": "npm:^29.5.13"
     "@types/node": "npm:^22.13.11"
     jest: "npm:^29.7.0"
+    pg-god: "npm:^1.0.12"
     t-kassa-api: "npm:^1.0.6"
     typescript: "npm:^5.8.2"
   languageName: unknown
@@ -2034,6 +2039,7 @@ __metadata:
     "@types/jest": "npm:^29.5.13"
     "@types/node": "npm:^22.13.11"
     jest: "npm:^29.7.0"
+    pg-god: "npm:^1.0.12"
     typescript: "npm:^5.8.2"
   languageName: unknown
   linkType: soft
