@@ -1,5 +1,5 @@
 import { MiddlewareRoute, validateAndTransformBody } from "@medusajs/framework/http"
-import { AdminUpsertIntegration } from "./validators"
+import { AdminUpsertIntegration, AdminSetIntegrationEnabled } from "./validators"
 
 export const adminIntegrationRoutesMiddlewares: MiddlewareRoute[] = [
   {
@@ -9,5 +9,10 @@ export const adminIntegrationRoutesMiddlewares: MiddlewareRoute[] = [
     // trigger against validateAndTransformBody's generic. Runtime validation is unchanged;
     // `req.validatedBody` is typed explicitly in the route via AdminUpsertIntegrationType.
     middlewares: [validateAndTransformBody(AdminUpsertIntegration as any)],
+  },
+  {
+    methods: ["POST"],
+    matcher: "/admin/integrations/:provider_id/enable",
+    middlewares: [validateAndTransformBody(AdminSetIntegrationEnabled as any)],
   },
 ]

@@ -1,18 +1,42 @@
-import { Container, Heading, Button, Badge, StatusBadge, Text, toast } from "@medusajs/ui"
-import { Spinner } from "@medusajs/icons"
+import {
+  Container,
+  Heading,
+  Text,
+  Badge,
+  StatusBadge,
+  IconButton,
+  DropdownMenu,
+  toast,
+  usePrompt,
+} from "@medusajs/ui"
+import { EllipsisHorizontal, PencilSquare, Trash, Spinner } from "@medusajs/icons"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { useForm } from "react-hook-form"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { useState, type ReactNode } from "react"
 import { sdk } from "../../../../lib/sdk"
-import { IntegrationField } from "../../../../components/integration-form/field"
+import { IntegrationFieldValue } from "../../../../components/integration-form/field-value"
+import { EditSectionDrawer } from "../../../../components/integration-form/edit-section-drawer"
 import type { AdminIntegrationResponse } from "../../../../../types"
 
 const testColor = (s: string | null) =>
   s === "ok" ? "green" : s === "fail" ? "red" : "grey"
 
+/** A Medusa-admin section row: label on the left, value on the right. */
+const Row = ({ label, children }: { label: string; children: ReactNode }) => (
+  <div className="text-ui-fg-subtle grid grid-cols-2 px-6 py-4">
+    <Text size="small" weight="plus" leading="compact">
+      {label}
+    </Text>
+    <div className="flex items-center gap-x-2">{children}</div>
+  </div>
+)
+
 const EditPage = () => {
   const { provider_id } = useParams()
   const qc = useQueryClient()
+  const navigate = useNavigate()
+  const prompt = usePrompt()
+  const [editingSection, setEditingSection] = useState<string | null>(null)
 
   // Single query: the resource endpoint returns descriptor (UI schema) + current values.
   const { data, isLoading } = useQuery({
@@ -21,18 +45,13 @@ const EditPage = () => {
   })
 
   const descriptor = data?.descriptor
-  const form = useForm<Record<string, unknown>>({ values: data?.integration?.values ?? {} })
+  const record = data?.integration
+  const isConfigured = !!record
 
-  const save = useMutation({
-    mutationFn: (values: Record<string, unknown>) =>
-      sdk.client.fetch(`/admin/integrations/${provider_id}`, { method: "POST", body: { values } }),
-    onSuccess: () => {
-      toast.success("Saved")
-      qc.invalidateQueries({ queryKey: ["integration", provider_id] })
-      qc.invalidateQueries({ queryKey: ["integration-overview"] })
-    },
-    onError: (e: any) => toast.error(e?.message ?? "Save failed"),
-  })
+  const invalidate = () => {
+    qc.invalidateQueries({ queryKey: ["integration", provider_id] })
+    qc.invalidateQueries({ queryKey: ["integration-overview"] })
+  }
 
   const test = useMutation({
     mutationFn: () =>
@@ -42,14 +61,44 @@ const EditPage = () => {
       ),
     onSuccess: (r) => {
       r.status === "ok" ? toast.success("Connection OK") : toast.warning(r.message ?? r.status)
-      // Refresh the persisted last-test status/time shown below the heading.
-      qc.invalidateQueries({ queryKey: ["integration", provider_id] })
-      qc.invalidateQueries({ queryKey: ["integration-overview"] })
+      invalidate()
     },
     onError: (e: any) => toast.error(e?.message ?? "Test failed"),
   })
 
-  const record = data?.integration
+  const toggleEnabled = useMutation({
+    mutationFn: (next: boolean) =>
+      sdk.client.fetch(`/admin/integrations/${provider_id}/enable`, {
+        method: "POST",
+        body: { is_enabled: next },
+      }),
+    onSuccess: (_d, next) => {
+      toast.success(next ? "Enabled" : "Disabled")
+      invalidate()
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Update failed"),
+  })
+
+  const remove = useMutation({
+    mutationFn: () =>
+      sdk.client.fetch(`/admin/integrations/${provider_id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      toast.success("Configuration deleted")
+      invalidate()
+      navigate("/settings/integrations")
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Delete failed"),
+  })
+
+  const onDelete = async () => {
+    const confirmed = await prompt({
+      title: "Delete configuration",
+      description: `Remove the stored configuration for ${descriptor?.displayName.en}? This can't be undone.`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+    })
+    if (confirmed) remove.mutate()
+  }
 
   if (isLoading) {
     return (
@@ -72,68 +121,137 @@ const EditPage = () => {
     )
   }
 
+  const editing = descriptor.sections.find((s) => s.id === editingSection) ?? null
+
   return (
-    <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <Heading level="h2">{descriptor.displayName.en}</Heading>
-            {descriptor.instanceId && (
-              <Badge size="2xsmall" color="grey">
-                {descriptor.instanceId}
-              </Badge>
+    <div className="flex flex-col gap-y-3">
+      {/* Identity / overview card */}
+      <Container className="divide-y p-0">
+        <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex flex-col gap-y-1">
+            <div className="flex items-center gap-x-2">
+              <Heading>{descriptor.displayName.en}</Heading>
+              {descriptor.instanceId && (
+                <Badge size="2xsmall" color="grey">
+                  {descriptor.instanceId}
+                </Badge>
+              )}
+            </div>
+            {descriptor.description && (
+              <Text size="small" className="text-ui-fg-subtle">
+                {descriptor.description.en}
+              </Text>
             )}
           </div>
-          {record?.last_test_status && (
-            <div className="flex items-center gap-2">
+          {isConfigured &&
+            (<DropdownMenu>
+              <DropdownMenu.Trigger asChild>
+                <IconButton size="small" variant="transparent">
+                  <EllipsisHorizontal />
+                </IconButton>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content>
+                {descriptor.hasTestConnection && isConfigured && record!.is_enabled && (
+                  <DropdownMenu.Item disabled={test.isPending} onClick={() => test.mutate()}>
+                    Test connection
+                  </DropdownMenu.Item>
+                )}
+                {isConfigured && (
+                  <DropdownMenu.Item
+                    disabled={toggleEnabled.isPending}
+                    onClick={() => toggleEnabled.mutate(!record!.is_enabled)}
+                  >
+                    {record!.is_enabled ? "Disable" : "Enable"}
+                  </DropdownMenu.Item>
+                )}
+                {isConfigured && <DropdownMenu.Separator />}
+                {isConfigured && (
+                  <DropdownMenu.Item className="gap-x-2" onClick={onDelete}>
+                    <Trash className="text-ui-fg-subtle" />
+                    Delete
+                  </DropdownMenu.Item>
+                )}
+              </DropdownMenu.Content>
+            </DropdownMenu>
+          )}
+        </div>
+
+        <Row label="Status">
+          {isConfigured ? (
+            <StatusBadge color={record!.is_enabled ? "green" : "grey"}>
+              {record!.is_enabled ? "Enabled" : "Disabled"}
+            </StatusBadge>
+          ) : (
+            <StatusBadge color="grey">Not configured</StatusBadge>
+          )}
+        </Row>
+        <Row label="Module">
+          <Badge size="2xsmall" color="grey" className="capitalize">
+            {descriptor.module}
+          </Badge>
+        </Row>
+        <Row label="Last test">
+          {record?.last_test_status ? (
+            <>
               <StatusBadge color={testColor(record.last_test_status)}>
                 {record.last_test_status}
               </StatusBadge>
-              <Text size="xsmall" className="text-ui-fg-subtle">
-                {record.last_test_at && `tested ${new Date(record.last_test_at).toLocaleString()}`}
+              <Text size="small" leading="compact" className="text-ui-fg-subtle">
+                {record.last_test_at && new Date(record.last_test_at).toLocaleString()}
                 {record.last_test_message ? ` · ${record.last_test_message}` : ""}
               </Text>
-            </div>
+            </>
+          ) : (
+            <Text size="small" leading="compact" className="text-ui-fg-subtle">
+              Never tested
+            </Text>
           )}
-        </div>
-        <div className="flex gap-2">
-          {descriptor.hasTestConnection && (
-            <Button
-              size="small"
-              variant="secondary"
-              disabled={test.isPending}
-              isLoading={test.isPending}
-              onClick={() => test.mutate()}
-            >
-              Test connection
-            </Button>
-          )}
-          <Button
-            size="small"
-            disabled={save.isPending}
-            isLoading={save.isPending}
-            onClick={form.handleSubmit((v) => save.mutate(v))}
-          >
-            Save
-          </Button>
-        </div>
-      </div>
-      {descriptor.sections.map((s) => (
-        <div key={s.id} className="flex flex-col gap-4 px-6 py-4">
-          <Text size="small" weight="plus">
-            {s.title.en}
-          </Text>
-          {s.fields.map((f) => (
-            <IntegrationField
-              key={f.name}
-              field={f}
-              control={form.control}
-              secretConfigured={!!record?.has_secrets}
-            />
+        </Row>
+      </Container>
+
+      {/* One card per descriptor section */}
+      {descriptor.sections.map((section) => (
+        <Container key={section.id} className="divide-y p-0">
+          <div className="flex items-center justify-between px-6 py-4">
+            <Heading level="h2">{section.title.en}</Heading>
+            <DropdownMenu>
+              <DropdownMenu.Trigger asChild>
+                <IconButton size="small" variant="transparent">
+                  <EllipsisHorizontal />
+                </IconButton>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content>
+                <DropdownMenu.Item className="gap-x-2" onClick={() => setEditingSection(section.id)}>
+                  <PencilSquare className="text-ui-fg-subtle" />
+                  Edit
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu>
+          </div>
+          {section.fields.map((f) => (
+            <Row key={f.name} label={f.label.en}>
+              <IntegrationFieldValue
+                field={f}
+                value={record?.values?.[f.name]}
+                secretConfigured={!!record?.has_secrets}
+              />
+            </Row>
           ))}
-        </div>
+        </Container>
       ))}
-    </Container>
+
+      {editing && (
+        <EditSectionDrawer
+          key={editing.id}
+          open
+          onOpenChange={(open) => !open && setEditingSection(null)}
+          providerId={provider_id!}
+          section={editing}
+          values={record?.values ?? {}}
+          hasSecrets={!!record?.has_secrets}
+        />
+      )}
+    </div>
   )
 }
 

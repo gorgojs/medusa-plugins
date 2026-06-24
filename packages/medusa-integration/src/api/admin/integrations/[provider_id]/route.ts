@@ -57,7 +57,7 @@ export const DELETE = async (
   const provider_id = req.params.provider_id
   requireProvider(svc, provider_id)
   await deleteIntegrationWorkflow(req.scope).run({
-    input: { provider_id, hard: req.query.hard === "true" },
+    input: { provider_id },
   })
   res.json({ id: provider_id, object: "integration", deleted: true })
 }

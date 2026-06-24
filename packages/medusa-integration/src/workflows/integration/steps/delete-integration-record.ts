@@ -4,7 +4,6 @@ import type IntegrationModuleService from "../../../modules/integration/services
 
 export type DeleteIntegrationRecordStepInput = {
   provider_id: string
-  hard?: boolean
 }
 
 export const deleteIntegrationRecordStep = createStep(
@@ -16,11 +15,9 @@ export const deleteIntegrationRecordStep = createStep(
       { take: 1 }
     )
     if (!existing) return new StepResponse({ deleted: false })
-    if (input.hard) {
-      await service.deleteIntegrations(existing.id)
-    } else {
-      await service.updateIntegrations({ id: existing.id, is_enabled: false })
-    }
+    // Permanently remove the configuration and its stored credentials. Temporarily turning
+    // an integration off is a separate action — POST /admin/integrations/:id/enable.
+    await service.deleteIntegrations(existing.id)
     return new StepResponse({ deleted: true })
   }
 )
