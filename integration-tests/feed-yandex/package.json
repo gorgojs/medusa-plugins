@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "@gorgo/medusa-feed-yandex": "workspace:*",
-    "@medusajs/framework": "2.15.5",
-    "@medusajs/medusa": "2.15.5",
-    "@medusajs/test-utils": "2.15.5",
+    "@medusajs/framework": "2.16.0",
+    "@medusajs/medusa": "2.16.0",
+    "@medusajs/test-utils": "2.16.0",
     "jsonwebtoken": "^9.0.2",
     "pg-god": "^1.0.12"
   },
