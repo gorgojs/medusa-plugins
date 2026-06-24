@@ -1,5 +1,13 @@
 # @gorgo/telemetry
 
+## 1.1.1
+
+### Patch Changes
+
+- [#351](https://github.com/gorgojs/medusa-plugins/pull/351) [`4d4f357`](https://github.com/gorgojs/medusa-plugins/commit/4d4f3572f6633162542238651bd51af46f6a1e56) Thanks [@Ghost1863](https://github.com/Ghost1863)! - add project_id and project hash fields
+
+- [#351](https://github.com/gorgojs/medusa-plugins/pull/351) [`133e025`](https://github.com/gorgojs/medusa-plugins/commit/133e0250f11bda92ed679e3265b692c9dfebab89) Thanks [@Ghost1863](https://github.com/Ghost1863)! - improve isDocker and rename to isContainer, rename plugin to package
+
 ## 1.1.0
 
 ### Minor Changes
