@@ -5,6 +5,22 @@ import path from "path";
 import { MedusaError } from "@medusajs/framework/utils";
 import { UPLOAD_DIR } from "../data/constants";
 
+const CURRENCY_MAP: Record<string, string> = {
+  руб: "rub",
+  "руб.": "rub",
+  рублей: "rub",
+  rur: "rub",
+  usd: "usd",
+  "$": "usd",
+  eur: "eur",
+  "€": "eur",
+};
+
+export function normalizeCurrencyCode(raw: string): string {
+  const lower = raw.toLowerCase().trim();
+  return CURRENCY_MAP[lower] ?? lower;
+}
+
 export async function ensureUploadDir() {
 	try {
 		await fs.mkdir(UPLOAD_DIR, { recursive: true });
