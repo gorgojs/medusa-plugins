@@ -50,6 +50,8 @@ export const onecProductsWorkflow = createWorkflow(
           data.stores[0]?.default_currency_code || "rub"
         ).toLowerCase();
 
+        const retailId = (data.offersData.offersPackage?.priceTypes ?? [])[0]?.id;
+
         const propertiesMap = new Map<string, OffersOutput["properties"][0]>();
         data.offersData.properties.forEach((prop) => {
           propertiesMap.set(prop.name, prop);
@@ -81,10 +83,14 @@ export const onecProductsWorkflow = createWorkflow(
                 title: offer.name,
                 sku: offer.article || offer.id,
                 manage_inventory: true,
-                prices: offer.prices?.map((p) => ({
-                  amount: Number(p.pricePerUnit),
-                  currency_code: normalizeCurrencyCode(p.currency || defaultCurrencyCode),
-                })),
+                prices: (() => {
+                  const retail = offer.prices?.filter((p) => p.priceTypeId === retailId && Number(p.pricePerUnit) > 0) ?? [];
+                  const source = retail.length ? retail : (offer.prices?.filter((p) => Number(p.pricePerUnit) > 0) ?? []);
+                  return source.map((p) => ({
+                    amount: Number(p.pricePerUnit),
+                    currency_code: normalizeCurrencyCode(p.currency || defaultCurrencyCode),
+                  }));
+                })(),
                 options: variantOptions,
                 metadata: { isSpecific: offer.id!.includes("#") },
               };
