@@ -83,7 +83,7 @@ describe("getCheapestTariff", () => {
         ],
       }
 
-      const result = getCheapestTariff(response, 2)
+      const result = getCheapestTariff(response as any, 2)
 
       expect((result as any).tariffId).toBe(20)
       expect((result as any).deliveryCost).toBe(100)
@@ -92,7 +92,7 @@ describe("getCheapestTariff", () => {
     it("returns empty object when deliveryToPoint is empty", () => {
       const response = { deliveryToPoint: [] }
 
-      const result = getCheapestTariff(response, 2)
+      const result = getCheapestTariff(response as any, 2)
 
       expect(result).toEqual({})
     })
