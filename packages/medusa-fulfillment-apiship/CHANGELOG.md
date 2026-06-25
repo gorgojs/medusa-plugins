@@ -1,5 +1,11 @@
 # @gorgo/medusa-fulfillment-apiship
 
+## 1.0.1
+
+### Patch Changes
+
+- [#353](https://github.com/gorgojs/medusa-plugins/pull/353) [`62dc3dd`](https://github.com/gorgojs/medusa-plugins/commit/62dc3dd907a9720f232f8321971b98bf65caa47a) Thanks [@Ghost1863](https://github.com/Ghost1863)! - fix get-cheapest-tarrif
+
 ## 1.0.0
 
 ### Major Changes
