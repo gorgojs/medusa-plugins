@@ -2,125 +2,127 @@
 
 ## 1.0.1
 
-### Patch Changes
+### Tests
 
-- [#353](https://github.com/gorgojs/medusa-plugins/pull/353) [`62dc3dd`](https://github.com/gorgojs/medusa-plugins/commit/62dc3dd907a9720f232f8321971b98bf65caa47a) Thanks [@Ghost1863](https://github.com/Ghost1863)! - fix get-cheapest-tarrif
+- fix get-cheapest-tarrif by [@ca11ba](https://github.com/ca11ba) in [#353](https://github.com/gorgojs/medusa-plugins/pull/353) ([`62dc3dd`](https://github.com/gorgojs/medusa-plugins/commit/62dc3dd907a9720f232f8321971b98bf65caa47a))
 
 ## 1.0.0
 
-### Major Changes
+### Documentation
 
-- [#349](https://github.com/gorgojs/medusa-plugins/pull/349) [`ad61509`](https://github.com/gorgojs/medusa-plugins/commit/ad61509c65c9cbb87f83a23e83dd86fc49c81e2b) Thanks [@gorgohead](https://github.com/gorgohead)! - Stable release. The ApiShip integration is production-proven - running on multiple live stores for over 5 months. No breaking changes vs v0.5.13.
+- improve readmes by [@ca11ba](https://github.com/ca11ba) in [#346](https://github.com/gorgojs/medusa-plugins/pull/346) ([`3747b1a`](https://github.com/gorgojs/medusa-plugins/commit/3747b1a7a3f3ea399a88732c5def5e6ec6fbdcdc))
 
-### Patch Changes
+### Tests
 
-- [#346](https://github.com/gorgojs/medusa-plugins/pull/346) [`3747b1a`](https://github.com/gorgojs/medusa-plugins/commit/3747b1a7a3f3ea399a88732c5def5e6ec6fbdcdc) Thanks [@ca11ba](https://github.com/ca11ba)! - improve readmes
+- add tests for apiship by [@ca11ba](https://github.com/ca11ba) in [#346](https://github.com/gorgojs/medusa-plugins/pull/346) ([`2f56da4`](https://github.com/gorgojs/medusa-plugins/commit/2f56da4517c341c9da091d1dd558e3d1767bee5f))
 
-- [#346](https://github.com/gorgojs/medusa-plugins/pull/346) [`2f56da4`](https://github.com/gorgojs/medusa-plugins/commit/2f56da4517c341c9da091d1dd558e3d1767bee5f) Thanks [@ca11ba](https://github.com/ca11ba)! - add tests for apiship
+### Chores
+
+- Stable release. The ApiShip integration is production-proven - running on multiple live stores for over 5 months. No breaking changes vs v0.5.13. by [@gorgohead](https://github.com/gorgohead) in [#349](https://github.com/gorgojs/medusa-plugins/pull/349) ([`ad61509`](https://github.com/gorgojs/medusa-plugins/commit/ad61509c65c9cbb87f83a23e83dd86fc49c81e2b))
 
 ## 0.5.13
 
-### Patch Changes
+### Chores
 
-- [`72fe8cf`](https://github.com/gorgojs/medusa-plugins/commit/72fe8cf32261cd3e44170bd64238587eebb43b2f) Thanks [@gorgohead](https://github.com/gorgohead)! - upgrade Medusa versions and fix dependencies
+- upgrade Medusa versions and fix dependencies by [@gorgohead](https://github.com/gorgohead) in [`72fe8cf`](https://github.com/gorgojs/medusa-plugins/commit/72fe8cf32261cd3e44170bd64238587eebb43b2f)
 
 ## 0.5.12
 
-### Patch Changes
+### Documentation
 
-- [#325](https://github.com/gorgojs/medusa-plugins/pull/325) [`31712e3`](https://github.com/gorgojs/medusa-plugins/commit/31712e33031bf78c5de26e0fd9e953023cedeec5) Thanks [@Ghost1863](https://github.com/Ghost1863)! - minor fix readme
+- minor fix readme by [@gorgohead](https://github.com/gorgohead) in [#325](https://github.com/gorgojs/medusa-plugins/pull/325) ([`31712e3`](https://github.com/gorgojs/medusa-plugins/commit/31712e33031bf78c5de26e0fd9e953023cedeec5))
 
 ## 0.5.11
 
-### Patch Changes
+### Documentation
 
-- [#326](https://github.com/gorgojs/medusa-plugins/pull/326) [`a6dbd74`](https://github.com/gorgojs/medusa-plugins/commit/a6dbd74d0978e4a61a483a6f896efc07766735c4) Thanks [@ca11ba](https://github.com/ca11ba)! - minor improve readmes and docs
+- minor improve readmes and docs by [@gorgohead](https://github.com/gorgohead) in [#326](https://github.com/gorgojs/medusa-plugins/pull/326) ([`a6dbd74`](https://github.com/gorgojs/medusa-plugins/commit/a6dbd74d0978e4a61a483a6f896efc07766735c4))
 
 ## 0.5.10
 
-### Patch Changes
+### Documentation
 
-- [#320](https://github.com/gorgojs/medusa-plugins/pull/320) [`1ff8ae9`](https://github.com/gorgojs/medusa-plugins/commit/1ff8ae9e3f72a3002ca3cb122cce641f11f77edc) Thanks [@ttokyose](https://github.com/ttokyose)! - change link in doc pages
+- change link in doc pages by [@ttokyose](https://github.com/ttokyose) in [#320](https://github.com/gorgojs/medusa-plugins/pull/320) ([`1ff8ae9`](https://github.com/gorgojs/medusa-plugins/commit/1ff8ae9e3f72a3002ca3cb122cce641f11f77edc))
 
 ## 0.5.9
 
-### Patch Changes
+### Documentation
 
-- [`7908c47`](https://github.com/gorgojs/medusa-plugins/commit/7908c470f04d7e9b388ed134e4b6df90f42f6cae) Thanks [@gorgohead](https://github.com/gorgohead)! - change chat link
+- change chat link by [@gorgohead](https://github.com/gorgohead) in [`7908c47`](https://github.com/gorgojs/medusa-plugins/commit/7908c470f04d7e9b388ed134e4b6df90f42f6cae)
 
 ## 0.5.8
 
-### Patch Changes
+### Bug Fixes
 
-- [#308](https://github.com/gorgojs/medusa-plugins/pull/308) [`356bca7`](https://github.com/gorgojs/medusa-plugins/commit/356bca788e7ca8a59f65c0bef0c31ac68ca4f3c3) Thanks [@Ghost1863](https://github.com/Ghost1863)! - add badjes to main, fix readmes, change scripts
+- add badjes to main, fix readmes, change scripts by [@Ghost1863](https://github.com/Ghost1863) in [#308](https://github.com/gorgojs/medusa-plugins/pull/308) ([`356bca7`](https://github.com/gorgojs/medusa-plugins/commit/356bca788e7ca8a59f65c0bef0c31ac68ca4f3c3))
 
 ## 0.5.7
 
-### Patch Changes
+### Bug Fixes
 
-- [#271](https://github.com/gorgojs/medusa-plugins/pull/271) [`7bb54f7`](https://github.com/gorgojs/medusa-plugins/commit/7bb54f7e4c3ae629e2370fbe725aed7dc7939ee8) Thanks [@ttokyose](https://github.com/ttokyose)! - remove apiship model and options
+- remove apiship model and options by [@ttokyose](https://github.com/ttokyose) in [#271](https://github.com/gorgojs/medusa-plugins/pull/271) ([`7bb54f7`](https://github.com/gorgojs/medusa-plugins/commit/7bb54f7e4c3ae629e2370fbe725aed7dc7939ee8))
 
 ## 0.5.6
 
-### Patch Changes
+### Documentation
 
-- [#265](https://github.com/gorgojs/medusa-plugins/pull/265) [`d2cd44a`](https://github.com/gorgojs/medusa-plugins/commit/d2cd44a3fbe4fa1db50b6c63a9bc4683a48de459) Thanks [@gorgo-app](https://github.com/apps/gorgo-app)! - test on Medusa v2.15.3 and update readme
+- test on Medusa v2.15.3 and update readme by [@gorgo-app](https://github.com/apps/gorgo-app) in [#265](https://github.com/gorgojs/medusa-plugins/pull/265) ([`d2cd44a`](https://github.com/gorgojs/medusa-plugins/commit/d2cd44a3fbe4fa1db50b6c63a9bc4683a48de459))
 
 ## 0.5.5
 
-### Patch Changes
+### Bug Fixes
 
-- [#257](https://github.com/gorgojs/medusa-plugins/pull/257) [`3e9c650`](https://github.com/gorgojs/medusa-plugins/commit/3e9c6503eeaf937835b6ca67e0d40a8c24af8f3d) Thanks [@ttokyose](https://github.com/ttokyose)! - make the connection name optional
+- make the connection name optional by [@ttokyose](https://github.com/ttokyose) in [#257](https://github.com/gorgojs/medusa-plugins/pull/257) ([`3e9c650`](https://github.com/gorgojs/medusa-plugins/commit/3e9c6503eeaf937835b6ca67e0d40a8c24af8f3d))
 
 ## 0.5.4
 
-### Patch Changes
+### Documentation
 
-- [#253](https://github.com/gorgojs/medusa-plugins/pull/253) [`98e79cd`](https://github.com/gorgojs/medusa-plugins/commit/98e79cd66117c0be832c4cafa265d2653d1754cc) Thanks [@ttokyose](https://github.com/ttokyose)! - add plugins logo
+- add plugins logo by [@ttokyose](https://github.com/ttokyose) in [#253](https://github.com/gorgojs/medusa-plugins/pull/253) ([`98e79cd`](https://github.com/gorgojs/medusa-plugins/commit/98e79cd66117c0be832c4cafa265d2653d1754cc))
 
 ## 0.5.3
 
-### Patch Changes
+### Chores
 
-- [`6586436`](https://github.com/gorgojs/medusa-plugins/commit/65864366a1e75568cd70f4674e73789f30f527fa) Thanks [@gorgohead](https://github.com/gorgohead)! - align telemetry
+- align telemetry by [@gorgohead](https://github.com/gorgohead) in [`6586436`](https://github.com/gorgojs/medusa-plugins/commit/65864366a1e75568cd70f4674e73789f30f527fa)
 
 ## 0.5.2
 
-### Patch Changes
+### Documentation
 
-- [#248](https://github.com/gorgojs/medusa-plugins/pull/248) [`44351ab`](https://github.com/gorgojs/medusa-plugins/commit/44351abcafb01ffa8f2c9e08fc98f3c359444b8d) Thanks [@gorgo-app](https://github.com/apps/gorgo-app)! - test on Medusa v2.15.2 and update readme
+- test on Medusa v2.15.2 and update readme by [@gorgo-app](https://github.com/apps/gorgo-app) in [#248](https://github.com/gorgojs/medusa-plugins/pull/248) ([`44351ab`](https://github.com/gorgojs/medusa-plugins/commit/44351abcafb01ffa8f2c9e08fc98f3c359444b8d))
 
-- [#244](https://github.com/gorgojs/medusa-plugins/pull/244) [`eefd1db`](https://github.com/gorgojs/medusa-plugins/commit/eefd1dbb0762f0e6bb9b5916386a26ef8d3a266c) Thanks [@gorgo-app](https://github.com/apps/gorgo-app)! - test on Medusa v2.15.1 and update readme
+- test on Medusa v2.15.1 and update readme by [@gorgo-app](https://github.com/apps/gorgo-app) in [#244](https://github.com/gorgojs/medusa-plugins/pull/244) ([`eefd1db`](https://github.com/gorgojs/medusa-plugins/commit/eefd1dbb0762f0e6bb9b5916386a26ef8d3a266c))
 
 ## 0.5.1
 
-### Patch Changes
+### Documentation
 
-- [#239](https://github.com/gorgojs/medusa-plugins/pull/239) [`bcd8eaf`](https://github.com/gorgojs/medusa-plugins/commit/bcd8eafeed495dbb752840322fafe9be84a8fd57) Thanks [@gorgo-app](https://github.com/apps/gorgo-app)! - test on Medusa v2.14.2 and update readme
+- test on Medusa v2.14.2 and update readme by [@gorgo-app](https://github.com/apps/gorgo-app) in [#239](https://github.com/gorgojs/medusa-plugins/pull/239) ([`bcd8eaf`](https://github.com/gorgojs/medusa-plugins/commit/bcd8eafeed495dbb752840322fafe9be84a8fd57))
 
 ## 0.5.0
 
-### Minor Changes
+### Features
 
-- [#236](https://github.com/gorgojs/medusa-plugins/pull/236) [`a58f4e5`](https://github.com/gorgojs/medusa-plugins/commit/a58f4e5b57fcc450558c622fe823065aaca1dead) Thanks [@gorgohead](https://github.com/gorgohead)! - improve naming and requests
+- improve naming and requests by [@gorgohead](https://github.com/gorgohead) in [#236](https://github.com/gorgojs/medusa-plugins/pull/236) ([`a58f4e5`](https://github.com/gorgojs/medusa-plugins/commit/a58f4e5b57fcc450558c622fe823065aaca1dead))
 
 ## 0.4.4
 
-### Patch Changes
+### Documentation
 
-- [#230](https://github.com/gorgojs/medusa-plugins/pull/230) [`433f939`](https://github.com/gorgojs/medusa-plugins/commit/433f9399809b19b43ac5386a41674f78e99db264) Thanks [@gorgo-app](https://github.com/apps/gorgo-app)! - test on Medusa v2.14.1 and update readme
+- test on Medusa v2.14.1 and update readme by [@gorgo-app](https://github.com/apps/gorgo-app) in [#230](https://github.com/gorgojs/medusa-plugins/pull/230) ([`433f939`](https://github.com/gorgojs/medusa-plugins/commit/433f9399809b19b43ac5386a41674f78e99db264))
 
 ## 0.4.3
 
-### Patch Changes
+### Documentation
 
-- [#212](https://github.com/gorgojs/medusa-plugins/pull/212) [`7232152`](https://github.com/gorgojs/medusa-plugins/commit/7232152af5fcdcf57bc6ca53ade54327e55ee605) Thanks [@gorgohead](https://github.com/gorgohead)! - improve readme
+- improve readme by [@gorgohead](https://github.com/gorgohead) in [#212](https://github.com/gorgojs/medusa-plugins/pull/212) ([`7232152`](https://github.com/gorgojs/medusa-plugins/commit/7232152af5fcdcf57bc6ca53ade54327e55ee605))
 
 ## 0.4.2
 
-### Patch Changes
+### Documentation
 
-- [#196](https://github.com/gorgojs/medusa-plugins/pull/196) [`0bd3966`](https://github.com/gorgojs/medusa-plugins/commit/0bd39665e47946f2d8c0968d27b8ff92064113d2) Thanks [@gorgohead](https://github.com/gorgohead)! - improve readme
+- improve readme by [@gorgohead](https://github.com/gorgohead) in [#196](https://github.com/gorgojs/medusa-plugins/pull/196) ([`0bd3966`](https://github.com/gorgojs/medusa-plugins/commit/0bd39665e47946f2d8c0968d27b8ff92064113d2))
 
 ## 0.4.1
 
@@ -130,21 +132,21 @@
 
 ## 0.4.0
 
-### Minor Changes
+### Features
 
-- [#190](https://github.com/gorgojs/medusa-plugins/pull/190) [`eab0baf`](https://github.com/gorgojs/medusa-plugins/commit/eab0baf75e03aedc86df178ee354403058a30547) Thanks [@gorgohead](https://github.com/gorgohead)! - add apiship readme demo video ([#190](https://github.com/gorgojs/medusa-plugins/issues/190))
+- add apiship readme demo video ([#190](https://github.com/gorgojs/medusa-plugins/issues/190)) by [@gorgohead](https://github.com/gorgohead) in [#190](https://github.com/gorgojs/medusa-plugins/pull/190) ([`eab0baf`](https://github.com/gorgojs/medusa-plugins/commit/eab0baf75e03aedc86df178ee354403058a30547))
 
 ## 0.3.1
 
-### Patch Changes
+### Bug Fixes
 
-- [`deef5f7`](https://github.com/gorgojs/medusa-plugins/commit/deef5f72f36a835bbf766dbf3b6b5dcece9db4a8) Thanks [@gorgohead](https://github.com/gorgohead)! - improve UI texts
+- improve UI texts by [@gorgohead](https://github.com/gorgohead) in [`deef5f7`](https://github.com/gorgojs/medusa-plugins/commit/deef5f72f36a835bbf766dbf3b6b5dcece9db4a8)
 
 ## 0.3.0
 
-### Minor Changes
+### Features
 
-- [#182](https://github.com/gorgojs/medusa-plugins/pull/182) [`8463123`](https://github.com/gorgojs/medusa-plugins/commit/84631238073bf5803cab1f7c29a1681c1ab496db) Thanks [@gorgohead](https://github.com/gorgohead)! - feat: manage all ApiShip settings in Medusa Admin
+- feat: manage all ApiShip settings in Medusa Admin by [@ttokyose](https://github.com/ttokyose) in [#182](https://github.com/gorgojs/medusa-plugins/pull/182) ([`8463123`](https://github.com/gorgojs/medusa-plugins/commit/84631238073bf5803cab1f7c29a1681c1ab496db))
 
 ## 0.2.4
 
