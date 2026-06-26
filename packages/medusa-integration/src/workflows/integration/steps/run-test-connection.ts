@@ -12,10 +12,7 @@ export const runTestConnectionStep = createStep(
     const service: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
     const result = await service.runTestConnection(input.provider_id)
 
-    const [existing] = await service.listIntegrations(
-      { provider_id: input.provider_id },
-      { take: 1 }
-    )
+    const existing = await service.findByProviderId(input.provider_id)
     if (existing) {
       await service.updateIntegrations({
         id: existing.id,

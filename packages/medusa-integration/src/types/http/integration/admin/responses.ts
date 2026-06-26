@@ -9,6 +9,8 @@ export interface AdminIntegrationListResponse {
 export interface AdminIntegrationResponse {
   descriptor?: UiDescriptor
   integration: MaskedIntegration | null
+  /** Whether the stored config passes full validation (all required + cross-section rules). */
+  is_complete: boolean
 }
 
 export interface AdminIntegrationUpsertResponse {

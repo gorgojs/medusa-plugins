@@ -1,14 +1,15 @@
 import { createWorkflow, WorkflowResponse, transform } from "@medusajs/framework/workflows-sdk"
 import {
-  validateAndEncryptStep,
+  applyIntegrationSectionStep,
   upsertIntegrationRecordStep,
   emitIntegrationEventStep
 } from "../steps"
 
 export type UpsertIntegrationWorkflowInput = {
   provider_id: string
+  section_id: string
   title?: string | null
-  payload: Record<string, unknown>
+  values: Record<string, unknown>
 }
 
 export const upsertIntegrationWorkflowId = "upsert-integration"
@@ -16,9 +17,10 @@ export const upsertIntegrationWorkflowId = "upsert-integration"
 export const upsertIntegrationWorkflow = createWorkflow(
   upsertIntegrationWorkflowId,
   function (input: UpsertIntegrationWorkflowInput) {
-    const prepared = validateAndEncryptStep({
+    const prepared = applyIntegrationSectionStep({
       provider_id: input.provider_id,
-      payload: input.payload,
+      section_id: input.section_id,
+      values: input.values,
     })
 
     const recordInput = transform({ input, prepared }, (data) => ({

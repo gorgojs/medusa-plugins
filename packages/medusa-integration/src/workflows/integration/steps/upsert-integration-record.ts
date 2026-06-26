@@ -17,10 +17,7 @@ export const upsertIntegrationRecordStep = createStep(
   "upsert-integration-record",
   async (input: UpsertIntegrationRecordStepInput, { container }) => {
     const service: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
-    const [existing] = await service.listIntegrations(
-      { provider_id: input.provider_id },
-      { take: 1 }
-    )
+    const existing = await service.findByProviderId(input.provider_id)
     let record
     if (existing) {
       record = await service.updateIntegrations({ id: existing.id, ...input })

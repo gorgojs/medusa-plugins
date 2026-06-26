@@ -1,5 +1,4 @@
 import { AuthenticatedMedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { MedusaError } from "@medusajs/framework/utils"
 import { upsertIntegrationWorkflow, deleteIntegrationWorkflow } from "../../../../workflows/integration"
 import { service, maskedView, requireProvider } from "../_helpers"
 import type { AdminUpsertIntegrationType } from "../validators"
@@ -9,7 +8,7 @@ import type {
   AdminIntegrationDeleteResponse,
 } from "../../../../types"
 
-/** Descriptor (UI schema) + current masked record for one declared instance. */
+/** Descriptor (UI schema) + current masked record + completeness for one declared instance. */
 export const GET = async (
   req: AuthenticatedMedusaRequest,
   res: MedusaResponse<AdminIntegrationResponse>
@@ -18,8 +17,9 @@ export const GET = async (
   const provider_id = req.params.provider_id
   requireProvider(svc, provider_id)
   const descriptor = svc.getProviderUiDescriptor(provider_id)
-  const [record] = await svc.listIntegrations({ provider_id }, { take: 1 })
-  res.json({ descriptor, integration: record ? maskedView(record) : null })
+  const record = await svc.findByProviderId(provider_id)
+  const is_complete = record ? svc.isComplete(record) : false
+  res.json({ descriptor, integration: record ? maskedView(record) : null, is_complete })
 }
 
 export const POST = async (
@@ -30,21 +30,16 @@ export const POST = async (
   const provider_id = req.params.provider_id
   requireProvider(svc, provider_id)
 
-  // The middleware validated the outer shape ({ title?, values }); here we keep blank
-  // secrets (never sent to the client) and validate `values` against the provider's
-  // descriptor schema, surfacing a readable, field-prefixed message on failure.
-  const descriptor = svc.getProviderDescriptor(provider_id)!
-  const values = await svc.mergeSecrets(provider_id, req.validatedBody.values)
-  const parsed = descriptor.schema.safeParse(values)
-  if (!parsed.success) {
-    throw new MedusaError(
-      MedusaError.Types.INVALID_DATA,
-      parsed.error.issues.map((i) => `${i.path.join(".") || "value"}: ${i.message}`).join("; ")
-    )
-  }
-
+  // Only the edited section is validated (inside the workflow step), against that section's
+  // own schema — a readable, field-prefixed message surfaces on failure. The config as a
+  // whole may remain a partial draft; full validation happens lazily at resolve time.
   const { result } = await upsertIntegrationWorkflow(req.scope).run({
-    input: { provider_id, title: req.validatedBody.title, payload: values },
+    input: {
+      provider_id,
+      section_id: req.validatedBody.section_id,
+      title: req.validatedBody.title,
+      values: req.validatedBody.values,
+    },
   })
   res.json({ integration: maskedView(result) })
 }

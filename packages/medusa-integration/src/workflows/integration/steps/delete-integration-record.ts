@@ -10,10 +10,7 @@ export const deleteIntegrationRecordStep = createStep(
   "delete-integration-record",
   async (input: DeleteIntegrationRecordStepInput, { container }) => {
     const service: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
-    const [existing] = await service.listIntegrations(
-      { provider_id: input.provider_id },
-      { take: 1 }
-    )
+    const existing = await service.findByProviderId(input.provider_id)
     if (!existing) return new StepResponse({ deleted: false })
     // Permanently remove the configuration and its stored credentials. Temporarily turning
     // an integration off is a separate action — POST /admin/integrations/:id/enable.

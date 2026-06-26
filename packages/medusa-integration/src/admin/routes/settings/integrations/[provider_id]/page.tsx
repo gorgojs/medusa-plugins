@@ -47,6 +47,9 @@ const EditPage = () => {
   const descriptor = data?.descriptor
   const record = data?.integration
   const isConfigured = !!record
+  // A configured row whose stored config still fails full validation (missing required
+  // fields somewhere, or a cross-section rule). Incomplete configs don't resolve at runtime.
+  const isComplete = data?.is_complete ?? false
 
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: ["integration", provider_id] })
@@ -151,7 +154,7 @@ const EditPage = () => {
                 </IconButton>
               </DropdownMenu.Trigger>
               <DropdownMenu.Content>
-                {descriptor.hasTestConnection && isConfigured && record!.is_enabled && (
+                {descriptor.hasTestConnection && record!.is_enabled && isComplete && (
                   <DropdownMenu.Item disabled={test.isPending} onClick={() => test.mutate()}>
                     Test connection
                   </DropdownMenu.Item>
@@ -177,12 +180,14 @@ const EditPage = () => {
         </div>
 
         <Row label="Status">
-          {isConfigured ? (
+          {!isConfigured ? (
+            <StatusBadge color="grey">Not configured</StatusBadge>
+          ) : !isComplete ? (
+            <StatusBadge color="orange">Incomplete</StatusBadge>
+          ) : (
             <StatusBadge color={record!.is_enabled ? "green" : "grey"}>
               {record!.is_enabled ? "Enabled" : "Disabled"}
             </StatusBadge>
-          ) : (
-            <StatusBadge color="grey">Not configured</StatusBadge>
           )}
         </Row>
         <Row label="Module">

@@ -12,10 +12,7 @@ export const setIntegrationEnabledStep = createStep(
   "set-integration-enabled",
   async (input: SetIntegrationEnabledStepInput, { container }) => {
     const service: IntegrationModuleService = container.resolve(INTEGRATION_MODULE)
-    const [existing] = await service.listIntegrations(
-      { provider_id: input.provider_id },
-      { take: 1 }
-    )
+    const existing = await service.findByProviderId(input.provider_id)
     // Enabling/disabling only applies to a configured integration (an existing row).
     if (!existing) {
       throw new MedusaError(

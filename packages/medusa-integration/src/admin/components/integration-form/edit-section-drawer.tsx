@@ -37,7 +37,7 @@ export const EditSectionDrawer = ({
   onOpenChange: (open: boolean) => void
   providerId: string
   section: UiSection
-  /** Full current non-secret values across all sections (used to merge on save). */
+  /** This section's current non-secret values, used to pre-fill the form. */
   values: Record<string, unknown>
   hasSecrets?: boolean
 }) => {
@@ -53,9 +53,9 @@ export const EditSectionDrawer = ({
     mutationFn: (sectionValues: Record<string, unknown>) =>
       sdk.client.fetch(`/admin/integrations/${providerId}`, {
         method: "POST",
-        // Merge this section's edits over the full current values. Blank secrets are kept
-        // server-side; untouched secrets from other sections are absent and likewise kept.
-        body: { values: { ...values, ...sectionValues } },
+        // Only this section's values + its id — the server validates just this section and
+        // merges over the rest of the stored config (keeping blank/untouched secrets).
+        body: { section_id: section.id, values: sectionValues },
       }),
     onSuccess: () => {
       toast.success("Saved")

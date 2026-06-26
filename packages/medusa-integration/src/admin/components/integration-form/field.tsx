@@ -78,7 +78,9 @@ function renderControl(field: UiField, f: any, secretConfigured = false) {
           type="number"
           placeholder={field.placeholder}
           value={f.value ?? ""}
-          onChange={(e) => f.onChange(e.target.valueAsNumber)}
+          // Blank → undefined (not NaN), so optional numbers clear cleanly and an untouched
+          // number field doesn't serialize to null and fail the schema.
+          onChange={(e) => f.onChange(e.target.value === "" ? undefined : e.target.valueAsNumber)}
         />
       )
     case "secret":

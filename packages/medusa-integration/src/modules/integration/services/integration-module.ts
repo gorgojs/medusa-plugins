@@ -4,7 +4,8 @@ import Integration from "../models/integration"
 import { decryptSecrets, encryptSecrets, isValidKey } from "./crypto"
 import IntegrationProviderService from "./integration-provider"
 import type { IntegrationDescriptor, TestConnectionResult } from "../descriptor/define"
-import { introspectDescriptor, secretFieldNames, type UiDescriptor } from "../descriptor/introspect"
+import { introspectDescriptor, type UiDescriptor } from "../descriptor/introspect"
+import { isDescriptorComplete } from "../descriptor/validate"
 import { INTEGRATION_OPTIONS_KEY, type IntegrationModuleOptions } from "../types"
 import type { IntegrationOverviewItem } from "../../../types"
 
@@ -70,32 +71,41 @@ export default class IntegrationModuleService extends MedusaService({
   }
 
   /**
-   * Keep stored secrets that the form left blank: secrets are never sent to the client, so
-   * an empty/absent secret field on save means "keep the existing value". Blank secrets
-   * with no stored value are dropped so validation flags them as required (new config).
+   * The single stored row for a `provider_id` (it's unique), or `undefined`. One place for
+   * the "load the row for this provider" lookup shared by the service, steps and routes.
    */
-  async mergeSecrets(
-    providerId: string,
-    payload: Record<string, unknown>
-  ): Promise<Record<string, unknown>> {
-    const descriptor = this.getProviderDescriptor(providerId)
-    if (!descriptor) return payload
-    const blank = secretFieldNames(descriptor).filter(
-      (k) => payload[k] == null || payload[k] === ""
-    )
-    if (blank.length === 0) return payload
-
+  async findByProviderId(providerId: string) {
     const [record] = await this.listIntegrations({ provider_id: providerId }, { take: 1 })
-    const existing = record
-      ? this.decryptCredentials(record.credentials_ciphertext, record.credentials_iv)
-      : {}
+    return record
+  }
 
-    const merged: Record<string, unknown> = { ...payload }
-    for (const k of blank) {
-      if (k in existing) merged[k] = existing[k]
-      else delete merged[k]
+  /**
+   * Full decrypted config (non-secret options + decrypted secrets) for one `provider_id`,
+   * or `{}` if no row exists. Used at write time to merge a single edited section over the
+   * rest of the stored config without losing secrets the form never sends back.
+   */
+  async getStoredValues(providerId: string): Promise<Record<string, unknown>> {
+    const record = await this.findByProviderId(providerId)
+    return record ? this.assembleValues(record) : {}
+  }
+
+  /**
+   * Whether a loaded row passes full validation against its provider's descriptor (all
+   * required fields present + every section schema and the cross-section `validate`).
+   * Derived on demand — never persisted — so it can't drift when the descriptor changes.
+   */
+  isComplete(record: any): boolean {
+    const descriptor = this.getProviderDescriptor(record.provider_id)
+    if (!descriptor) return false
+    return isDescriptorComplete(descriptor, this.assembleValues(record))
+  }
+
+  /** Non-secret options + decrypted secrets for a loaded record. */
+  protected assembleValues(record: any): Record<string, unknown> {
+    return {
+      ...((record.options as Record<string, unknown>) ?? {}),
+      ...this.decryptCredentials(record.credentials_ciphertext, record.credentials_iv),
     }
-    return merged
   }
 
   /**
@@ -119,6 +129,7 @@ export default class IntegrationModuleService extends MedusaService({
         has_test_connection: typeof r.provider.testConnection === "function",
         is_configured: !!row,
         is_enabled: row?.is_enabled ?? false,
+        is_complete: row ? this.isComplete(row) : false,
         last_test_status: row?.last_test_status ?? null,
         last_test_at: row?.last_test_at ?? null,
       }
@@ -233,20 +244,26 @@ export default class IntegrationModuleService extends MedusaService({
       )
     }
 
-    const [record] = await this.listIntegrations({ provider_id: providerId }, { take: 1 })
+    const record = await this.findByProviderId(providerId)
 
     let value: ResolvedOptions | null = null
+    // An incomplete config is invisible to consumers (treated like "not configured"), so a
+    // partially-filled draft can never leak into a provider mid-setup. Completeness is the
+    // full validation: every section schema + the descriptor's cross-section `validate`.
     if (record && record.is_enabled) {
-      value = {
-        options: {
-          ...(record.options as Record<string, unknown>) ?? {},
-          ...(this.decryptCredentials(record.credentials_ciphertext, record.credentials_iv) as Record<string, unknown>) ?? {},
-        },
-        meta: {
-          provider_id: record.provider_id,
-          module: record.module ?? null,
-          is_enabled: record.is_enabled,
-        },
+      const descriptor = this.getProviderDescriptor(providerId)!
+      const assembled = this.assembleValues(record)
+      if (isDescriptorComplete(descriptor, assembled)) {
+        // Apply schema defaults for fields the user never set explicitly.
+        const parsed = descriptor.schema.safeParse(assembled)
+        value = {
+          options: parsed.success ? (parsed.data as Record<string, unknown>) : assembled,
+          meta: {
+            provider_id: record.provider_id,
+            module: record.module ?? null,
+            is_enabled: record.is_enabled,
+          },
+        }
       }
     }
     this.cache_.set(providerId, { value, expiresAt: Date.now() + CACHE_TTL_MS })

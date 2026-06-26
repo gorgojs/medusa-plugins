@@ -8,19 +8,28 @@ const descriptor: IntegrationDescriptor = {
   pluginId: "demo",
   instanceId: null,
   displayName: { en: "Demo", ru: "Демо" },
+  schema: z.object({}),
   sections: [
-    { id: "general", title: { en: "General", ru: "Общее" } },
-    { id: "behavior", title: { en: "Behavior", ru: "Поведение" } },
+    {
+      id: "general",
+      title: { en: "General", ru: "Общее" },
+      schema: z.object({
+        login: z.string().meta({ control: "text", label: { en: "Login", ru: "Логин" } }),
+        password: z.string().meta({ control: "secret", secret: true, label: { en: "Password", ru: "Пароль" } }),
+      }),
+    },
+    {
+      id: "behavior",
+      title: { en: "Behavior", ru: "Поведение" },
+      schema: z.object({
+        test_mode: z.boolean().default(false).meta({ control: "switch", label: { en: "Test", ru: "Тест" } }),
+      }),
+    },
   ],
-  schema: z.object({
-    login: z.string().meta({ section: "general", control: "text", label: { en: "Login", ru: "Логин" } }),
-    password: z.string().meta({ section: "general", control: "secret", secret: true, label: { en: "Password", ru: "Пароль" } }),
-    test_mode: z.boolean().default(false).meta({ section: "behavior", control: "switch", label: { en: "Test", ru: "Тест" } }),
-  }),
 }
 
 describe("introspect", () => {
-  it("groups fields by section in declared order", () => {
+  it("groups fields by their declaring section in order", () => {
     const ui = introspectDescriptor(descriptor)
     expect(ui.sections.map((s) => s.id)).toEqual(["general", "behavior"])
     expect(ui.sections[0].fields.map((f) => f.name)).toEqual(["login", "password"])
@@ -35,7 +44,13 @@ describe("introspect", () => {
     expect(pw.label).toEqual({ en: "Password", ru: "Пароль" })
   })
 
-  it("lists secret field names", () => {
+  it("marks non-optional fields as required", () => {
+    const ui = introspectDescriptor(descriptor)
+    expect(ui.sections[0].fields.find((f) => f.name === "login")!.required).toBe(true)
+    expect(ui.sections[1].fields.find((f) => f.name === "test_mode")!.required).toBe(false)
+  })
+
+  it("lists secret field names across sections", () => {
     expect(secretFieldNames(descriptor)).toEqual(["password"])
   })
 

@@ -6,62 +6,7 @@ import type {
 } from "@gorgo/medusa-integration"
 import { TKassa } from "t-kassa-api"
 
-const schema = z.object({
-  terminalKey: z.string().min(1).meta({
-    section: "credentials", control: "text",
-    label: { en: "Terminal key", ru: "Терминал" },
-  }),
-  password: z.string().min(1).meta({
-    section: "credentials", control: "secret", secret: true,
-    label: { en: "Password", ru: "Пароль" },
-  }),
-  capture: z.boolean().default(true).meta({
-    section: "behavior", control: "switch",
-    label: { en: "Auto-capture", ru: "Автосписание" },
-  }),
-  useReceipt: z.boolean().default(false).meta({
-    section: "receipt", control: "switch",
-    label: { en: "Send receipts", ru: "Отправлять чеки" },
-  }),
-  ffdVersion: z.enum(["1.2", "1.05"]).optional().meta({
-    section: "receipt", control: "select",
-    label: { en: "FFD version", ru: "Версия ФФД" },
-  }),
-  taxation: z.enum(["osn", "usn_income", "usn_income_outcome", "esn", "patent"]).optional().meta({
-    section: "receipt", control: "select",
-    label: { en: "Taxation", ru: "Налогообложение" },
-  }),
-  taxItemDefault: z
-    .enum(["none", "vat0", "vat5", "vat7", "vat10", "vat20", "vat105", "vat107", "vat110", "vat120"]).optional()
-    .meta({
-      section: "receipt",
-      control: "select",
-      label: {
-        en: "Default item tax",
-        ru: "Налог товара"
-      },
-    }),
-  taxShippingDefault: z.enum(["none", "vat0", "vat5", "vat7", "vat10", "vat20", "vat105", "vat107", "vat110", "vat120"]).optional().meta({
-    section: "receipt", control: "select",
-    label: { en: "Default shipping tax", ru: "Налог доставки" },
-  }),
-}).superRefine((val, ctx) => {
-  // Receipts require the full FFD configuration. Mirrors the rule that used to live in
-  // the payment provider's `validateOptions`, now that settings are validated here on
-  // write. Only enforced when receipts are actually enabled (`useReceipt` truthy).
-  if (!val.useReceipt) return
-  for (const field of ["ffdVersion", "taxation", "taxItemDefault", "taxShippingDefault"] as const) {
-    if (val[field] == null) {
-      ctx.addIssue({
-        code: "custom",
-        path: [field],
-        message: `\`${field}\` is required when receipts are enabled`,
-      })
-    }
-  }
-})
-
-export type TKassaSettings = z.infer<typeof schema>
+const TAX = ["none", "vat0", "vat5", "vat7", "vat10", "vat20", "vat105", "vat107", "vat110", "vat120"] as const
 
 const descriptor = defineIntegration({
   module: "payment",
@@ -69,13 +14,67 @@ const descriptor = defineIntegration({
   displayName: { en: "T-Kassa", ru: "Т-Касса" },
   description: { en: "Tinkoff/T-Bank payment gateway", ru: "Платёжный шлюз Т-Банк" },
   supportsMultipleInstances: true,
-  schema,
   sections: [
-    { id: "credentials", title: { en: "Credentials", ru: "Доступы" } },
-    { id: "behavior", title: { en: "Behavior", ru: "Поведение" } },
-    { id: "receipt", title: { en: "Receipt", ru: "Чеки" } },
+    {
+      id: "credentials",
+      title: { en: "Credentials", ru: "Доступы" },
+      schema: z.object({
+        terminalKey: z.string().min(1).meta({
+          control: "text", label: { en: "Terminal key", ru: "Терминал" },
+        }),
+        password: z.string().min(1).meta({
+          control: "secret", secret: true, label: { en: "Password", ru: "Пароль" },
+        }),
+      }),
+    },
+    {
+      id: "behavior",
+      title: { en: "Behavior", ru: "Поведение" },
+      schema: z.object({
+        capture: z.boolean().default(true).meta({
+          control: "switch", label: { en: "Auto-capture", ru: "Автосписание" },
+        }),
+      }),
+    },
+    {
+      id: "receipt",
+      title: { en: "Receipt", ru: "Чеки" },
+      // Receipts require the full FFD configuration — an intra-section rule, so it lives on
+      // this section's own schema and runs both when the section is saved and during full
+      // (activation) validation. Only enforced when receipts are enabled (`useReceipt`).
+      schema: z.object({
+        useReceipt: z.boolean().default(false).meta({
+          control: "switch", label: { en: "Send receipts", ru: "Отправлять чеки" },
+        }),
+        ffdVersion: z.enum(["1.2", "1.05"]).optional().meta({
+          control: "select", label: { en: "FFD version", ru: "Версия ФФД" },
+        }),
+        taxation: z.enum(["osn", "usn_income", "usn_income_outcome", "esn", "patent"]).optional().meta({
+          control: "select", label: { en: "Taxation", ru: "Налогообложение" },
+        }),
+        taxItemDefault: z.enum(TAX).optional().meta({
+          control: "select", label: { en: "Default item tax", ru: "Налог товара" },
+        }),
+        taxShippingDefault: z.enum(TAX).optional().meta({
+          control: "select", label: { en: "Default shipping tax", ru: "Налог доставки" },
+        }),
+      }).superRefine((val, ctx) => {
+        if (!val.useReceipt) return
+        for (const field of ["ffdVersion", "taxation", "taxItemDefault", "taxShippingDefault"] as const) {
+          if (val[field] == null) {
+            ctx.addIssue({
+              code: "custom",
+              path: [field],
+              message: `\`${field}\` is required when receipts are enabled`,
+            })
+          }
+        }
+      }),
+    },
   ],
 })
+
+export type TKassaSettings = z.infer<typeof descriptor.schema>
 
 /**
  * Integration-provider for T-Kassa: declares the plugin's settings contract to the

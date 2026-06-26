@@ -11,6 +11,8 @@ export interface IntegrationOverviewItem {
   has_test_connection: boolean
   is_configured: boolean
   is_enabled: boolean
+  /** Stored config passes full validation (all required fields + cross-section rules). */
+  is_complete: boolean
   last_test_status: TestStatus | null
   last_test_at: DateValue
 }
