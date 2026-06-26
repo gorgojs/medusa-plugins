@@ -2,6 +2,7 @@
 import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
+import { resolveCommitAuthors } from './github-authors.js'
 
 const PATHS_TO_DIR = ['packages', 'packages/utils']
 
@@ -90,8 +91,7 @@ function getCommitsSince(ref) {
         hash:         hash?.trim(),
         type:         type?.trim(),
         scopes:       scope ? scope.split(',').map(s => s.trim()) : [],
-        desc:         desc?.trim(),
-        body:         body || null,
+        desc:         desc?.trim().replace(/\s*\(#\d+\)$/, ''),
         isBreaking:   !!breaking || hasBreakingFooter,
         breakingNote: hasBreakingFooter ? body.match(/^BREAKING CHANGE:\s*(.+)/m)?.[1] : null,
       }
@@ -106,7 +106,19 @@ function getProcessedCount() {
     .length
 }
 
-function main() {
+async function resolveAuthors(commits) {
+  const token = process.env.GITHUB_TOKEN
+  if (!token) return new Map()
+  const repo = process.env.GITHUB_REPOSITORY || 'gorgojs/medusa-plugins'
+  try {
+    return await resolveCommitAuthors(commits.map(c => c.hash), { repo, token })
+  } catch (err) {
+    console.log(`  author resolution skipped: ${err.message}`)
+    return new Map()
+  }
+}
+
+async function main() {
   if (isReleaseHead()) {
     console.log('HEAD is a release commit — skipping changeset generation.')
     return
@@ -117,6 +129,7 @@ function main() {
   const scopeToPackage = loadScopeToPackage()
   const baseRef = getBaseRef()
   const commits = getCommitsSince(baseRef)
+  const authors = await resolveAuthors(commits)
   let index = getProcessedCount()
 
   console.log(`Base: ${baseRef ?? '(all history)'}, commits: ${commits.length}, existing: ${index}`)
@@ -142,14 +155,16 @@ function main() {
 
     if (packageNames.length === 0) continue
 
+    const author = authors.get(commit.hash)
+
     const content = [
       '---',
       ...packageNames.map(name => `"${name}": ${bump}`),
       '---',
       '',
       `commit: ${commit.hash}`,
+      ...(author ? [`author: @${author}`] : []),
       commit.desc,
-      ...(commit.body ? ['', commit.body] : []),
       ...(commit.breakingNote ? ['', `BREAKING CHANGE: ${commit.breakingNote}`] : []),
       '',
     ].join('\n')
@@ -165,4 +180,4 @@ function main() {
   console.log(`Generated ${generated} changeset(s).`)
 }
 
-main()
+await main()

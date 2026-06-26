@@ -111,6 +111,15 @@ chore(deps): bump @medusajs/medusa to 2.14.0
 
 Scope maps directly to changeset bump type: `feat` → minor, `fix/perf/refactor/docs/revert/test` → patch, breaking (`!`) → major.
 
+## Changelog Generation
+
+`CHANGELOG.md` entries read `<description> by @author in #<pr> (<commit>)` (the `#<pr>` is omitted for direct pushes) and are grouped by **commit type**, not by semver bump (the bump is conveyed by the version number itself). The pipeline:
+
+1. `scripts/generate-changesets.js` turns conventional commits into changesets and stamps each with `commit:` and `author: @<git-author>` (resolved in one GraphQL batch via `scripts/github-authors.js`). The `author:` line makes the credit the **commit author**, not the PR author — `@changesets/changelog-github` otherwise overrides it with the PR author. The description has any trailing ` (#<pr>)` (added by GitHub squash merges) stripped, and the commit body is dropped except a `BREAKING CHANGE:` footer.
+2. `changeset version` uses stock `@changesets/changelog-github` (configured in `.changeset/config.json`) to render entries; `scripts/format-changelog.js` (wired into `release:version`) then **reformats** each line to `… by @author in #<pr> (<commit>)` and **regroups** each new version block into sections — Highlights, Breaking Changes, Features, Bug Fixes, …, Chores — deriving the section from each commit's conventional type. Both passes are idempotent.
+
+Section logic, line reformatting, and the curated `HIGHLIGHT_COMMITS` set live in `scripts/changelog-utils.js`. A commit lands in **Highlights** if its body has a `Highlight: true` trailer, or its SHA is in `HIGHLIGHT_COMMITS` (the latter is for historical commits that predate the trailer). Blocks with no commit link (pre-automation entries) are left untouched. `scripts/rewrite-changelogs.js` is the one-off tool that applied this format to historical changelogs.
+
 ## Package Architecture
 
 ### Source structure (inside package/<name>/src/)
