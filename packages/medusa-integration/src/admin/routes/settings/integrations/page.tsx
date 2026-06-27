@@ -73,7 +73,7 @@ const IntegrationsPage = () => {
                         <StatusBadge color="orange">incomplete</StatusBadge>
                       ) : (
                         <StatusBadge color={configured ? "green" : "grey"}>
-                          {configured ? "configured" : "not configured"}
+                          {!i.is_configured ? "not configured" : i.is_enabled ? "enabled" : "disabled"}
                         </StatusBadge>
                       )}
                     </div>

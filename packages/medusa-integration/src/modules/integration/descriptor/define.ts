@@ -62,11 +62,8 @@ export type IntegrationDescriptor = IntegrationDescriptorInput & {
 }
 
 // Merge the output types of every section's schema into the full settings shape.
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-  k: infer I
-) => void
-  ? I
-  : never
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends
+  (k: infer I) => void ? I : never
 type MergedSettings<S extends readonly IntegrationSection[]> = UnionToIntersection<
   { [K in keyof S]: S[K] extends IntegrationSection<infer Z> ? z.infer<Z> : never }[number]
 >
