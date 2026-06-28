@@ -1,6 +1,6 @@
 import { readdirSync, existsSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
-import { regroupChangelog, reformatChangelog, sectionForSha } from './changelog-utils.js'
+import { formatNewestBlock, sectionForSha } from './changelog-utils.js'
 
 const DIRS = ['packages', 'packages/utils']
 
@@ -21,7 +21,7 @@ function changelogFiles() {
 let formatted = 0
 for (const file of changelogFiles()) {
   const original = readFileSync(file, 'utf8')
-  const rebuilt = regroupChangelog(reformatChangelog(original), sectionForSha)
+  const rebuilt = formatNewestBlock(original, sectionForSha)
   if (rebuilt === original) continue
   writeFileSync(file, rebuilt, 'utf8')
   formatted++
