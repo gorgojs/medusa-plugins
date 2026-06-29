@@ -30,10 +30,6 @@ export const SECTION_TITLES = {
   other:    'Other Changes',
 }
 
-const HIGHLIGHT_COMMITS = new Set([
-  '8f28e414fe7a992e4189f8be4bebd92c33d3dd57',
-])
-
 const TYPE_TO_SECTION = {
   feat: 'feat',
   fix: 'fix',
@@ -62,14 +58,13 @@ export function gitSubject(sha) {
 }
 
 export function sectionForSha(sha) {
-  if (HIGHLIGHT_COMMITS.has(sha) || HIGHLIGHT_COMMITS.has(sha.slice(0, 7))) return 'highlights'
   if (typeCache.has(sha)) return typeCache.get(sha)
   const text = gitSubject(sha)
   let section = null
   if (text) {
     const [subject, ...rest] = text.split('\n')
     const body = rest.join('\n')
-    if (/^Highlight:\s*(true|yes)\b/im.test(body)) section = 'highlights'
+    if (/^Highlight\s*$/im.test(body)) section = 'highlights'
     else {
       const m = subject.match(SUBJECT_RE)
       if (m) {
