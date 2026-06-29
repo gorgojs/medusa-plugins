@@ -135,6 +135,7 @@ export const onecOffersWorkflow = createWorkflow(
 
           productsToUpdate.push({
             id: product.id,
+            // @ts-ignore - options may not be in UpdateProductWorkflowInputDTO yet
             options: finalOptions,
             variants: finalVariants as any[],
           });
