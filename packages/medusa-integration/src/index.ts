@@ -9,6 +9,8 @@ export type {
   TestConnectionResult,
 } from "./modules/integration/descriptor/define"
 export type { FieldMeta, FieldControl, Bilingual } from "./modules/integration/descriptor/meta"
+// Props a provider's custom-section admin widget receives via the settings page's LayoutComposer.
+export type { IntegrationSectionData } from "./types"
 
 // ── For consumers of the integration module ──────────────────────────────────
 export { INTEGRATION_MODULE } from "./modules/integration"

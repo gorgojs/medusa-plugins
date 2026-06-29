@@ -41,6 +41,22 @@ export interface UiSection {
   fields: UiField[]
 }
 
+/**
+ * Data the integration settings page passes to a provider's custom-section widget
+ * (via `LayoutComposer`'s `data` prop → the widget's `data` prop). Secrets are never
+ * included — anything needing a secret must go through a server endpoint.
+ */
+export interface IntegrationSectionData {
+  /** Registration key `int_<pluginId>[_<instanceId>]` — pass to API calls. */
+  providerId: string
+  /** The provider's `static identifier` (e.g. "tkassa"). */
+  pluginId: string
+  /** Current non-secret options for this integration. */
+  values: Record<string, unknown>
+  /** Whether the stored config passes full validation (use to gate actions). */
+  isComplete: boolean
+}
+
 export interface UiDescriptor {
   module: string
   pluginId: string

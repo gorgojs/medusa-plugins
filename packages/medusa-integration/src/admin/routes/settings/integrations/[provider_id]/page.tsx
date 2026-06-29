@@ -13,10 +13,11 @@ import { EllipsisHorizontal, PencilSquare, Trash, Spinner } from "@medusajs/icon
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useState, type ReactNode } from "react"
+import { LayoutComposer } from "@medusajs/dashboard/components"
 import { sdk } from "../../../../lib/sdk"
 import { IntegrationFieldValue } from "../../../../components/integration-form/field-value"
 import { EditSectionDrawer } from "../../../../components/integration-form/edit-section-drawer"
-import type { AdminIntegrationResponse } from "../../../../../types"
+import type { AdminIntegrationResponse, IntegrationSectionData } from "../../../../../types"
 
 const testColor = (s: string | null) =>
   s === "ok" ? "green" : s === "fail" ? "red" : "grey"
@@ -59,7 +60,7 @@ const EditPage = () => {
   const test = useMutation({
     mutationFn: () =>
       sdk.client.fetch<{ status: string; message?: string }>(
-        `/admin/integrations/${provider_id}/test`,
+        `/admin/integrations/${provider_id}/test-connection`,
         { method: "POST" }
       ),
     onSuccess: (r) => {
@@ -126,7 +127,16 @@ const EditPage = () => {
 
   const editing = descriptor.sections.find((s) => s.id === editingSection) ?? null
 
-  return (
+  // Data handed to provider-supplied custom-section widgets (injected via LayoutComposer's
+  // per-plugin zone). Secrets are never included.
+  const sectionData: IntegrationSectionData = {
+    providerId: provider_id!,
+    pluginId: descriptor.pluginId,
+    values: (record?.values as Record<string, unknown>) ?? {},
+    isComplete,
+  }
+
+  const main = (
     <div className="flex flex-col gap-y-3">
       {/* Identity / overview card */}
       <Container className="divide-y p-0">
@@ -257,6 +267,16 @@ const EditPage = () => {
         />
       )}
     </div>
+  )
+
+  return (
+    <LayoutComposer
+      widgetsZonePrefix={`gorgo.integration.${descriptor.pluginId}`}
+      preferredLayoutId="core:single-column"
+      sections={{ main }}
+      data={sectionData}
+      hasOutlet={false}
+    />
   )
 }
 
