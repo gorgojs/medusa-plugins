@@ -42,6 +42,10 @@ module.exports = defineConfig({
         ],
       },
     },
+    {
+      resolve: "@gorgo/medusa-payment-tkassa-v2",
+      options: {}
+    }
     // {
     //   resolve: "@gorgo/medusa-integration-marketplace",
     //   options: {
