@@ -1,5 +1,11 @@
 # @gorgo/medusa-1c
 
+## 0.1.12
+
+### Bug Fixes
+
+- fix 1c-build by [@gorgohead](https://github.com/gorgohead) in [`9280f8b`](https://github.com/gorgojs/medusa-plugins/commit/9280f8b9d8a634942b52aa7b1f227579c511a40b)
+
 ## 0.1.11
 
 ### Chores
