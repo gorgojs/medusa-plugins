@@ -8,6 +8,10 @@
 
 ## 1.0.0
 
+### Highlights
+
+- Stable release. The ApiShip integration is production-proven - running on multiple live stores for over 5 months. No breaking changes vs v0.5.13. by [@gorgohead](https://github.com/gorgohead) in [#349](https://github.com/gorgojs/medusa-plugins/pull/349) ([`ad61509`](https://github.com/gorgojs/medusa-plugins/commit/ad61509c65c9cbb87f83a23e83dd86fc49c81e2b))
+
 ### Documentation
 
 - improve readmes by [@ca11ba](https://github.com/ca11ba) in [#346](https://github.com/gorgojs/medusa-plugins/pull/346) ([`3747b1a`](https://github.com/gorgojs/medusa-plugins/commit/3747b1a7a3f3ea399a88732c5def5e6ec6fbdcdc))
@@ -15,10 +19,6 @@
 ### Tests
 
 - add tests for apiship by [@ca11ba](https://github.com/ca11ba) in [#346](https://github.com/gorgojs/medusa-plugins/pull/346) ([`2f56da4`](https://github.com/gorgojs/medusa-plugins/commit/2f56da4517c341c9da091d1dd558e3d1767bee5f))
-
-### Chores
-
-- Stable release. The ApiShip integration is production-proven - running on multiple live stores for over 5 months. No breaking changes vs v0.5.13. by [@gorgohead](https://github.com/gorgohead) in [#349](https://github.com/gorgojs/medusa-plugins/pull/349) ([`ad61509`](https://github.com/gorgojs/medusa-plugins/commit/ad61509c65c9cbb87f83a23e83dd86fc49c81e2b))
 
 ## 0.5.13
 
