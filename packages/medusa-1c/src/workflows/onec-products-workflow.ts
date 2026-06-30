@@ -135,8 +135,8 @@ export const onecProductsWorkflow = createWorkflow(
           productsToUpdate.push({
             id: product.id,
             options: finalOptions,
-            variants: finalVariants as any[],
-          });
+            variants: finalVariants,
+          } as any);
         });
 
         return { productsToUpdate };
