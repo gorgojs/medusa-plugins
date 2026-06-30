@@ -68,6 +68,11 @@ export const onecProductsWorkflow = createWorkflow(
           const offersForProduct = groupedOffers.get(product.external_id!);
           if (!offersForProduct) return;
 
+          const skuToVariantId = new Map<string, string>();
+          (product.variants ?? []).forEach((v: any) => {
+            if (v.sku) skuToVariantId.set(v.sku, v.id);
+          });
+
           const usedOptionTitles = new Set<string>();
           let draftVariants: CreateProductVariantWorkflowInputDTO[] =
             offersForProduct.map((offer) => {
@@ -79,9 +84,14 @@ export const onecProductsWorkflow = createWorkflow(
                   variantOptions[optionTitle] = char.value;
                 });
               }
+              const sku = offer.article || offer.id;
+              const existingVariantId = skuToVariantId.get(sku!);
+              const onecCharId = offer.characteristics?.find((c: any) => c.id)?.id
+                || (offer.id!.includes("#") ? offer.id!.split("#")[1] : undefined);
               return {
+                ...(existingVariantId ? { id: existingVariantId } : {}),
                 title: offer.name,
-                sku: offer.article || offer.id,
+                sku,
                 manage_inventory: true,
                 prices: (() => {
                   const retail = offer.prices?.filter((p) => p.priceTypeId === retailId && Number(p.pricePerUnit) > 0) ?? [];
@@ -92,7 +102,10 @@ export const onecProductsWorkflow = createWorkflow(
                   }));
                 })(),
                 options: variantOptions,
-                metadata: { isSpecific: offer.id!.includes("#") },
+                metadata: {
+                  isSpecific: offer.id!.includes("#"),
+                  ...(onecCharId ? { onec_characteristic_id: onecCharId } : {}),
+                },
               };
             });
 
@@ -108,12 +121,14 @@ export const onecProductsWorkflow = createWorkflow(
           });
 
           if (finalOptions.length > 0) {
-            finalVariants.forEach((v) => delete v.metadata);
+            finalVariants.forEach((v) => {
+              if (v.metadata) delete (v.metadata as any).isSpecific;
+            });
           } else {
             finalOptions.push({ title: "Default Option", values: ["Default Option Value"] });
             if (finalVariants.length > 0) {
               finalVariants[0].options = { "Default Option": "Default Option Value" };
-              delete finalVariants[0].metadata;
+              if (finalVariants[0].metadata) delete (finalVariants[0].metadata as any).isSpecific;
             }
           }
 

@@ -1,7 +1,7 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import * as fs from "fs/promises";
 import * as path from "path";
-import { MedusaError, Modules } from "@medusajs/utils";
+import { MedusaError } from "@medusajs/utils";
 import OnecService from "../../../modules/1c/service";
 import { ONE_C_MODULE } from "../../../modules/1c";
 import {
@@ -15,6 +15,10 @@ import {
 } from "@medusajs/framework/types";
 import { onecImportWorkflow } from "../../../workflows/onec-import-workflow";
 import { onecOffersWorkflow } from "../../../workflows/onec-offers-workflow";
+import { onecOrdersWorkflow } from "../../../workflows/onec-orders-workflow";
+import { buildOrdersXml } from "../../../utils/orders-xml-builder";
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
+import { IOrderModuleService } from "@medusajs/types";
 
 function sendPlainTextResponse(
   res: MedusaResponse,
@@ -49,7 +53,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     filename?: string;
   };
 
-  if (type === "catalog") {
+  if (type === "catalog" || type === "sale") {
     const sessionId = getSessionId(req);
 
     if (mode !== "checkauth") {
@@ -83,7 +87,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
               .split(":");
 
             if (login && password) {
-              const { success, authIdentity, error } =
+              const { success, error } =
                 await authModuleService.authenticate("emailpass", {
                   body: {
                     email: login,
@@ -106,7 +110,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             }
           } catch (error) {
             logger.debug(
-              `[1C Integration] Authentication attempt failed for user: ${error.message}`
+              `[1C Integration] Authentication attempt failed for user: ${(error as Error).message}`
             );
             checkAuthValid = false;
           }
@@ -156,7 +160,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
         }
 
         const zipSupported = settings?.useZip ? "yes" : "no";
-        const fileLimit = settings?.chunkSize ?? 1024 * 1024 * 100; // 100MB
+        const fileLimit = settings?.chunkSize ?? 1024 * 1024 * 100;
         return sendPlainTextResponse(
           res,
           200,
@@ -190,6 +194,10 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             .filter((f) => f.startsWith("offers") && f.endsWith(".xml"))
             .map((f) => path.join(importSessionDir, f));
 
+          const orderFiles = files
+            .filter((f) => f.startsWith("orders") && f.endsWith(".xml"))
+            .map((f) => path.join(importSessionDir, f));
+
           if (importFiles.length > 0) {
             logger.info(
               "[1C Integration] Found import.xml. Running Import Workflow."
@@ -199,7 +207,9 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
               throwOnError: true,
             });
             if (errors?.length > 0) throw errors[0].error;
-          } else if (offerFiles.length > 0) {
+          }
+
+          if (offerFiles.length > 0) {
             logger.info(
               "[1C Integration] Found offers.xml. Running Offers Workflow."
             );
@@ -208,9 +218,22 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
               throwOnError: true,
             });
             if (errors?.length > 0) throw errors[0].error;
-          } else {
+          }
+
+          if (orderFiles.length > 0) {
+            logger.info(
+              "[1C Integration] Found orders.xml. Running Orders Workflow."
+            );
+            const { errors } = await onecOrdersWorkflow(req.scope).run({
+              input: { orders: orderFiles },
+              throwOnError: true,
+            });
+            if (errors?.length > 0) throw errors[0].error;
+          }
+
+          if (importFiles.length === 0 && offerFiles.length === 0 && orderFiles.length === 0) {
             logger.warn(
-              `[1C Integration] Import: No import or offer files found to import for session ${sessionId}`
+              `[1C Integration] Import: No import, offer or order files found to import for session ${sessionId}`
             );
           }
 
@@ -219,19 +242,118 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
           );
           return sendPlainTextResponse(res, 200, "success");
         } catch (error) {
-          logger.error(
-            `[1C Integration] Import: Failed for session ${sessionId}: ${error}`
-          );
-          return sendPlainTextResponse(res, 500, `failure\n${error.message}`);
+          const msg = error instanceof Error
+            ? error.message
+            : typeof error === "object"
+            ? JSON.stringify(error)
+            : String(error);
+          logger.error(`[1C Integration] Import: Failed for session ${sessionId}: ${msg}`);
+          return sendPlainTextResponse(res, 500, `failure\n${msg}`);
         }
 
       case "query":
-        logger.debug(`[1C Integration] Query: Export not implemented.`);
-        return sendPlainTextResponse(
-          res,
-          200,
-          `failure\nExport functionality (query mode) is not implemented yet.`
-        );
+        if (type !== "sale") {
+          logger.debug(`[1C Integration] Query: only supported for type=sale.`);
+          return sendPlainTextResponse(res, 200, `failure\nQuery mode is only supported for type=sale`);
+        }
+
+        try {
+          logger.debug(`[1C Integration] Query: Exporting Medusa orders to 1C`);
+          const remoteQuery = req.scope.resolve(ContainerRegistrationKeys.REMOTE_QUERY);
+          const orderService = req.scope.resolve<IOrderModuleService>(Modules.ORDER);
+
+          const allOrders = await remoteQuery({
+            entryPoint: "order",
+            fields: [
+              "id", "display_id", "status", "email", "currency_code", "total", "created_at",
+              "metadata",
+              "customer.id", "customer.first_name", "customer.last_name", "customer.email",
+              "shipping_address.first_name", "shipping_address.last_name",
+              "shipping_address.address_1", "shipping_address.address_2", "shipping_address.city",
+              "shipping_address.phone", "shipping_address.postal_code",
+              "items.id", "items.title", "items.variant_id", "items.variant_sku", "items.quantity",
+              "items.unit_price", "items.product_id", "items.detail.quantity",
+            ],
+          });
+
+          const toExport = allOrders.filter(
+            (o: any) => o.status !== "canceled" && !o.metadata?.onec_exported_at && !o.metadata?.onec_order_id
+          );
+
+          if (!toExport.length) {
+            logger.info(`[1C Integration] Query: No new orders to export.`);
+            res.setHeader("Content-Type", "text/xml; charset=utf-8");
+            return res.status(200).send(
+              `<?xml version="1.0" encoding="UTF-8"?><КоммерческаяИнформация ВерсияСхемы="2.10" ДатаФормирования="${new Date().toISOString().substring(0, 19)}"></КоммерческаяИнформация>`
+            );
+          }
+
+          const productIds = [...new Set(
+            toExport.flatMap((o: any) => (o.items ?? []).map((i: any) => i.product_id).filter(Boolean))
+          )];
+          const externalIdByProductId = new Map<string, string>();
+          if (productIds.length) {
+            const products = await remoteQuery({
+              entryPoint: "product",
+              fields: ["id", "external_id"],
+              variables: { id: productIds },
+            });
+            for (const p of products) {
+              if (p.external_id) externalIdByProductId.set(p.id, p.external_id);
+            }
+          }
+
+          const variantIds = [...new Set(
+            toExport.flatMap((o: any) => (o.items ?? []).map((i: any) => i.variant_id).filter(Boolean))
+          )];
+          const variantDataMap = new Map<string, { options: Record<string, string>; onec_characteristic_id?: string }>();
+          if (variantIds.length) {
+            const variants = await remoteQuery({
+              entryPoint: "variant",
+              fields: ["id", "options.value", "options.option.title", "metadata"],
+              variables: { id: variantIds },
+            });
+            for (const v of variants) {
+              const optionValues: Record<string, string> = {};
+              for (const opt of (v.options ?? [])) {
+                const title = opt.option?.title;
+                if (title && title !== "Default Option") {
+                  optionValues[title] = opt.value;
+                }
+              }
+              variantDataMap.set(v.id, {
+                options: optionValues,
+                onec_characteristic_id: v.metadata?.onec_characteristic_id as string | undefined,
+              });
+            }
+          }
+
+          for (const order of toExport) {
+            for (const item of (order.items ?? [])) {
+              item.onec_product_id = externalIdByProductId.get(item.product_id) || item.variant_sku;
+              const variantData = variantDataMap.get(item.variant_id);
+              item.variant_option_values = variantData?.options ?? {};
+              item.onec_characteristic_id = variantData?.onec_characteristic_id;
+            }
+          }
+
+          const xml = buildOrdersXml(toExport);
+
+          await orderService.updateOrders(
+            toExport.map((o: any) => ({
+              id: o.id,
+              metadata: { ...o.metadata, onec_exported_at: new Date().toISOString() },
+            }))
+          );
+
+          logger.info(`[1C Integration] Query: Exported ${toExport.length} orders to 1C.`);
+          res.setHeader("Content-Type", "text/xml; charset=utf-8");
+          return res.status(200).send(xml);
+        } catch (error) {
+          const msg = error instanceof Error ? error.message : JSON.stringify(error);
+          logger.error(`[1C Integration] Query: Failed to export orders: ${msg}`);
+          return sendPlainTextResponse(res, 500, `failure\n${msg}`);
+        }
 
       case "success":
         logger.debug(
@@ -287,7 +409,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     );
   }
 
-  if (type !== "catalog" || mode !== "file" || !filename) {
+  if ((type !== "catalog" && type !== "sale") || mode !== "file" || !filename) {
     return sendPlainTextResponse(
       res,
       400,
