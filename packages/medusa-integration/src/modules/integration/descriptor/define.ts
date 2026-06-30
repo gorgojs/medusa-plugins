@@ -12,6 +12,8 @@ export type IntegrationSection<Z extends z.ZodObject<any> = z.ZodObject<any>> = 
   id: string
   title: Bilingual
   schema: Z
+  /** Which column to render this section in (two-column layout). Defaults to `"main"`. */
+  column?: "main" | "side"
 }
 
 /** Issue raised by a cross-section `validate` rule. */

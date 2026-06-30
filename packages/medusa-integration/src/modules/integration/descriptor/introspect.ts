@@ -51,6 +51,7 @@ function introspectSection(section: IntegrationSection): UiSection {
   return {
     id: section.id,
     title: section.title,
+    column: section.column ?? "main",
     fields: Object.entries(shape).map(([name, field]) => introspectField(name, field)),
   }
 }

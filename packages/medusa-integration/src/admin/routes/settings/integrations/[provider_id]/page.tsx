@@ -17,7 +17,7 @@ import { LayoutComposer } from "@medusajs/dashboard/components"
 import { sdk } from "../../../../lib/sdk"
 import { IntegrationFieldValue } from "../../../../components/integration-form/field-value"
 import { EditSectionDrawer } from "../../../../components/integration-form/edit-section-drawer"
-import type { AdminIntegrationResponse, IntegrationSectionData } from "../../../../../types"
+import type { AdminIntegrationResponse, IntegrationSectionData, UiSection } from "../../../../../types"
 
 const testColor = (s: string | null) =>
   s === "ok" ? "green" : s === "fail" ? "red" : "grey"
@@ -136,6 +136,40 @@ const EditPage = () => {
     isComplete,
   }
 
+  const renderSection = (section: UiSection) => (
+    <Container key={section.id} className="divide-y p-0">
+      <div className="flex items-center justify-between px-6 py-4">
+        <Heading level="h2">{section.title.en}</Heading>
+        <DropdownMenu>
+          <DropdownMenu.Trigger asChild>
+            <IconButton size="small" variant="transparent">
+              <EllipsisHorizontal />
+            </IconButton>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content>
+            <DropdownMenu.Item className="gap-x-2" onClick={() => setEditingSection(section.id)}>
+              <PencilSquare className="text-ui-fg-subtle" />
+              Edit
+            </DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu>
+      </div>
+      {section.fields.map((f) => (
+        <Row key={f.name} label={f.label.en}>
+          <IntegrationFieldValue
+            field={f}
+            value={record?.values?.[f.name]}
+            secretConfigured={!!record?.has_secrets}
+          />
+        </Row>
+      ))}
+    </Container>
+  )
+
+  // Sections opt into the side column via the descriptor's `column` (default "main").
+  const mainSections = descriptor.sections.filter((s) => s.column !== "side")
+  const sideSections = descriptor.sections.filter((s) => s.column === "side")
+
   const main = (
     <div className="flex flex-col gap-y-3">
       {/* Identity / overview card */}
@@ -224,36 +258,8 @@ const EditPage = () => {
         </Row>
       </Container>
 
-      {/* One card per descriptor section */}
-      {descriptor.sections.map((section) => (
-        <Container key={section.id} className="divide-y p-0">
-          <div className="flex items-center justify-between px-6 py-4">
-            <Heading level="h2">{section.title.en}</Heading>
-            <DropdownMenu>
-              <DropdownMenu.Trigger asChild>
-                <IconButton size="small" variant="transparent">
-                  <EllipsisHorizontal />
-                </IconButton>
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Content>
-                <DropdownMenu.Item className="gap-x-2" onClick={() => setEditingSection(section.id)}>
-                  <PencilSquare className="text-ui-fg-subtle" />
-                  Edit
-                </DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu>
-          </div>
-          {section.fields.map((f) => (
-            <Row key={f.name} label={f.label.en}>
-              <IntegrationFieldValue
-                field={f}
-                value={record?.values?.[f.name]}
-                secretConfigured={!!record?.has_secrets}
-              />
-            </Row>
-          ))}
-        </Container>
-      ))}
+      {/* Main-column descriptor sections */}
+      {mainSections.map(renderSection)}
 
       {editing && (
         <EditSectionDrawer
@@ -269,11 +275,13 @@ const EditPage = () => {
     </div>
   )
 
+  const side = <div className="flex flex-col gap-y-3">{sideSections.map(renderSection)}</div>
+
   return (
     <LayoutComposer
       widgetsZonePrefix={`gorgo.integration.${descriptor.pluginId}`}
-      preferredLayoutId="core:single-column"
-      sections={{ main }}
+      preferredLayoutId="core:two-column"
+      sections={{ main, side }}
       data={sectionData}
       hasOutlet={false}
     />

@@ -38,6 +38,7 @@ export interface UiField {
 export interface UiSection {
   id: string
   title: Bilingual
+  column: "main" | "side"
   fields: UiField[]
 }
 
