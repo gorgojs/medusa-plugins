@@ -71,7 +71,48 @@ const descriptor = defineIntegration({
         }
       }),
     },
+    {
+      id: "advanced",
+      title: { en: "Advanced", ru: "Дополнительно" },
+      schema: z.object({
+        // EXAMPLE (nested/array option): zod handles arbitrary nesting fine, and it's
+        // validated/stored/resolved like any field. The generated form has no widget for an
+        // array-of-objects, so it's surfaced with the `json` control (a JSON textarea). For a
+        // richer editor, a custom-section widget would own the UI (see the webhook-tester
+        // widget). Note: nested secrets are NOT split/encrypted per-field — for secret nested
+        // values, mark the whole field secret or persist via a provider-owned endpoint.
+        notifications: z
+          .array(
+            z.object({
+              event: z.enum(["payment", "refund", "all"]),
+              url: z.string().min(1),
+            })
+          )
+          .default([])
+          .meta({
+            control: "json",
+            label: { en: "Extra notifications", ru: "Доп. уведомления" },
+            hint: {
+              en: 'Array of { "event", "url" } objects, edited as JSON.',
+              ru: 'Массив объектов { "event", "url" }, редактируется как JSON.',
+            },
+          }),
+      }),
+    },
   ],
+  // EXAMPLE (cross-section validation): a rule spanning two sections — receipts (receipt)
+  // require auto-capture (behavior). Lives here, not on a section schema, because it
+  // references fields from different sections. Runs only at full/activation validation
+  // (resolve + is_complete), never blocks saving an individual section.
+  validate: (full, ctx) => {
+    const { capture, useReceipt } = full as { capture?: boolean; useReceipt?: boolean }
+    if (useReceipt && !capture) {
+      ctx.addIssue({
+        path: ["capture"],
+        message: "Auto-capture must be enabled to send receipts",
+      })
+    }
+  },
 })
 
 export type TKassaSettings = z.infer<typeof descriptor.schema>

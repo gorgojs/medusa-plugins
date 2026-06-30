@@ -1,9 +1,53 @@
-import { Input, Switch, Select, Label, Text } from "@medusajs/ui"
+import { Input, Switch, Select, Label, Text, Textarea } from "@medusajs/ui"
+import { useState } from "react"
 import { Controller, Control } from "react-hook-form"
 import type { UiField } from "../../../types"
 
 // Re-export so the form keeps importing the field shape from one place.
 export type { UiField }
+
+const jsonToText = (v: unknown) => (v === undefined || v === "" ? "" : JSON.stringify(v, null, 2))
+
+/**
+ * Basic editor for nested/array options (`control: "json"`). The form value is the parsed
+ * object/array; the textarea holds the raw text so invalid intermediate input doesn't clobber
+ * the last valid value. Deep validation (the field's zod schema) still runs server-side.
+ */
+const JsonField = ({ field, f }: { field: UiField; f: any }) => {
+  const [raw, setRaw] = useState(() => jsonToText(f.value))
+  const [error, setError] = useState<string | null>(null)
+  return (
+    <>
+      <Textarea
+        rows={6}
+        className="font-mono"
+        placeholder={field.placeholder ?? "[]"}
+        value={raw}
+        onBlur={f.onBlur}
+        onChange={(e) => {
+          const text = e.target.value
+          setRaw(text)
+          if (text.trim() === "") {
+            setError(null)
+            f.onChange(undefined)
+            return
+          }
+          try {
+            f.onChange(JSON.parse(text))
+            setError(null)
+          } catch {
+            setError("Invalid JSON")
+          }
+        }}
+      />
+      {error && (
+        <Text size="xsmall" className="text-ui-fg-error">
+          {error}
+        </Text>
+      )}
+    </>
+  )
+}
 
 export const IntegrationField = ({
   field,
@@ -94,6 +138,8 @@ function renderControl(field: UiField, f: any, secretConfigured = false) {
           onChange={f.onChange}
         />
       )
+    case "json":
+      return <JsonField field={field} f={f} />
     default:
       return <Input placeholder={field.placeholder} value={f.value ?? ""} onChange={f.onChange} />
   }

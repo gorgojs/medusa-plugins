@@ -40,6 +40,25 @@ export const IntegrationFieldValue = ({
     )
   }
 
+  // Nested/array values: summarize rather than dumping JSON into the row.
+  if (field.control === "json") {
+    if (Array.isArray(value)) {
+      return value.length ? (
+        <Text size="small" leading="compact">
+          {value.length} item{value.length === 1 ? "" : "s"}
+        </Text>
+      ) : (
+        <Dash />
+      )
+    }
+    if (value == null) return <Dash />
+    return (
+      <Text size="small" leading="compact">
+        configured
+      </Text>
+    )
+  }
+
   if (value == null || value === "") return <Dash />
 
   if (field.control === "select") {

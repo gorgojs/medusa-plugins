@@ -15,6 +15,7 @@ function sectionDefaults(
   for (const f of section.fields) {
     if (f.secret || f.control === "secret") out[f.name] = ""
     else if (f.control === "switch") out[f.name] = values?.[f.name] ?? false
+    else if (f.control === "json") out[f.name] = values?.[f.name] // keep the object/array as-is
     else out[f.name] = values?.[f.name] ?? ""
   }
   return out
