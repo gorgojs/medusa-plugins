@@ -76,7 +76,7 @@ const WebhookTester = ({ data }: { data: IntegrationSectionData }) => {
 }
 
 export const config = defineWidgetConfig({
-  zone: "gorgo.integration.tkassa.after",
+  zone: "gorgo.integration.tkassa.side.after",
 })
 
 export default WebhookTester

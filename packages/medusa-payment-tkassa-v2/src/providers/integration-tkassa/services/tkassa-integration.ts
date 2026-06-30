@@ -30,6 +30,7 @@ const descriptor = defineIntegration({
     {
       id: "behavior",
       title: { en: "Behavior", ru: "Поведение" },
+      column: "side",
       schema: z.object({
         capture: z.boolean().default(true).meta({
           control: "switch", label: { en: "Auto-capture", ru: "Автосписание" },
@@ -74,6 +75,7 @@ const descriptor = defineIntegration({
     {
       id: "advanced",
       title: { en: "Advanced", ru: "Дополнительно" },
+      column: "side",
       schema: z.object({
         // EXAMPLE (nested/array option): zod handles arbitrary nesting fine, and it's
         // validated/stored/resolved like any field. The generated form has no widget for an
