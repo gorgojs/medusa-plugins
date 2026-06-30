@@ -6,14 +6,7 @@ import { MedusaError } from "@medusajs/framework/utils";
 import { UPLOAD_DIR } from "../data/constants";
 
 const CURRENCY_MAP: Record<string, string> = {
-  руб: "rub",
-  "руб.": "rub",
-  рублей: "rub",
-  rur: "rub",
-  usd: "usd",
-  "$": "usd",
-  eur: "eur",
-  "€": "eur",
+  "руб": "rub",
 };
 
 export function normalizeCurrencyCode(raw: string): string {
