@@ -9,7 +9,7 @@ const mkProvider = (identifier: string, instanceId: string | null, withTest = fa
     getDescriptor: () => ({
       module: "payment",
       displayName: { en: identifier, ru: identifier },
-      schema: {},
+      options: {},
       sections: [],
     }),
   }

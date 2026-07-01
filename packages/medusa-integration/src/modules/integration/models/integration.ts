@@ -17,7 +17,7 @@ const Integration = model.define("integration", {
   options: model.json().default({}),
 
   // Metadata
-  schema_version: model.number().default(1),
+  options_version: model.number().default(1),
   is_enabled: model.boolean().default(true),
   last_test_at: model.dateTime().nullable(),
   last_test_status: model.enum(["ok", "fail", "skipped"]).nullable(),

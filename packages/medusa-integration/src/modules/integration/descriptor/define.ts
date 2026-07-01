@@ -1,6 +1,6 @@
 import { z } from "zod"
 import type { Bilingual } from "./meta"
-import type { ModuleKind, TestConnectionContext, TestConnectionResult } from "../../../types"
+import type { IntegrationLayouts, ModuleKind, TestConnectionContext, TestConnectionResult } from "../../../types"
 
 export { z }
 
@@ -11,7 +11,7 @@ export type { ModuleKind, TestConnectionContext, TestConnectionResult }
 export type IntegrationSection<Z extends z.ZodObject<any> = z.ZodObject<any>> = {
   id: string
   title: Bilingual
-  schema: Z
+  options: Z
   /** Which column to render this section in (two-column layout). Defaults to `"main"`. */
   column?: "main" | "side"
 }
@@ -25,18 +25,19 @@ export type IntegrationValidateContext = {
 type DescriptorBase = {
   /** Which Medusa module this integration configures (payment, fulfillment, …). */
   module: ModuleKind
-  schemaVersion?: number
+  optionsVersion?: number
   displayName: Bilingual
   description?: Bilingual
   icon?: string
   docsUrl?: string
   supportsMultipleInstances?: boolean
+  preferredLayoutId?: IntegrationLayouts
 }
 
 /**
  * Rules that span MORE THAN ONE section. Evaluated only during full (activation)
  * validation, against the assembled config. Intra-section rules belong on that
- * section's own schema (`.superRefine`) so they also run when the section is saved.
+ * section's own options (`.superRefine`) so they also run when the section is saved.
  */
 type CrossSectionRules = {
   validate?: (full: Record<string, unknown>, ctx: IntegrationValidateContext) => void
@@ -44,7 +45,7 @@ type CrossSectionRules = {
 
 /**
  * What `defineIntegration` returns (and what a provider's `getDescriptor()` returns).
- * `schema` is composed from all section schemas — used for type inference and for
+ * `options` is composed from all section options — used for type inference and for
  * applying defaults; `pluginId`/`instanceId` are stamped later by the registry.
  */
 export type IntegrationDescriptorInput = DescriptorBase &
@@ -53,7 +54,7 @@ export type IntegrationDescriptorInput = DescriptorBase &
     // (needed for precise `z.infer`) stays assignable here.
     sections: readonly IntegrationSection[]
     /** Composed from `sections` by `defineIntegration` — authors don't write this. */
-    schema: z.ZodType<any>
+    options: z.ZodType<any>
   }
 
 export type IntegrationDescriptor = IntegrationDescriptorInput & {
@@ -63,7 +64,7 @@ export type IntegrationDescriptor = IntegrationDescriptorInput & {
   instanceId?: string | null
 }
 
-// Merge the output types of every section's schema into the full settings shape.
+// Merge the output types of every section's options into the full settings shape.
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends
   (k: infer I) => void ? I : never
 type MergedSettings<S extends readonly IntegrationSection[]> = UnionToIntersection<
@@ -72,15 +73,15 @@ type MergedSettings<S extends readonly IntegrationSection[]> = UnionToIntersecti
 
 /**
  * Declare an integration's configuration as a set of sections, each with its own zod
- * object. The composed `schema` (for `z.infer` and defaults) is built automatically:
+ * object. The composed `options` (for `z.infer` and defaults) is built automatically:
  *
  *   const descriptor = defineIntegration({ module, displayName, sections: [...] })
- *   type Settings = z.infer<typeof descriptor.schema>
+ *   type Settings = z.infer<typeof descriptor.options>
  */
 export function defineIntegration<const S extends readonly IntegrationSection[]>(
   input: DescriptorBase & CrossSectionRules & { sections: S }
-): DescriptorBase & CrossSectionRules & { sections: S; schema: z.ZodType<MergedSettings<S>> } {
-  const shape = Object.assign({}, ...input.sections.map((s) => s.schema.shape))
-  const schema = z.object(shape) as unknown as z.ZodType<MergedSettings<S>>
-  return { ...input, schema }
+): DescriptorBase & CrossSectionRules & { sections: S; options: z.ZodType<MergedSettings<S>> } {
+  const shape = Object.assign({}, ...input.sections.map((s) => s.options.shape))
+  const options = z.object(shape) as unknown as z.ZodType<MergedSettings<S>>
+  return { ...input, options }
 }

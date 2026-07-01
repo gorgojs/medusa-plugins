@@ -8,12 +8,12 @@ const descriptor: IntegrationDescriptor = {
   pluginId: "demo",
   instanceId: null,
   displayName: { en: "Demo", ru: "Демо" },
-  schema: z.object({}),
+  options: z.object({}),
   sections: [
     {
       id: "credentials",
       title: { en: "Credentials", ru: "Доступы" },
-      schema: z.object({
+      options: z.object({
         terminalKey: z.string().min(1).meta({ control: "text", label: { en: "T", ru: "Т" } }),
         password: z.string().min(1).meta({ control: "secret", secret: true, label: { en: "P", ru: "П" } }),
       }),
@@ -21,7 +21,7 @@ const descriptor: IntegrationDescriptor = {
     {
       id: "behavior",
       title: { en: "Behavior", ru: "Поведение" },
-      schema: z.object({
+      options: z.object({
         capture: z.boolean().default(true).meta({ control: "switch", label: { en: "C", ru: "С" } }),
       }),
     },
@@ -58,7 +58,7 @@ describe("isDescriptorComplete", () => {
   })
 
   it("runs the cross-section validate rule", () => {
-    // capture defaults to true via the section schema; terminalKey present satisfies it.
+    // capture defaults to true via the section options; terminalKey present satisfies it.
     const issues = collectValidationIssues(descriptor, { password: "p", capture: true })
     expect(issues.some((i) => i.path === "terminalKey")).toBe(true)
   })

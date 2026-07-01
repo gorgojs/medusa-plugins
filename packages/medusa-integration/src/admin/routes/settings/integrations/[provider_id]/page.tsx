@@ -280,7 +280,7 @@ const EditPage = () => {
   return (
     <LayoutComposer
       widgetsZonePrefix={`gorgo.integration.${descriptor.pluginId}`}
-      preferredLayoutId="core:two-column"
+      preferredLayoutId={descriptor.preferredLayoutId}
       sections={{ main, side }}
       data={sectionData}
       hasOutlet={false}

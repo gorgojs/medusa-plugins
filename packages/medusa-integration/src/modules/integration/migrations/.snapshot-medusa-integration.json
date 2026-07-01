@@ -129,8 +129,8 @@
           "enumItems": [],
           "mappedType": "json"
         },
-        "schema_version": {
-          "name": "schema_version",
+        "options_version": {
+          "name": "options_version",
           "type": "integer",
           "unsigned": false,
           "autoincrement": false,

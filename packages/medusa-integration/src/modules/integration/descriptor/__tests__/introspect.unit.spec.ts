@@ -8,12 +8,12 @@ const descriptor: IntegrationDescriptor = {
   pluginId: "demo",
   instanceId: null,
   displayName: { en: "Demo", ru: "Демо" },
-  schema: z.object({}),
+  options: z.object({}),
   sections: [
     {
       id: "general",
       title: { en: "General", ru: "Общее" },
-      schema: z.object({
+      options: z.object({
         login: z.string().meta({ control: "text", label: { en: "Login", ru: "Логин" } }),
         password: z.string().meta({ control: "secret", secret: true, label: { en: "Password", ru: "Пароль" } }),
       }),
@@ -21,7 +21,7 @@ const descriptor: IntegrationDescriptor = {
     {
       id: "behavior",
       title: { en: "Behavior", ru: "Поведение" },
-      schema: z.object({
+      options: z.object({
         test_mode: z.boolean().default(false).meta({ control: "switch", label: { en: "Test", ru: "Тест" } }),
       }),
     },

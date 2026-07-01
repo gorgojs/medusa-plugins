@@ -8,12 +8,12 @@ const descriptor: IntegrationDescriptor = {
   pluginId: "demo",
   instanceId: null,
   displayName: { en: "Demo", ru: "Демо" },
-  schema: z.object({}),
+  options: z.object({}),
   sections: [
     {
       id: "general",
       title: { en: "General", ru: "Общее" },
-      schema: z.object({
+      options: z.object({
         login: z.string().min(1).meta({ control: "text", label: { en: "Login", ru: "Логин" } }),
         password: z.string().min(1).meta({ control: "secret", secret: true, label: { en: "Pw", ru: "Пароль" } }),
       }),

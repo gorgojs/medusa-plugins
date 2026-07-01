@@ -13,7 +13,7 @@ export type ApplyIntegrationSectionStepInput = {
 }
 
 /**
- * Validate ONE edited section against its own schema, merge it over the rest of the stored
+ * Validate ONE edited section against its own options, merge it over the rest of the stored
  * config, and split into options + encrypted credentials. Only the edited section is
  * validated here — the config as a whole may still be a partial draft; full validation
  * happens lazily at resolve time (see IntegrationModuleService.getResolvedOptions).
@@ -39,13 +39,13 @@ export const applyIntegrationSectionStep = createStep(
     // Secrets are never sent to the client, so a blank/absent secret means "keep existing".
     const current = await service.getStoredValues(input.provider_id)
     const secretKeys = new Set(secretFieldNames(descriptor))
-    const sectionKeys = Object.keys(section.schema.shape as Record<string, unknown>)
+    const sectionKeys = Object.keys(section.options.shape as Record<string, unknown>)
     const sectionValues: Record<string, unknown> = {}
     for (const k of sectionKeys) {
       let v = input.values[k]
       if (secretKeys.has(k) && (v == null || v === "")) {
         if (k in current) v = current[k]
-        else continue // no stored secret → drop so the section schema flags it as required
+        else continue
       }
       sectionValues[k] = v
     }
@@ -64,7 +64,7 @@ export const applyIntegrationSectionStep = createStep(
     const credentials = service.encryptCredentials(secrets)
     return new StepResponse({
       module: descriptor.module,
-      schema_version: descriptor.schemaVersion ?? 1,
+      options_version: descriptor.optionsVersion ?? 1,
       options,
       ...credentials,
     })

@@ -91,7 +91,7 @@ export default class IntegrationModuleService extends MedusaService({
 
   /**
    * Whether a loaded row passes full validation against its provider's descriptor (all
-   * required fields present + every section schema and the cross-section `validate`).
+   * required fields present + every section options and the cross-section `validate`).
    * Derived on demand — never persisted — so it can't drift when the descriptor changes.
    */
   isComplete(record: any): boolean {
@@ -249,13 +249,13 @@ export default class IntegrationModuleService extends MedusaService({
     let value: ResolvedOptions | null = null
     // An incomplete config is invisible to consumers (treated like "not configured"), so a
     // partially-filled draft can never leak into a provider mid-setup. Completeness is the
-    // full validation: every section schema + the descriptor's cross-section `validate`.
+    // full validation: every section options + the descriptor's cross-section `validate`.
     if (record && record.is_enabled) {
       const descriptor = this.getProviderDescriptor(providerId)!
       const assembled = this.assembleValues(record)
       if (isDescriptorComplete(descriptor, assembled)) {
-        // Apply schema defaults for fields the user never set explicitly.
-        const parsed = descriptor.schema.safeParse(assembled)
+        // Apply options defaults for fields the user never set explicitly.
+        const parsed = descriptor.options.safeParse(assembled)
         value = {
           options: parsed.success ? (parsed.data as Record<string, unknown>) : assembled,
           meta: {

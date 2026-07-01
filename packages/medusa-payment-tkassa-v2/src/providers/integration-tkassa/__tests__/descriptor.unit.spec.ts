@@ -3,7 +3,7 @@
 // These tests exercise that schema — the single source of truth for T-Kassa settings.
 import TkassaIntegrationProvider from "../services/tkassa-integration"
 
-const schema = new TkassaIntegrationProvider().getDescriptor().schema
+const schema = new TkassaIntegrationProvider().getDescriptor().options
 
 const validBase = {
   terminalKey: "TestTerminalKey",

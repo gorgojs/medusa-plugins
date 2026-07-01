@@ -11,6 +11,8 @@ export type ModuleKind =
 
 export type TestStatus = "ok" | "fail" | "skipped"
 
+export type IntegrationLayouts = "core:single-column" | "core:two-column"
+
 /** Date fields are `Date` server-side and ISO strings once JSON-serialized to the admin. */
 export type DateValue = Date | string | null
 
@@ -23,7 +25,7 @@ export interface TestConnectionResult {
   message?: string
 }
 
-// ── UI descriptor (introspected schema; produced server-side, consumed by the admin) ──
+// ── UI descriptor (introspected options; produced server-side, consumed by the admin) ──
 export interface UiField {
   name: string
   control: FieldControl
@@ -62,12 +64,13 @@ export interface UiDescriptor {
   module: string
   pluginId: string
   instanceId: string | null
-  schemaVersion: number
+  optionsVersion: number
   displayName: Bilingual
   description?: Bilingual
   icon?: string
   docsUrl?: string
   supportsMultipleInstances: boolean
+  preferredLayoutId: IntegrationLayouts
   hasTestConnection: boolean
   sections: UiSection[]
 }

@@ -31,7 +31,7 @@ export const POST = async (
   requireProvider(svc, provider_id)
 
   // Only the edited section is validated (inside the workflow step), against that section's
-  // own schema — a readable, field-prefixed message surfaces on failure. The config as a
+  // own options — a readable, field-prefixed message surfaces on failure. The config as a
   // whole may remain a partial draft; full validation happens lazily at resolve time.
   const { result } = await upsertIntegrationWorkflow(req.scope).run({
     input: {

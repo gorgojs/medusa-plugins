@@ -10,15 +10,16 @@ const TAX = ["none", "vat0", "vat5", "vat7", "vat10", "vat20", "vat105", "vat107
 
 const descriptor = defineIntegration({
   module: "payment",
-  schemaVersion: 1,
+  optionsVersion: 1,
   displayName: { en: "T-Kassa", ru: "Т-Касса" },
   description: { en: "Tinkoff/T-Bank payment gateway", ru: "Платёжный шлюз Т-Банк" },
   supportsMultipleInstances: true,
+  preferredLayoutId: "core:two-column",
   sections: [
     {
       id: "credentials",
       title: { en: "Credentials", ru: "Доступы" },
-      schema: z.object({
+      options: z.object({
         terminalKey: z.string().min(1).meta({
           control: "text", label: { en: "Terminal key", ru: "Терминал" },
         }),
@@ -31,7 +32,7 @@ const descriptor = defineIntegration({
       id: "behavior",
       title: { en: "Behavior", ru: "Поведение" },
       column: "side",
-      schema: z.object({
+      options: z.object({
         capture: z.boolean().default(true).meta({
           control: "switch", label: { en: "Auto-capture", ru: "Автосписание" },
         }),
@@ -41,9 +42,9 @@ const descriptor = defineIntegration({
       id: "receipt",
       title: { en: "Receipt", ru: "Чеки" },
       // Receipts require the full FFD configuration — an intra-section rule, so it lives on
-      // this section's own schema and runs both when the section is saved and during full
+      // this section's own options and runs both when the section is saved and during full
       // (activation) validation. Only enforced when receipts are enabled (`useReceipt`).
-      schema: z.object({
+      options: z.object({
         useReceipt: z.boolean().default(false).meta({
           control: "switch", label: { en: "Send receipts", ru: "Отправлять чеки" },
         }),
@@ -76,7 +77,7 @@ const descriptor = defineIntegration({
       id: "advanced",
       title: { en: "Advanced", ru: "Дополнительно" },
       column: "side",
-      schema: z.object({
+      options: z.object({
         // EXAMPLE (nested/array option): zod handles arbitrary nesting fine, and it's
         // validated/stored/resolved like any field. The generated form has no widget for an
         // array-of-objects, so it's surfaced with the `json` control (a JSON textarea). For a
@@ -103,7 +104,7 @@ const descriptor = defineIntegration({
     },
   ],
   // EXAMPLE (cross-section validation): a rule spanning two sections — receipts (receipt)
-  // require auto-capture (behavior). Lives here, not on a section schema, because it
+  // require auto-capture (behavior). Lives here, not on a section options, because it
   // references fields from different sections. Runs only at full/activation validation
   // (resolve + is_complete), never blocks saving an individual section.
   validate: (full, ctx) => {
@@ -117,7 +118,7 @@ const descriptor = defineIntegration({
   },
 })
 
-export type TKassaSettings = z.infer<typeof descriptor.schema>
+export type TKassaSettings = z.infer<typeof descriptor.options>
 
 /**
  * Integration-provider for T-Kassa: declares the plugin's settings contract to the
