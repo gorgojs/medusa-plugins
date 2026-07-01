@@ -91,6 +91,11 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Tag telemetry machine_id as gorgo-ci
+        run: |
+          mkdir -p ~/.config/gorgo
+          printf '{"notification_shown":true,"machine_id":"gorgo-ci"}\n' > ~/.config/gorgo/config.json
+
       - name: Inject environment secrets
         env:
           SECRETS_JSON: ${{ toJSON(secrets) }}
