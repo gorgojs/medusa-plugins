@@ -3,21 +3,10 @@ import { readFile } from "node:fs/promises"
 import path from "node:path"
 
 export interface ProjectInfo {
-  /** sha256 hex of the project's `package.json#name`. Stable across releases of the same project. */
   id: string
-  /**
-   * sha256 hex of the project's `package.json` content in canonical form:
-   * parsed, recursively key-sorted, then `JSON.stringify`-ed without whitespace.
-   * Whitespace / key-order reshuffles by Prettier/editors do NOT change this hash.
-   * Any real edit (deps, scripts, version) does.
-   */
   hash: string
 }
 
-/**
- * Recursively sort object keys so that two semantically-equal JSON documents
- * produce identical serialized output regardless of writer formatting.
- */
 function canonicalize(value: unknown): unknown {
   if (Array.isArray(value)) {
     return value.map(canonicalize)
@@ -34,12 +23,6 @@ function canonicalize(value: unknown): unknown {
   return value
 }
 
-/**
- * Walk up from `startDir` and return the path of the first `package.json` that
- * does NOT live inside a `node_modules/` segment. This skips package.json files
- * of dependencies (including the calling plugin itself when it's installed as
- * a dep) and lands on the consuming Medusa app's manifest.
- */
 async function findProjectPackageJsonPath(startDir: string): Promise<string | undefined> {
   let dir = path.resolve(startDir)
   const sep = path.sep
@@ -53,7 +36,6 @@ async function findProjectPackageJsonPath(startDir: string): Promise<string | un
         await readFile(pkgPath, "utf-8")
         return pkgPath
       } catch {
-        // not here, keep walking
       }
     }
     const parent = path.dirname(dir)
@@ -62,15 +44,6 @@ async function findProjectPackageJsonPath(startDir: string): Promise<string | un
   }
 }
 
-/**
- * Best-effort detection of the consuming project's identity. Reads the nearest
- * `package.json` outside any `node_modules/` starting from `startDir`
- * (default `process.cwd()` — Medusa apps run from their project root).
- *
- * Returns `undefined` when no project manifest is found or its `name` field is
- * missing — the dispatcher then simply omits `project.*` attributes for that
- * event batch instead of failing.
- */
 export async function collectProjectInfo(
   startDir: string = process.cwd()
 ): Promise<ProjectInfo | undefined> {

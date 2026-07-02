@@ -22,23 +22,6 @@ export type {
 import { TelemetryClient } from "./client.js"
 import type { TelemetryClientOptions } from "./types.js"
 
-/**
- * Create a server-side telemetry client for a Medusa plugin.
- *
- * Pass `packageDir: __dirname` to auto-discover the plugin's `name` + `version`
- * from the nearest `package.json`, or supply an explicit `plugin` object.
- * All clients in the same process share one {@link TelemetryDispatcher} —
- * events from N plugins are batched into a single OTLP request with
- * `resourceLogs[]` per plugin.
- *
- * @example
- * ```ts
- * import { createTelemetryClient } from "@gorgo/telemetry"
- *
- * const telemetry = createTelemetryClient({ packageDir: __dirname })
- * telemetry.track("plugin.started")
- * ```
- */
 export function createTelemetryClient(options: TelemetryClientOptions): TelemetryClient {
   return new TelemetryClient(options)
 }
