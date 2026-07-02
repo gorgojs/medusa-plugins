@@ -71,6 +71,26 @@ function detectTimezone(): string {
   }
 }
 
+/**
+ * Normalize a URL / CORS-style env-var into a stable identifier, then
+ * base64-encode it. Encoding is obfuscation, not encryption — it keeps the
+ * raw domain out of plain sight in Loki/Grafana while staying trivially
+ * reversible (`{{ b64dec .field }}` in a Loki `label_format` stage, or
+ * `Buffer.from(x, "base64").toString()` anywhere else).
+ *
+ * Strips `http://` / `https://` from each comma-separated part before
+ * encoding; preserves everything else verbatim (empty parts, `*` wildcards,
+ * trailing slashes).
+ */
+function normalizeUrlEnv(raw: string | undefined): string | undefined {
+  if (raw === undefined) return undefined
+  const normalized = raw
+    .split(",")
+    .map((part) => part.trim().replace(/^https?:\/\//i, ""))
+    .join(",")
+  return Buffer.from(normalized, "utf-8").toString("base64")
+}
+
 async function detectMedusaVersion(): Promise<string> {
   try {
     const pkgPath = require.resolve("@medusajs/medusa/package.json")
@@ -96,6 +116,14 @@ export async function collectEnvInfo(): Promise<EnvInfo> {
     locale: detectLocale(),
     timezone: detectTimezone(),
     package_manager: detectPackageManager(),
+    store_id: normalizeUrlEnv(
+      process.env.MEDUSA_STOREFRONT_URL ??
+        process.env.STORE_CORS ??
+        process.env.STOREFRONT_URL,
+    ),
+    admin_id: normalizeUrlEnv(
+      process.env.MEDUSA_BACKEND_URL ?? process.env.ADMIN_CORS ?? process.env.ADMIN_URL,
+    ),
   }
 }
 

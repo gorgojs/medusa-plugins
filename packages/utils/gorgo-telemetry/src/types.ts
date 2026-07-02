@@ -24,6 +24,20 @@ export interface EnvInfo {
   /** IANA timezone, e.g. "Europe/Moscow" */
   timezone: string
   package_manager: "npm" | "yarn" | "pnpm" | "unknown"
+
+  /**
+   * Storefront identity: `MEDUSA_STOREFRONT_URL` → `STORE_CORS` → `STOREFRONT_URL`.
+   * Protocol (`https://`/`http://`) is stripped, then the value is base64-encoded
+   * (obfuscation, not encryption — reverse with `{{ b64dec .field }}` in Loki or
+   * `Buffer.from(x, "base64").toString()`). May decode to a comma-separated list,
+   * a `*` wildcard, or an empty string. `undefined` if none of the env vars is set.
+   */
+  store_id?: string
+  /**
+   * Backend identity: `MEDUSA_BACKEND_URL` → `ADMIN_CORS` → `ADMIN_URL`.
+   * Same normalization + base64 encoding as `store_id`.
+   */
+  admin_id?: string
 }
 
 /** Event payload sent from a Medusa server process. */

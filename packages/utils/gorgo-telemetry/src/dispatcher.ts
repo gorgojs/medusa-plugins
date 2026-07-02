@@ -438,6 +438,8 @@ export class TelemetryDispatcher {
       "env.locale": env.locale,
       "env.timezone": env.timezone,
       "env.package_manager": env.package_manager,
+      "env.store_id": env.store_id ?? null,
+      "env.admin_id": env.admin_id ?? null,
       "enabled": this.isEnabledCached(),
     })
   }
