@@ -8,13 +8,11 @@ let instance_: Configstore | undefined
 
 function getStore(): Configstore {
   if (!instance_) {
-    // `globalConfigPath: true` → ~/.config/gorgo/config.json.
     instance_ = new Configstore("gorgo", {}, { globalConfigPath: true })
   }
   return instance_
 }
 
-/** True when the user has opted out via env var. Sync, no disk access. */
 export function isTelemetryDisabledByEnv(): boolean {
   return (
     process.env.GORGO_DISABLE_TELEMETRY === "1" ||
@@ -22,11 +20,6 @@ export function isTelemetryDisabledByEnv(): boolean {
   )
 }
 
-/**
- * Returns the persistent anonymous machine ID, creating one if missing.
- * Per event the identifier is a sha256 hash, produced here from 32
- * random bytes — plenty of entropy, no reversible machine fingerprint.
- */
 export function getMachineId(): string {
   try {
     const cs = getStore()
@@ -42,7 +35,6 @@ export function getMachineId(): string {
   }
 }
 
-/** Returns true unless telemetry is explicitly disabled via env var or config file. */
 export function isTelemetryEnabled(): boolean {
   if (isTelemetryDisabledByEnv()) return false
   try {
@@ -53,7 +45,6 @@ export function isTelemetryEnabled(): boolean {
   }
 }
 
-/** Persists the telemetry enabled/disabled preference. */
 export function setTelemetryEnabled(enabled: boolean): void {
   try {
     getStore().set("enabled", enabled)
@@ -62,7 +53,6 @@ export function setTelemetryEnabled(enabled: boolean): void {
   }
 }
 
-/** Whether the first-run telemetry notice has already been printed on this machine. */
 export function wasNotificationShown(): boolean {
   try {
     return getStore().get("notification_shown") === true
@@ -72,7 +62,6 @@ export function wasNotificationShown(): boolean {
   }
 }
 
-/** Persist the fact that the first-run telemetry notice has been printed. */
 export function markNotificationShown(): void {
   try {
     getStore().set("notification_shown", true)

@@ -1,8 +1,3 @@
-/**
- * Platform-neutral OTLP/Logs wire-format helpers shared between the server
- * client and the browser hook. The collector interprets attribute keys as-is.
- */
-
 export type OtlpAnyValue =
   | { stringValue: string }
   | { boolValue: boolean }

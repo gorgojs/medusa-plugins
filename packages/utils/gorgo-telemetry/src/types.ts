@@ -1,53 +1,29 @@
 export interface PackageInfo {
-  /** Package name, e.g. "@gorgo/medusa-payment-tkassa" */
   name: string
-  /** Package version, e.g. "0.1.0" */
   version: string
 }
 
-/** Environment fingerprint attached to every server-side event. */
 export interface EnvInfo {
   medusa_version: string
   node_version: string
-  /** `process.platform`, e.g. "linux" | "darwin" | "win32" */
   os: string
-  /** `process.arch`, e.g. "x64" | "arm64" */
   arch: string
   ci: boolean
-  /** Running inside a container runtime (Docker / containerd / kubepods / overlay). */
   container: boolean
-  /** "production" | "development" | "test" */
   node_env: string
 
-  /** POSIX locale, e.g. "en_US.UTF-8" */
   locale: string
-  /** IANA timezone, e.g. "Europe/Moscow" */
   timezone: string
   package_manager: "npm" | "yarn" | "pnpm" | "unknown"
 
-  /**
-   * Storefront identity: `MEDUSA_STOREFRONT_URL` → `STORE_CORS` → `STOREFRONT_URL`.
-   * Protocol (`https://`/`http://`) is stripped, then the value is base64-encoded
-   * (obfuscation, not encryption — reverse with `{{ b64dec .field }}` in Loki or
-   * `Buffer.from(x, "base64").toString()`). May decode to a comma-separated list,
-   * a `*` wildcard, or an empty string. `undefined` if none of the env vars is set.
-   */
   store_id?: string
-  /**
-   * Backend identity: `MEDUSA_BACKEND_URL` → `ADMIN_CORS` → `ADMIN_URL`.
-   * Same normalization + base64 encoding as `store_id`.
-   */
   admin_id?: string
 }
 
-/** Event payload sent from a Medusa server process. */
 export interface TelemetryEvent {
   event: string
-  /** ISO 8601 */
   timestamp: string
-  /** Persistent anonymous machine identifier (sha256 hash). */
   machine_id: string
-  /** Per-process UUID, regenerated on every server start. */
   session_id?: string
   package: PackageInfo
   env: EnvInfo
@@ -55,20 +31,9 @@ export interface TelemetryEvent {
 }
 
 export interface TelemetryClientOptions {
-  /**
-   * Walk up from this directory to find the nearest `package.json` and use
-   * its `name` + `version`. Pass `__dirname` from the consuming plugin's
-   * code. Mutually exclusive with `package`.
-   */
   packageDir?: string
-  /**
-   * Explicit package identity. Mutually exclusive with `packageDir`.
-   */
   package?: PackageInfo
-  /** Override the telemetry endpoint (default: https://telemetry.gorgojs.com). */
   endpoint?: string
-  /** Number of queued events before auto-flush (default: 20). */
   flushAt?: number
-  /** Flush interval in ms (default: 30 000). */
   flushInterval?: number
 }

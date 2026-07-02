@@ -32,18 +32,14 @@ export interface DispatcherOptions {
   endpoint?: string
   flushAt?: number
   flushInterval?: number
-  /** Hard cap on total queued events across all packages. Oldest are dropped on overflow. */
   maxQueueSize?: number
-  /** Heartbeat interval for `plugin.ping` events (default 6h). Set to 0 to disable. */
   pingInterval?: number
 }
 
 const DEFAULT_PING_INTERVAL_MS = 6 * 60 * 60 * 1000
-// const DEFAULT_PING_INTERVAL_MS = 3000  // 3s for testing
 
 interface QueuedEvent {
   eventName: string
-  /** Wall-clock nanoseconds, strictly monotonic across events on this dispatcher. */
   timeUnixNano: string
   properties: Record<string, unknown>
 }
@@ -68,20 +64,11 @@ function fallbackEnv(): EnvInfo {
   }
 }
 
-/**
- * Process-wide singleton that owns the entire telemetry pipeline:
- * one queue per package (`Map<key, bucket>`), one timer, one HTTP request.
- *
- * `TelemetryClient` instances created by individual packages delegate
- * `enqueue`/`flush` here, so N packages produce a single OTLP batch with
- * `resourceLogs[]` containing one entry per package.
- */
 export class TelemetryDispatcher {
   private readonly endpoint: string
   private readonly flushAt: number
   private readonly flushInterval: number
   private readonly maxQueueSize: number
-  /** Single per-process session id shared by all packages on this dispatcher. */
   private readonly sessionId: string
 
   private buckets = new Map<string, PackageBucket>()
@@ -96,10 +83,8 @@ export class TelemetryDispatcher {
   private flushing = false
   private exitHandlersRegistered = false
 
-  /** Monotonic wall-clock nanosecond cursor — bumped by 1 ns when collisions would occur. */
   private lastNano = 0n
 
-  /** Packages that have created a TelemetryClient on this dispatcher. Used as the ping roster. */
   private registeredPackages = new Map<string, PackageInfo>()
   private readonly pingInterval: number
   private readonly startedAt = Date.now()
@@ -124,10 +109,6 @@ export class TelemetryDispatcher {
     this.registerExitHandlers()
     maybeShowFirstRunNotice()
   }
-
-  // ------------------------------------------------------------------
-  // Caches (one disk read per process for each)
-  // ------------------------------------------------------------------
 
   private async getEnvInfo(): Promise<EnvInfo> {
     if (!this.envCache) {
@@ -176,16 +157,6 @@ export class TelemetryDispatcher {
     return this.projectCache
   }
 
-  // ------------------------------------------------------------------
-  // Public surface (used by TelemetryClient)
-  // ------------------------------------------------------------------
-
-  /**
-   * Register a package so it receives `plugin.ping` heartbeats. Idempotent.
-   * Called from the {@link TelemetryClient} constructor — even silent packages
-   * (which never call `track`) must show up in the ping roster so that
-   * "active install" metrics see them.
-   */
   registerPackage(pkg: PackageInfo): void {
     try {
       const key = `${pkg.name}@${pkg.version}`
@@ -200,7 +171,6 @@ export class TelemetryDispatcher {
   private armPingTimer(): void {
     if (this.pingTimer || this.pingInterval <= 0) return
     this.pingTimer = setInterval(() => this.emitPing(), this.pingInterval)
-    // Don't keep the process alive just for heartbeats.
     this.pingTimer.unref?.()
   }
 
@@ -257,7 +227,6 @@ export class TelemetryDispatcher {
     }
   }
 
-  /** Send all queued events to the OTLP endpoint immediately. Never throws. */
   async flush(): Promise<void> {
     if (this.timer) {
       clearTimeout(this.timer)
@@ -276,7 +245,6 @@ export class TelemetryDispatcher {
     this.flushing = true
     this.firstFlush = false
 
-    // snapshot + reset state so concurrent enqueues don't clobber the in-flight batch
     const inflight = this.buckets
     const inflightCount = this.totalCount
     this.buckets = new Map()
@@ -341,7 +309,6 @@ export class TelemetryDispatcher {
     return this.isEnabledCached()
   }
 
-  /** Test-only — wipes in-memory state. */
   __resetForTesting(): void {
     if (this.timer) {
       clearTimeout(this.timer)
@@ -362,10 +329,6 @@ export class TelemetryDispatcher {
     this.pingIndex = 0
   }
 
-  // ------------------------------------------------------------------
-  // Internals
-  // ------------------------------------------------------------------
-
   private registerExitHandlers(): void {
     if (this.exitHandlersRegistered) return
     this.exitHandlersRegistered = true
@@ -374,12 +337,10 @@ export class TelemetryDispatcher {
       try {
         void this.flush()
       } catch {
-        // never throw from a process exit handler
       }
     })
   }
 
-  /** Drop one event from the largest bucket — the noisiest package gets pruned first. */
   private dropOldest(): void {
     let victim: PackageBucket | undefined
     let maxLen = 0
@@ -457,14 +418,6 @@ export class TelemetryDispatcher {
   }
 }
 
-/**
- * Process-wide accessor. Stored on `globalThis` keyed by a `Symbol.for` so
- * HMR/ts-node reloads don't orphan the dispatcher mid-flight.
- *
- * First-writer-wins for configuration: subsequent calls with different
- * options are ignored (with a warning in verbose mode). Use the
- * `GORGO_TELEMETRY_ENDPOINT` env var to override centrally.
- */
 export function getDispatcher(options?: DispatcherOptions): TelemetryDispatcher {
   const g = globalThis as Record<symbol, TelemetryDispatcher | undefined>
   let instance = g[DISPATCHER_KEY]
