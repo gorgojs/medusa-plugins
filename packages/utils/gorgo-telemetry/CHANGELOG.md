@@ -1,5 +1,11 @@
 # @gorgo/telemetry
 
+## 1.2.0
+
+### Features
+
+- improve telemetry by [@Ghost1863](https://github.com/Ghost1863) in [#375](https://github.com/gorgojs/medusa-plugins/pull/375) ([`8b305e4`](https://github.com/gorgojs/medusa-plugins/commit/8b305e48755af8e1f22d2fb36b4dbf9d32580b39))
+
 ## 1.1.1
 
 ### Refactoring
