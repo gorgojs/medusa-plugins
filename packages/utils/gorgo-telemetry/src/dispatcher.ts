@@ -104,11 +104,7 @@ export class TelemetryDispatcher {
     this.flushAt = Math.max(options.flushAt ?? 20, 1)
     this.flushInterval = options.flushInterval ?? 10_000
     this.maxQueueSize = Math.max(options.maxQueueSize ?? 1000, 1)
-    const pingEnv = Number(process.env.GORGO_TELEMETRY_PING_INTERVAL_MS)
-    this.pingInterval =
-      Number.isFinite(pingEnv) && pingEnv > 0
-        ? pingEnv
-        : options.pingInterval ?? DEFAULT_PING_INTERVAL_MS
+    this.pingInterval = options.pingInterval ?? DEFAULT_PING_INTERVAL_MS
     this.sessionId = crypto.randomUUID()
 
     this.registerExitHandlers()
