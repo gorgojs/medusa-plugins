@@ -86,6 +86,7 @@ export class TelemetryDispatcher {
   private lastNano = 0n
 
   private registeredPackages = new Map<string, PackageInfo>()
+  private packageProperties = new Map<string, Record<string, unknown>>()
   private readonly pingInterval: number
   private readonly startedAt = Date.now()
   private pingIndex = 0
@@ -178,8 +179,9 @@ export class TelemetryDispatcher {
     try {
       this.pingIndex++
       const uptimeSeconds = Math.floor((Date.now() - this.startedAt) / 1000)
-      for (const pkg of this.registeredPackages.values()) {
+      for (const [key, pkg] of this.registeredPackages) {
         this.enqueue(pkg, "plugin.ping", {
+          ...(this.packageProperties.get(key) ?? {}),
           uptime_seconds: uptimeSeconds,
           ping_index: this.pingIndex,
         })
@@ -194,6 +196,12 @@ export class TelemetryDispatcher {
       if (!this.firstFlush && !this.isEnabledCached()) return
 
       const key = `${pkg.name}@${pkg.version}`
+
+      if (eventName !== "plugin.ping" && Object.keys(properties).length > 0) {
+        const existing = this.packageProperties.get(key) ?? {}
+        this.packageProperties.set(key, { ...existing, ...properties })
+      }
+
       let bucket = this.buckets.get(key)
       if (!bucket) {
         bucket = { pkg, events: [] }
@@ -326,6 +334,7 @@ export class TelemetryDispatcher {
     this.projectCache = undefined
     this.flushing = false
     this.registeredPackages.clear()
+    this.packageProperties.clear()
     this.pingIndex = 0
   }
 
