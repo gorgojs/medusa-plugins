@@ -1,5 +1,11 @@
 # @gorgo/telemetry
 
+## 1.3.0
+
+### Features
+
+- pass all merged properties by [@Ghost1863](https://github.com/Ghost1863) in [#385](https://github.com/gorgojs/medusa-plugins/pull/385) ([`4ea2b9c`](https://github.com/gorgojs/medusa-plugins/commit/4ea2b9c4c3af75388b78c3507469a8127b2daa9c))
+
 ## 1.2.0
 
 ### Features
