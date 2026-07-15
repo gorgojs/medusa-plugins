@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@medusajs/deps/zod"
 import type { OptionDef } from "./option"
 
 /**
