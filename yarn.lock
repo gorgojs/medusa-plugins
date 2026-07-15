@@ -2053,6 +2053,46 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@gorgo/medusa-integration@workspace:packages/medusa-integration":
+  version: 0.0.0-use.local
+  resolution: "@gorgo/medusa-integration@workspace:packages/medusa-integration"
+  dependencies:
+    "@medusajs/admin-sdk": "npm:^2.17.2"
+    "@medusajs/cli": "npm:^2.17.2"
+    "@medusajs/dashboard": "npm:^2.17.2"
+    "@medusajs/framework": "npm:^2.17.2"
+    "@medusajs/icons": "npm:^2.17.2"
+    "@medusajs/medusa": "npm:^2.17.2"
+    "@medusajs/test-utils": "npm:^2.17.2"
+    "@medusajs/ui": "npm:^4.1.15"
+    "@swc/core": "npm:^1.7.28"
+    "@swc/jest": "npm:^0.2.36"
+    "@types/jest": "npm:^29.5.13"
+    "@types/node": "npm:^20.0.0"
+    "@types/react": "npm:^18.3.2"
+    "@types/react-dom": "npm:^18.2.25"
+    jest: "npm:^29.7.0"
+    prop-types: "npm:^15.8.1"
+    react: "npm:^18.2.0"
+    react-dom: "npm:^18.2.0"
+    ts-node: "npm:^10.9.2"
+    typescript: "npm:^5.6.2"
+    vite: "npm:^5.2.11"
+    yalc: "npm:^1.0.0-pre.53"
+    zod: "npm:^4.0.2"
+  peerDependencies:
+    "@medusajs/admin-sdk": ^2.17.2
+    "@medusajs/cli": ^2.17.2
+    "@medusajs/dashboard": ^2.17.2
+    "@medusajs/deps": ^2.17.2
+    "@medusajs/framework": ^2.17.2
+    "@medusajs/icons": ^2.17.2
+    "@medusajs/medusa": ^2.17.2
+    "@medusajs/test-utils": ^2.17.2
+    "@medusajs/ui": ^4.1.16
+  languageName: unknown
+  linkType: soft
+
 "@gorgo/medusa-payment-robokassa@workspace:*, @gorgo/medusa-payment-robokassa@workspace:packages/medusa-payment-robokassa":
   version: 0.0.0-use.local
   resolution: "@gorgo/medusa-payment-robokassa@workspace:packages/medusa-payment-robokassa"
@@ -3052,7 +3092,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@medusajs/admin-sdk@npm:^2.14.0":
+"@medusajs/admin-sdk@npm:^2.14.0, @medusajs/admin-sdk@npm:^2.17.2":
   version: 2.17.2
   resolution: "@medusajs/admin-sdk@npm:2.17.2"
   dependencies:
@@ -3229,7 +3269,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@medusajs/cli@npm:^2.14.0":
+"@medusajs/cli@npm:^2.14.0, @medusajs/cli@npm:^2.17.2":
   version: 2.17.2
   resolution: "@medusajs/cli@npm:2.17.2"
   dependencies:
@@ -3292,7 +3332,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@medusajs/dashboard@npm:2.17.2":
+"@medusajs/dashboard@npm:2.17.2, @medusajs/dashboard@npm:^2.17.2":
   version: 2.17.2
   resolution: "@medusajs/dashboard@npm:2.17.2"
   dependencies:
@@ -3463,7 +3503,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@medusajs/framework@npm:2.17.2, @medusajs/framework@npm:^2.14.0":
+"@medusajs/framework@npm:2.17.2, @medusajs/framework@npm:^2.14.0, @medusajs/framework@npm:^2.17.2":
   version: 2.17.2
   resolution: "@medusajs/framework@npm:2.17.2"
   dependencies:
@@ -3525,7 +3565,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@medusajs/icons@npm:2.17.2, @medusajs/icons@npm:^2.14.0":
+"@medusajs/icons@npm:2.17.2, @medusajs/icons@npm:^2.14.0, @medusajs/icons@npm:^2.17.2":
   version: 2.17.2
   resolution: "@medusajs/icons@npm:2.17.2"
   peerDependencies:
@@ -3600,7 +3640,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@medusajs/medusa@npm:2.17.2, @medusajs/medusa@npm:^2.14.0":
+"@medusajs/medusa@npm:2.17.2, @medusajs/medusa@npm:^2.14.0, @medusajs/medusa@npm:^2.17.2":
   version: 2.17.2
   resolution: "@medusajs/medusa@npm:2.17.2"
   dependencies:
@@ -3879,7 +3919,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@medusajs/test-utils@npm:2.17.2, @medusajs/test-utils@npm:^2.14.0":
+"@medusajs/test-utils@npm:2.17.2, @medusajs/test-utils@npm:^2.14.0, @medusajs/test-utils@npm:^2.17.2":
   version: 2.17.2
   resolution: "@medusajs/test-utils@npm:2.17.2"
   dependencies:
@@ -3927,7 +3967,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@medusajs/ui@npm:4.1.19, @medusajs/ui@npm:^4.0.25":
+"@medusajs/ui@npm:4.1.19, @medusajs/ui@npm:^4.0.25, @medusajs/ui@npm:^4.1.15":
   version: 4.1.19
   resolution: "@medusajs/ui@npm:4.1.19"
   dependencies:
@@ -16871,5 +16911,12 @@ __metadata:
   version: 4.2.0
   resolution: "zod@npm:4.2.0"
   checksum: 10c0/c9fa563f4866f5554c84728f69fe01979d5ab41a104176a4b9f1a182fa670b6e55ffe1be81863dc03d8b36c90ee9e917353b429f4aa3615b5f63dc4c8d5d92d3
+  languageName: node
+  linkType: hard
+
+"zod@npm:^4.0.2":
+  version: 4.4.3
+  resolution: "zod@npm:4.4.3"
+  checksum: 10c0/7ea31b558e88f9faf44f31dd185e2e1cbf51fed3081787fb96cc2534749b50c0acfc6da7f0922a7353ed092dd358c7d50c28ea96c94d04af64191bd33152eca3
   languageName: node
   linkType: hard

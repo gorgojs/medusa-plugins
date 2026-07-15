@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@medusajs/deps/zod"
 
 export type AdminUpsertIntegrationType = z.infer<typeof AdminUpsertIntegration>
 export const AdminUpsertIntegration = z.object({

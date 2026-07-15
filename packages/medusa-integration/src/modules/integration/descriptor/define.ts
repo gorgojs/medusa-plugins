@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@medusajs/deps/zod"
 import type { I18nKey } from "./meta"
 import type { OptionDef, Settings } from "./option"
 import { optionToZod } from "./build-zod"
