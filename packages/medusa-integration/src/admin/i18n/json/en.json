@@ -1,0 +1,72 @@
+{
+  "integration": {
+    "list": {
+      "title": "Integrations",
+      "empty": "No integrations registered. Declare providers under the integration plugin's options.providers in medusa-config.",
+      "tested": "tested",
+      "testFailed": "test failed"
+    },
+    "status": {
+      "notConfigured": "Not configured",
+      "incomplete": "Incomplete",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "configured": "Configured"
+    },
+    "labels": {
+      "status": "Status",
+      "module": "Module",
+      "lastTest": "Last test",
+      "neverTested": "Never tested"
+    },
+    "modules": {
+      "payment": "Payment",
+      "fulfillment": "Fulfillment",
+      "marketplace": "Marketplace",
+      "crm": "CRM",
+      "erp": "ERP",
+      "pim": "PIM",
+      "notification": "Notification",
+      "feed": "Feed",
+      "tax": "Tax",
+      "other": "Other"
+    },
+    "testStatus": {
+      "ok": "OK",
+      "fail": "Failed",
+      "skipped": "Skipped"
+    },
+    "actions": {
+      "test": "Test connection",
+      "enable": "Enable",
+      "disable": "Disable",
+      "delete": "Delete",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "delete": {
+      "title": "Delete configuration",
+      "description": "Remove the stored configuration for {{name}}? This can't be undone."
+    },
+    "form": {
+      "required": "{{field}} is required",
+      "invalidJson": "Invalid JSON",
+      "keepSecret": "•••••• — leave blank to keep",
+      "items": "{{count}} items"
+    },
+    "toast": {
+      "saved": "Saved",
+      "saveFailed": "Save failed",
+      "connectionOk": "Connection OK",
+      "testFailed": "Test failed",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "deleted": "Configuration deleted",
+      "deleteFailed": "Delete failed",
+      "updateFailed": "Update failed"
+    },
+    "unknown": "Unknown integration \"{{id}}\".",
+    "back": "Back to integrations"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "integration": {
+    "list": {
+      "title": "Интеграции",
+      "empty": "Нет зарегистрированных интеграций. Объявите провайдеров в options.providers плагина интеграций в medusa-config.",
+      "tested": "проверено",
+      "testFailed": "ошибка проверки"
+    },
+    "status": {
+      "notConfigured": "Не настроено",
+      "incomplete": "Не завершено",
+      "enabled": "Включено",
+      "disabled": "Выключено",
+      "configured": "Настроено"
+    },
+    "labels": {
+      "status": "Статус",
+      "module": "Модуль",
+      "lastTest": "Последняя проверка",
+      "neverTested": "Не проверялось"
+    },
+    "modules": {
+      "payment": "Платежи",
+      "fulfillment": "Доставка",
+      "marketplace": "Маркетплейс",
+      "crm": "CRM",
+      "erp": "ERP",
+      "pim": "PIM",
+      "notification": "Уведомления",
+      "feed": "Фиды",
+      "tax": "Налоги",
+      "other": "Прочее"
+    },
+    "testStatus": {
+      "ok": "OK",
+      "fail": "Ошибка",
+      "skipped": "Пропущено"
+    },
+    "actions": {
+      "test": "Проверить соединение",
+      "enable": "Включить",
+      "disable": "Выключить",
+      "delete": "Удалить",
+      "edit": "Редактировать",
+      "save": "Сохранить",
+      "cancel": "Отмена"
+    },
+    "delete": {
+      "title": "Удалить конфигурацию",
+      "description": "Удалить сохранённую конфигурацию «{{name}}»? Это действие необратимо."
+    },
+    "form": {
+      "required": "Поле «{{field}}» обязательно",
+      "invalidJson": "Некорректный JSON",
+      "keepSecret": "•••••• — оставьте пустым, чтобы не менять",
+      "items": "{{count}} шт."
+    },
+    "toast": {
+      "saved": "Сохранено",
+      "saveFailed": "Не удалось сохранить",
+      "connectionOk": "Соединение установлено",
+      "testFailed": "Проверка не удалась",
+      "enabled": "Включено",
+      "disabled": "Выключено",
+      "deleted": "Конфигурация удалена",
+      "deleteFailed": "Не удалось удалить",
+      "updateFailed": "Не удалось обновить"
+    },
+    "unknown": "Неизвестная интеграция «{{id}}».",
+    "back": "К интеграциям"
+  }
+}
