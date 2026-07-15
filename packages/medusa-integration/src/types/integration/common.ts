@@ -37,6 +37,8 @@ export interface UiField {
   options?: string[]
   /** For `select`: i18n-key label per enum value (value → key). UI shows the label, stores the value. */
   optionLabels?: Partial<Record<string, I18nKey>>
+  /** Descriptor default for a (non-secret) field — pre-fills the edit form when there's no stored value. */
+  default?: unknown
   /** Declarative UI visibility (evaluated admin-side against sibling values). */
   visibleWhen?: { field: string; equals: string | number | boolean }
   /** Rendered disabled (not editable) — an author-fixed constant. */

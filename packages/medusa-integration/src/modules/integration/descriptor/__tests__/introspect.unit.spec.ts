@@ -68,16 +68,14 @@ describe("introspect readonly", () => {
     options: {
       endpoint: {
         type: "url",
-        readonly: true,
-        default: "https://api.example.com/hook",
+        readonlyValue: "https://api.example.com/hook",
         control: "url",
         label: "demo.fields.endpoint",
       },
       apiSecret: {
         type: "string",
-        readonly: true,
         secret: true,
-        default: "shh",
+        readonlyValue: "shh",
         label: "demo.fields.apiSecret",
       },
     },

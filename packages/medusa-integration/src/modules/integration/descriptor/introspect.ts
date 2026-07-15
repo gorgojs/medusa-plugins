@@ -30,10 +30,11 @@ function introspectField(name: string, def: OptionDef): UiField {
     placeholder: def.placeholder,
     options: def.type === "enum" ? [...def.values] : undefined,
     optionLabels: def.type === "enum" ? def.valueLabels : undefined,
+    default: def.secret !== true ? def.default : undefined,
     visibleWhen: def.visibleWhen,
-    readonly: def.readonly,
-    // The constant to display; never expose a secret's default to the client.
-    readonlyValue: def.readonly && def.secret !== true ? def.default : undefined,
+    readonly: def.readonlyValue !== undefined,
+    // The constant to display; never expose a secret's value to the client.
+    readonlyValue: def.readonlyValue !== undefined && def.secret !== true ? def.readonlyValue : undefined,
   }
 }
 

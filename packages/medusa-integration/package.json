@@ -37,6 +37,9 @@
     "prepublishOnly": "medusa plugin:build",
     "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit"
   },
+  "dependencies": {
+    "@gorgo/telemetry": "^1.0.0"
+  },
   "devDependencies": {
     "@medusajs/admin-sdk": "^2.17.2",
     "@medusajs/cli": "^2.17.2",
