@@ -64,7 +64,6 @@ export function introspectDescriptor(
     module: descriptor.module,
     identifier: descriptor.identifier,
     instanceId: descriptor.instanceId ?? null,
-    optionsVersion: descriptor.optionsVersion ?? 1,
     displayName: descriptor.displayName,
     description: descriptor.description,
     icon: descriptor.icon,

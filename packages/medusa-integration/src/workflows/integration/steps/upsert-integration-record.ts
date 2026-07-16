@@ -6,7 +6,6 @@ import type { ModuleKind } from "../../../modules/integration/descriptor/define"
 export type UpsertIntegrationRecordStepInput = {
   provider_id: string
   module: ModuleKind
-  options_version: number
   options: Record<string, unknown>
   title?: string | null
 }

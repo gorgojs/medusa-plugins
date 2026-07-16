@@ -26,7 +26,6 @@ export type IntegrationValidateContext = { addIssue: (issue: IntegrationValidate
 type DescriptorBase = {
   /** Which Medusa module this integration configures (payment, fulfillment, …). */
   module: ModuleKind
-  optionsVersion?: number
   displayName: I18nKey
   description?: I18nKey
   icon?: string
@@ -44,7 +43,7 @@ type CrossSectionRules = {
   validate?: (full: Record<string, unknown>, ctx: IntegrationValidateContext) => void
 }
 
-/** What `defineIntegration` returns (and what a provider's `getDescriptor()` returns). */
+/** What `defineIntegration` returns (and what a provider's `descriptor` getter returns). */
 export type IntegrationDescriptorInput = DescriptorBase &
   CrossSectionRules & {
     /** Flat catalog: single source of truth for every option (type/validation/UI/secret). */

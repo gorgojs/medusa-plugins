@@ -10,7 +10,7 @@ import type {
  *
  *   export class TkassaIntegrationProvider extends AbstractIntegrationProvider {
  *     static identifier = "tkassa"
- *     getDescriptor() { return tkassaDescriptor }
+ *     get descriptor() { return tkassaDescriptor }
  *     async testConnection({ credentials }) { ... }
  *   }
  *
@@ -49,7 +49,7 @@ export abstract class AbstractIntegrationProvider {
   }
 
   /** Return this plugin's settings descriptor (zod schema + UI metadata + sections). */
-  abstract getDescriptor(): IntegrationDescriptorInput
+  abstract get descriptor(): IntegrationDescriptorInput
 
   /** Optional connection check; omit if the plugin can't quickly verify credentials. */
   testConnection?(ctx: TestConnectionContext): Promise<TestConnectionResult>

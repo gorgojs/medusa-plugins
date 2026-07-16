@@ -85,7 +85,7 @@ const trackStarted = async (container: any, providers: ModuleProvider[]): Promis
     const list: ProviderTelemetry[] = providerService.listRegistrations().map((r) => {
       const pkg = pkgByIdentifier.get(r.identifier)
       return {
-        module: r.provider.getDescriptor().module,
+        module: r.provider.descriptor.module,
         id: r.identifier,
         package_name: pkg?.name ?? null,
         package_version: pkg?.version ?? null,

@@ -32,8 +32,8 @@
       "other": "Прочее"
     },
     "testStatus": {
-      "ok": "OK",
-      "fail": "Ошибка",
+      "passed": "Пройдено",
+      "failed": "Ошибка",
       "skipped": "Пропущено"
     },
     "actions": {

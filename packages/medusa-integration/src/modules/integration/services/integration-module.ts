@@ -42,7 +42,7 @@ export default class IntegrationModuleService extends MedusaService({
   listUiDescriptors(): UiDescriptor[] {
     return this.providerService_.listRegistrations().map((r) =>
       introspectDescriptor(
-        { ...r.provider.getDescriptor(), identifier: r.identifier, instanceId: r.instanceId },
+        { ...r.provider.descriptor, identifier: r.identifier, instanceId: r.instanceId },
         typeof r.provider.testConnection === "function"
       )
     )
@@ -52,7 +52,7 @@ export default class IntegrationModuleService extends MedusaService({
   getProviderDescriptor(providerId: string): IntegrationDescriptor | undefined {
     const r = this.providerService_.getRegistration(providerId)
     if (!r) return undefined
-    return { ...r.provider.getDescriptor(), identifier: r.identifier, instanceId: r.instanceId }
+    return { ...r.provider.descriptor, identifier: r.identifier, instanceId: r.instanceId }
   }
 
   /** UI descriptor for one `provider_id` (container key). */
@@ -60,7 +60,7 @@ export default class IntegrationModuleService extends MedusaService({
     const r = this.providerService_.getRegistration(providerId)
     if (!r) return undefined
     return introspectDescriptor(
-      { ...r.provider.getDescriptor(), identifier: r.identifier, instanceId: r.instanceId },
+      { ...r.provider.descriptor, identifier: r.identifier, instanceId: r.instanceId },
       typeof r.provider.testConnection === "function"
     )
   }
@@ -118,7 +118,7 @@ export default class IntegrationModuleService extends MedusaService({
     const rows = await this.listIntegrations({}, { take: 1000 })
     const byId = new Map(rows.map((r: any) => [r.provider_id, r]))
     return regs.map((r) => {
-      const d = r.provider.getDescriptor()
+      const d = r.provider.descriptor
       const row: any = byId.get(r.key)
       return {
         provider_id: r.key,
@@ -133,7 +133,6 @@ export default class IntegrationModuleService extends MedusaService({
         is_enabled: row?.is_enabled ?? false,
         is_complete: row ? this.isComplete(row) : false,
         last_test_status: row?.last_test_status ?? null,
-        last_test_at: row?.last_test_at ?? null,
       }
     })
   }
@@ -147,21 +146,21 @@ export default class IntegrationModuleService extends MedusaService({
     try {
       provider = this.providerService_.retrieveByKey(providerId)
     } catch {
-      return { status: "fail", message: `Unknown integration provider "${providerId}"` }
+      return { status: "failed", message: `Unknown integration provider "${providerId}"` }
     }
     if (!provider.testConnection) {
       return { status: "skipped", message: "No test configured" }
     }
     const resolved = await this.getResolvedOptions(provider.getIdentifier(), provider.getInstanceId())
     if (!resolved) {
-      return { status: "fail", message: "Not configured" }
+      return { status: "failed", message: "Not configured" }
     }
     try {
       return await provider.testConnection({
         options: resolved.options,
       })
     } catch (e: any) {
-      return { status: "fail", message: e?.message ?? "Test failed" }
+      return { status: "failed", message: e?.message ?? "Test failed" }
     }
   }
 

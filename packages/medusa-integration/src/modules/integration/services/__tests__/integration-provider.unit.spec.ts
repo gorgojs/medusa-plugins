@@ -1,19 +1,21 @@
 import { describe, expect, it } from "@jest/globals"
 import IntegrationProviderService from "../integration-provider"
 
-// Minimal provider stubs — the registry only needs getIdentifier/getInstanceId/getDescriptor.
+// Minimal provider stubs — the registry only needs getIdentifier/getInstanceId/descriptor.
 const mkProvider = (identifier: string, instanceId: string | null, withTest = false) => {
   const p: any = {
     getIdentifier: () => identifier,
     getInstanceId: () => instanceId,
-    getDescriptor: () => ({
-      module: "payment",
-      displayName: `${identifier}.name`,
-      options: {},
-      sections: [],
-    }),
+    get descriptor() {
+      return {
+        module: "payment",
+        displayName: `${identifier}.name`,
+        options: {},
+        sections: [],
+      }
+    },
   }
-  if (withTest) p.testConnection = async () => ({ status: "ok" })
+  if (withTest) p.testConnection = async () => ({ status: "passed" })
   return p
 }
 

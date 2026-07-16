@@ -5,16 +5,13 @@ import type { I18nKey, FieldControl } from "../../modules/integration/descriptor
 // Re-exported so the http layer can import domain bits from `src/types/integration`.
 export type { I18nKey }
 
-export type ModuleKind =
-  | "payment" | "fulfillment" | "marketplace" | "crm" | "erp" | "pim"
-  | "notification" | "feed" | "tax" | "other"
-
-export type TestStatus = "ok" | "fail" | "skipped"
+// The `IntegrationModule` / `IntegrationTestStatus` const objects and their derived string unions
+// live in `utils` (Medusa-style — runtime "enums" in utils). Imported for local use + re-exported
+// so the domain-type surface stays in `src/types`; import the const *values* from `utils/integration`.
+import type { ModuleKind, TestStatus } from "../../modules/integration/utils/integration"
+export type { ModuleKind, TestStatus }
 
 export type IntegrationLayouts = "core:single-column" | "core:two-column"
-
-/** Date fields are `Date` server-side and ISO strings once JSON-serialized to the admin. */
-export type DateValue = Date | string | null
 
 export interface TestConnectionContext {
   options: Record<string, unknown>
@@ -74,7 +71,6 @@ export interface UiDescriptor {
   module: string
   identifier: string
   instanceId: string | null
-  optionsVersion: number
   displayName: I18nKey
   description?: I18nKey
   icon?: string

@@ -40,7 +40,7 @@ export default async function testIntegrationConnectionsJob(container: MedusaCon
       const line = `[integration] ${target.provider_id} → ${result.status}${
         result.message ? `: ${result.message}` : ""
       }`
-      if (result.status === "fail") logger.warn(line)
+      if (result.status === "failed") logger.warn(line)
       else logger.info(line)
     } catch (e: any) {
       counts.errored++

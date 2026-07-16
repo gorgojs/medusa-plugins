@@ -27,7 +27,6 @@ export const upsertIntegrationWorkflow = createWorkflow(
       provider_id: data.input.provider_id,
       title: data.input.title ?? null,
       module: data.prepared.module,
-      options_version: data.prepared.options_version,
       options: data.prepared.options,
     }))
 

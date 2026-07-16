@@ -23,7 +23,7 @@ import { isFieldVisible } from "../../../../components/integration-form/visibili
 import type { AdminIntegrationResponse, IntegrationSectionData, UiSection } from "../../../../../types"
 
 const testColor = (s: string | null) =>
-  s === "ok" ? "green" : s === "fail" ? "red" : "grey"
+  s === "passed" ? "green" : s === "failed" ? "red" : "grey"
 
 /** A Medusa-admin section row: label on the left, value on the right. */
 const Row = ({ label, children }: { label: string; children: ReactNode }) => (
@@ -68,7 +68,7 @@ const EditPage = () => {
         { method: "POST" }
       ),
     onSuccess: (r) => {
-      r.status === "ok"
+      r.status === "passed"
         ? toast.success(t("integration.toast.connectionOk"))
         : toast.warning(r.message ?? r.status)
       invalidate()
@@ -261,10 +261,6 @@ const EditPage = () => {
                 <StatusBadge color={testColor(record.last_test_status)}>
                   {t(`integration.testStatus.${record.last_test_status}`)}
                 </StatusBadge>
-                <Text size="small" leading="compact" className="text-ui-fg-subtle">
-                  {record.last_test_at && new Date(record.last_test_at).toLocaleString()}
-                  {record.last_test_message ? ` · ${record.last_test_message}` : ""}
-                </Text>
               </>
             ) : (
               <Text size="small" leading="compact" className="text-ui-fg-subtle">

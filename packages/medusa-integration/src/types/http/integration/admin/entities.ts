@@ -1,4 +1,4 @@
-import type { I18nKey, DateValue, ModuleKind, TestStatus } from "../../../integration"
+import type { I18nKey, ModuleKind, TestStatus } from "../../../integration"
 
 /** One declared integration instance (registration) merged with its current row state. */
 export interface IntegrationOverviewItem {
@@ -16,7 +16,6 @@ export interface IntegrationOverviewItem {
   /** Stored config passes full validation (all required fields + cross-section rules). */
   is_complete: boolean
   last_test_status: TestStatus | null
-  last_test_at: DateValue
 }
 
 /** Client-facing view of an integration record — secrets are never included. */
@@ -27,8 +26,6 @@ export interface MaskedIntegration {
   title: string | null
   is_enabled: boolean
   has_secrets: boolean
-  last_test_at: DateValue
   last_test_status: TestStatus | null
-  last_test_message: string | null
   values: Record<string, unknown>
 }

@@ -94,7 +94,7 @@ export default class IntegrationProviderService {
    */
   listDescriptors(): IntegrationDescriptor[] {
     return this.listRegistrations().map((r) => ({
-      ...r.provider.getDescriptor(),
+      ...r.provider.descriptor,
       identifier: r.identifier,
       instanceId: r.instanceId,
     }))
