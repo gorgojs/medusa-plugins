@@ -56,7 +56,7 @@ export type IntegrationDescriptorInput = DescriptorBase &
 
 export type IntegrationDescriptor = IntegrationDescriptorInput & {
   /** Stamped by the registry from the provider's `static identifier`. */
-  pluginId: string
+  identifier: string
   /** Stamped from the registration id (null = single/default instance). */
   instanceId?: string | null
 }

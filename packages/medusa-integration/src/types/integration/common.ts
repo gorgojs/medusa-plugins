@@ -60,10 +60,10 @@ export interface UiSection {
  * included — anything needing a secret must go through a server endpoint.
  */
 export interface IntegrationSectionData {
-  /** Registration key `int_<pluginId>[_<instanceId>]` — pass to API calls. */
+  /** Registration key `int_<identifier>[_<instanceId>]` — pass to API calls. */
   providerId: string
   /** The provider's `static identifier` (e.g. "tkassa"). */
-  pluginId: string
+  identifier: string
   /** Current non-secret options for this integration. */
   values: Record<string, unknown>
   /** Whether the stored config passes full validation (use to gate actions). */
@@ -72,7 +72,7 @@ export interface IntegrationSectionData {
 
 export interface UiDescriptor {
   module: string
-  pluginId: string
+  identifier: string
   instanceId: string | null
   optionsVersion: number
   displayName: I18nKey

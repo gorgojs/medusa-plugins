@@ -26,7 +26,7 @@ const base = defineIntegration({
     { id: "behavior", title: "demo.sections.behavior", options: ["test_mode", "region", "webhooks"] },
   ],
 })
-const descriptor: IntegrationDescriptor = { ...base, pluginId: "demo", instanceId: null }
+const descriptor: IntegrationDescriptor = { ...base, identifier: "demo", instanceId: null }
 
 describe("introspect", () => {
   it("groups referenced options by section, omits catalog-only options", () => {
@@ -81,7 +81,7 @@ describe("introspect readonly", () => {
     },
     sections: [{ id: "s", title: "t", options: ["endpoint", "apiSecret"] }],
   })
-  const roDescriptor: IntegrationDescriptor = { ...base, pluginId: "demo", instanceId: null }
+  const roDescriptor: IntegrationDescriptor = { ...base, identifier: "demo", instanceId: null }
 
   it("surfaces readonly + readonlyValue (the default) for a non-secret constant", () => {
     const f = introspectDescriptor(roDescriptor).sections[0].fields.find((x) => x.name === "endpoint")!

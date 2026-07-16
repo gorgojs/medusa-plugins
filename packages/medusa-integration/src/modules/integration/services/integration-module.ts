@@ -42,17 +42,17 @@ export default class IntegrationModuleService extends MedusaService({
   listUiDescriptors(): UiDescriptor[] {
     return this.providerService_.listRegistrations().map((r) =>
       introspectDescriptor(
-        { ...r.provider.getDescriptor(), pluginId: r.pluginId, instanceId: r.instanceId },
+        { ...r.provider.getDescriptor(), identifier: r.identifier, instanceId: r.instanceId },
         typeof r.provider.testConnection === "function"
       )
     )
   }
 
-  /** Stamped descriptor (schema + pluginId/instanceId) for one `provider_id`. */
+  /** Stamped descriptor (schema + identifier/instanceId) for one `provider_id`. */
   getProviderDescriptor(providerId: string): IntegrationDescriptor | undefined {
     const r = this.providerService_.getRegistration(providerId)
     if (!r) return undefined
-    return { ...r.provider.getDescriptor(), pluginId: r.pluginId, instanceId: r.instanceId }
+    return { ...r.provider.getDescriptor(), identifier: r.identifier, instanceId: r.instanceId }
   }
 
   /** UI descriptor for one `provider_id` (container key). */
@@ -60,7 +60,7 @@ export default class IntegrationModuleService extends MedusaService({
     const r = this.providerService_.getRegistration(providerId)
     if (!r) return undefined
     return introspectDescriptor(
-      { ...r.provider.getDescriptor(), pluginId: r.pluginId, instanceId: r.instanceId },
+      { ...r.provider.getDescriptor(), identifier: r.identifier, instanceId: r.instanceId },
       typeof r.provider.testConnection === "function"
     )
   }
@@ -122,7 +122,7 @@ export default class IntegrationModuleService extends MedusaService({
       const row: any = byId.get(r.key)
       return {
         provider_id: r.key,
-        plugin_id: r.pluginId,
+        identifier: r.identifier,
         instance_id: r.instanceId,
         module: d.module,
         display_name: d.displayName,
@@ -211,14 +211,14 @@ export default class IntegrationModuleService extends MedusaService({
   }
 
   /**
-   * Resolve decrypted options for a `(pluginId, instanceId)` pair (the consumer-facing
-   * shape) — mapped internally to the `provider_id` key `int_<pluginId>[_<instanceId>]`.
+   * Resolve decrypted options for a `(identifier, instanceId)` pair (the consumer-facing
+   * shape) — mapped internally to the `provider_id` key `int_<identifier>[_<instanceId>]`.
    */
   async getResolvedOptions(
-    pluginId: string,
+    identifier: string,
     instanceId?: string | null
   ): Promise<ResolvedOptions | null> {
-    const providerId = IntegrationProviderService.key(pluginId, instanceId)
+    const providerId = IntegrationProviderService.key(identifier, instanceId)
     const hit = this.cache_.get(providerId)
     if (hit && hit.expiresAt > Date.now()) return hit.value
 

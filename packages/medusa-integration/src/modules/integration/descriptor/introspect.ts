@@ -62,7 +62,7 @@ export function introspectDescriptor(
 ): UiDescriptor {
   return {
     module: descriptor.module,
-    pluginId: descriptor.pluginId,
+    identifier: descriptor.identifier,
     instanceId: descriptor.instanceId ?? null,
     optionsVersion: descriptor.optionsVersion ?? 1,
     displayName: descriptor.displayName,

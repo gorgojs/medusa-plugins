@@ -139,7 +139,7 @@ const EditPage = () => {
   // per-plugin zone). Secrets are never included.
   const sectionData: IntegrationSectionData = {
     providerId: provider_id!,
-    pluginId: descriptor.pluginId,
+    identifier: descriptor.identifier,
     values: (record?.values as Record<string, unknown>) ?? {},
     isComplete,
   }
@@ -296,7 +296,7 @@ const EditPage = () => {
 
   return (
     <LayoutComposer
-      widgetsZonePrefix={`gorgo.integration.${descriptor.pluginId}`}
+      widgetsZonePrefix={`gorgo.integration.${descriptor.identifier}`}
       preferredLayoutId={descriptor.preferredLayoutId}
       sections={{ main, side }}
       data={sectionData}

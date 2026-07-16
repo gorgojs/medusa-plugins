@@ -3,7 +3,7 @@ import type { I18nKey, DateValue, ModuleKind, TestStatus } from "../../../integr
 /** One declared integration instance (registration) merged with its current row state. */
 export interface IntegrationOverviewItem {
   provider_id: string
-  plugin_id: string
+  identifier: string
   instance_id: string | null
   module: ModuleKind
   display_name: I18nKey

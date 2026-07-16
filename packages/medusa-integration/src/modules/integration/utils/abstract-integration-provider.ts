@@ -18,7 +18,7 @@ import type {
  * consumes providers (the registry) types against it, so adding a method here is the
  * only place to touch (besides implementing it in concrete providers).
  *
- * `static identifier` becomes the descriptor's `pluginId` (settings are stored/resolved
+ * `static identifier` becomes the descriptor's `identifier` (settings are stored/resolved
  * under it); authors don't repeat it in the descriptor.
  *
  * Each registration in `options.providers` is one *instance*: its `id` (if any) is

@@ -45,8 +45,7 @@ const registrationFn = async (
 
 type ProviderTelemetry = {
   module: string
-  plugin_id: string
-  instance_hash: string | null
+  id: string
   package_name: string | null
   package_version: string | null
 }
@@ -58,7 +57,7 @@ const trackStarted = async (container: any, providers: ModuleProvider[]): Promis
     // Map each provider's static identifier → its npm package (name/version), resolved from the
     // `resolve` specifier. identifier↔package is 1:1, so this keys the lookup below no matter
     // how many instances share the same class.
-    const pkgByPlugin = new Map<string, { name: string; version: string }>()
+    const pkgByIdentifier = new Map<string, { name: string; version: string }>()
     for (const entry of providers) {
       const spec = (entry as { resolve?: string }).resolve
       if (!spec) continue
@@ -68,7 +67,7 @@ const trackStarted = async (container: any, providers: ModuleProvider[]): Promis
         const mod = require(spec)
         const services: Array<{ identifier?: string }> = (mod?.default ?? mod)?.services ?? []
         for (const svc of services) {
-          if (svc?.identifier) pkgByPlugin.set(svc.identifier, pkg)
+          if (svc?.identifier) pkgByIdentifier.set(svc.identifier, pkg)
         }
       } catch {
         // a single unresolvable provider must not sink the whole event
@@ -81,16 +80,13 @@ const trackStarted = async (container: any, providers: ModuleProvider[]): Promis
     } catch {
       // hash without a salt rather than dropping the event
     }
-    const hashInstance = (id: string) =>
-      crypto.createHash("sha256").update(`${id}${machineId}`).digest("hex").slice(0, 16)
 
     const providerService = new IntegrationProviderService(container.cradle)
     const list: ProviderTelemetry[] = providerService.listRegistrations().map((r) => {
-      const pkg = pkgByPlugin.get(r.pluginId)
+      const pkg = pkgByIdentifier.get(r.identifier)
       return {
         module: r.provider.getDescriptor().module,
-        plugin_id: r.pluginId,
-        instance_hash: r.instanceId ? hashInstance(r.instanceId) : null,
+        id: r.identifier,
         package_name: pkg?.name ?? null,
         package_version: pkg?.version ?? null,
       }

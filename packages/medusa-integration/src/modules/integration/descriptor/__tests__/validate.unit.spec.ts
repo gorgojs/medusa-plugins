@@ -26,7 +26,7 @@ const base = defineIntegration({
     if (full.capture && !full.terminalKey) ctx.addIssue({ path: ["terminalKey"], message: "terminalKey required when capture is on" })
   },
 })
-const descriptor: IntegrationDescriptor = { ...base, pluginId: "demo", instanceId: null }
+const descriptor: IntegrationDescriptor = { ...base, identifier: "demo", instanceId: null }
 
 describe("validateOptions", () => {
   it("validates only the submitted ids and applies their defaults", () => {
