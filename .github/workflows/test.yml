@@ -72,7 +72,6 @@ jobs:
 
     env:
       DATABASE_URL: postgres://${{ secrets.DB_USERNAME }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }}
-      NODE_OPTIONS: --max-old-space-size=12144
 
     steps:
       - name: Checkout
