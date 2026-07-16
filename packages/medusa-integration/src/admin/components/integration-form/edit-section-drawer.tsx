@@ -16,10 +16,9 @@ function sectionDefaults(
   const out: Record<string, unknown> = {}
   for (const f of section.fields) {
     // Precedence for every field: stored value → descriptor default → empty. Secrets stay blank
-    // (blank = keep existing; a secret's default is never sent to the client anyway), and readonly
-    // fields show their fixed constant.
-    if (f.readonly) out[f.name] = f.readonlyValue // author-fixed constant, shown disabled
-    else if (f.secret || f.control === "secret") out[f.name] = ""
+    // (blank = keep existing; a secret's default is never sent to the client anyway). A readonly
+    // field seeds the same way — it's merely rendered disabled — so its `default` shows and persists.
+    if (f.secret || f.control === "secret") out[f.name] = ""
     else if (f.control === "switch") out[f.name] = values?.[f.name] ?? f.default ?? false
     else if (f.control === "json") out[f.name] = values?.[f.name] ?? f.default // stored, else default object/array
     else out[f.name] = values?.[f.name] ?? f.default ?? ""

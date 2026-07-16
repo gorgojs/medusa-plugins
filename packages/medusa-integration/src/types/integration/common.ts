@@ -38,10 +38,8 @@ export interface UiField {
   default?: unknown
   /** Declarative UI visibility (evaluated admin-side against sibling values). */
   visibleWhen?: { field: string; equals: string | number | boolean }
-  /** Rendered disabled (not editable) — an author-fixed constant. */
+  /** Render the control disabled in the admin (display-only; not enforced server-side). */
   readonly?: boolean
-  /** The constant to display for a readonly (non-secret) field — its descriptor `default`. */
-  readonlyValue?: unknown
 }
 
 export interface UiSection {

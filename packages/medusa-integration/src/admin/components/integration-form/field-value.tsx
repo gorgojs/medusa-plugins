@@ -24,9 +24,6 @@ export const IntegrationFieldValue = ({
 }) => {
   const { t } = useTranslation()
 
-  // A readonly field is an author-fixed constant — its value lives in the descriptor, not the row.
-  if (field.readonly && (value == null || value === "")) value = field.readonlyValue
-
   if (field.secret || field.control === "secret") {
     return secretConfigured ? (
       <Text size="small" leading="compact">

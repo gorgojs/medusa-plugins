@@ -16,17 +16,16 @@ type OptionBase = {
   hint?: I18nKey
   placeholder?: I18nKey
   secret?: boolean
-  /** Required = rejects `undefined`. Optional by default; a `default`/`readonlyValue` also implies present. */
+  /** Required = rejects `undefined`. Optional by default; a `default` also implies present. */
   required?: boolean
   /** Hide this field in the admin unless the rule holds (UI-only; server requiredness lives in `validate`). */
   visibleWhen?: VisibleWhen
+  readonly?: boolean
 }
 
 export type StringOption = OptionBase & {
   type: "string"
   default?: string
-  /** Fixed, non-editable constant. Its presence makes the option readonly (UI + server enforced); use instead of `default`. */
-  readonlyValue?: string
   minLength?: number
   maxLength?: number
   pattern?: string
@@ -35,8 +34,6 @@ export type StringOption = OptionBase & {
 export type UrlOption = OptionBase & {
   type: "url"
   default?: string
-  /** Fixed, non-editable constant. Its presence makes the option readonly; use instead of `default`. */
-  readonlyValue?: string
   /** Restrict the URL scheme, e.g. ["https"]. Omit to allow any protocol. */
   protocols?: string[]
   validate?: (v: string | undefined, c: OptionValidateContext) => void
@@ -44,22 +41,16 @@ export type UrlOption = OptionBase & {
 export type EmailOption = OptionBase & {
   type: "email"
   default?: string
-  /** Fixed, non-editable constant. Its presence makes the option readonly; use instead of `default`. */
-  readonlyValue?: string
   validate?: (v: string | undefined, c: OptionValidateContext) => void
 }
 export type UuidOption = OptionBase & {
   type: "uuid"
   default?: string
-  /** Fixed, non-editable constant. Its presence makes the option readonly; use instead of `default`. */
-  readonlyValue?: string
   validate?: (v: string | undefined, c: OptionValidateContext) => void
 }
 export type NumberOption  = OptionBase & {
   type: "number"
   default?: number
-  /** Fixed, non-editable constant. Its presence makes the option readonly; use instead of `default`. */
-  readonlyValue?: number
   min?: number
   max?: number
   int?: boolean
@@ -71,8 +62,6 @@ export type NumberOption  = OptionBase & {
 export type BooleanOption = OptionBase & {
   type: "boolean"
   default?: boolean
-  /** Fixed, non-editable constant. Its presence makes the option readonly; use instead of `default`. */
-  readonlyValue?: boolean
   validate?: (v: boolean | undefined, c: OptionValidateContext) => void
 }
 export type EnumOption<V extends string = string> = OptionBase & {
@@ -80,15 +69,11 @@ export type EnumOption<V extends string = string> = OptionBase & {
   values: readonly V[]
   valueLabels?: Partial<Record<V, I18nKey>>
   default?: V
-  /** Fixed, non-editable constant. Its presence makes the option readonly; use instead of `default`. */
-  readonlyValue?: V
   validate?: (v: V | undefined, c: OptionValidateContext) => void
 }
 export type JsonOption = OptionBase & {
   type: "json"
   default?: unknown
-  /** Fixed, non-editable constant. Its presence makes the option readonly; use instead of `default`. */
-  readonlyValue?: unknown
   validate?: (v: unknown, c: OptionValidateContext) => void
 }
 
@@ -111,7 +96,6 @@ export type OptionValue<D> =
   unknown
 type Present<D> =
   D extends { default: unknown } ? true :
-  D extends { readonlyValue: unknown } ? true :
   D extends { required: true } ? true :
   false
 export type Settings<O extends Record<string, OptionDef>> =

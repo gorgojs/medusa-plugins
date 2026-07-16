@@ -3,16 +3,10 @@ import type { OptionDef } from "./option"
 
 /**
  * Build a zod schema for one option from our declarative properties. Presence: an option is
- * OPTIONAL unless `required: true`; a `default` (or a readonly `readonlyValue`) makes it
- * always-present (and satisfies required). `json` is opaque (`z.unknown()`) — its shape is
- * checked by the option's imperative `validate`.
+ * OPTIONAL unless `required: true`; a `default` makes it always-present (and satisfies required).
+ * `json` is opaque (`z.unknown()`) — its shape is checked by the option's imperative `validate`.
  */
 export function optionToZod(def: OptionDef): z.ZodType {
-  // A readonly option's fixed value acts as the schema default: the field is never written
-  // (the apply step drops readonly ids), so it materializes at resolve. `readonlyValue` wins
-  // over an (editable) `default`.
-  const defaultValue = def.readonlyValue !== undefined ? def.readonlyValue : def.default
-
   let base: z.ZodType
   switch (def.type) {
     case "string": {
@@ -59,7 +53,7 @@ export function optionToZod(def: OptionDef): z.ZodType {
       break
     case "json": {
       // Opaque JSON; presence handled here (z.unknown() otherwise accepts undefined).
-      if (defaultValue !== undefined) return z.unknown().default(defaultValue as never)
+      if (def.default !== undefined) return z.unknown().default(def.default as never)
       if (def.required) return z.unknown().refine((v) => v !== undefined, { message: "Required" })
       return z.unknown().optional()
     }
@@ -69,7 +63,7 @@ export function optionToZod(def: OptionDef): z.ZodType {
     }
   }
 
-  if (defaultValue !== undefined) return base.default(defaultValue as never)
+  if (def.default !== undefined) return base.default(def.default as never)
   if (!def.required) return base.optional()
   return base
 }

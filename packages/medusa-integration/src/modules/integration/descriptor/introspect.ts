@@ -32,9 +32,8 @@ function introspectField(name: string, def: OptionDef): UiField {
     optionLabels: def.type === "enum" ? def.valueLabels : undefined,
     default: def.secret !== true ? def.default : undefined,
     visibleWhen: def.visibleWhen,
-    readonly: def.readonlyValue !== undefined,
-    // The constant to display; never expose a secret's value to the client.
-    readonlyValue: def.readonlyValue !== undefined && def.secret !== true ? def.readonlyValue : undefined,
+    // UI-only: render the control disabled. The displayed/persisted value is the field's `default`.
+    readonly: def.readonly === true,
   }
 }
 

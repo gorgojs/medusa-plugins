@@ -68,14 +68,16 @@ describe("introspect readonly", () => {
     options: {
       endpoint: {
         type: "url",
-        readonlyValue: "https://api.example.com/hook",
+        readonly: true,
+        default: "https://api.example.com/hook",
         control: "url",
         label: "demo.fields.endpoint",
       },
       apiSecret: {
         type: "string",
         secret: true,
-        readonlyValue: "shh",
+        readonly: true,
+        default: "shh",
         label: "demo.fields.apiSecret",
       },
     },
@@ -83,16 +85,16 @@ describe("introspect readonly", () => {
   })
   const roDescriptor: IntegrationDescriptor = { ...base, identifier: "demo", instanceId: null }
 
-  it("surfaces readonly + readonlyValue (the default) for a non-secret constant", () => {
+  it("marks a readonly field disabled and surfaces its default for display", () => {
     const f = introspectDescriptor(roDescriptor).sections[0].fields.find((x) => x.name === "endpoint")!
     expect(f.readonly).toBe(true)
-    expect(f.readonlyValue).toBe("https://api.example.com/hook")
+    expect(f.default).toBe("https://api.example.com/hook")
   })
 
-  it("never exposes a secret readonly option's default", () => {
+  it("never exposes a secret's default (readonly or not)", () => {
     const f = introspectDescriptor(roDescriptor).sections[0].fields.find((x) => x.name === "apiSecret")!
     expect(f.readonly).toBe(true)
     expect(f.secret).toBe(true)
-    expect(f.readonlyValue).toBeUndefined()
+    expect(f.default).toBeUndefined()
   })
 })
