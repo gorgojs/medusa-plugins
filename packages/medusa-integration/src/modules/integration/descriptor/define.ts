@@ -51,6 +51,8 @@ export type IntegrationDescriptorInput = DescriptorBase &
     /** Composed from `options` by `defineIntegration` — for `z.infer`, defaults, full validation. */
     optionsSchema: z.ZodType<any>
     sections: readonly IntegrationSection[]
+    /** Optional connection check; runs against the resolved options. Omit if unsupported. */
+    testConnection?(ctx: TestConnectionContext): Promise<TestConnectionResult>
   }
 
 export type IntegrationDescriptor = IntegrationDescriptorInput & {
@@ -70,12 +72,18 @@ export type IntegrationDescriptor = IntegrationDescriptorInput & {
  */
 export function defineIntegration<const O extends Record<string, OptionDef>>(
   input: DescriptorBase &
-    CrossSectionRules & { options: O; sections: readonly IntegrationSection[] }
+    CrossSectionRules & {
+      options: O
+      sections: readonly IntegrationSection[]
+      /** Connection check with fully-typed, resolved options. */
+      testConnection?(ctx: { options: Settings<O> }): Promise<TestConnectionResult>
+    }
 ): DescriptorBase &
   CrossSectionRules & {
     options: O
     optionsSchema: z.ZodType<Settings<O>>
     sections: readonly IntegrationSection[]
+    testConnection?(ctx: TestConnectionContext): Promise<TestConnectionResult>
   } {
   // Fail fast: every section option id must exist in the catalog.
   for (const section of input.sections) {

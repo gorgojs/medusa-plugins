@@ -12,10 +12,10 @@ const mkProvider = (identifier: string, instanceId: string | null, withTest = fa
         displayName: `${identifier}.name`,
         options: {},
         sections: [],
+        ...(withTest ? { testConnection: async () => ({ status: "passed" }) } : {}),
       }
     },
   }
-  if (withTest) p.testConnection = async () => ({ status: "passed" })
   return p
 }
 

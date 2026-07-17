@@ -55,10 +55,7 @@ export function secretFieldNames(descriptor: Pick<IntegrationDescriptor, "option
     .map(([name]) => name)
 }
 
-export function introspectDescriptor(
-  descriptor: IntegrationDescriptor,
-  hasTestConnection = false
-): UiDescriptor {
+export function introspectDescriptor(descriptor: IntegrationDescriptor): UiDescriptor {
   return {
     module: descriptor.module,
     identifier: descriptor.identifier,
@@ -69,7 +66,7 @@ export function introspectDescriptor(
     docsUrl: descriptor.docsUrl,
     supportsMultipleInstances: descriptor.supportsMultipleInstances ?? false,
     preferredLayoutId: descriptor.preferredLayoutId ?? "core:single-column",
-    hasTestConnection,
+    hasTestConnection: typeof descriptor.testConnection === "function",
     sections: descriptor.sections.map((s) => introspectSection(s, descriptor.options)),
   }
 }

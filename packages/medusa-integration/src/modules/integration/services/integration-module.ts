@@ -41,10 +41,7 @@ export default class IntegrationModuleService extends MedusaService({
   /** UI descriptors for every registration (one per instance). */
   listUiDescriptors(): UiDescriptor[] {
     return this.providerService_.listRegistrations().map((r) =>
-      introspectDescriptor(
-        { ...r.provider.descriptor, identifier: r.identifier, instanceId: r.instanceId },
-        typeof r.provider.testConnection === "function"
-      )
+      introspectDescriptor({ ...r.provider.descriptor, identifier: r.identifier, instanceId: r.instanceId })
     )
   }
 
@@ -59,10 +56,7 @@ export default class IntegrationModuleService extends MedusaService({
   getProviderUiDescriptor(providerId: string): UiDescriptor | undefined {
     const r = this.providerService_.getRegistration(providerId)
     if (!r) return undefined
-    return introspectDescriptor(
-      { ...r.provider.descriptor, identifier: r.identifier, instanceId: r.instanceId },
-      typeof r.provider.testConnection === "function"
-    )
+    return introspectDescriptor({ ...r.provider.descriptor, identifier: r.identifier, instanceId: r.instanceId })
   }
 
   /** Whether a provider is registered under this `provider_id` (container key). */
@@ -128,7 +122,7 @@ export default class IntegrationModuleService extends MedusaService({
         display_name: d.displayName,
         icon: d.icon,
         supports_multiple_instances: d.supportsMultipleInstances ?? false,
-        has_test_connection: typeof r.provider.testConnection === "function",
+        has_test_connection: typeof d.testConnection === "function",
         is_configured: !!row,
         is_enabled: row?.is_enabled ?? false,
         is_complete: row ? this.isComplete(row) : false,
@@ -138,8 +132,8 @@ export default class IntegrationModuleService extends MedusaService({
   }
 
   /**
-   * Run the provider's connection test against the currently-resolved settings.
-   * Delegates to the integration-provider's `testConnection` (if it has one).
+   * Run the connection test against the currently-resolved settings.
+   * Delegates to the descriptor's `testConnection` (if it declares one).
    */
   async runTestConnection(providerId: string): Promise<TestConnectionResult> {
     let provider
@@ -148,7 +142,8 @@ export default class IntegrationModuleService extends MedusaService({
     } catch {
       return { status: "failed", message: `Unknown integration provider "${providerId}"` }
     }
-    if (!provider.testConnection) {
+    const testConnection = provider.descriptor.testConnection
+    if (!testConnection) {
       return { status: "skipped", message: "No test configured" }
     }
     const resolved = await this.getResolvedOptions(provider.getIdentifier(), provider.getInstanceId())
@@ -156,9 +151,7 @@ export default class IntegrationModuleService extends MedusaService({
       return { status: "failed", message: "Not configured" }
     }
     try {
-      return await provider.testConnection({
-        options: resolved.options,
-      })
+      return await testConnection({ options: resolved.options })
     } catch (e: any) {
       return { status: "failed", message: e?.message ?? "Test failed" }
     }

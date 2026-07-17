@@ -1,8 +1,4 @@
-import type {
-  IntegrationDescriptorInput,
-  TestConnectionContext,
-  TestConnectionResult,
-} from "../descriptor/define"
+import type { IntegrationDescriptorInput } from "../descriptor/define"
 
 /**
  * Base class AND contract for integration-providers. A plugin ships a subclass and
@@ -11,12 +7,11 @@ import type {
  *   export class TkassaIntegrationProvider extends AbstractIntegrationProvider {
  *     static identifier = "tkassa"
  *     get descriptor() { return tkassaDescriptor }
- *     async testConnection({ credentials }) { ... }
  *   }
  *
- * This class is the single source of truth for the provider contract — code that
- * consumes providers (the registry) types against it, so adding a method here is the
- * only place to touch (besides implementing it in concrete providers).
+ * The whole provider contract — options, sections, cross-section `validate` and
+ * `testConnection` — is declared in the descriptor (`defineIntegration`); the class only
+ * pairs a `static identifier` with that descriptor.
  *
  * `static identifier` becomes the descriptor's `identifier` (settings are stored/resolved
  * under it); authors don't repeat it in the descriptor.
@@ -48,11 +43,8 @@ export abstract class AbstractIntegrationProvider {
     return this.instanceId_
   }
 
-  /** Return this plugin's settings descriptor (zod schema + UI metadata + sections). */
+  /** This plugin's descriptor (options + sections + `validate` + `testConnection`). */
   abstract get descriptor(): IntegrationDescriptorInput
-
-  /** Optional connection check; omit if the plugin can't quickly verify credentials. */
-  testConnection?(ctx: TestConnectionContext): Promise<TestConnectionResult>
 }
 
 export default AbstractIntegrationProvider
