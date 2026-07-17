@@ -1,3 +1,5 @@
+import crypto from "node:crypto"
+import path from "node:path"
 import { asFunction, asValue, Lifetime } from "@medusajs/framework/awilix"
 import { moduleProviderLoader } from "@medusajs/framework/modules-sdk"
 import {
@@ -5,11 +7,13 @@ import {
   ModuleProvider,
   ModulesSdkTypes,
 } from "@medusajs/framework/types"
+import { createTelemetryClient, findPackageJson, getMachineId } from "@gorgo/telemetry"
 import {
   INTEGRATION_OPTIONS_KEY,
   IntegrationProviderRegistrationKey,
   IntegrationProviderRegistrationPrefix,
 } from "../types"
+import IntegrationProviderService from "../services/integration-provider"
 
 /**
  * Registers each integration-provider class into the module container under
@@ -39,6 +43,61 @@ const registrationFn = async (
   container.registerAdd(IntegrationProviderRegistrationKey, asValue(key))
 }
 
+type ProviderTelemetry = {
+  module: string
+  id: string
+  package_name: string | null
+  package_version: string | null
+}
+
+const trackStarted = async (container: any, providers: ModuleProvider[]): Promise<void> => {
+  try {
+    const telemetry = createTelemetryClient({ packageDir: __dirname })
+
+    // Map each provider's static identifier → its npm package (name/version), resolved from the
+    // `resolve` specifier. identifier↔package is 1:1, so this keys the lookup below no matter
+    // how many instances share the same class.
+    const pkgByIdentifier = new Map<string, { name: string; version: string }>()
+    for (const entry of providers) {
+      const spec = (entry as { resolve?: string }).resolve
+      if (!spec) continue
+      try {
+        const pkg = await findPackageJson(path.dirname(require.resolve(spec)))
+        if (!pkg) continue
+        const mod = require(spec)
+        const services: Array<{ identifier?: string }> = (mod?.default ?? mod)?.services ?? []
+        for (const svc of services) {
+          if (svc?.identifier) pkgByIdentifier.set(svc.identifier, pkg)
+        }
+      } catch {
+        // a single unresolvable provider must not sink the whole event
+      }
+    }
+
+    let machineId = ""
+    try {
+      machineId = getMachineId()
+    } catch {
+      // hash without a salt rather than dropping the event
+    }
+
+    const providerService = new IntegrationProviderService(container.cradle)
+    const list: ProviderTelemetry[] = providerService.listRegistrations().map((r) => {
+      const pkg = pkgByIdentifier.get(r.identifier)
+      return {
+        module: r.provider.descriptor.module,
+        id: r.identifier,
+        package_name: pkg?.name ?? null,
+        package_version: pkg?.version ?? null,
+      }
+    })
+
+    telemetry.track("plugin.started", { providers: list, provider_count: list.length })
+  } catch {
+    // never throw from telemetry
+  }
+}
+
 export default async ({
   container,
   options,
@@ -57,4 +116,7 @@ export default async ({
     providers: options?.providers || [],
     registerServiceFn: registrationFn,
   })
+
+  // Providers are now registered — announce them (guarded; never throws).
+  await trackStarted(container, options?.providers ?? [])
 }

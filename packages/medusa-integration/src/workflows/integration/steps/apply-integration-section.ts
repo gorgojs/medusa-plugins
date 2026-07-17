@@ -47,10 +47,6 @@ export const applyIntegrationSectionStep = createStep(
     } else {
       allowed = Object.keys(input.values).filter((k) => Object.prototype.hasOwnProperty.call(descriptor.options, k))
     }
-    // readonly options are author-fixed constants — never written from a client request
-    // (their value always comes from the descriptor `default` at resolve).
-    allowed = allowed.filter((id) => descriptor.options[id]?.readonly !== true)
-
     // Secrets are never sent to the client, so a blank/absent secret means "keep existing".
     const current = await service.getStoredValues(input.provider_id)
     const secretKeys = new Set(secretFieldNames(descriptor))
@@ -79,7 +75,6 @@ export const applyIntegrationSectionStep = createStep(
     const options = service.encryptForStorage(descriptor, full)
     return new StepResponse({
       module: descriptor.module,
-      options_version: descriptor.optionsVersion ?? 1,
       options,
     })
   }

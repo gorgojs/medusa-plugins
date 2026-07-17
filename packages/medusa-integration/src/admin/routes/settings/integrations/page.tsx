@@ -62,12 +62,12 @@ const IntegrationsPage = () => {
                       )}
                     </div>
                     <div className="flex items-center gap-2">
-                      {i.last_test_status === "ok" && (
+                      {i.last_test_status === "passed" && (
                         <Badge color="green" size="2xsmall">
                           {t("integration.list.tested")}
                         </Badge>
                       )}
-                      {i.last_test_status === "fail" && (
+                      {i.last_test_status === "failed" && (
                         <Badge color="red" size="2xsmall">
                           {t("integration.list.testFailed")}
                         </Badge>

@@ -26,7 +26,7 @@ const base = defineIntegration({
     { id: "behavior", title: "demo.sections.behavior", options: ["test_mode", "region", "webhooks"] },
   ],
 })
-const descriptor: IntegrationDescriptor = { ...base, pluginId: "demo", instanceId: null }
+const descriptor: IntegrationDescriptor = { ...base, identifier: "demo", instanceId: null }
 
 describe("introspect", () => {
   it("groups referenced options by section, omits catalog-only options", () => {
@@ -75,26 +75,26 @@ describe("introspect readonly", () => {
       },
       apiSecret: {
         type: "string",
-        readonly: true,
         secret: true,
+        readonly: true,
         default: "shh",
         label: "demo.fields.apiSecret",
       },
     },
     sections: [{ id: "s", title: "t", options: ["endpoint", "apiSecret"] }],
   })
-  const roDescriptor: IntegrationDescriptor = { ...base, pluginId: "demo", instanceId: null }
+  const roDescriptor: IntegrationDescriptor = { ...base, identifier: "demo", instanceId: null }
 
-  it("surfaces readonly + readonlyValue (the default) for a non-secret constant", () => {
+  it("marks a readonly field disabled and surfaces its default for display", () => {
     const f = introspectDescriptor(roDescriptor).sections[0].fields.find((x) => x.name === "endpoint")!
     expect(f.readonly).toBe(true)
-    expect(f.readonlyValue).toBe("https://api.example.com/hook")
+    expect(f.default).toBe("https://api.example.com/hook")
   })
 
-  it("never exposes a secret readonly option's default", () => {
+  it("never exposes a secret's default (readonly or not)", () => {
     const f = introspectDescriptor(roDescriptor).sections[0].fields.find((x) => x.name === "apiSecret")!
     expect(f.readonly).toBe(true)
     expect(f.secret).toBe(true)
-    expect(f.readonlyValue).toBeUndefined()
+    expect(f.default).toBeUndefined()
   })
 })

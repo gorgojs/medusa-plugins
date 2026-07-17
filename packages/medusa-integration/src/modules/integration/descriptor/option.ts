@@ -94,7 +94,10 @@ export type OptionValue<D> =
   D extends { type: "string" | "url" | "email" | "uuid" } ? string :
   D extends { type: "json" } ? unknown :
   unknown
-type Present<D> = D extends { default: unknown } ? true : D extends { required: true } ? true : false
+type Present<D> =
+  D extends { default: unknown } ? true :
+  D extends { required: true } ? true :
+  false
 export type Settings<O extends Record<string, OptionDef>> =
   { [K in keyof O as Present<O[K]> extends true ? K : never]-?: OptionValue<O[K]> } &
   { [K in keyof O as Present<O[K]> extends true ? never : K]?: OptionValue<O[K]> }

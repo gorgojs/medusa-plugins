@@ -32,8 +32,8 @@
       "other": "Other"
     },
     "testStatus": {
-      "ok": "OK",
-      "fail": "Failed",
+      "passed": "Passed",
+      "failed": "Failed",
       "skipped": "Skipped"
     },
     "actions": {

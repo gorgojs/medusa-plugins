@@ -43,9 +43,7 @@ export function maskedView(record: any, secretKeys: string[]): MaskedIntegration
     title: record.title ?? null,
     is_enabled: record.is_enabled,
     has_secrets,
-    last_test_at: record.last_test_at ?? null,
     last_test_status: record.last_test_status ?? null,
-    last_test_message: record.last_test_message ?? null,
     values,
   }
 }

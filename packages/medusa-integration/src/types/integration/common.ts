@@ -5,16 +5,13 @@ import type { I18nKey, FieldControl } from "../../modules/integration/descriptor
 // Re-exported so the http layer can import domain bits from `src/types/integration`.
 export type { I18nKey }
 
-export type ModuleKind =
-  | "payment" | "fulfillment" | "marketplace" | "crm" | "erp" | "pim"
-  | "notification" | "feed" | "tax" | "other"
-
-export type TestStatus = "ok" | "fail" | "skipped"
+// The `IntegrationModule` / `IntegrationTestStatus` const objects and their derived string unions
+// live in `utils` (Medusa-style — runtime "enums" in utils). Imported for local use + re-exported
+// so the domain-type surface stays in `src/types`; import the const *values* from `utils/integration`.
+import type { ModuleKind, TestStatus } from "../../modules/integration/utils/integration"
+export type { ModuleKind, TestStatus }
 
 export type IntegrationLayouts = "core:single-column" | "core:two-column"
-
-/** Date fields are `Date` server-side and ISO strings once JSON-serialized to the admin. */
-export type DateValue = Date | string | null
 
 export interface TestConnectionContext {
   options: Record<string, unknown>
@@ -37,12 +34,12 @@ export interface UiField {
   options?: string[]
   /** For `select`: i18n-key label per enum value (value → key). UI shows the label, stores the value. */
   optionLabels?: Partial<Record<string, I18nKey>>
+  /** Descriptor default for a (non-secret) field — pre-fills the edit form when there's no stored value. */
+  default?: unknown
   /** Declarative UI visibility (evaluated admin-side against sibling values). */
   visibleWhen?: { field: string; equals: string | number | boolean }
-  /** Rendered disabled (not editable) — an author-fixed constant. */
+  /** Render the control disabled in the admin (display-only; not enforced server-side). */
   readonly?: boolean
-  /** The constant to display for a readonly (non-secret) field — its descriptor `default`. */
-  readonlyValue?: unknown
 }
 
 export interface UiSection {
@@ -58,10 +55,10 @@ export interface UiSection {
  * included — anything needing a secret must go through a server endpoint.
  */
 export interface IntegrationSectionData {
-  /** Registration key `int_<pluginId>[_<instanceId>]` — pass to API calls. */
+  /** Registration key `int_<identifier>[_<instanceId>]` — pass to API calls. */
   providerId: string
   /** The provider's `static identifier` (e.g. "tkassa"). */
-  pluginId: string
+  identifier: string
   /** Current non-secret options for this integration. */
   values: Record<string, unknown>
   /** Whether the stored config passes full validation (use to gate actions). */
@@ -70,9 +67,8 @@ export interface IntegrationSectionData {
 
 export interface UiDescriptor {
   module: string
-  pluginId: string
+  identifier: string
   instanceId: string | null
-  optionsVersion: number
   displayName: I18nKey
   description?: I18nKey
   icon?: string

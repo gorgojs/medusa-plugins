@@ -10,7 +10,7 @@ type InjectedDependencies = {
 export type ProviderRegistration = {
   /** Container key `int_<identifier>[_<id>]` — the instance's stable identity. */
   key: string
-  pluginId: string
+  identifier: string
   instanceId: string | null
   provider: AbstractIntegrationProvider
 }
@@ -19,7 +19,7 @@ export type ProviderRegistration = {
  * Thin registry over the integration-providers registered into the module container by
  * `loadProviders`. Each registration in `options.providers` is one instance, identified
  * by its container key `int_<identifier>[_<id>]` — which is also the DB `provider_id`.
- * Instances are declared in medusa-config, not created at runtime. `pluginId`/`instanceId`
+ * Instances are declared in medusa-config, not created at runtime. `identifier`/`instanceId`
  * (= `getIdentifier()`/`getInstanceId()`) are derived for descriptors/UI.
  *
  * Intentionally minimal: it locates providers; callers invoke provider methods directly,
@@ -32,9 +32,9 @@ export default class IntegrationProviderService {
     this.dependencies_ = container
   }
 
-  /** Build the container key for a `(pluginId, instanceId)` pair. */
-  static key(pluginId: string, instanceId?: string | null): string {
-    return `${IntegrationProviderRegistrationPrefix}${pluginId}${instanceId ? `_${instanceId}` : ""}`
+  /** Build the container key for a `(identifier, instanceId)` pair. */
+  static key(identifier: string, instanceId?: string | null): string {
+    return `${IntegrationProviderRegistrationPrefix}${identifier}${instanceId ? `_${instanceId}` : ""}`
   }
 
   /** All registered provider instances. */
@@ -44,7 +44,7 @@ export default class IntegrationProviderService {
       .map((k) => this.dependencies_[k as keyof InjectedDependencies])
   }
 
-  /** Every registration with its derived `(pluginId, instanceId)` identity. */
+  /** Every registration with its derived `(identifier, instanceId)` identity. */
   listRegistrations(): ProviderRegistration[] {
     return Object.keys(this.dependencies_)
       .filter((k) => k.startsWith(IntegrationProviderRegistrationPrefix))
@@ -52,7 +52,7 @@ export default class IntegrationProviderService {
         const provider = this.dependencies_[k as keyof InjectedDependencies]
         return {
           key: k,
-          pluginId: provider.getIdentifier(),
+          identifier: provider.getIdentifier(),
           instanceId: provider.getInstanceId(),
           provider,
         }
@@ -70,32 +70,32 @@ export default class IntegrationProviderService {
     return provider
   }
 
-  /** Resolve the provider for a `(pluginId, instanceId)` pair. */
-  retrieveProvider(pluginId: string, instanceId?: string | null): AbstractIntegrationProvider {
-    return this.retrieveByKey(IntegrationProviderService.key(pluginId, instanceId))
+  /** Resolve the provider for a `(identifier, instanceId)` pair. */
+  retrieveProvider(identifier: string, instanceId?: string | null): AbstractIntegrationProvider {
+    return this.retrieveByKey(IntegrationProviderService.key(identifier, instanceId))
   }
 
-  /** Whether a provider is registered for this `(pluginId, instanceId)` pair. */
-  hasProvider(pluginId: string, instanceId?: string | null): boolean {
+  /** Whether a provider is registered for this `(identifier, instanceId)` pair. */
+  hasProvider(identifier: string, instanceId?: string | null): boolean {
     return !!this.dependencies_[
-      IntegrationProviderService.key(pluginId, instanceId) as keyof InjectedDependencies
+      IntegrationProviderService.key(identifier, instanceId) as keyof InjectedDependencies
     ]
   }
 
-  /** Resolve `(pluginId, instanceId)` from a container key, or undefined if unregistered. */
+  /** Resolve `(identifier, instanceId)` from a container key, or undefined if unregistered. */
   getRegistration(key: string): ProviderRegistration | undefined {
     return this.listRegistrations().find((r) => r.key === key)
   }
 
   /**
    * Descriptors of every registered provider — feeds the introspection/UI pipeline.
-   * `pluginId`/`instanceId` are stamped from each registration, so authors never repeat
+   * `identifier`/`instanceId` are stamped from each registration, so authors never repeat
    * them in the descriptor. One descriptor per registration (one per instance).
    */
   listDescriptors(): IntegrationDescriptor[] {
     return this.listRegistrations().map((r) => ({
-      ...r.provider.getDescriptor(),
-      pluginId: r.pluginId,
+      ...r.provider.descriptor,
+      identifier: r.identifier,
       instanceId: r.instanceId,
     }))
   }

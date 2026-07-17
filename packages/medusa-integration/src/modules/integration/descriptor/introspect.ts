@@ -30,10 +30,10 @@ function introspectField(name: string, def: OptionDef): UiField {
     placeholder: def.placeholder,
     options: def.type === "enum" ? [...def.values] : undefined,
     optionLabels: def.type === "enum" ? def.valueLabels : undefined,
+    default: def.secret !== true ? def.default : undefined,
     visibleWhen: def.visibleWhen,
-    readonly: def.readonly,
-    // The constant to display; never expose a secret's default to the client.
-    readonlyValue: def.readonly && def.secret !== true ? def.default : undefined,
+    // UI-only: render the control disabled. The displayed/persisted value is the field's `default`.
+    readonly: def.readonly === true,
   }
 }
 
@@ -61,9 +61,8 @@ export function introspectDescriptor(
 ): UiDescriptor {
   return {
     module: descriptor.module,
-    pluginId: descriptor.pluginId,
+    identifier: descriptor.identifier,
     instanceId: descriptor.instanceId ?? null,
-    optionsVersion: descriptor.optionsVersion ?? 1,
     displayName: descriptor.displayName,
     description: descriptor.description,
     icon: descriptor.icon,

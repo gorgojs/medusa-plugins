@@ -10,7 +10,7 @@ import type {
  *
  *   export class TkassaIntegrationProvider extends AbstractIntegrationProvider {
  *     static identifier = "tkassa"
- *     getDescriptor() { return tkassaDescriptor }
+ *     get descriptor() { return tkassaDescriptor }
  *     async testConnection({ credentials }) { ... }
  *   }
  *
@@ -18,7 +18,7 @@ import type {
  * consumes providers (the registry) types against it, so adding a method here is the
  * only place to touch (besides implementing it in concrete providers).
  *
- * `static identifier` becomes the descriptor's `pluginId` (settings are stored/resolved
+ * `static identifier` becomes the descriptor's `identifier` (settings are stored/resolved
  * under it); authors don't repeat it in the descriptor.
  *
  * Each registration in `options.providers` is one *instance*: its `id` (if any) is
@@ -49,7 +49,7 @@ export abstract class AbstractIntegrationProvider {
   }
 
   /** Return this plugin's settings descriptor (zod schema + UI metadata + sections). */
-  abstract getDescriptor(): IntegrationDescriptorInput
+  abstract get descriptor(): IntegrationDescriptorInput
 
   /** Optional connection check; omit if the plugin can't quickly verify credentials. */
   testConnection?(ctx: TestConnectionContext): Promise<TestConnectionResult>

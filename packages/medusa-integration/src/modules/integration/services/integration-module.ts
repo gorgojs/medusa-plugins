@@ -42,17 +42,17 @@ export default class IntegrationModuleService extends MedusaService({
   listUiDescriptors(): UiDescriptor[] {
     return this.providerService_.listRegistrations().map((r) =>
       introspectDescriptor(
-        { ...r.provider.getDescriptor(), pluginId: r.pluginId, instanceId: r.instanceId },
+        { ...r.provider.descriptor, identifier: r.identifier, instanceId: r.instanceId },
         typeof r.provider.testConnection === "function"
       )
     )
   }
 
-  /** Stamped descriptor (schema + pluginId/instanceId) for one `provider_id`. */
+  /** Stamped descriptor (schema + identifier/instanceId) for one `provider_id`. */
   getProviderDescriptor(providerId: string): IntegrationDescriptor | undefined {
     const r = this.providerService_.getRegistration(providerId)
     if (!r) return undefined
-    return { ...r.provider.getDescriptor(), pluginId: r.pluginId, instanceId: r.instanceId }
+    return { ...r.provider.descriptor, identifier: r.identifier, instanceId: r.instanceId }
   }
 
   /** UI descriptor for one `provider_id` (container key). */
@@ -60,7 +60,7 @@ export default class IntegrationModuleService extends MedusaService({
     const r = this.providerService_.getRegistration(providerId)
     if (!r) return undefined
     return introspectDescriptor(
-      { ...r.provider.getDescriptor(), pluginId: r.pluginId, instanceId: r.instanceId },
+      { ...r.provider.descriptor, identifier: r.identifier, instanceId: r.instanceId },
       typeof r.provider.testConnection === "function"
     )
   }
@@ -118,11 +118,11 @@ export default class IntegrationModuleService extends MedusaService({
     const rows = await this.listIntegrations({}, { take: 1000 })
     const byId = new Map(rows.map((r: any) => [r.provider_id, r]))
     return regs.map((r) => {
-      const d = r.provider.getDescriptor()
+      const d = r.provider.descriptor
       const row: any = byId.get(r.key)
       return {
         provider_id: r.key,
-        plugin_id: r.pluginId,
+        identifier: r.identifier,
         instance_id: r.instanceId,
         module: d.module,
         display_name: d.displayName,
@@ -133,7 +133,6 @@ export default class IntegrationModuleService extends MedusaService({
         is_enabled: row?.is_enabled ?? false,
         is_complete: row ? this.isComplete(row) : false,
         last_test_status: row?.last_test_status ?? null,
-        last_test_at: row?.last_test_at ?? null,
       }
     })
   }
@@ -147,21 +146,21 @@ export default class IntegrationModuleService extends MedusaService({
     try {
       provider = this.providerService_.retrieveByKey(providerId)
     } catch {
-      return { status: "fail", message: `Unknown integration provider "${providerId}"` }
+      return { status: "failed", message: `Unknown integration provider "${providerId}"` }
     }
     if (!provider.testConnection) {
       return { status: "skipped", message: "No test configured" }
     }
     const resolved = await this.getResolvedOptions(provider.getIdentifier(), provider.getInstanceId())
     if (!resolved) {
-      return { status: "fail", message: "Not configured" }
+      return { status: "failed", message: "Not configured" }
     }
     try {
       return await provider.testConnection({
         options: resolved.options,
       })
     } catch (e: any) {
-      return { status: "fail", message: e?.message ?? "Test failed" }
+      return { status: "failed", message: e?.message ?? "Test failed" }
     }
   }
 
@@ -211,14 +210,14 @@ export default class IntegrationModuleService extends MedusaService({
   }
 
   /**
-   * Resolve decrypted options for a `(pluginId, instanceId)` pair (the consumer-facing
-   * shape) — mapped internally to the `provider_id` key `int_<pluginId>[_<instanceId>]`.
+   * Resolve decrypted options for a `(identifier, instanceId)` pair (the consumer-facing
+   * shape) — mapped internally to the `provider_id` key `int_<identifier>[_<instanceId>]`.
    */
   async getResolvedOptions(
-    pluginId: string,
+    identifier: string,
     instanceId?: string | null
   ): Promise<ResolvedOptions | null> {
-    const providerId = IntegrationProviderService.key(pluginId, instanceId)
+    const providerId = IntegrationProviderService.key(identifier, instanceId)
     const hit = this.cache_.get(providerId)
     if (hit && hit.expiresAt > Date.now()) return hit.value
 
