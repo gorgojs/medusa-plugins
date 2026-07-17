@@ -6,6 +6,11 @@
   "files": [
     ".medusa/server"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gorgojs/medusa-plugins",
+    "directory": "packages/medusa-integration"
+  },
   "exports": {
     ".": {
       "types": "./.medusa/server/src/index.d.ts",
