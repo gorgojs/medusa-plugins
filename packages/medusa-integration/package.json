@@ -1,6 +1,6 @@
 {
   "name": "@gorgo/medusa-integration",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Integration module for Medusa",
   "license": "MIT",
   "files": [
