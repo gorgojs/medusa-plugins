@@ -15,11 +15,11 @@
     },
     "labels": {
       "status": "Status",
-      "module": "Module",
+      "category": "Category",
       "lastTest": "Last test",
       "neverTested": "Never tested"
     },
-    "modules": {
+    "categories": {
       "payment": "Payment",
       "fulfillment": "Fulfillment",
       "marketplace": "Marketplace",

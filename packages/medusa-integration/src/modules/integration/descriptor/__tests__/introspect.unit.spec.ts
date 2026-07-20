@@ -4,7 +4,7 @@ import { defineIntegration } from "../define"
 import type { IntegrationDescriptor } from "../define"
 
 const base = defineIntegration({
-  module: "payment",
+  category: "payment",
   displayName: "demo.name",
   options: {
     login: { type: "string", required: true, minLength: 1, control: "text", label: "demo.fields.login" },
@@ -63,7 +63,7 @@ describe("introspect", () => {
 
 describe("introspect readonly", () => {
   const base = defineIntegration({
-    module: "payment",
+    category: "payment",
     displayName: "demo.name",
     options: {
       endpoint: {

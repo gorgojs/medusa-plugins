@@ -1,11 +1,11 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { INTEGRATION_MODULE } from "../../../modules/integration"
 import type IntegrationModuleService from "../../../modules/integration/services/integration-module"
-import type { ModuleKind } from "../../../modules/integration/descriptor/define"
+import type { CategoryKind } from "../../../modules/integration/descriptor/define"
 
 export type UpsertIntegrationRecordStepInput = {
   provider_id: string
-  module: ModuleKind
+  category: CategoryKind
   options: Record<string, unknown>
   title?: string | null
 }

@@ -8,7 +8,7 @@ const requiredWhenCapture = (v: unknown, c: any) => {
 }
 
 const base = defineIntegration({
-  module: "payment",
+  category: "payment",
   displayName: "demo.name",
   options: {
     terminalKey: { type: "string", required: true, minLength: 1, label: "l" },

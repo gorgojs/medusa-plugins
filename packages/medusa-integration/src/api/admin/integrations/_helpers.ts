@@ -39,7 +39,7 @@ export function maskedView(record: any, secretKeys: string[]): MaskedIntegration
   return {
     id: record.id,
     provider_id: record.provider_id,
-    module: record.module,
+    category: record.category,
     title: record.title ?? null,
     is_enabled: record.is_enabled,
     has_secrets,

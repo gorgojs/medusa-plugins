@@ -74,7 +74,7 @@ export const applyIntegrationSectionStep = createStep(
     const full = { ...current, ...validated.data }
     const options = service.encryptForStorage(descriptor, full)
     return new StepResponse({
-      module: descriptor.module,
+      category: descriptor.category,
       options,
     })
   }

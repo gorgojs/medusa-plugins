@@ -3,7 +3,7 @@ import { defineIntegration } from "../define"
 
 describe("defineIntegration", () => {
   const d = defineIntegration({
-    module: "payment",
+    category: "payment",
     displayName: "demo.name",
     options: {
       terminalKey: { type: "string", required: true, minLength: 1, label: "l" },
@@ -34,7 +34,7 @@ describe("defineIntegration", () => {
   it("throws when a section references an unknown option id", () => {
     expect(() =>
       defineIntegration({
-        module: "payment",
+        category: "payment",
         displayName: "demo.name",
         options: { a: { type: "string", label: "l" } },
         sections: [{ id: "s", title: "t", options: ["a", "missing"] }],

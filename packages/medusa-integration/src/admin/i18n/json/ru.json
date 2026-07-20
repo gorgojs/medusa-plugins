@@ -15,11 +15,11 @@
     },
     "labels": {
       "status": "Статус",
-      "module": "Модуль",
+      "category": "Категория",
       "lastTest": "Последняя проверка",
       "neverTested": "Не проверялось"
     },
-    "modules": {
+    "categories": {
       "payment": "Платежи",
       "fulfillment": "Доставка",
       "marketplace": "Маркетплейс",

@@ -4,7 +4,7 @@ export { AbstractIntegrationProvider } from "./modules/integration/utils/abstrac
 export type {
   IntegrationDescriptor,
   IntegrationDescriptorInput,
-  ModuleKind,
+  CategoryKind,
   OptionDef,
   OptionValidateContext,
   Settings,

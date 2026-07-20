@@ -1,11 +1,11 @@
-import type { I18nKey, ModuleKind, TestStatus } from "../../../integration"
+import type { I18nKey, CategoryKind, TestStatus } from "../../../integration"
 
 /** One declared integration instance (registration) merged with its current row state. */
 export interface IntegrationOverviewItem {
   provider_id: string
   identifier: string
   instance_id: string | null
-  module: ModuleKind
+  category: CategoryKind
   display_name: I18nKey
   /** Descriptor icon — any `<img src>` string (data URI / URL / `/static` path). */
   icon?: string
@@ -22,7 +22,7 @@ export interface IntegrationOverviewItem {
 export interface MaskedIntegration {
   id: string
   provider_id: string
-  module: ModuleKind
+  category: CategoryKind
   title: string | null
   is_enabled: boolean
   has_secrets: boolean

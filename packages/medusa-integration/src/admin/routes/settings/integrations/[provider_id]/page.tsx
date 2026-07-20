@@ -250,9 +250,9 @@ const EditPage = () => {
               </StatusBadge>
             )}
           </Row>
-          <Row label={t("integration.labels.module")}>
+          <Row label={t("integration.labels.category")}>
             <Badge size="2xsmall" color="grey">
-              {t(`integration.modules.${descriptor.module}`)}
+              {t(`integration.categories.${descriptor.category}`)}
             </Badge>
           </Row>
           <Row label={t("integration.labels.lastTest")}>

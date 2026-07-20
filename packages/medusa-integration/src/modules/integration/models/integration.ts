@@ -1,11 +1,11 @@
 import { model } from "@medusajs/framework/utils"
-import { IntegrationModule, IntegrationTestStatus } from "../utils/integration"
+import { IntegrationCategory, IntegrationTestStatus } from "../utils/integration"
 
 const Integration = model.define("integration", {
   id: model.id({ prefix: "int" }).primaryKey(),
 
   // Plugin identity
-  module: model.enum(IntegrationModule),
+  category: model.enum(IntegrationCategory),
   provider_id: model.text(),
   title: model.text().nullable(),
 
@@ -18,7 +18,7 @@ const Integration = model.define("integration", {
 })
 .indexes([
   { on: ["provider_id"], unique: true },
-  { on: ["module"] },
+  { on: ["category"] },
 ])
 
 export default Integration

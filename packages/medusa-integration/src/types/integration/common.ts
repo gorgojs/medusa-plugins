@@ -5,11 +5,11 @@ import type { I18nKey, FieldControl } from "../../modules/integration/descriptor
 // Re-exported so the http layer can import domain bits from `src/types/integration`.
 export type { I18nKey }
 
-// The `IntegrationModule` / `IntegrationTestStatus` const objects and their derived string unions
+// The `IntegrationCategory` / `IntegrationTestStatus` const objects and their derived string unions
 // live in `utils` (Medusa-style — runtime "enums" in utils). Imported for local use + re-exported
 // so the domain-type surface stays in `src/types`; import the const *values* from `utils/integration`.
-import type { ModuleKind, TestStatus } from "../../modules/integration/utils/integration"
-export type { ModuleKind, TestStatus }
+import type { CategoryKind, TestStatus } from "../../modules/integration/utils/integration"
+export type { CategoryKind, TestStatus }
 
 export type IntegrationLayouts = "core:single-column" | "core:two-column"
 
@@ -66,7 +66,7 @@ export interface IntegrationSectionData {
 }
 
 export interface UiDescriptor {
-  module: string
+  category: string
   identifier: string
   instanceId: string | null
   displayName: I18nKey

@@ -1,5 +1,5 @@
-/** Which Medusa module an integration configures. */
-export const IntegrationModule = {
+/** Integration category — which Medusa module a provider configures. */
+export const IntegrationCategory = {
   PAYMENT: "payment",
   FULFILLMENT: "fulfillment",
   MARKETPLACE: "marketplace",
@@ -11,7 +11,7 @@ export const IntegrationModule = {
   TAX: "tax",
   OTHER: "other",
 } as const
-export type ModuleKind = (typeof IntegrationModule)[keyof typeof IntegrationModule]
+export type CategoryKind = (typeof IntegrationCategory)[keyof typeof IntegrationCategory]
 
 /** Outcome of a provider's connection test. */
 export const IntegrationTestStatus = {

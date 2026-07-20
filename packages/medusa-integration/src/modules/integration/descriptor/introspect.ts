@@ -57,7 +57,7 @@ export function secretFieldNames(descriptor: Pick<IntegrationDescriptor, "option
 
 export function introspectDescriptor(descriptor: IntegrationDescriptor): UiDescriptor {
   return {
-    module: descriptor.module,
+    category: descriptor.category,
     identifier: descriptor.identifier,
     instanceId: descriptor.instanceId ?? null,
     displayName: descriptor.displayName,

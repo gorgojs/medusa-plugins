@@ -16,8 +16,8 @@ const IntegrationsPage = () => {
   })
 
   const items = data?.integrations ?? []
-  const byModule = items.reduce<Record<string, IntegrationOverviewItem[]>>((acc, i) => {
-    ;(acc[i.module] ??= []).push(i)
+  const byCategory = items.reduce<Record<string, IntegrationOverviewItem[]>>((acc, i) => {
+    ;(acc[i.category] ??= []).push(i)
     return acc
   }, {})
 
@@ -38,10 +38,10 @@ const IntegrationsPage = () => {
           </Text>
         </div>
       ) : (
-        Object.entries(byModule).map(([module, group]) => (
-          <div key={module} className="px-6 py-4">
+        Object.entries(byCategory).map(([category, group]) => (
+          <div key={category} className="px-6 py-4">
             <Text size="small" weight="plus">
-              {t(`integration.modules.${module}`)}
+              {t(`integration.categories.${category}`)}
             </Text>
             <div className="mt-2 flex flex-col gap-2">
               {group.map((i) => {

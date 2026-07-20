@@ -22,8 +22,8 @@
           "enumItems": [],
           "mappedType": "text"
         },
-        "module": {
-          "name": "module",
+        "category": {
+          "name": "category",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -204,13 +204,13 @@
           "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_integration_provider_id_unique\" ON \"integration\" (\"provider_id\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "IDX_integration_module",
+          "keyName": "IDX_integration_category",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_integration_module\" ON \"integration\" (\"module\") WHERE deleted_at IS NULL"
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_integration_category\" ON \"integration\" (\"category\") WHERE deleted_at IS NULL"
         },
         {
           "keyName": "integration_pkey",

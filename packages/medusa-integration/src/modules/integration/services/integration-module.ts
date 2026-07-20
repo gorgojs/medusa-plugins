@@ -18,7 +18,7 @@ type InjectedDependencies = {
 
 export type ResolvedOptions = {
   options: Record<string, unknown>
-  meta: { provider_id: string; module: string | null; is_enabled: boolean }
+  meta: { provider_id: string; category: string | null; is_enabled: boolean }
 }
 
 const CACHE_TTL_MS = 60_000
@@ -118,7 +118,7 @@ export default class IntegrationModuleService extends MedusaService({
         provider_id: r.key,
         identifier: r.identifier,
         instance_id: r.instanceId,
-        module: d.module,
+        category: d.category,
         display_name: d.displayName,
         icon: d.icon,
         supports_multiple_instances: d.supportsMultipleInstances ?? false,
@@ -240,7 +240,7 @@ export default class IntegrationModuleService extends MedusaService({
           options: parsed.success ? (parsed.data as Record<string, unknown>) : assembled,
           meta: {
             provider_id: record.provider_id,
-            module: record.module ?? null,
+            category: record.category ?? null,
             is_enabled: record.is_enabled,
           },
         }

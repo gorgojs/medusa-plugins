@@ -2,10 +2,10 @@ import { z } from "@medusajs/deps/zod"
 import type { I18nKey } from "./meta"
 import type { OptionDef, Settings } from "./option"
 import { optionToZod } from "./build-zod"
-import type { IntegrationLayouts, ModuleKind, TestConnectionContext, TestConnectionResult } from "../../../types"
+import type { IntegrationLayouts, CategoryKind, TestConnectionContext, TestConnectionResult } from "../../../types"
 
 export { z }
-export type { ModuleKind, TestConnectionContext, TestConnectionResult }
+export type { CategoryKind, TestConnectionContext, TestConnectionResult }
 export type { OptionDef, OptionValidateContext, OptionValue, Settings } from "./option"
 
 /** One configuration section — references options by id from the descriptor's catalog. */
@@ -24,8 +24,8 @@ export type IntegrationValidateIssue = { path?: (string | number)[]; message: st
 export type IntegrationValidateContext = { addIssue: (issue: IntegrationValidateIssue) => void }
 
 type DescriptorBase = {
-  /** Which Medusa module this integration configures (payment, fulfillment, …). */
-  module: ModuleKind
+  /** Category — which Medusa module this integration configures (payment, fulfillment, …). */
+  category: CategoryKind
   displayName: I18nKey
   description?: I18nKey
   icon?: string
@@ -67,7 +67,7 @@ export type IntegrationDescriptor = IntegrationDescriptorInput & {
  * reference option ids. The composed `optionsSchema` (for `z.infer` + defaults + full
  * validation) is built automatically:
  *
- *   const descriptor = defineIntegration({ module, displayName, options: {...}, sections: [...] })
+ *   const descriptor = defineIntegration({ category, displayName, options: {...}, sections: [...] })
  *   type Settings = z.infer<typeof descriptor.optionsSchema>
  */
 export function defineIntegration<const O extends Record<string, OptionDef>>(
