@@ -1,0 +1,24 @@
+# YooKassa — payment provider, authored by Gorgo.
+# See example.yml for the fully-annotated template.
+
+identifier: "yookassa"
+npm: "@gorgo/medusa-payment-yookassa"
+category: "payment"
+author: "gorgo"
+displayName:
+  en: "YooKassa"
+  ru: "ЮKassa"
+shortDescription:
+  en: "Accept payments via YooKassa"
+  ru: "Приём платежей через ЮKassa"
+icon: "yookassa.svg"
+repository: "https://github.com/gorgojs/medusa-plugins"
+docsUrl: "https://docs.gorgojs.com/medusa-plugins/yookassa"
+configSnippet: |
+  {
+    resolve: "@gorgo/medusa-payment-yookassa",
+    options: {
+      // credentials & settings are managed in Admin, not here
+    },
+  }
+active: true

@@ -1,0 +1,17 @@
+# ApiShip — multi-carrier shipping aggregation, authored by Gorgo.
+# Minimal entry (no optional configSnippet). See example.yml for the fully-annotated template.
+
+identifier: "apiship"
+npm: "@gorgo/medusa-fulfillment-apiship"
+category: "fulfillment"
+author: "gorgo"
+displayName:
+  en: "ApiShip"
+  ru: "ApiShip"
+shortDescription:
+  en: "Multi-carrier shipping aggregation via ApiShip"
+  ru: "Агрегатор доставки по нескольким службам через ApiShip"
+icon: "apiship.svg"
+repository: "https://github.com/gorgojs/medusa-plugins"
+docsUrl: "https://docs.gorgojs.com/medusa-plugins/apiship"
+active: true

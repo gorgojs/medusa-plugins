@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/gorgojs/medusa-plugins/catalog/schema.json",
+  "title": "Gorgo integration catalog entry",
+  "description": "One integration configurable through @gorgo/medusa-integration. One file per integration at catalog/integrations/<identifier>.yml.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["identifier", "npm", "category", "author", "displayName", "icon", "repository"],
+  "properties": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Stable id for the integration; matches the provider's `static identifier` for integrations built on AbstractIntegrationProvider. Unique across the catalog. Lowercase-kebab; matches the icon basename by convention."
+    },
+    "npm": {
+      "type": "string",
+      "minLength": 1,
+      "description": "npm package that ships the provider."
+    },
+    "category": {
+      "type": "string",
+      "enum": ["payment", "fulfillment", "marketplace", "crm", "erp", "pim", "notification", "feed", "tax", "other"],
+      "description": "Which Medusa module this integration configures (matches the descriptor's `category`). NOTE: a different value set from the site's plugin `category` — mapped at merge time."
+    },
+    "author": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Author id; must exist in catalog/authors.yml. Merged into the site catalog's `author` field."
+    },
+    "displayName": {
+      "$ref": "#/$defs/localized",
+      "description": "Card title. Merged into plugins.yml `name.*.label` on the site."
+    },
+    "shortDescription": {
+      "$ref": "#/$defs/localized",
+      "description": "One-line card subtitle. Seeds the site short description."
+    },
+    "icon": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*\\.(svg|png)$",
+      "description": "Icon filename under catalog/icons/. Square, <= 50 KB, no remote refs inside the SVG."
+    },
+    "repository": {
+      "type": "string",
+      "pattern": "^https://"
+    },
+    "docsUrl": {
+      "type": "string",
+      "pattern": "^https://"
+    },
+    "configSnippet": {
+      "type": "string",
+      "description": "Illustrative medusa-config.ts registration, shown in the Admin \"Setup guide\" drawer."
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Set false to hide the entry without deleting it."
+    },
+    "supportsMultipleInstances": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "$defs": {
+    "localized": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["en", "ru"],
+      "properties": {
+        "en": { "type": "string", "minLength": 1 },
+        "ru": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

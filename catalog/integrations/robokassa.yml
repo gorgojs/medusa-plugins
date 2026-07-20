@@ -1,0 +1,24 @@
+# Robokassa — payment provider, authored by Gorgo.
+# See example.yml for the fully-annotated template.
+
+identifier: "robokassa"
+npm: "@gorgo/medusa-payment-robokassa"
+category: "payment"
+author: "gorgo"
+displayName:
+  en: "Robokassa"
+  ru: "Robokassa"
+shortDescription:
+  en: "Accept payments via Robokassa"
+  ru: "Приём платежей через Robokassa"
+icon: "robokassa.svg"
+repository: "https://github.com/gorgojs/medusa-plugins"
+docsUrl: "https://docs.gorgojs.com/medusa-plugins/robokassa"
+configSnippet: |
+  {
+    resolve: "@gorgo/medusa-payment-robokassa",
+    options: {
+      // credentials & settings are managed in Admin, not here
+    },
+  }
+active: true

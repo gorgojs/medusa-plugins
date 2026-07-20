@@ -1,0 +1,24 @@
+# T-Kassa — payment provider by T-Bank, authored by Gorgo.
+# See example.yml for the fully-annotated template.
+
+identifier: "tkassa"
+npm: "@gorgo/medusa-payment-tkassa"
+category: "payment"
+author: "gorgo"
+displayName:
+  en: "T-Kassa"
+  ru: "Т-Касса"
+shortDescription:
+  en: "Accept payments via T-Kassa by T-Bank"
+  ru: "Приём платежей через Т-Кассу от Т-Банка"
+icon: "tkassa.svg"
+repository: "https://github.com/gorgojs/medusa-plugins"
+docsUrl: "https://docs.gorgojs.com/medusa-plugins/t-kassa"
+configSnippet: |
+  {
+    resolve: "@gorgo/medusa-payment-tkassa",
+    options: {
+      // credentials & settings are managed in Admin, not here
+    },
+  }
+active: true

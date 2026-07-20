@@ -1,0 +1,13 @@
+# Authors referenced by integration entries via their `author:` field.
+# Validated in CI against ./authors.schema.json. Quote all string scalars.
+#
+# Only Gorgo for now. A community author is added in the same PR as their integration:
+# append an entry here and reference its `id` from integrations/<id>.yml.
+
+- id: "gorgo"
+  name:
+    en: "Gorgo"
+    ru: "Gorgo"
+  url: "https://gorgojs.com"
+  github: "gorgojs"
+  active: true

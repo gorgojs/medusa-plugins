@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/gorgojs/medusa-plugins/catalog/authors.schema.json",
+  "title": "Gorgo integration catalog authors",
+  "description": "Authors referenced by integration entries. The whole authors.yml is one array of these.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "name"],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]*$",
+        "description": "Referenced by an integration's `author`. Keep in sync with the site's authors.yml id where the same author exists there."
+      },
+      "name": {
+        "$ref": "#/$defs/localized",
+        "description": "Display name."
+      },
+      "url": {
+        "type": "string",
+        "pattern": "^https://",
+        "description": "Author website (optional)."
+      },
+      "github": {
+        "type": "string",
+        "description": "GitHub org or user handle, no @ (optional)."
+      },
+      "active": {
+        "type": "boolean",
+        "default": true
+      }
+    }
+  },
+  "$defs": {
+    "localized": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["en", "ru"],
+      "properties": {
+        "en": { "type": "string", "minLength": 1 },
+        "ru": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

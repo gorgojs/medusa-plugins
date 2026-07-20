@@ -1,0 +1,53 @@
+# Template — copy this file to catalog/integrations/<your-identifier>.yml and fill it in.
+# This entry itself is inactive (active: false) so it's never surfaced even if picked up by mistake.
+#
+# Validated in CI against ../schema.json. Full field reference: ../README.md
+# Quote all string scalars to avoid YAML type coercion (e.g. `no` -> false).
+
+# Stable id for the integration. Unique across the catalog; lowercase-kebab;
+# matches the icon basename by convention. For integrations built on
+# AbstractIntegrationProvider, use the provider's `static identifier`.
+identifier: "example"
+
+# npm package that ships the integration.
+npm: "@your-scope/medusa-integration-example"
+
+# Which Medusa module this configures. One of: payment, fulfillment, marketplace,
+# crm, erp, pim, notification, feed, tax, other.
+# NOTE: distinct from the site's plugin `category` values — mapped at merge time.
+category: "other"
+
+# Author id — must exist in ../authors.yml. Add yourself there in the same PR.
+author: "your-author-id"
+
+# Card title. Merged into the site catalog's `name.*.label`.
+displayName:
+  en: "Example Integration"
+  ru: "Пример интеграции"
+
+# One-line card subtitle (keep <= 160 chars).
+shortDescription:
+  en: "One-line description of what this integration does"
+  ru: "Однострочное описание того, что делает эта интеграция"
+
+# Icon filename under catalog/icons/. Square SVG (preferred) or PNG, <= 50 KB, no remote refs.
+icon: "example.svg"
+
+# Source repository.
+repository: "https://github.com/your-org/your-repo"
+
+# Docs entry (optional).
+docsUrl: "https://example.com/docs"
+
+# Illustrative medusa-config.ts registration for the Admin "Setup guide" drawer (optional).
+# Actual configuration is done in Admin -> Settings -> Integrations.
+configSnippet: |
+  {
+    resolve: "@your-scope/medusa-integration-example",
+    options: {
+      // credentials & settings are managed in Admin, not here
+    },
+  }
+
+# Keep false for this template. Real entries default to true; set false to hide without deleting.
+active: false

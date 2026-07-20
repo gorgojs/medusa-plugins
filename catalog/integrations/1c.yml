@@ -1,0 +1,28 @@
+# 1C:Enterprise — ERP data-exchange integration, authored by Gorgo.
+# See example.yml for the fully-annotated template.
+#
+# NOTE: unlike tkassa/apiship/robokassa/yookassa, this ships as its own standalone Medusa
+# module (registered under `modules`, module name "onec") rather than an AbstractIntegrationProvider
+# plugged into @gorgo/medusa-integration's `options.providers`. `identifier` below is a catalog-only
+# id (matches the npm scope / docs slug), not a provider `static identifier`. configSnippet reflects
+# that: it's a `modules` entry, not a `providers` entry.
+
+identifier: "1c"
+npm: "@gorgo/medusa-1c"
+category: "erp"
+author: "gorgo"
+displayName:
+  en: "1C:Enterprise"
+  ru: "1С:Предприятие"
+shortDescription:
+  en: "Data exchange between Medusa and 1C:Enterprise ERP"
+  ru: "Обмен данными между Medusa и ERP 1С:Предприятие"
+icon: "1c.svg"
+repository: "https://github.com/gorgojs/medusa-plugins"
+docsUrl: "https://docs.gorgojs.com/medusa-plugins/1c-enterprise"
+configSnippet: |
+  // Registered as a module, not an integration provider:
+  {
+    resolve: "@gorgo/medusa-1c",
+  }
+active: true
