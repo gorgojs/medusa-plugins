@@ -25,7 +25,8 @@ export interface MaskedIntegration {
   category: CategoryKind
   title: string | null
   is_enabled: boolean
-  has_secrets: boolean
+  /** Secret option keys that currently have a stored value (per field; the value is never sent). */
+  configured_secrets: string[]
   last_test_status: TestStatus | null
   values: Record<string, unknown>
 }

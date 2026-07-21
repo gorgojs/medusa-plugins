@@ -52,7 +52,7 @@
     "form": {
       "required": "{{field}} is required",
       "invalidJson": "Invalid JSON",
-      "keepSecret": "•••••• — leave blank to keep",
+      "keepSecret": "•••••• – leave blank to keep",
       "items": "{{count}} items"
     },
     "toast": {

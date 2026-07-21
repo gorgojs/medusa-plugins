@@ -10,7 +10,7 @@ type Translate = (key: string, options?: Record<string, unknown>) => string
 // Re-export so the form keeps importing the field shape from one place.
 export type { UiField }
 
-const jsonToText = (v: unknown) => (v === undefined || v === "" ? "" : JSON.stringify(v, null, 2))
+const jsonToText = (v: unknown) => (v == null || v === "" ? "" : JSON.stringify(v, null, 2))
 
 /**
  * Basic editor for nested/array options (`control: "json"`). The form value is the parsed
@@ -35,7 +35,7 @@ const JsonField = ({ field, f }: { field: UiField; f: any }) => {
           setRaw(text)
           if (text.trim() === "") {
             setError(null)
-            f.onChange(undefined)
+            f.onChange(null)
             return
           }
           try {
@@ -140,9 +140,19 @@ function renderControl(field: UiField, f: any, secretConfigured: boolean, t: Tra
           placeholder={placeholder}
           value={f.value ?? ""}
           disabled={disabled}
-          // Blank → undefined (not NaN), so optional numbers clear cleanly and an untouched
-          // number field doesn't serialize to null and fail the schema.
-          onChange={(e) => f.onChange(e.target.value === "" ? undefined : e.target.valueAsNumber)}
+          // Blank → explicit null = "clear": survives JSON.stringify (unlike `undefined`, which
+          // is dropped from the body), and the server reads null as "absent" (clears the field).
+          onChange={(e) => f.onChange(e.target.value === "" ? null : e.target.valueAsNumber)}
+        />
+      )
+    case "url":
+      return (
+        <Input
+          type="url"
+          placeholder={placeholder}
+          value={f.value ?? ""}
+          disabled={disabled}
+          onChange={f.onChange}
         />
       )
     case "secret":
@@ -153,6 +163,7 @@ function renderControl(field: UiField, f: any, secretConfigured: boolean, t: Tra
           value={f.value ?? ""}
           disabled={disabled}
           onChange={f.onChange}
+          className={!f.value ? "[&~div]:hidden" : undefined}
         />
       )
     case "json":

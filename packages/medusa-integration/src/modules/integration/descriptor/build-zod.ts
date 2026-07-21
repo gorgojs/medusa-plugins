@@ -7,6 +7,13 @@ import type { OptionDef } from "./option"
  * `json` is opaque (`z.unknown()`) — its shape is checked by the option's imperative `validate`.
  */
 export function optionToZod(def: OptionDef): z.ZodType {
+  const schema = buildOptionSchema(def)
+  if (def.type === "string" || def.type === "json")
+    return z.preprocess((v) => (v === null ? undefined : v), schema)
+  return z.preprocess((v) => (v === "" || v === null ? undefined : v), schema)
+}
+
+function buildOptionSchema(def: OptionDef): z.ZodType {
   let base: z.ZodType
   switch (def.type) {
     case "string": {

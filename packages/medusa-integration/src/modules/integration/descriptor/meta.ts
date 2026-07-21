@@ -12,5 +12,4 @@ export type FieldControl =
   | "number"
   | "url"
   | "select"
-  | "multiselect"
   | "json"

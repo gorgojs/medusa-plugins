@@ -63,3 +63,30 @@ describe("isDescriptorComplete / collectValidationIssues", () => {
     expect(issues.some((i) => i.path === "terminalKey")).toBe(true)
   })
 })
+
+describe("validateOptions — empty-string blanks (admin form sentinel)", () => {
+  // A conditionally-hidden/blank optional enum reaches the server as "" (the admin form's empty
+  // sentinel, submitted by react-hook-form). Saving the section must not error on it.
+  const withOptionalEnum = defineIntegration({
+    category: "payment",
+    displayName: "demo.name",
+    options: {
+      useReceipt: { type: "boolean", default: false, label: "l" },
+      taxation: { type: "enum", values: ["osn", "usn"], label: "l" },
+    },
+    sections: [{ id: "receipt", title: "t", options: ["useReceipt", "taxation"] }],
+  })
+  const desc: IntegrationDescriptor = { ...withOptionalEnum, identifier: "demo", instanceId: null }
+
+  it("accepts a blank optional enum submitted as '' and stores it as absent", () => {
+    const res = validateOptions(desc, ["useReceipt", "taxation"], { useReceipt: false, taxation: "" })
+    expect(res.success).toBe(true)
+    if (res.success) expect(res.data.taxation).toBeUndefined()
+  })
+
+  it("treats an explicit null as a clear for an optional field (stores absent)", () => {
+    const res = validateOptions(desc, ["taxation"], { taxation: null })
+    expect(res.success).toBe(true)
+    if (res.success) expect(res.data.taxation).toBeUndefined()
+  })
+})

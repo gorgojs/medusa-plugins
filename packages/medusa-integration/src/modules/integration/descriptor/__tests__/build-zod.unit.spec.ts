@@ -68,4 +68,53 @@ describe("optionToZod", () => {
     const d = optionToZod({ type: "json", default: [], label: "l" }).safeParse(undefined)
     expect(d.success && d.data).toEqual([])
   })
+
+  // The admin form uses "" as its empty sentinel; the schema must read "" as "not provided"
+  // for non-string types where "" is never a valid value (enum/number/url/email/uuid/boolean),
+  // so a blank optional field validates instead of erroring.
+  it("treats an empty-string blank as absent for optional non-string types", () => {
+    expect(optionToZod({ type: "enum", values: ["a", "b"], label: "l" }).safeParse("").success).toBe(true)
+    expect(optionToZod({ type: "number", label: "l" }).safeParse("").success).toBe(true)
+    expect(optionToZod({ type: "url", label: "l" }).safeParse("").success).toBe(true)
+    expect(optionToZod({ type: "email", label: "l" }).safeParse("").success).toBe(true)
+    expect(optionToZod({ type: "uuid", label: "l" }).safeParse("").success).toBe(true)
+  })
+
+  it("applies the default when a non-string field is blank ('')", () => {
+    const e = optionToZod({ type: "enum", values: ["a", "b"], default: "a", label: "l" }).safeParse("")
+    expect(e.success && e.data).toBe("a")
+    const n = optionToZod({ type: "number", default: 7, label: "l" }).safeParse("")
+    expect(n.success && n.data).toBe(7)
+  })
+
+  it("required non-string types still reject a blank ('')", () => {
+    expect(optionToZod({ type: "enum", values: ["a", "b"], required: true, label: "l" }).safeParse("").success).toBe(false)
+    expect(optionToZod({ type: "number", required: true, label: "l" }).safeParse("").success).toBe(false)
+  })
+
+  it("does not coerce '' for string type (empty string stays a string value)", () => {
+    // Strings enforce non-empty via minLength, not via the ""→absent coercion.
+    const r = optionToZod({ type: "string", label: "l" }).safeParse("")
+    expect(r.success && r.data).toBe("")
+  })
+
+  // `null` is the admin's explicit "clear" for a blanked number/JSON field (survives
+  // JSON.stringify, unlike `undefined`) — the schema reads it as "absent".
+  it("treats null as absent for non-string types (explicit clear)", () => {
+    expect(optionToZod({ type: "number", label: "l" }).safeParse(null).success).toBe(true)
+    const e = optionToZod({ type: "enum", values: ["a", "b"], label: "l" }).safeParse(null)
+    expect(e.success && e.data).toBeUndefined()
+  })
+
+  it("re-applies the default when a non-string field is cleared with null", () => {
+    const n = optionToZod({ type: "number", default: 7, label: "l" }).safeParse(null)
+    expect(n.success && n.data).toBe(7)
+    const j = optionToZod({ type: "json", default: [], label: "l" }).safeParse(null)
+    expect(j.success && j.data).toEqual([])
+  })
+
+  it("required non-string types still reject a null clear", () => {
+    expect(optionToZod({ type: "number", required: true, label: "l" }).safeParse(null).success).toBe(false)
+    expect(optionToZod({ type: "enum", values: ["a", "b"], required: true, label: "l" }).safeParse(null).success).toBe(false)
+  })
 })

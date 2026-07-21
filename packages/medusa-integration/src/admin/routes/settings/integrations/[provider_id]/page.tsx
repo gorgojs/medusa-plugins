@@ -134,6 +134,9 @@ const EditPage = () => {
   }
 
   const editing = descriptor.sections.find((s) => s.id === editingSection) ?? null
+  // Secret keys with a stored value — per field, so only the actually-set secrets render as
+  // "configured" (••••••) and skip the "required" hint; unset ones still prompt to fill.
+  const configuredSecrets = new Set<string>(record?.configured_secrets ?? [])
 
   // Data handed to provider-supplied custom-section widgets (injected via LayoutComposer's
   // per-plugin zone). Secrets are never included.
@@ -170,7 +173,7 @@ const EditPage = () => {
             <IntegrationFieldValue
               field={f}
               value={record?.values?.[f.name]}
-              secretConfigured={!!record?.has_secrets}
+              secretConfigured={configuredSecrets.has(f.name)}
             />
           </Row>
         ))}
@@ -282,7 +285,7 @@ const EditPage = () => {
           providerId={provider_id!}
           section={editing}
           values={record?.values ?? {}}
-          hasSecrets={!!record?.has_secrets}
+          configuredSecrets={record?.configured_secrets ?? []}
         />
       )}
     </>

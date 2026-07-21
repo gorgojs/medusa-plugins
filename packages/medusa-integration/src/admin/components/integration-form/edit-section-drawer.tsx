@@ -37,7 +37,7 @@ export const EditSectionDrawer = ({
   providerId,
   section,
   values,
-  hasSecrets = false,
+  configuredSecrets = [],
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -48,10 +48,13 @@ export const EditSectionDrawer = ({
    * section for pre-fill; the whole map is also used to resolve cross-section `visibleWhen`.
    */
   values: Record<string, unknown>
-  hasSecrets?: boolean
+  /** Secret option keys that already have a stored value — per field, so each secret shows
+   * "leave blank to keep" (and skips client-side required) only when it's actually set. */
+  configuredSecrets?: string[]
 }) => {
   const { t } = useTranslation()
   const qc = useQueryClient()
+  const configured = new Set(configuredSecrets)
   // Snapshot the section's values once at mount (lazy initializer → computed a single time).
   // The drawer remounts per open (the page conditionally renders it keyed by section), so
   // each open re-snapshots the latest stored values; meanwhile a background refetch of the
@@ -97,7 +100,7 @@ export const EditSectionDrawer = ({
                 key={f.name}
                 field={f}
                 control={form.control}
-                secretConfigured={hasSecrets}
+                secretConfigured={configured.has(f.name)}
               />
             ))}
         </Drawer.Body>

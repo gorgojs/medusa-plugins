@@ -20,18 +20,18 @@ export function requireProvider(svc: IntegrationModuleService, providerId: strin
 
 /**
  * Build the client-facing view of a record. Secret options live encrypted inside `options`;
- * they are stripped here so ciphertext never reaches the browser. `has_secrets` tells the UI
- * a secret is stored (so it can render a "leave blank to keep" hint). `values` holds only
- * the non-secret options.
+ * they are stripped here so ciphertext never reaches the browser. `configured_secrets` lists
+ * the secret keys that currently have a stored value (per field), so the UI can render a
+ * "leave blank to keep" hint on exactly those fields. `values` holds only the non-secret options.
  */
 export function maskedView(record: any, secretKeys: string[]): MaskedIntegration {
   const secret = new Set(secretKeys)
   const stored = (record.options ?? {}) as Record<string, unknown>
   const values: Record<string, unknown> = {}
-  let has_secrets = false
+  const configured_secrets: string[] = []
   for (const [k, v] of Object.entries(stored)) {
     if (secret.has(k)) {
-      if (v != null && v !== "") has_secrets = true
+      if (v != null && v !== "") configured_secrets.push(k)
       continue
     }
     values[k] = v
@@ -42,7 +42,7 @@ export function maskedView(record: any, secretKeys: string[]): MaskedIntegration
     category: record.category,
     title: record.title ?? null,
     is_enabled: record.is_enabled,
-    has_secrets,
+    configured_secrets,
     last_test_status: record.last_test_status ?? null,
     values,
   }

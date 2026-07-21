@@ -3,6 +3,25 @@ import { INTEGRATION_MODULE } from "../modules/integration"
 import type IntegrationModuleService from "../modules/integration/services/integration-module"
 import { testIntegrationConnectionWorkflow } from "../workflows/integration"
 
+/** A per-integration test result: the provider's `passed`/`failed`/`skipped`, or `errored` (threw). */
+export type TestOutcome = "passed" | "failed" | "skipped" | "errored"
+export type OutcomeCounts = Record<TestOutcome, number>
+
+/** Tally outcomes into per-status buckets. Buckets are keyed by the status itself — no mapping. */
+export function tallyOutcomes(outcomes: Iterable<TestOutcome>): OutcomeCounts {
+  const counts: OutcomeCounts = { passed: 0, failed: 0, skipped: 0, errored: 0 }
+  for (const o of outcomes) counts[o]++
+  return counts
+}
+
+/** The end-of-run summary line. `passed`→"ok", `failed`→"fail" for human-readable output. */
+export function formatConnectionTestSummary(counts: OutcomeCounts): string {
+  return (
+    `[integration] connection-test job done — ok: ${counts.passed}, fail: ${counts.failed}, ` +
+    `skipped: ${counts.skipped}, errored: ${counts.errored}`
+  )
+}
+
 /**
  * Daily health check: run the connection test for every configured & enabled integration
  * that exposes one. Each test runs through `testIntegrationConnectionWorkflow`, which
@@ -29,29 +48,26 @@ export default async function testIntegrationConnectionsJob(container: MedusaCon
 
   logger.info(`[integration] connection-test job: testing ${targets.length} integration(s)`)
 
-  const counts = { ok: 0, fail: 0, skipped: 0, errored: 0 }
+  const outcomes: TestOutcome[] = []
 
   for (const target of targets) {
     try {
       const { result } = await testIntegrationConnectionWorkflow(container).run({
         input: { provider_id: target.provider_id },
       })
-      counts[result.status]++
+      outcomes.push(result.status)
       const line = `[integration] ${target.provider_id} → ${result.status}${
         result.message ? `: ${result.message}` : ""
       }`
       if (result.status === "failed") logger.warn(line)
       else logger.info(line)
     } catch (e: any) {
-      counts.errored++
+      outcomes.push("errored")
       logger.error(`[integration] ${target.provider_id} test errored: ${e?.message ?? e}`)
     }
   }
 
-  logger.info(
-    `[integration] connection-test job done — ok: ${counts.ok}, fail: ${counts.fail}, ` +
-      `skipped: ${counts.skipped}, errored: ${counts.errored}`
-  )
+  logger.info(formatConnectionTestSummary(tallyOutcomes(outcomes)))
 }
 
 export const config = {

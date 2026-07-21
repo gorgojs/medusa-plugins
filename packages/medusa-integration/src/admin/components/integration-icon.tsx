@@ -16,7 +16,7 @@ export const IntegrationIcon = ({
   alt?: string
   size?: "small" | "base"
 }) => {
-  const dim = size === "small" ? "h-6 w-6" : "h-8 w-8"
+  const dim = size === "small" ? "h-6 w-6" : "h-10 w-10"
   return (
     <div
       className={clx(
