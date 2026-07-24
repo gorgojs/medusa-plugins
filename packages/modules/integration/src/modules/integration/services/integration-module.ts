@@ -7,7 +7,7 @@ import IntegrationProviderService from "./integration-provider"
 import type { IntegrationDescriptor, TestConnectionResult } from "../descriptor/define"
 import { introspectDescriptor, secretFieldNames, type UiDescriptor } from "../descriptor/introspect"
 import { isDescriptorComplete } from "../descriptor/validate"
-import { INTEGRATION_OPTIONS_KEY, INTEGRATION_PACKAGE_META_KEY, DOCS_URL, type IntegrationModuleOptions, type PackageMetaMap } from "../types"
+import { INTEGRATION_OPTIONS_KEY, INTEGRATION_PACKAGE_META_KEY, type IntegrationModuleOptions, type PackageMetaMap } from "../types"
 import { CATALOG } from "../catalog/data"
 import type { IntegrationOverviewItem, CatalogItem } from "../../../types"
 import type { CategoryKind } from "../../../types/integration"
@@ -199,11 +199,6 @@ export default class IntegrationModuleService extends MedusaService({
     } catch (e: any) {
       return { status: "failed", message: e?.message ?? "Test failed" }
     }
-  }
-
-  /** Docs URL for the admin list CTA + footer, from options or the default. */
-  getDocsUrl(): string {
-    return DOCS_URL
   }
 
   /** Map a provider identifier to its public package-meta fields (snake_case), or nulls. */

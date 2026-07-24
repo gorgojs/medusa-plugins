@@ -24,8 +24,9 @@ import { IntegrationIcon } from "../../../components/integration-icon"
 import type { AdminIntegrationListResponse, IntegrationOverviewItem } from "../../../../types"
 
 const PAGE_SIZE = 20
+const DOCS_URL = "https://docs.gorgojs.com/ru/medusa-plugins/integration-module"
 
-/** Integration column: icon + name + instance badge, with a "v{version} • By {author}" meta line. */
+/** Integration column: icon + name + instance badge, with a "v{version} • by {author}" meta line. */
 const IntegrationCell = ({ item }: { item: IntegrationOverviewItem }) => {
   const { t } = useTranslation()
   return (
@@ -36,19 +37,19 @@ const IntegrationCell = ({ item }: { item: IntegrationOverviewItem }) => {
           <Text size="small" leading="compact" weight="plus">
             {t(item.display_name)}
           </Text>
-          {item.instance_id && (
+          {item.provider_id && (
             <Badge size="2xsmall" color="grey">
-              {item.instance_id}
+              {item.provider_id}
             </Badge>
           )}
         </div>
         {item.version && (
           <Text size="xsmall" leading="compact" className="text-ui-fg-subtle">
             {t("integration.meta.version", { version: item.version })}
-            {item.author &&
-              (item.author_url ? (
-                <>
-                  {" • "}
+            {item.author && (
+              <>
+                {" • "}{t("integration.meta.authorPrefix")}{" "}
+                {item.author_url ? (
                   <a
                     href={item.author_url}
                     target="_blank"
@@ -56,12 +57,13 @@ const IntegrationCell = ({ item }: { item: IntegrationOverviewItem }) => {
                     className="text-ui-fg-interactive"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {t("integration.meta.author", { author: item.author })}
+                    {item.author}
                   </a>
-                </>
-              ) : (
-                <>{" • " + t("integration.meta.author", { author: item.author })}</>
-              ))}
+                ) : (
+                  item.author
+                )}
+              </>
+            )}
           </Text>
         )}
       </div>
@@ -127,7 +129,6 @@ const IntegrationsPage = () => {
   const integrations = data?.integrations ?? []
   const count = data?.count ?? 0
   const categories = data?.categories ?? []
-  const docsUrl = data?.docs_url ?? "#"
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["integration-overview"] })
 
@@ -230,8 +231,8 @@ const IntegrationsPage = () => {
           ) : null,
       }),
       columnHelper.display({
-        id: "module",
-        header: t("integration.columns.module"),
+        id: "category",
+        header: t("integration.columns.category"),
         cell: ({ row }) => (
           <Badge size="2xsmall" color="grey">
             {t(`integration.categories.${row.original.category}`)}
@@ -318,7 +319,7 @@ const IntegrationsPage = () => {
       </DataTable>
 
       <div className="flex items-center justify-center px-6 py-4">
-        <a href={docsUrl} target="_blank" rel="noreferrer" className="text-ui-fg-interactive txt-small">
+        <a href={DOCS_URL} target="_blank" rel="noreferrer" className="text-ui-fg-interactive txt-small">
           {t("integration.list.learnMore")} →
         </a>
       </div>

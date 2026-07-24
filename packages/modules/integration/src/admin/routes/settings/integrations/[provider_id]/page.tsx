@@ -187,14 +187,14 @@ const EditPage = () => {
         {section.fields
           .filter((f) => isFieldVisible(f, (record?.values as Record<string, unknown>) ?? {}))
           .map((f) => (
-          <Row key={f.name} label={t(f.label)}>
-            <IntegrationFieldValue
-              field={f}
-              value={record?.values?.[f.name]}
-              secretConfigured={configuredSecrets.has(f.name)}
-            />
-          </Row>
-        ))}
+            <Row key={f.name} label={t(f.label)}>
+              <IntegrationFieldValue
+                field={f}
+                value={record?.values?.[f.name]}
+                secretConfigured={configuredSecrets.has(f.name)}
+              />
+            </Row>
+          ))}
       </Container>
     </LayoutComposer.Entry>
   )
@@ -215,31 +215,32 @@ const EditPage = () => {
                 <div className="flex flex-col gap-y-1">
                   <div className="flex items-center gap-x-2">
                     <Heading>{t(descriptor.displayName)}</Heading>
-                    {descriptor.instanceId && (
+                    {provider_id && (
                       <Badge size="2xsmall" color="grey">
-                        {descriptor.instanceId}
+                        {provider_id}
                       </Badge>
                     )}
                   </div>
                   {version && (
                     <Text size="xsmall" leading="compact" className="text-ui-fg-subtle">
                       {t("integration.meta.version", { version })}
-                      {author &&
-                        (authorUrl ? (
-                          <>
-                            {" • "}
+                      {author && (
+                        <>
+                          {" • "}{t("integration.meta.authorPrefix")}{" "}
+                          {authorUrl ? (
                             <a
                               href={authorUrl}
                               target="_blank"
                               rel="noreferrer"
                               className="text-ui-fg-interactive"
                             >
-                              {t("integration.meta.author", { author })}
+                              {author}
                             </a>
-                          </>
-                        ) : (
-                          <>{" • " + t("integration.meta.author", { author })}</>
-                        ))}
+                          ) : (
+                            author
+                          )}
+                        </>
+                      )}
                     </Text>
                   )}
                 </div>

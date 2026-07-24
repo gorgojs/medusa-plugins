@@ -29,7 +29,7 @@
     "columns": {
       "integration": "Integration",
       "description": "Description",
-      "module": "Module",
+      "category": "Category",
       "status": "Status"
     },
     "status": {
@@ -44,7 +44,7 @@
     },
     "meta": {
       "version": "v{{version}}",
-      "author": "By {{author}}"
+      "authorPrefix": "by"
     },
     "labels": {
       "category": "Category"
