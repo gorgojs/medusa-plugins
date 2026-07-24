@@ -14,24 +14,37 @@ module.exports = defineConfig({
     },
     cookieOptions: { sameSite: "lax", secure: false },
   },
+  plugins: [
+    {
+      resolve: "@gorgo/medusa-integration",
+      options: {
+        encryptionKey: process.env.GORGO_INTEGRATION_ENCRYPTION_KEY || "test-secret",
+        providers: [
+          {
+            // No `id`: this is the single/default instance → key `int_tkassa`
+            // (instance_id=null). An explicit `id` here would be treated as an
+            // instance id (see load-providers.ts), producing `int_tkassa_<id>` instead.
+            resolve: "@gorgo/medusa-payment-tkassa/providers/integration-tkassa",
+            options: {},
+          },
+        ],
+      },
+    },
+  ],
   modules: [
     {
       resolve: "@medusajs/medusa/payment",
+      dependencies: ["integration"],
       options: {
         providers: [
           {
+            // `id: "tkassa"` here only names this Medusa payment-provider registration
+            // (→ `pp_tkassa_tkassa`) — it is NOT the integration instance id. Since the
+            // integration provider above has no instance id either, `options` stays
+            // empty so `this.instanceId_` resolves to null on both sides.
             resolve: "@gorgo/medusa-payment-tkassa/providers/payment-tkassa",
             id: "tkassa",
-            options: {
-              terminalKey: process.env.TKASSA_TERMINAL_KEY,
-              password: process.env.TKASSA_PASSWORD,
-              capture: true,
-              useReceipt: true,
-              ffdVersion: "1.05",
-              taxation: "osn",
-              taxItemDefault: "none",
-              taxShippingDefault: "none",
-            },
+            options: {},
           },
         ],
       },
